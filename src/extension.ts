@@ -1,6 +1,6 @@
 import * as vscode from 'vscode';
 
-import { CleanAircraftCfg } from './tools/aircraft-cfg/clean';
+import { CleanAircraftCfg } from './tools/aircraft-cfg/clean-v2';
 import { CleanFlightplan } from './tools/flightplan/clean';
 import { ChangeAircraftNumber } from './tools/flightplan/change-ac-number';
 

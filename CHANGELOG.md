@@ -1,5 +1,9 @@
 # Change Log
 
+### 1.0.5
+
+- `Clean Aircraft.cfg` rewritten completely, can now take care of empty lines and sort entry lines.
+
 ## 1.0.4
 
 - All options are now configurable in the extension settings.

@@ -1,9 +1,12 @@
 {
 	"name": "fs-ai-tools",
 	"publisher": "jakob-tischler",
+	"repository": {
+		"url": "https://github.com/JakobTischler/VSCode-FS-AI-Tools"
+	},
 	"displayName": "FS AI Tools",
 	"description": "A bag of tools to clean flightplans and .cfg files",
-	"version": "1.0.4",
+	"version": "1.0.5",
 	"engines": {
 		"vscode": "^1.33.0"
 	},
@@ -81,11 +84,11 @@
 					"markdownDescription": "Renumbers the `fltsim` entries in sequence, starting at `0`.",
 					"scope": "window"
 				},
-				"fs-ai-tools.aircraftcfgTrimEmptyLines": {
+				"fs-ai-tools.aircraftcfgSortProperties": {
 					"type": "boolean",
 					"default": true,
-					"title": "Aircraft.cfg: Trim Empty Lines",
-					"markdownDescription": "Removes multiple empty lines between `fltsim` entries and leaves a single one.",
+					"title": "Aircraft.cfg: Sort Properties",
+					"markdownDescription": "Sorts the `fltsim` entries' properties.",
 					"scope": "window"
 				},
 				"fs-ai-tools.flightplansLeadingZeroesFlightnumbers": {
@@ -159,10 +162,10 @@
 		"test": "npm run compile && node ./node_modules/vscode/bin/test"
 	},
 	"devDependencies": {
-		"typescript": "^3.3.1",
-		"vscode": "^1.1.28",
-		"tslint": "^5.12.1",
+		"@types/mocha": "^2.2.42",
 		"@types/node": "^10.12.21",
-		"@types/mocha": "^2.2.42"
+		"tslint": "^5.12.1",
+		"typescript": "^3.3.1",
+		"vscode": "^1.1.28"
 	}
 }

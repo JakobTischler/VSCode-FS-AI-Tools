@@ -1,4 +1,4 @@
-# FS AI Tools
+# **FS AI** Tools
 
 A handful of tools to format and clean up `Aircraft.cfg`, `Aircraft_….txt` and `Flightplans_….txt` files. All options are configurable in the extension settings.
 
@@ -13,7 +13,7 @@ A handful of tools to format and clean up `Aircraft.cfg`, `Aircraft_….txt` and
   * `atc_id=` (if no reg is set)
   * `atc_id_color=…`
   * `visual_damage=…`
-* Trim empty lines after a `fltsim.x` section so there's exactly one empty line between sections
+* Sort entry property lines (not configurable yet)
 
 ### Clean Flightplans_….txt
 * Add leading zeroes to flightnumbers so they have 4 digits (`12` ➞ `0012`)
@@ -30,11 +30,15 @@ Changes the AC# of the selected `Aircraft_….txt` or `Flightplans_….txt` line
 
 ## Known Issues
 
-`Clean Aircraft.cfg` is still a little ... *unsmart*. If there are empty lines between `fltsim` entry settings, it doesn't remove them. Also, it's incapable of sorting `fltsim` entry settings at the moment. I plan to rewrite the setup for this in the future.
+There is no option no not sort `fltsim` entry lines yet. Will be implemented in the future, but requires a bit of a rewrite.
 
 ---
 
 ## Release Notes
+
+### 1.0.5
+
+- `Clean Aircraft.cfg` rewritten completely, can now take care of empty lines and sort entry lines.
 
 ### 1.0.4
 
