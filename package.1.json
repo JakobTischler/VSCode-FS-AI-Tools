@@ -1,0 +1,168 @@
+{
+	"name": "fs-ai-tools",
+	"publisher": "jakob-tischler",
+	"displayName": "FS AI Tools",
+	"description": "A bag of tools to clean flightplans and .cfg files",
+	"version": "1.0.4",
+	"engines": {
+		"vscode": "^1.33.0"
+	},
+	"categories": [
+		"Other"
+	],
+	"activationEvents": [
+		"onCommand:extension.cleanAircraftCfg",
+		"onCommand:extension.cleanFlightplan",
+		"onCommand:extension.changeAircraftNumber"
+	],
+	"main": "./out/extension.js",
+	"contributes": {
+		"commands": [
+			{
+				"command": "extension.cleanAircraftCfg",
+				"title": "Clean Aircraft.cfg",
+				"category": "FS AI Tools",
+				"when": "resourceFilename =~ /aircraft.cfg/i"
+			},
+			{
+				"command": "extension.cleanFlightplan",
+				"title": "Clean Flightplan",
+				"category": "FS AI Tools",
+				"when": "resourceFilename =~ /^flightplans.*txt$/i')"
+			},
+			{
+				"command": "extension.changeAircraftNumber",
+				"title": "Change AC# Number",
+				"category": "FS AI Tools",
+				"when": "editorHasSelection && resourceFilename =~ /^((flightplans)|(aircraft)).*txt$/i"
+			}
+		],
+		"menus": {
+			"editor/context": [
+				{
+					"command": "extension.cleanAircraftCfg",
+					"group": "FS AI Tools",
+					"when": "resourceFilename =~ /aircraft.cfg/i"
+				},
+				{
+					"command": "extension.cleanFlightplan",
+					"group": "FS AI Tools",
+					"when": "resourceFilename =~ /^flightplans.*txt$/i')"
+				},
+				{
+					"command": "extension.changeAircraftNumber",
+					"group": "FS AI Tools",
+					"when": "editorHasSelection && resourceFilename =~ /^((flightplans)|(aircraft)).*txt$/i"
+				}
+			]
+		},
+		"configuration": {
+			"type": "object",
+			"title": "FS AI Tools",
+			"properties": {
+				"fs-ai-tools.aircraftcfgCallsignsUppercase": {
+					"type": "boolean",
+					"default": true,
+					"title": "Aircraft.cfg: Convert callsigns to uppercase",
+					"markdownDescription": "Converts all `atc_airline=…` callsigns to uppercase.",
+					"scope": "window"
+				},
+				"fs-ai-tools.aircraftcfgRemoveUnusedLines": {
+					"type": "boolean",
+					"default": true,
+					"title": "Aircraft.cfg: Remove unused lines",
+					"markdownDescription": "Removes the `atc_id=…`, `atc_id_color=…`, `atc_flight_number=…`, `atc_heavy=0` and `visual_damage=…` lines from the fltsim entries.",
+					"scope": "window"
+				},
+				"fs-ai-tools.aircraftcfgRenumber": {
+					"type": "boolean",
+					"default": true,
+					"title": "Aircraft.cfg: Renumber",
+					"markdownDescription": "Renumbers the `fltsim` entries in sequence, starting at `0`.",
+					"scope": "window"
+				},
+				"fs-ai-tools.aircraftcfgTrimEmptyLines": {
+					"type": "boolean",
+					"default": true,
+					"title": "Aircraft.cfg: Trim Empty Lines",
+					"markdownDescription": "Removes multiple empty lines between `fltsim` entries and leaves a single one.",
+					"scope": "window"
+				},
+				"fs-ai-tools.flightplansLeadingZeroesFlightnumbers": {
+					"type": "boolean",
+					"default": true,
+					"title": "Flightplans: Leading zeroes flightnumbers",
+					"markdownDescription": "Pads the flightnumbers to 4 digits with zeroes (e.g. `12` becomes `0012`).",
+					"scope": "window"
+				},
+				"fs-ai-tools.flightplansLeadingZeroesFlightLevels": {
+					"type": "boolean",
+					"default": true,
+					"title": "Flightplans: Leading zeroes flight levels",
+					"markdownDescription": "Pads the flight levels to 3 digits with zeroes (e.g. `70` becomes `070`).",
+					"scope": "window"
+				},
+				"fs-ai-tools.flightplansAddAtToDepartureTimes": {
+					"type": "boolean",
+					"default": true,
+					"title": "Flightplans: Add @ to departure times",
+					"markdownDescription": "Adds `@` to departure times (e.g. `12:34` becomes `@12:34`).",
+					"scope": "window"
+				},
+				"fs-ai-tools.flightplansRemoveSeconds": {
+					"type": "boolean",
+					"default": true,
+					"title": "Flightplans: Remove seconds",
+					"markdownDescription": "Removes seconds from arrival and departure times (e.g. `12:34:56` becomes `12:34`).",
+					"scope": "window"
+				},
+				"fs-ai-tools.flightplansRandomPercentage": {
+					"type": "boolean",
+					"default": true,
+					"title": "Flightplans: Randomize percentages",
+					"markdownDescription": "Randomizes the flightplans' percentages to values between the `min` and `max` set.",
+					"scope": "window"
+				},
+				"fs-ai-tools.flightplansRandomPercentageMin": {
+					"type": "number",
+					"default": 1,
+					"minimum": 1,
+					"maximum": 100,
+					"title": "Flightplans: Randomize percentage min",
+					"markdownDescription": "If `Randomize percentages` is activated, this will be the min value.",
+					"scope": "window"
+				},
+				"fs-ai-tools.flightplansRandomPercentageMax": {
+					"type": "number",
+					"default": 1,
+					"minimum": 1,
+					"maximum": 100,
+					"title": "Flightplans: Randomize percentage max",
+					"markdownDescription": "If `Randomize percentages` is activated, this will be the max value.",
+					"scope": "window"
+				},
+				"fs-ai-tools.flightplansUppercase": {
+					"type": "boolean",
+					"default": true,
+					"title": "Flightplans: Uppercase",
+					"markdownDescription": "Transforms the flightplan to uppercase.",
+					"scope": "window"
+				}
+			}
+		}
+	},
+	"scripts": {
+		"vscode:prepublish": "npm run compile",
+		"compile": "tsc -p ./",
+		"watch": "tsc -watch -p ./",
+		"postinstall": "node ./node_modules/vscode/bin/install",
+		"test": "npm run compile && node ./node_modules/vscode/bin/test"
+	},
+	"devDependencies": {
+		"typescript": "^3.3.1",
+		"vscode": "^1.1.28",
+		"tslint": "^5.12.1",
+		"@types/node": "^10.12.21",
+		"@types/mocha": "^2.2.42"
+	}
+}
