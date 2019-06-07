@@ -1,6 +1,6 @@
 # **FS AI** Tools
 
-A handful of tools to format and clean up `Aircraft.cfg`, `Aircraft_….txt` and `Flightplans_….txt` files. All options are configurable in the extension settings.
+A handful of tools to format and clean up `Aircraft.cfg`, `Aircraft_….txt`, `Flightplans_….txt`, `add-ons.cfg` and `scenery.cfg` files. All options are configurable in the extension settings.
 
 ## Features
 
@@ -26,15 +26,26 @@ A handful of tools to format and clean up `Aircraft.cfg`, `Aircraft_….txt` and
 ### Change AC# Number
 Changes the AC# of the selected `Aircraft_….txt` or `Flightplans_….txt` lines by a user specified amount.
 
+### Renumber add-ons.cfg
+Renumbers the `[Package.x]` entries sequentially.
+
+### Renumber scenery.cfg
+Renumbers the `[Area.xxx]` entries sequentially and sets the `Layer=x` properties to the same number.
+
 ---
 
 ## Known Issues
 
-There is no option no not sort `fltsim` entry lines yet. Will be implemented in the future, but requires a bit of a rewrite.
+*none*
 
 ---
 
 ## Release Notes
+
+### 1.0.6
+
+- `Renumber scenery.cfg` added. Renumbers the `[Area.xxx]` entries sequentially and sets the `Layer=x` properties to the same number.
+- `Renumber add-ons.cfg` added. Renumbers the `[Package.x]` entries sequentially.
 
 ### 1.0.5
 

@@ -6,7 +6,7 @@
 	},
 	"displayName": "FS AI Tools",
 	"description": "A bag of tools to clean flightplans and .cfg files",
-	"version": "1.0.5",
+	"version": "1.0.6",
 	"engines": {
 		"vscode": "^1.33.0"
 	},
@@ -16,7 +16,9 @@
 	"activationEvents": [
 		"onCommand:extension.cleanAircraftCfg",
 		"onCommand:extension.cleanFlightplan",
-		"onCommand:extension.changeAircraftNumber"
+		"onCommand:extension.changeAircraftNumber",
+		"onCommand:extension.renumberAddOnsCfg",
+		"onCommand:extension.renumberSceneryCfg"
 	],
 	"main": "./out/extension.js",
 	"contributes": {
@@ -38,6 +40,18 @@
 				"title": "Change AC# Number",
 				"category": "FS AI Tools",
 				"when": "editorHasSelection && resourceFilename =~ /^((flightplans)|(aircraft)).*txt$/i"
+			},
+			{
+				"command": "extension.renumberAddOnsCfg",
+				"title": "Renumber add-ons.cfg",
+				"category": "FS AI Tools",
+				"when": "resourceFilename =~ /^add-ons.cfg/i"
+			},
+			{
+				"command": "extension.renumberSceneryCfg",
+				"title": "Renumber scenery.cfg",
+				"category": "FS AI Tools",
+				"when": "resourceFilename =~ /^scenery.cfg/i"
 			}
 		],
 		"menus": {
@@ -56,6 +70,16 @@
 					"command": "extension.changeAircraftNumber",
 					"group": "FS AI Tools",
 					"when": "editorHasSelection && resourceFilename =~ /^((flightplans)|(aircraft)).*txt$/i"
+				},
+				{
+					"command": "extension.renumberAddOnsCfg",
+					"group": "FS AI Tools",
+					"when": "resourceFilename =~ /^add-ons.cfg/i"
+				},
+				{
+					"command": "extension.renumberSceneryCfg",
+					"group": "FS AI Tools",
+					"when": "resourceFilename =~ /^scenery.cfg/i"
 				}
 			]
 		},
