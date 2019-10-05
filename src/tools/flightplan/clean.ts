@@ -16,14 +16,13 @@ export function CleanFlightplan() {
 				config.flightplansChangeAirports !== null &&
 				config.flightplansChangeAirports.length > 0
 			) {
-				console.log({ flightplansChangeAirports: config.flightplansChangeAirports });
 				let list = config.flightplansChangeAirports.trim().split(',');
 
 				for (let set of list) {
 					set = set.split(':').map((icao: string) => icao.trim().toUpperCase());
-					// console.log({ set });
 
-					text = text.replace(`,${set[0]},`, `,${set[1]},`);
+					let old = new RegExp(`,${set[0]},`, 'gi');
+					text = text.replace(old, `,${set[1]},`);
 				}
 			}
 
