@@ -20,10 +20,9 @@ export function CleanFlightplan() {
 
 				for (let set of list) {
 					set = set.split(':').map((icao: string) => icao.trim().toUpperCase());
-					if (set[0].length > 2 && set[1].length > 2) {
-						let old = new RegExp(`,${set[0]}`, 'gi');
-						text = text.replace(old, `,${set[1]}`);
-					}
+
+					let old = new RegExp(`,${set[0]}`, 'gi');
+					text = text.replace(old, `,${set[1]}`);
 				}
 			}
 
