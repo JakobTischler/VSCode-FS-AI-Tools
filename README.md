@@ -22,6 +22,7 @@ A handful of tools to format and clean up `Aircraft.cfg`, `Aircraft_….txt`, `F
 * Remove seconds from flight times (`hh:mm:ss` ➞ `hh:mm`)
 * Convert the flightplan to uppercase
 * Randomize the flight percentages to between configurable min and max values
+* Change definable airport codes to new ones
 
 ### Change AC# Number
 Changes the AC# of the selected `Aircraft_….txt` or `Flightplans_….txt` lines by a user specified amount.
@@ -41,6 +42,9 @@ Renumbers the `[Area.xxx]` entries sequentially and sets the `Layer=x` propertie
 ---
 
 ## Release Notes
+
+### 1.0.7
+- Added an option to replace airport ICAO codes with new ones in `Flightplans.txt` files as part of the `Clean Flightplan` command. Check the extension settings for more info.
 
 ### 1.0.6
 

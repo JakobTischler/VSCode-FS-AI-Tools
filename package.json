@@ -6,7 +6,7 @@
 	},
 	"displayName": "FS AI Tools",
 	"description": "A bag of tools to clean flightplans and .cfg files",
-	"version": "1.0.6",
+	"version": "1.0.7",
 	"engines": {
 		"vscode": "^1.33.0"
 	},
@@ -174,6 +174,13 @@
 					"title": "Flightplans: Uppercase",
 					"markdownDescription": "Transforms the flightplan to uppercase.",
 					"scope": "window"
+				},
+				"fs-ai-tools.flightplansChangeAirports": {
+					"type": "string",
+					"default": "HSNL:HSNN,LYPR:BKPR,ORBS:ORBI,UA0F:UASS,UTSK:UTSL,WIIP:WIHP,WRSJ:WARR,WRSQ:WARQ",
+					"title": "Flightplans: Change Airport Codes",
+					"markdownDescription": "Changes each occurrence of the old airport code to the new one. Format: \"OldICAO1:NewICAO1, OldICAO2:NewICAO2\". Separate code set by comma. Leave empty for no airport changes.",
+					"scope": "window"
 				}
 			}
 		}
@@ -182,6 +189,7 @@
 		"vscode:prepublish": "npm run compile",
 		"compile": "tsc -p ./",
 		"watch": "tsc -watch -p ./",
+		"package": "vsce package",
 		"postinstall": "node ./node_modules/vscode/bin/install",
 		"test": "npm run compile && node ./node_modules/vscode/bin/test"
 	},

@@ -1,5 +1,9 @@
 # Change Log
 
+### 1.0.7
+
+- Added an option to replace airport ICAO codes with new ones in `Flightplans.txt` files as part of the `Clean Flightplan` command. Check the extension settings for more info.
+
 ### 1.0.6
 
 - `Renumber scenery.cfg` added. Renumbers the `[Area.xxx]` entries sequentially and sets the `Layer=x` properties to the same number.

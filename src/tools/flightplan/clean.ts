@@ -11,6 +11,22 @@ export function CleanFlightplan() {
 		if ('file' === document.uri.scheme && filename.startsWith('flightplans')) {
 			let text = document.getText();
 
+			if (
+				config.flightplansChangeAirports &&
+				config.flightplansChangeAirports !== null &&
+				config.flightplansChangeAirports.length > 0
+			) {
+				console.log({ flightplansChangeAirports: config.flightplansChangeAirports });
+				let list = config.flightplansChangeAirports.trim().split(',');
+
+				for (let set of list) {
+					set = set.split(':').map((icao: string) => icao.trim().toUpperCase());
+					// console.log({ set });
+
+					text = text.replace(`,${set[0]},`, `,${set[1]},`);
+				}
+			}
+
 			const ret = [];
 			const splitData = text.trim().split('\n');
 			for (let line of splitData) {
