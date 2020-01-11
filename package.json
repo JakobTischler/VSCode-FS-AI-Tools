@@ -6,7 +6,7 @@
 	},
 	"displayName": "FS AI Tools",
 	"description": "A bag of tools to clean flightplans and .cfg files",
-	"version": "1.0.7",
+	"version": "1.0.8",
 	"engines": {
 		"vscode": "^1.33.0"
 	},
@@ -17,6 +17,7 @@
 		"onCommand:extension.cleanAircraftCfg",
 		"onCommand:extension.cleanFlightplan",
 		"onCommand:extension.changeAircraftNumber",
+		"onCommand:extension.createFlightplanHeader",
 		"onCommand:extension.renumberAddOnsCfg",
 		"onCommand:extension.renumberSceneryCfg"
 	],
@@ -40,6 +41,12 @@
 				"title": "Change AC# Number",
 				"category": "FS AI Tools",
 				"when": "editorHasSelection && resourceFilename =~ /^((flightplans)|(aircraft)).*txt$/i"
+			},
+			{
+				"command": "extension.createFlightplanHeader",
+				"title": "Create Flightplan Header",
+				"category": "FS AI Tools",
+				"when": "resourceFilename =~ /^flightplans.*txt$/i')"
 			},
 			{
 				"command": "extension.renumberAddOnsCfg",
@@ -70,6 +77,11 @@
 					"command": "extension.changeAircraftNumber",
 					"group": "FS AI Tools",
 					"when": "editorHasSelection && resourceFilename =~ /^((flightplans)|(aircraft)).*txt$/i"
+				},
+				{
+					"command": "extension.createFlightplanHeader",
+					"group": "FS AI Tools",
+					"when": "resourceFilename =~ /^flightplans.*txt$/i')"
 				},
 				{
 					"command": "extension.renumberAddOnsCfg",
@@ -113,6 +125,13 @@
 					"default": true,
 					"title": "Aircraft.cfg: Sort Properties",
 					"markdownDescription": "Sorts the `fltsim` entries' properties.",
+					"scope": "window"
+				},
+				"fs-ai-tools.aircraftcfgSortUiCreatedbyToBottom": {
+					"type": "boolean",
+					"default": false,
+					"title": "Aircraft.cfg: When sorting, move `ui_createdby` to bottom",
+					"markdownDescription": "moves the `fltsim` entries' `ui_createdby` properties to the bottom.",
 					"scope": "window"
 				},
 				"fs-ai-tools.flightplansLeadingZeroesFlightnumbers": {
@@ -195,9 +214,9 @@
 	},
 	"devDependencies": {
 		"@types/mocha": "^2.2.42",
-		"@types/node": "^10.12.21",
-		"tslint": "^5.12.1",
-		"typescript": "^3.3.1",
-		"vscode": "^1.1.28"
+		"@types/node": "^10.17.13",
+		"tslint": "^5.20.1",
+		"typescript": "^3.7.4",
+		"vscode": "^1.1.36"
 	}
 }

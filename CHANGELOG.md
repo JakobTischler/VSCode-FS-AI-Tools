@@ -1,5 +1,15 @@
 # Change Log
 
+### 1.0.8
+- Added an option to move `ui_createdby` to the bottom when sorting `fltsim` entries during cleaning `aircraft.cfg` files.
+- New function: `Create Flightplan Header`. Uses a series of text input boxes to created a three-line header with flightplan data (name, icao, callsign, author, season).
+  Preview:
+  ```js
+  //FSXDAYS=FALSE
+  //DC Aviation | DCS | "TWIN STAR"
+  //Morten Blindheim, Su19
+  ```
+
 ### 1.0.7
 
 - Added an option to replace airport ICAO codes with new ones in `Flightplans.txt` files as part of the `Clean Flightplan` command. Check the extension settings for more info.

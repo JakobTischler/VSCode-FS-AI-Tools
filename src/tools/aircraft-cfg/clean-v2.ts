@@ -1,6 +1,6 @@
 import * as vscode from 'vscode';
-import { replacePartAtPos } from '../../helpers';
-import { create } from 'domain';
+import { replacePartAtPos, arrayMove } from '../../helpers';
+// import { create } from 'domain';
 
 type FltsimEntry = { [key: string]: string };
 
@@ -131,7 +131,7 @@ export async function CleanAircraftCfg() {
 				/**
 				 * Fltsim entry properties, sorted
 				 */
-				const properties: string[] = [
+				let properties: string[] = [
 					'title',
 					'sim',
 					'model',
@@ -151,6 +151,10 @@ export async function CleanAircraftCfg() {
 					'visual_damage',
 					'description'
 				];
+
+				if (config.aircraftcfgSortUiCreatedbyToBottom) {
+					properties = arrayMove(properties, 8, 17);
+				}
 
 				fltsimEntries.forEach((entry, i) => {
 					const props = [entry._header];

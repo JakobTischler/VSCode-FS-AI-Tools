@@ -27,6 +27,16 @@ A handful of tools to format and clean up `Aircraft.cfg`, `Aircraft_….txt`, `F
 ### Change AC# Number
 Changes the AC# of the selected `Aircraft_….txt` or `Flightplans_….txt` lines by a user specified amount.
 
+### Create Flightplan Header
+Uses a series of text input boxes to created a three-line header with flightplan data (name, icao, callsign, author, season). Tries to read the airline name and ICAO code from the filename.
+
+Preview:
+```js
+//FSXDAYS=FALSE
+//DC Aviation | DCS | "TWIN STAR"
+//Morten Blindheim, Su19
+```
+
 ### Renumber add-ons.cfg
 Renumbers the `[Package.x]` entries sequentially.
 
@@ -42,6 +52,16 @@ Renumbers the `[Area.xxx]` entries sequentially and sets the `Layer=x` propertie
 ---
 
 ## Release Notes
+
+### 1.0.8
+- Added an option to move `ui_createdby` to the bottom when sorting `fltsim` entries during cleaning `aircraft.cfg` files.
+- New function: `Create Flightplan Header`. Uses a series of text input boxes to created a three-line header with flightplan data (name, icao, callsign, author, season).
+  Preview:
+  ```js
+  //FSXDAYS=FALSE
+  //DC Aviation | DCS | "TWIN STAR"
+  //Morten Blindheim, Su19
+  ```
 
 ### 1.0.7
 - Added an option to replace airport ICAO codes with new ones in `Flightplans.txt` files as part of the `Clean Flightplan` command. Check the extension settings for more info.
