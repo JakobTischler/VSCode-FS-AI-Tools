@@ -6,9 +6,9 @@
 	},
 	"displayName": "FS AI Tools",
 	"description": "A bag of tools to clean flightplans and .cfg files",
-	"version": "1.0.8",
+	"version": "1.0.9",
 	"engines": {
-		"vscode": "^1.33.0"
+		"vscode": "^1.37.0"
 	},
 	"categories": [
 		"Other"
@@ -195,11 +195,33 @@
 					"scope": "window"
 				},
 				"fs-ai-tools.flightplansChangeAirports": {
-					"type": "string",
-					"default": "HSNL:HSNN,LYPR:BKPR,ORBS:ORBI,UA0F:UASS,UTSK:UTSL,WIIP:WIHP,WRSJ:WARR,WRSQ:WARQ",
 					"title": "Flightplans: Change Airport Codes",
-					"markdownDescription": "Changes each occurrence of the old airport code to the new one. Format: \"OldICAO1:NewICAO1, OldICAO2:NewICAO2\". Separate code set by comma. Leave empty for no airport changes.",
-					"scope": "window"
+					"markdownDescription": "Changes each occurrence of the old airport code to the new one. Format: \"OldICAO:NewICAO\". Leave empty for no airport changes.",
+					"scope": "window",
+					"type": "array",
+					"items": {
+						"type": "string"
+					},
+					"default": [
+						"FAJS:FAOR",
+						"FLND:FLSK",
+						"FWLI:FWKI",
+						"GQNO:GQNN",
+						"HSNL:HSNN",
+						"KDRU:M26",
+						"KNXP:NXP",
+						"LYPR:BKPR",
+						"ORBS:ORBI",
+						"UA0F:UASS",
+						"UGEE:UDYZ",
+						"UTSK:UTSL",
+						"VOBG:VOBL",
+						"WIIP:WIHP",
+						"WIKM:WIOM",
+						"WRRR:WADD",
+						"WRSJ:WARR",
+						"WRSQ:WARQ"
+					]
 				}
 			}
 		}

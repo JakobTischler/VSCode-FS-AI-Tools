@@ -11,14 +11,10 @@ export function CleanFlightplan() {
 		if ('file' === document.uri.scheme && filename.startsWith('flightplans')) {
 			let text = document.getText();
 
-			if (
-				config.flightplansChangeAirports &&
-				config.flightplansChangeAirports !== null &&
-				config.flightplansChangeAirports.length > 0
-			) {
-				let list = config.flightplansChangeAirports.trim().split(',');
-
-				for (let set of list) {
+			// Change airports
+			let airportList = config.flightplansChangeAirports;
+			if (airportList && airportList !== null && airportList.length > 0) {
+				for (let set of airportList) {
 					set = set.split(':').map((icao: string) => icao.trim().toUpperCase());
 
 					if (set[0].length > 2 && set[1].length > 2) {
