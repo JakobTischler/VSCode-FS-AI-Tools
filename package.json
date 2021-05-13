@@ -6,7 +6,7 @@
 	},
 	"displayName": "FS AI Tools",
 	"description": "A bag of tools to clean flightplans and .cfg files",
-	"version": "1.0.9",
+	"version": "1.0.10",
 	"engines": {
 		"vscode": "^1.37.0"
 	},
@@ -18,6 +18,7 @@
 		"onCommand:extension.cleanFlightplan",
 		"onCommand:extension.changeAircraftNumber",
 		"onCommand:extension.createFlightplanHeader",
+		"onCommand:extension.rebaseAircraftNumbers",
 		"onCommand:extension.renumberAddOnsCfg",
 		"onCommand:extension.renumberSceneryCfg"
 	],
@@ -47,6 +48,12 @@
 				"title": "Create Flightplan Header",
 				"category": "FS AI Tools",
 				"when": "resourceFilename =~ /^flightplans.*txt$/i')"
+			},
+			{
+				"command": "extension.rebaseAircraftNumbers",
+				"title": "Rebase AC#s",
+				"category": "FS AI Tools",
+				"when": "editorHasSelection && resourceFilename =~ /^((flightplans)|(aircraft)).*txt$/i"
 			},
 			{
 				"command": "extension.renumberAddOnsCfg",
@@ -82,6 +89,11 @@
 					"command": "extension.createFlightplanHeader",
 					"group": "FS AI Tools",
 					"when": "resourceFilename =~ /^flightplans.*txt$/i')"
+				},
+				{
+					"command": "extension.rebaseAircraftNumbers",
+					"group": "FS AI Tools",
+					"when": "editorHasSelection && resourceFilename =~ /^((flightplans)|(aircraft)).*txt$/i"
 				},
 				{
 					"command": "extension.renumberAddOnsCfg",

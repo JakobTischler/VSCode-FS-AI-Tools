@@ -53,6 +53,9 @@ Renumbers the `[Area.xxx]` entries sequentially and sets the `Layer=x` propertie
 
 ## Release Notes
 
+### 1.0.10
+- New function: `Rebase AC#s`. Rebases the AC#s in the selected text to a new input number. Every different AC# will be based on the initial start value, with a user defined step size.
+
 ### 1.0.9
 - `Change airports`: each airport set can now be entered as a separate item (replacing the "one long string" idea from the olden times). The min supported VS Code version has been increased to 1.37.0 for this to work.
 
