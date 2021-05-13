@@ -1,5 +1,15 @@
 # Change Log
 
+### 1.0.11
+- New function: `Create aifp.cfg File`. Creates an aifp.cfg file in the flightplan's folder, based on flightplan header information<br />
+  Formatting example:
+  ```
+  //FSXDAYS=FALSE
+  //Irish Air Corps | IRL | "IRISH"/"SHADOW"
+  //Phil Evans, Wi2021
+  ```
+  If multiple callsigns are defined, the first one is used.
+
 ### 1.0.10
 - New function: `Rebase AC#s`. Rebases the AC#s in the selected text to a new input number. Every different AC# will be based on the initial start value, with a user defined step size.
 
