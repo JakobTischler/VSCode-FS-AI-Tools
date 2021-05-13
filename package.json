@@ -264,9 +264,8 @@
 		"@types/node": "^10.17.13",
 		"tslint": "^5.20.1",
 		"typescript": "^3.7.4",
-		"vscode": "^1.1.36"
-	},
-	"dependencies": {
+		"vscode": "^1.1.36",
 		"vsce": "^1.88.0"
-	}
+	},
+	"dependencies": {}
 }
