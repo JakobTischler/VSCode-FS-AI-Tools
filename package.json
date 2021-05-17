@@ -6,7 +6,7 @@
 	},
 	"displayName": "FS AI Tools",
 	"description": "A bag of tools to clean flightplans and .cfg files",
-	"version": "1.0.11",
+	"version": "1.0.12",
 	"license": "",
 	"engines": {
 		"vscode": "^1.37.0"

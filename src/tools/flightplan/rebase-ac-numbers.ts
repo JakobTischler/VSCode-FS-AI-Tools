@@ -1,5 +1,5 @@
 import { window } from 'vscode';
-import { getFilenameFromPath } from '../../helpers';
+import { getFilenameFromPath, roundUpToNearest } from '../../helpers';
 
 export async function RebaseAircraftNumbers() {
 	const editor = window.activeTextEditor;
@@ -8,10 +8,11 @@ export async function RebaseAircraftNumbers() {
 		const filename = getFilenameFromPath(document.uri.path).toLocaleLowerCase();
 		if ('file' === document.uri.scheme && (filename.startsWith('aircraft') || filename.startsWith('flightplans'))) {
 			const selection = editor.selection;
-			const start = await getNumberInput('The new starting AC#. Must be > 0.');
-			const step = await getNumberInput('The step size between AC#s. Must be > 0.');
+			const start = await getNumberInput('1', 'The new starting AC#. Must be > 0.');
+			const bigStep = await getNumberInput('10', 'The step size between groups (separated by empty lines). Must be > 0.');
+			const smallStep = await getNumberInput('1', 'The step size between AC#s within groups. Must be > 0.');
 
-			if (!(selection && start && step)) {
+			if (!(selection && start && bigStep && smallStep)) {
 				return false;
 			}
 
@@ -20,9 +21,19 @@ export async function RebaseAircraftNumbers() {
 			let ret: string[] = [];
 			let previousOldNum = null;
 			let currentOldNum = null;
-			let currentNum = null;
+			let currentGroupNum = start;
+			let currentSingleNum = start;
+			let anyNumberInGroupReplaced = false;
+
 			for (let line of text.split('\n')) {
-				if (line.trim().startsWith('AC#')) {
+				let l = line.trim();
+
+				if (l.length === 0 && anyNumberInGroupReplaced) {
+					// currentSingleNum + 10 -> floor
+					currentGroupNum = roundUpToNearest(currentSingleNum, bigStep);
+					currentSingleNum = currentGroupNum;
+					anyNumberInGroupReplaced = false;
+				} else if (line.trim().startsWith('AC#')) {
 					// Find line's AC#
 					const match = line.match(/AC#(\d+),/);
 					if (match && match[1]) {
@@ -30,15 +41,14 @@ export async function RebaseAircraftNumbers() {
 
 						// Number change
 						if (currentOldNum !== previousOldNum) {
-							if (!currentNum) {
-								currentNum = start;
-							} else {
-								currentNum = currentNum + step;
+							if (anyNumberInGroupReplaced) {
+								currentSingleNum = currentSingleNum + smallStep;
 							}
 							previousOldNum = currentOldNum;
 						}
 
-						line = line.replace('AC#' + currentOldNum, 'AC#' + currentNum);
+						line = line.replace('AC#' + currentOldNum, 'AC#' + currentSingleNum);
+						anyNumberInGroupReplaced = true;
 					}
 				}
 
@@ -54,9 +64,9 @@ export async function RebaseAircraftNumbers() {
 	}
 }
 
-async function getNumberInput(placeholderText: string) {
+async function getNumberInput(value: string = '1', placeholderText: string) {
 	const result = await window.showInputBox({
-		value: '1',
+		value: value,
 		valueSelection: undefined,
 		placeHolder: placeholderText,
 		prompt: placeholderText,

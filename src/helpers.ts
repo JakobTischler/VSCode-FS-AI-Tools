@@ -1,9 +1,4 @@
-export function replacePartAtPos(
-	str: string,
-	position: number,
-	length: number,
-	newText: string
-): string {
+export function replacePartAtPos(str: string, position: number, length: number, newText: string): string {
 	const before = str.substr(0, position);
 	const after = str.substr(position + length, str.length);
 	return before + newText + after;
@@ -34,9 +29,9 @@ export function getFilenameFromPath(path: string): string {
  */
 export function capitalize(text: string, all: boolean = false): string {
 	if (all) {
-		return text.replace(/\w\S*/g, word => capitalize(word));
+		return text.replace(/\w\S*/g, (word) => capitalize(word));
 	}
-	return text.replace(/^\w/, c => c.toUpperCase());
+	return text.replace(/^\w/, (c) => c.toUpperCase());
 }
 
 const arrayMoveMutate = (array: any[], from: number, to: number) => {
@@ -55,4 +50,8 @@ export function arrayMove(array: any[], from: number, to: number): any[] {
 	array = array.slice();
 	arrayMoveMutate(array, from, to);
 	return array;
+}
+
+export function roundUpToNearest(num: number, nearest: number = 10): number {
+	return Math.ceil((num + 1) / nearest) * nearest;
 }

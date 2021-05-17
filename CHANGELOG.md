@@ -1,5 +1,8 @@
 # Change Log
 
+### 1.0.12
+- Reworked `Rebase AC#s` to including group steps and single steps. Groups are determined by empty line separation. E.g. group step size can be 10, single aircraft step size can be 1. When a new group is found, the number will jump up to the nearest group step size.
+
 ### 1.0.11
 - New function: `Create aifp.cfg File`. Creates an aifp.cfg file in the flightplan's folder, based on flightplan header information<br />
   Formatting example:
