@@ -53,6 +53,9 @@ Renumbers the `[Area.xxx]` entries sequentially and sets the `Layer=x` propertie
 
 ## Release Notes
 
+### 1.0.13
+- New function `Create Header from aifp.cfg`. Checks for an "aifp.cfg" file in same directory as current flightplan, and parses the data to create the flightplan header.
+
 ### 1.0.12
 - Reworked `Rebase AC#s` to including group steps and single steps. Groups are determined by empty line separation. E.g. group step size can be 10, single aircraft step size can be 1. When a new group is found, the number will jump up to the nearest group step size.
 

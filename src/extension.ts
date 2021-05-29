@@ -5,6 +5,7 @@ import { CleanFlightplan } from './tools/flightplan/clean';
 import { ChangeAircraftNumber } from './tools/flightplan/change-ac-number';
 import { CreateAifpCfg } from './tools/flightplan/create-aifp-cfg';
 import { CreateFlightplanHeader } from './tools/flightplan/create-header';
+import { CreateFlightplanHeaderFromAifp } from './tools/flightplan/create-header-from-aifp';
 import { RebaseAircraftNumbers } from './tools/flightplan/rebase-ac-numbers';
 import { RenumberAddOnsCfg } from './tools/add-ons-cfg/renumber';
 import { RenumberSceneryCfg } from './tools/scenery-cfg/renumber';
@@ -37,6 +38,12 @@ export function activate(context: vscode.ExtensionContext) {
 	context.subscriptions.push(
 		vscode.commands.registerCommand('extension.createFlightplanHeader', async () => {
 			CreateFlightplanHeader();
+		})
+	);
+
+	context.subscriptions.push(
+		vscode.commands.registerCommand('extension.createFlightplanHeaderFromAifp', async () => {
+			CreateFlightplanHeaderFromAifp();
 		})
 	);
 

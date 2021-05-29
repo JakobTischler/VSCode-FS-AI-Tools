@@ -20,6 +20,7 @@
 		"onCommand:extension.changeAircraftNumber",
 		"onCommand:extension.createAifpCfg",
 		"onCommand:extension.createFlightplanHeader",
+		"onCommand:extension.createFlightplanHeaderFromAifp",
 		"onCommand:extension.rebaseAircraftNumbers",
 		"onCommand:extension.renumberAddOnsCfg",
 		"onCommand:extension.renumberSceneryCfg"
@@ -54,6 +55,12 @@
 			{
 				"command": "extension.createFlightplanHeader",
 				"title": "Create Flightplan Header",
+				"category": "FS AI Tools",
+				"when": "resourceFilename =~ /^flightplans.*txt$/i')"
+			},
+			{
+				"command": "extension.createFlightplanHeaderFromAifp",
+				"title": "Create Flightplan Header from aifp.cfg",
 				"category": "FS AI Tools",
 				"when": "resourceFilename =~ /^flightplans.*txt$/i')"
 			},
@@ -100,6 +107,11 @@
 				},
 				{
 					"command": "extension.createFlightplanHeader",
+					"group": "FS AI Tools",
+					"when": "resourceFilename =~ /^flightplans.*txt$/i')"
+				},
+				{
+					"command": "extension.createFlightplanHeaderFromAifp",
 					"group": "FS AI Tools",
 					"when": "resourceFilename =~ /^flightplans.*txt$/i')"
 				},
