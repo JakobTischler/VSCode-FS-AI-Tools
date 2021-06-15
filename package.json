@@ -6,7 +6,7 @@
 	},
 	"displayName": "FS AI Tools",
 	"description": "A bag of tools for AI flightplans and .cfg files",
-	"version": "1.0.14",
+	"version": "1.0.15",
 	"license": "",
 	"engines": {
 		"vscode": "^1.37.0"
@@ -95,52 +95,52 @@
 				{
 					"command": "extension.cleanAircraftCfg",
 					"group": "FS AI Tools",
-					"when": "config.fs-ai-tools.cleanAircraftCfg._AddCleanAircraftCfgToContextMenu && resourceFilename =~ /aircraft.cfg/i"
+					"when": "config.fs-ai-tools.cleanAircraftCfg._ShowCleanAircraftCfgInContextMenu && resourceFilename =~ /aircraft.cfg/i"
 				},
 				{
 					"command": "extension.cleanFlightplan",
 					"group": "FS AI Tools",
-					"when": "config.fs-ai-tools.cleanFlightplan._AddCleanFlightplanToContextMenu && resourceFilename =~ /^flightplans.*txt$/i')"
+					"when": "config.fs-ai-tools.cleanFlightplan._ShowCleanFlightplanInContextMenu && resourceFilename =~ /^flightplans.*txt$/i')"
 				},
 				{
 					"command": "extension.changeAircraftNumber",
 					"group": "FS AI Tools",
-					"when": "config.fs-ai-tools.addChangeAircraftNumberToContextMenu && editorHasSelection && resourceFilename =~ /^((flightplans)|(aircraft)).*txt$/i"
+					"when": "config.fs-ai-tools.showChangeAircraftNumberInContextMenu && editorHasSelection && resourceFilename =~ /^((flightplans)|(aircraft)).*txt$/i"
 				},
 				{
 					"command": "extension.countAircraft",
 					"group": "FS AI Tools",
-					"when": "config.fs-ai-tools.addCountAircraftToContextMenu && editorHasSelection && resourceFilename =~ /^flightplans.*txt$/i"
+					"when": "config.fs-ai-tools.showCountAircraftInContextMenu && editorHasSelection && resourceFilename =~ /^flightplans.*txt$/i"
 				},
 				{
 					"command": "extension.createAifpCfg",
 					"group": "FS AI Tools",
-					"when": "config.fs-ai-tools.addCreateAifpCfgToContextMenu && resourceFilename =~ /^flightplans.*txt$/i')"
+					"when": "config.fs-ai-tools.showCreateAifpCfgInContextMenu && resourceFilename =~ /^flightplans.*txt$/i')"
 				},
 				{
 					"command": "extension.createFlightplanHeader",
 					"group": "FS AI Tools",
-					"when": "config.fs-ai-tools.addCreateFlightplanHeaderToContextMenu && resourceFilename =~ /^flightplans.*txt$/i')"
+					"when": "config.fs-ai-tools.showCreateFlightplanHeaderInContextMenu && resourceFilename =~ /^flightplans.*txt$/i')"
 				},
 				{
 					"command": "extension.createFlightplanHeaderFromAifp",
 					"group": "FS AI Tools",
-					"when": "config.fs-ai-tools.addCreateFlightplanHeaderFromAifpToContextMenu && resourceFilename =~ /^flightplans.*txt$/i')"
+					"when": "config.fs-ai-tools.showCreateFlightplanHeaderFromAifpInContextMenu && resourceFilename =~ /^flightplans.*txt$/i')"
 				},
 				{
 					"command": "extension.rebaseAircraftNumbers",
 					"group": "FS AI Tools",
-					"when": "config.fs-ai-tools.addRebaseAircraftNumbersToContextMenu && editorHasSelection && resourceFilename =~ /^((flightplans)|(aircraft)).*txt$/i"
+					"when": "config.fs-ai-tools.showRebaseAircraftNumbersInContextMenu && editorHasSelection && resourceFilename =~ /^((flightplans)|(aircraft)).*txt$/i"
 				},
 				{
 					"command": "extension.renumberAddOnsCfg",
 					"group": "FS AI Tools",
-					"when": "config.fs-ai-tools.addRenumberAddOnsCfgToContextMenu && resourceFilename =~ /^add-ons.cfg/i"
+					"when": "config.fs-ai-tools.showRenumberAddOnsCfgInContextMenu && resourceFilename =~ /^add-ons.cfg/i"
 				},
 				{
 					"command": "extension.renumberSceneryCfg",
 					"group": "FS AI Tools",
-					"when": "config.fs-ai-tools.addRenumberSceneryCfgToContextMenu && resourceFilename =~ /^scenery.cfg/i"
+					"when": "config.fs-ai-tools.showRenumberSceneryCfgInContextMenu && resourceFilename =~ /^scenery.cfg/i"
 				}
 			]
 		},
@@ -148,7 +148,7 @@
 			"type": "object",
 			"title": "FS AI Tools",
 			"properties": {
-				"fs-ai-tools.cleanAircraftCfg._AddCleanAircraftCfgToContextMenu": {
+				"fs-ai-tools.cleanAircraftCfg._ShowCleanAircraftCfgInContextMenu": {
 					"type": "boolean",
 					"default": true,
 					"title": "Add to Context Menu",
@@ -190,7 +190,7 @@
 					"markdownDescription": "moves the `fltsim` entries' `ui_createdby` properties to the bottom.",
 					"scope": "window"
 				},
-				"fs-ai-tools.cleanFlightplan._AddCleanFlightplanToContextMenu": {
+				"fs-ai-tools.cleanFlightplan._ShowCleanFlightplanInContextMenu": {
 					"type": "boolean",
 					"default": true,
 					"title": "Add to Context Menu",
@@ -225,29 +225,29 @@
 					"markdownDescription": "Removes seconds from arrival and departure times (e.g. `12:34:56` becomes `12:34`).",
 					"scope": "window"
 				},
-				"fs-ai-tools.cleanFlightplan.randomPercentage": {
+				"fs-ai-tools.cleanFlightplan.randomPercentages": {
 					"type": "boolean",
 					"default": true,
 					"title": "Randomize percentages",
 					"markdownDescription": "Randomizes the flightplans' percentages to values between the `min` and `max` set.",
 					"scope": "window"
 				},
-				"fs-ai-tools.cleanFlightplan.randomPercentage.min": {
+				"fs-ai-tools.cleanFlightplan.randomPercentagesMin": {
 					"type": "number",
 					"default": 1,
 					"minimum": 1,
 					"maximum": 100,
 					"title": "Randomize percentage min",
-					"markdownDescription": "If `Randomize percentages` is activated, this will be the min value.",
+					"markdownDescription": "If *`#fs-ai-tools.cleanFlightplan.randomPercentages#`* is activated, this will be the min value.",
 					"scope": "window"
 				},
-				"fs-ai-tools.cleanFlightplan.randomPercentage.max": {
+				"fs-ai-tools.cleanFlightplan.randomPercentagesMax": {
 					"type": "number",
 					"default": 1,
 					"minimum": 1,
 					"maximum": 100,
 					"title": "Randomize percentage max",
-					"markdownDescription": "If `Randomize percentages` is activated, this will be the max value.",
+					"markdownDescription": "If *`#fs-ai-tools.cleanFlightplan.randomPercentages#`* is activated, this will be the max value.",
 					"scope": "window"
 				},
 				"fs-ai-tools.cleanFlightplan.uppercase": {
@@ -286,56 +286,56 @@
 						"WRSQ:WARQ"
 					]
 				},
-				"fs-ai-tools.addChangeAircraftNumberToContextMenu": {
+				"fs-ai-tools.showChangeAircraftNumberInContextMenu": {
 					"type": "boolean",
 					"default": true,
 					"title": "Add to Context Menu",
 					"markdownDescription": "Adds the \"Change Aircraft Number\" function to the context menu when a `Flightplan….txt` file is open and text has been selected.",
 					"scope": "window"
 				},
-				"fs-ai-tools.addCountAircraftToContextMenu": {
+				"fs-ai-tools.showCountAircraftInContextMenu": {
 					"type": "boolean",
 					"default": true,
 					"title": "Add to Context Menu",
 					"markdownDescription": "Adds the \"Count Aircraft\" function to the context menu when a `Flightplan….txt` file is open and text has been selected.",
 					"scope": "window"
 				},
-				"fs-ai-tools.addCreateAifpCfgToContextMenu": {
+				"fs-ai-tools.showCreateAifpCfgInContextMenu": {
 					"type": "boolean",
 					"default": true,
 					"title": "Add to Context Menu",
 					"markdownDescription": "Adds the \"Create aifp.cfg\" function to the context menu when a `Flightplan….txt` file is open.",
 					"scope": "window"
 				},
-				"fs-ai-tools.addCreateFlightplanHeaderToContextMenu": {
+				"fs-ai-tools.showCreateFlightplanHeaderInContextMenu": {
 					"type": "boolean",
 					"default": true,
 					"title": "Add to Context Menu",
 					"markdownDescription": "Adds the \"Create Flightplan Header\" function to the context menu when a `Flightplan….txt` file is open.",
 					"scope": "window"
 				},
-				"fs-ai-tools.addCreateFlightplanHeaderFromAifpToContextMenu": {
+				"fs-ai-tools.showCreateFlightplanHeaderFromAifpInContextMenu": {
 					"type": "boolean",
 					"default": true,
 					"title": "Add to Context Menu",
 					"markdownDescription": "Adds the \"Create Flightplan Header from aifp.cfg\" function to the context menu when a `Flightplan….txt` file is open.",
 					"scope": "window"
 				},
-				"fs-ai-tools.addRebaseAircraftNumbersToContextMenu": {
+				"fs-ai-tools.showRebaseAircraftNumbersInContextMenu": {
 					"type": "boolean",
 					"default": true,
 					"title": "Add to Context Menu",
 					"markdownDescription": "Adds the \"Rebase AC#s\" function to the context menu when a `Flightplan….txt` file is open and text has been selected.",
 					"scope": "window"
 				},
-				"fs-ai-tools.addRenumberAddOnsCfgToContextMenu": {
+				"fs-ai-tools.showRenumberAddOnsCfgInContextMenu": {
 					"type": "boolean",
 					"default": true,
 					"title": "Add to Context Menu",
 					"markdownDescription": "Adds the \"Renumber\" function to the context menu when a `add-ons.cfg` file is open.",
 					"scope": "window"
 				},
-				"fs-ai-tools.addRenumberSceneryCfgToContextMenu": {
+				"fs-ai-tools.showRenumberSceneryCfgInContextMenu": {
 					"type": "boolean",
 					"default": true,
 					"title": "Add to Context Menu",

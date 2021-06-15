@@ -1,5 +1,10 @@
 # Change Log
 
+### 1.0.15
+- All functions received configuration settings to show/hide them in the context menu (`Show … in context menu`).
+- Rebase AC#s: default start number changed from 1 to 1000
+- Count Aircraft: removed from aircraft.txt files (now only available in flightplan.txt files)
+
 ### 1.0.14
 - New function `Count Aircraft`. Counts how many aircraft there are after a `//Aircraft name` line and appends that line with `[count]`.
 

@@ -32,11 +32,11 @@ export function CleanFlightplan() {
 						line = formatTimes(line, config.cleanFlightplan.removeSeconds, config.cleanFlightplan.addAtToDepartureTimes);
 					}
 
-					if (config.cleanFlightplan.randomPercentage) {
+					if (config.cleanFlightplan.randomPercentages) {
 						line = randomizePercentage(
 							line,
-							config.cleanFlightplan.randomPercentage.min,
-							config.cleanFlightplan.randomPercentage.max
+							config.cleanFlightplan.randomPercentagesMin,
+							config.cleanFlightplan.randomPercentagesMax
 						);
 					}
 
