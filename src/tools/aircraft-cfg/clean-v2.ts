@@ -12,10 +12,7 @@ export async function CleanAircraftCfg() {
 	const editor = vscode.window.activeTextEditor;
 	if (editor) {
 		const document = editor.document;
-		if (
-			'file' === document.uri.scheme &&
-			document.uri.path.toLocaleLowerCase().endsWith('aircraft.cfg')
-		) {
+		if ('file' === document.uri.scheme && document.uri.path.toLocaleLowerCase().endsWith('aircraft.cfg')) {
 			let text = document.getText();
 			// text = text.replace('\r', '');
 			const splitText = text.split('\n');
@@ -74,7 +71,7 @@ export async function CleanAircraftCfg() {
 							let value = prop[1];
 
 							// Remove unused lines
-							if (config.aircraftcfgRemoveUnusedLines) {
+							if (config.cleanAircraftCfg.removeUnusedLines) {
 								if (
 									(key === 'atc_heavy' && value === '0') ||
 									(key === 'atc_id' && value.length > 0) ||
@@ -87,7 +84,7 @@ export async function CleanAircraftCfg() {
 							}
 
 							// Callsign uppercase
-							if (config.aircraftcfgCallsignsUppercase && key === 'atc_airline') {
+							if (config.cleanAircraftCfg.callsignsUppercase && key === 'atc_airline') {
 								value = value.toUpperCase();
 							}
 
@@ -118,7 +115,7 @@ export async function CleanAircraftCfg() {
 			});
 
 			// Renumber
-			if (config.aircraftcfgRenumber) {
+			if (config.cleanAircraftCfg.renumber) {
 				// text = renumberFltsimEntries(text);
 				fltsimEntries.forEach((entry, i) => {
 					entry['_header'] = `[fltsim.${i}]`;
@@ -127,7 +124,7 @@ export async function CleanAircraftCfg() {
 
 			// Add to text array
 			// Add to text array in sorted order
-			if (config.aircraftcfgSortProperties) {
+			if (config.cleanAircraftCfg.sortProperties) {
 				/**
 				 * Fltsim entry properties, sorted
 				 */
@@ -149,10 +146,10 @@ export async function CleanAircraftCfg() {
 					'atc_heavy',
 					'prop_anim_ratio',
 					'visual_damage',
-					'description'
+					'description',
 				];
 
-				if (config.aircraftcfgSortUiCreatedbyToBottom) {
+				if (config.cleanAircraftCfg.sortUiCreatedbyToBottom) {
 					properties = arrayMove(properties, 8, 17);
 				}
 
@@ -172,7 +169,7 @@ export async function CleanAircraftCfg() {
 			const cleanText = cleanTextArray.join('\n');
 
 			// Apply changes to document
-			editor.edit(editBuilder => {
+			editor.edit((editBuilder) => {
 				editBuilder.replace(new vscode.Range(0, 0, document.lineCount, 500), cleanText);
 			});
 			vscode.window.showInformationMessage('Aicraft.cfg cleaned');
@@ -214,7 +211,7 @@ function renumberFltsimEntries(text: string): string {
  * @source [Stackoverflow](https://stackoverflow.com/questions/6142922/replace-a-regex-capture-group-with-uppercase-in-javascript)
  */
 function transformCallsignsToUppercase(text: string): string {
-	text = text.replace(/(atc_airline=)(.*)/gi, function(fullMatch, g1, g2) {
+	text = text.replace(/(atc_airline=)(.*)/gi, function (fullMatch, g1, g2) {
 		return g1 + g2.toUpperCase();
 	});
 	return text;

@@ -12,7 +12,7 @@ export function CleanFlightplan() {
 			let text = document.getText();
 
 			// Change airports
-			let airportList = config.flightplansChangeAirports;
+			let airportList = config.cleanFlightplan.changeAirports;
 			if (airportList && airportList !== null && airportList.length > 0) {
 				for (let set of airportList) {
 					set = set.split(':').map((icao: string) => icao.trim().toUpperCase());
@@ -28,34 +28,27 @@ export function CleanFlightplan() {
 			const splitData = text.trim().split('\n');
 			for (let line of splitData) {
 				if (line.startsWith('AC#') || line.startsWith('//#')) {
-					if (
-						config.flightplansRemoveSeconds ||
-						config.flightplansAddAtToDepartureTimes
-					) {
-						line = formatTimes(
-							line,
-							config.flightplansRemoveSeconds,
-							config.flightplansAddAtToDepartureTimes
-						);
+					if (config.cleanFlightplan.removeSeconds || config.cleanFlightplan.addAtToDepartureTimes) {
+						line = formatTimes(line, config.cleanFlightplan.removeSeconds, config.cleanFlightplan.addAtToDepartureTimes);
 					}
 
-					if (config.flightplansRandomPercentage) {
+					if (config.cleanFlightplan.randomPercentage) {
 						line = randomizePercentage(
 							line,
-							config.flightplansRandomPercentageMin,
-							config.flightplansRandomPercentageMax
+							config.cleanFlightplan.randomPercentage.min,
+							config.cleanFlightplan.randomPercentage.max
 						);
 					}
 
-					if (config.flightplansUppercase) {
+					if (config.cleanFlightplan.uppercase) {
 						line = transformToUppercase(line);
 					}
 
-					if (config.flightplansLeadingZeroesFlightnumbers) {
+					if (config.cleanFlightplan.leadingZeroesFlightnumbers) {
 						line = padFlightNumbers(line);
 					}
 
-					if (config.flightplansLeadingZeroesFlightLevels) {
+					if (config.cleanFlightplan.leadingZeroesFlightLevels) {
 						line = padFlightLevels(line);
 					}
 				}
@@ -65,7 +58,7 @@ export function CleanFlightplan() {
 			const fp = ret.join('\n');
 
 			// Apply changes to document
-			editor.edit(editBuilder => {
+			editor.edit((editBuilder) => {
 				editBuilder.replace(new vscode.Range(0, 0, document.lineCount, 5000), fp);
 			});
 			vscode.window.showInformationMessage('Flightplan cleaned');
@@ -101,7 +94,7 @@ function randomizePercentage(text: string, min: number = 10, max: number = 99): 
 	if (min === max) {
 		return text.replace(regex, min + '%');
 	}
-	return text.replace(regex, v => {
+	return text.replace(regex, (v) => {
 		return getRandomInt(min, max) + '%';
 	});
 }
