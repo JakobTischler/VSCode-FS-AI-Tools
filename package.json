@@ -5,8 +5,8 @@
 		"url": "https://github.com/JakobTischler/VSCode-FS-AI-Tools"
 	},
 	"displayName": "FS AI Tools",
-	"description": "A bag of tools to clean flightplans and .cfg files",
-	"version": "1.0.12",
+	"description": "A bag of tools for AI flightplans and .cfg files",
+	"version": "1.0.14",
 	"license": "",
 	"engines": {
 		"vscode": "^1.37.0"
@@ -18,6 +18,7 @@
 		"onCommand:extension.cleanAircraftCfg",
 		"onCommand:extension.cleanFlightplan",
 		"onCommand:extension.changeAircraftNumber",
+		"onCommand:extension.countAircraft",
 		"onCommand:extension.createAifpCfg",
 		"onCommand:extension.createFlightplanHeader",
 		"onCommand:extension.createFlightplanHeaderFromAifp",
@@ -45,6 +46,12 @@
 				"title": "Change AC# Number",
 				"category": "FS AI Tools",
 				"when": "editorHasSelection && resourceFilename =~ /^((flightplans)|(aircraft)).*txt$/i"
+			},
+			{
+				"command": "extension.countAircraft",
+				"title": "Count Aircraft",
+				"category": "FS AI Tools",
+				"when": "resourceFilename =~ /^flightplans.*txt$/i')"
 			},
 			{
 				"command": "extension.createAifpCfg",
@@ -97,6 +104,11 @@
 				},
 				{
 					"command": "extension.changeAircraftNumber",
+					"group": "FS AI Tools",
+					"when": "editorHasSelection && resourceFilename =~ /^((flightplans)|(aircraft)).*txt$/i"
+				},
+				{
+					"command": "extension.countAircraft",
 					"group": "FS AI Tools",
 					"when": "editorHasSelection && resourceFilename =~ /^((flightplans)|(aircraft)).*txt$/i"
 				},
@@ -169,6 +181,13 @@
 					"default": false,
 					"title": "Aircraft.cfg: When sorting, move `ui_createdby` to bottom",
 					"markdownDescription": "moves the `fltsim` entries' `ui_createdby` properties to the bottom.",
+					"scope": "window"
+				},
+				"fs-ai-tools.createFltsimCopyTitles": {
+					"type": "boolean",
+					"default": true,
+					"title": "Creating [fltsim] entries: copy all new titles",
+					"markdownDescription": "After creating the new entries, their respective titles will be copied to the clipboard.",
 					"scope": "window"
 				},
 				"fs-ai-tools.flightplansLeadingZeroesFlightnumbers": {

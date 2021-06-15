@@ -3,6 +3,7 @@ import * as vscode from 'vscode';
 import { CleanAircraftCfg } from './tools/aircraft-cfg/clean-v2';
 import { CleanFlightplan } from './tools/flightplan/clean';
 import { ChangeAircraftNumber } from './tools/flightplan/change-ac-number';
+import { CountAircraft } from './tools/flightplan/count-aircraft';
 import { CreateAifpCfg } from './tools/flightplan/create-aifp-cfg';
 import { CreateFlightplanHeader } from './tools/flightplan/create-header';
 import { CreateFlightplanHeaderFromAifp } from './tools/flightplan/create-header-from-aifp';
@@ -26,6 +27,12 @@ export function activate(context: vscode.ExtensionContext) {
 	context.subscriptions.push(
 		vscode.commands.registerCommand('extension.changeAircraftNumber', async () => {
 			ChangeAircraftNumber();
+		})
+	);
+
+	context.subscriptions.push(
+		vscode.commands.registerCommand('extension.countAircraft', async () => {
+			CountAircraft();
 		})
 	);
 

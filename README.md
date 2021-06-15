@@ -53,6 +53,9 @@ Renumbers the `[Area.xxx]` entries sequentially and sets the `Layer=x` propertie
 
 ## Release Notes
 
+### 1.0.14
+- New function `Count Aircraft`. Counts how many aircraft there are after a `//Aircraft name` line and appends that line with `[count]`.
+
 ### 1.0.13
 - New function `Create Header from aifp.cfg`. Checks for an "aifp.cfg" file in same directory as current flightplan, and parses the data to create the flightplan header.
 
