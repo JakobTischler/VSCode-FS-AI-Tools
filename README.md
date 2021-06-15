@@ -7,13 +7,13 @@ A handful of tools to format and clean up `Aircraft.cfg`, `Aircraft_….txt`, `F
 ### Clean Aircraft.cfg
 * Renumber `fltsim.x` entries
 * Convert `atc_airline` callsigns to uppercase
-* Remove unnecessary lines:
+* Remove unnecessary lines (configurable), e.g.:
   * `atc_flight_number=…`
   * `atc_heavy=0` (only `0`, not `1`)
   * `atc_id=` (if no reg is set)
   * `atc_id_color=…`
   * `visual_damage=…`
-* Sort entry property lines (not configurable yet)
+* Sort entry property lines (configurable)
 
 ### Clean Flightplans_….txt
 * Add leading zeroes to flightnumbers so they have 4 digits (`12` ➞ `0012`)

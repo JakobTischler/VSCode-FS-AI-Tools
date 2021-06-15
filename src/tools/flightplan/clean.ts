@@ -28,8 +28,8 @@ export function CleanFlightplan() {
 			const splitData = text.trim().split('\n');
 			for (let line of splitData) {
 				if (line.startsWith('AC#') || line.startsWith('//#')) {
-					if (config.cleanFlightplan.removeSeconds || config.cleanFlightplan.addAtToDepartureTimes) {
-						line = formatTimes(line, config.cleanFlightplan.removeSeconds, config.cleanFlightplan.addAtToDepartureTimes);
+					if (config.cleanFlightplan.removeSeconds || config.cleanFlightplan.addAtToArrivalTimes) {
+						line = formatTimes(line, config.cleanFlightplan.removeSeconds, config.cleanFlightplan.addAtToArrivalTimes);
 					}
 
 					if (config.cleanFlightplan.randomPercentages) {

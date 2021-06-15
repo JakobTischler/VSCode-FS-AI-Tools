@@ -9,7 +9,7 @@
 	"version": "1.0.15",
 	"license": "",
 	"engines": {
-		"vscode": "^1.37.0"
+		"vscode": "^1.57.0"
 	},
 	"categories": [
 		"Other"
@@ -166,28 +166,43 @@
 					"type": "boolean",
 					"default": true,
 					"title": "Remove unused lines",
-					"markdownDescription": "Removes the `atc_id=…`, `atc_id_color=…`, `atc_flight_number=…`, `atc_heavy=0` and `visual_damage=…` lines from the fltsim entries.",
+					"markdownDescription": "Removes the lines defined in *`#fs-ai-tools.cleanAircraftCfg.removeUnusedLinesItems#`* from the fltsim entries.",
 					"scope": "window"
+				},
+				"fs-ai-tools.cleanAircraftCfg.removeUnusedLinesItems": {
+					"markdownDescription": "List of entry settings to be removed. • `key=value` for distinct values, `key=*` for any non-empty value, `key=_` for only empty values, `key` for all values.",
+					"scope": "window",
+					"type": "array",
+					"items": {
+						"type": "string"
+					},
+					"default": [
+						"atc_id=_",
+						"atc_id_color",
+						"atc_flight_number",
+						"atc_heavy=0",
+						"visual_damage"
+					]
 				},
 				"fs-ai-tools.cleanAircraftCfg.renumber": {
 					"type": "boolean",
 					"default": true,
 					"title": "Renumber",
-					"markdownDescription": "Renumbers the `fltsim` entries in sequence, starting at `0`.",
+					"markdownDescription": "Renumber the `fltsim` entries in sequence, starting at `0`.",
 					"scope": "window"
 				},
 				"fs-ai-tools.cleanAircraftCfg.sortProperties": {
 					"type": "boolean",
 					"default": true,
 					"title": "Sort Properties",
-					"markdownDescription": "Sorts the `fltsim` entries' properties.",
+					"markdownDescription": "Sort the `fltsim` entries' properties.",
 					"scope": "window"
 				},
-				"fs-ai-tools.cleanAircraftCfg.sortUiCreatedbyToBottom": {
-					"type": "boolean",
-					"default": false,
-					"title": "When sorting, move `ui_createdby` to bottom",
-					"markdownDescription": "moves the `fltsim` entries' `ui_createdby` properties to the bottom.",
+				"fs-ai-tools.cleanAircraftCfg.sortPropertiesOrder": {
+					"type": "string",
+					"default": "title>sim>model>panel>sound>texture>atc_airline>atc_id>ui_manufacturer>ui_type>ui_variation>atc_parking_codes>atc_parking_types>atc_heavy>prop_anim_ratio>visual_damage>description>ui_createdby",
+					"title": "Sort Properties Order",
+					"markdownDescription": "Defines the sort order of the `fltsim` entries' properties. Only applicable if `#fs-ai-tools.cleanAircraftCfg.sortProperties#` is active. Usage: `first>second>third>…`. Undefined keys are appended at the end.",
 					"scope": "window"
 				},
 				"fs-ai-tools.cleanFlightplan._ShowCleanFlightplanInContextMenu": {
@@ -211,11 +226,11 @@
 					"markdownDescription": "Pads the flight levels to 3 digits with zeroes (e.g. `70` becomes `070`).",
 					"scope": "window"
 				},
-				"fs-ai-tools.cleanFlightplan.addAtToDepartureTimes": {
+				"fs-ai-tools.cleanFlightplan.addAtToArrivalTimes": {
 					"type": "boolean",
 					"default": true,
-					"title": "Add @ to departure times",
-					"markdownDescription": "Adds `@` to departure times (e.g. `12:34` becomes `@12:34`).",
+					"title": "Add @ to arrival times",
+					"markdownDescription": "Adds `@` to arrival times (e.g. `12:34` becomes `@12:34`).",
 					"scope": "window"
 				},
 				"fs-ai-tools.cleanFlightplan.removeSeconds": {
@@ -359,7 +374,7 @@
 		"tslint": "^5.20.1",
 		"typescript": "^3.7.4",
 		"vscode": "^1.1.36",
-		"vsce": "^1.88.0"
+		"vsce": "^1.93.0"
 	},
 	"dependencies": {}
 }
