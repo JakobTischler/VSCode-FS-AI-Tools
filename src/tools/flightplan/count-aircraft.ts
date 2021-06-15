@@ -7,7 +7,7 @@ export async function CountAircraft() {
 	if (editor) {
 		const document = editor.document;
 		const filename = getFilenameFromPath(document.uri.path).toLocaleLowerCase();
-		if ('file' === document.uri.scheme && (filename.startsWith('aircraft') || filename.startsWith('flightplans'))) {
+		if ('file' === document.uri.scheme && filename.startsWith('flightplans')) {
 			const selection = editor.selection;
 
 			if (!selection) {
