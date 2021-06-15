@@ -8,7 +8,7 @@ export async function RebaseAircraftNumbers() {
 		const filename = getFilenameFromPath(document.uri.path).toLocaleLowerCase();
 		if ('file' === document.uri.scheme && (filename.startsWith('aircraft') || filename.startsWith('flightplans'))) {
 			const selection = editor.selection;
-			const start = await getNumberInput('1', 'The new starting AC#. Must be > 0.');
+			const start = await getNumberInput('1000', 'The new starting AC#. Must be > 0.');
 			const bigStep = await getNumberInput('10', 'The step size between groups (separated by empty lines). Must be > 0.');
 			const smallStep = await getNumberInput('1', 'The step size between AC#s within groups. Must be > 0.');
 
