@@ -1,5 +1,8 @@
 # Change Log
 
+### 1.0.16
+- New function `Create Aircraft`: From a list of registrations, use a fltsim entry template file to create entries in the aircraft.cfg for each registration. Also optionally create folders for those aircraft, and optionally copy texture.cfg to them.
+
 ### 1.0.15
 - All functions received configuration settings to show/hide them in the context menu (`Show … in context menu`).
 - Rebase AC#s: default start number changed from 1 to 1000

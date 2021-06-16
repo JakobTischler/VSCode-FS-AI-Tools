@@ -6,7 +6,7 @@
 	},
 	"displayName": "FS AI Tools",
 	"description": "A bag of tools for AI flightplans and .cfg files",
-	"version": "1.0.15",
+	"version": "1.0.16",
 	"license": "",
 	"engines": {
 		"vscode": "^1.57.0"
@@ -347,6 +347,18 @@
 					],
 					"scope": "window"
 				},
+				"fs-ai-tools.createAircraft.templates": {
+					"type": "array",
+					"title": "Templates",
+					"markdownDescription": "List of templates (file paths)",
+					"scope": "window",
+					"items": {
+						"type": "string"
+					},
+					"default": [
+						"K:\\Prepar3D\\_AI Aircraft\\HTAI\\HTAI Cessna 172 Skyhawk\\fltsim-template.cfg"
+					]
+				},
 				"fs-ai-tools.showChangeAircraftNumberInContextMenu": {
 					"type": "boolean",
 					"default": true,
@@ -367,18 +379,6 @@
 					"title": "Add to Context Menu",
 					"markdownDescription": "Adds the \"Create aifp.cfg\" function to the context menu when a `Flightplan….txt` file is open.",
 					"scope": "window"
-				},
-				"fs-ai-tools.createAircraft.templates": {
-					"type": "array",
-					"title": "Templates",
-					"markdownDescription": "List of templates (file paths)",
-					"scope": "window",
-					"items": {
-						"type": "string"
-					},
-					"default": [
-						"K:\\Prepar3D\\_AI Aircraft\\HTAI\\HTAI Cessna 172 Skyhawk\\fltsim-template.cfg"
-					]
 				},
 				"fs-ai-tools.showCreateFlightplanHeaderInContextMenu": {
 					"type": "boolean",
