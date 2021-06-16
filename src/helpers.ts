@@ -1,3 +1,5 @@
+import { env, window } from 'vscode';
+
 export function replacePartAtPos(str: string, position: number, length: number, newText: string): string {
 	const before = str.substr(0, position);
 	const after = str.substr(position + length, str.length);
@@ -56,6 +58,13 @@ export function roundUpToNearest(num: number, nearest: number = 10): number {
 	return Math.ceil((num + 1) / nearest) * nearest;
 }
 
+/**
+ * Returns a string "number word", with "word" being either singular or plural depending on the number.
+ * @param num The number to be used for calculation
+ * @param singleWord The word if the number is 1
+ * @param pluralWord The word if the number is not 1. If not supplied, `singleWord` + "s" will be used
+ * @returns A string with "number word"
+ */
 export function plural(num: number, singleWord: string, pluralWord?: string) {
 	if (num === 1) {
 		return `${num} ${singleWord}`;
@@ -64,3 +73,16 @@ export function plural(num: number, singleWord: string, pluralWord?: string) {
 	}
 	return `${num} ${singleWord}s`;
 }
+
+/**
+ * Writes the provided text to the user's clipboard
+ * @param text The text to be written to the clipboard
+ * @param message The optional success message to be shown
+ */
+export const writeTextToClipboard = (text: string, message?: string) => {
+	env.clipboard.writeText(text).then(() => {
+		if (message && message.length > 0) {
+			window.showInformationMessage(message);
+		}
+	});
+};

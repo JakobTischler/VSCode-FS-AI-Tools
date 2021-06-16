@@ -1,11 +1,12 @@
 import * as vscode from 'vscode';
 import * as path from 'path';
-import { plural } from '../../helpers';
+import { plural, writeTextToClipboard } from '../../helpers';
 const fs = require('fs');
 
 interface FltsimEntry {
 	fltsim: string;
 	texture?: string;
+	title?: string;
 }
 
 export async function CreateAircraft() {
@@ -90,7 +91,22 @@ export async function CreateAircraft() {
 		// -----------------------------------------------------
 		// APPEND ENTRIES TO AIRCRAFT.CFG
 		// fs.appendFile(path, data[, options], callback)
-		// TODO
+		const fltsimEntriesText = fltsimEntries.map((entry) => entry.fltsim).join('\n');
+		fs.appendFile(aircraftCfgPath, fltsimEntriesText, 'utf8', (err: any) => {
+			if (err) {
+				throw err;
+			}
+		});
+
+		// -----------------------------------------------------
+		// COPY TITLES TO CLIPBOARD
+		if (config.get('copyTitlesToClipboard')) {
+			const titles = fltsimEntries
+				.map((entry) => entry.title)
+				.filter((title) => title && title.length > 0)
+				.join('\n');
+			writeTextToClipboard(titles);
+		}
 
 		// -----------------------------------------------------
 		// CREATE FOLDERS
@@ -124,7 +140,13 @@ export async function CreateAircraft() {
 			}
 		}
 
-		vscode.window.showInformationMessage(plural(regs.length, 'entry', 'entries') + ' created');
+		// -----------------------------------------------------
+		// SUCCESS MESSAGE
+		let msg = `${plural(regs.length, 'entry', 'entries')} created`;
+		if (config.get('copyTitlesToClipboard')) {
+			msg += ` and ${plural(regs.length, 'title')} copied`;
+		}
+		vscode.window.showInformationMessage(msg);
 	}
 }
 
@@ -159,14 +181,20 @@ async function createFltsimEntries(regs: string[], template: string, startIndex:
 
 		let texture;
 		if (createFolders) {
-			let textureMatch = text.match(/texture=(.*)(?:\n|\r)/i);
+			const textureMatch = text.match(/texture=(.*)(?:\n|\r)/i);
 			if (textureMatch && textureMatch[1]) {
 				texture = textureMatch[1];
 			}
 			// TODO what if there's no texture match? Skip folder creation?
 		}
 
-		entries.push({ fltsim: text + '\n', texture: texture });
+		let title = '';
+		const titleMatch = text.match(/title=(.*)(?:\n|\r)/i);
+		if (titleMatch && titleMatch[1]) {
+			title = titleMatch[1];
+		}
+
+		entries.push({ fltsim: text, texture: texture, title: title });
 
 		index++;
 	}
@@ -175,10 +203,11 @@ async function createFltsimEntries(regs: string[], template: string, startIndex:
 }
 
 async function getFileContents(path: string, encoding: string = 'utf8') {
-	return await fs.promises.readFile(path, encoding).catch((err: any) => {
+	const data = await fs.promises.readFile(path, encoding).catch((err: any) => {
 		console.error(`Failed to read file at "${path}"`, err);
 		vscode.window.showErrorMessage(`Failed to read file at "${path}": ${err}`);
 	});
+	return data;
 }
 
 async function getDropdownSelection(title: string, items: string[]) {

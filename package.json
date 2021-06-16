@@ -326,6 +326,12 @@
 					"markdownDescription": "If a `texture.cfg` file exists in the aircraft folder, copy it to the newly created texture folders.",
 					"scope": "window"
 				},
+				"fs-ai-tools.createAircraft.copyTitlesToClipboard": {
+					"type": "boolean",
+					"default": true,
+					"markdownDescription": "Copy the titles of the created fltsim entries to the clipboard.",
+					"scope": "window"
+				},
 				"fs-ai-tools.createAircraft.createFolders": {
 					"type": "string",
 					"default": "Create",
