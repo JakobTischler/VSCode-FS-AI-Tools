@@ -1,5 +1,6 @@
 import * as vscode from 'vscode';
 import * as path from 'path';
+import { plural } from '../../helpers';
 const fs = require('fs');
 
 interface FltsimEntry {
@@ -21,7 +22,6 @@ export async function CreateAircraft() {
 
 		// -----------------------------------------------------
 		// GET LIST OF REGISTRATIONS
-
 		let regs: string[] = [];
 		const selections = editor.selections;
 		if (!selections) {
@@ -41,8 +41,7 @@ export async function CreateAircraft() {
 		}
 
 		// -----------------------------------------------------
-		// GET TEMPLATE PATH
-
+		// GET TEMPLATE PATH AND CONTENT
 		let templatePaths = config.get('templates') as string[];
 		if (templatePaths?.length === 0) {
 			vscode.window.showErrorMessage('No templates defined');
@@ -53,88 +52,79 @@ export async function CreateAircraft() {
 		if (!templatePathStr) {
 			return false;
 		}
+
 		let templatePath = path.parse(templatePathStr);
-		const templateDir = templatePath.dir;
+		const __WORKDIR__ = templatePath.dir;
+		const template = (await getFileContents(templatePathStr)) as string;
 
 		// -----------------------------------------------------
-		// GET TEMPLATE CONTENT AND START CREATION
-
-		fs.readFile(templatePathStr, 'utf8', (err: string, contents: string) => {
-			if (err) {
-				console.error(err);
-				vscode.window.showErrorMessage(err);
-				return false;
+		// READ AIRCRAFT.CFG TO GET LAST FLTSIM.X
+		const aircraftCfgPath = path.join(__WORKDIR__, 'aircraft.cfg');
+		if (!fs.existsSync(aircraftCfgPath)) {
+			console.error(`aircraft.cfg file couldn't be found in "${__WORKDIR__}"`);
+			vscode.window.showErrorMessage(`aircraft.cfg file couldn't be found in "${__WORKDIR__}"`);
+		}
+		const aircraftCfgContents = (await getFileContents(aircraftCfgPath)) as string;
+		const fltsimXMatches = aircraftCfgContents.match(/\[fltsim\.(\d+)\]/gi);
+		let startIndex = 0;
+		if (fltsimXMatches) {
+			// console.log(fltsimXMatches, fltsimXMatches[fltsimXMatches.length - 1]);
+			let last = fltsimXMatches[fltsimXMatches.length - 1];
+			let match = last.match(/\[fltsim\.(\d+)\]/i);
+			if (match && match[1]) {
+				startIndex = Number(match[1]) + 1;
 			}
+			console.log({ last, match, startIndex });
+		}
 
-			handleTemplate(regs, contents, templateDir, config);
-		});
+		// -----------------------------------------------------
+		// CREATE FLTSIM ENTRIES
+		let createFolders = config.get('createFolders') === 'Create';
+		if (config.get('createFolders') === 'Ask everytime') {
+			const userPick = await getDropdownSelection('Create Texture Folders?', ['Create folders', "Don't create folders"]);
+			createFolders = userPick === 'Create folders';
+		}
+		const fltsimEntries = await createFltsimEntries(regs, template, startIndex, createFolders);
+		console.log(fltsimEntries);
 
-		/*
-		const aifpPath = path.join(path.dirname(document.uri.path), 'aifp.cfg');
-		const filePath = vscode.Uri.file(aifpPath);
+		// -----------------------------------------------------
+		// APPEND ENTRIES TO AIRCRAFT.CFG
+		// fs.appendFile(path, data[, options], callback)
+		// TODO
 
-		let edit = new vscode.WorkspaceEdit();
-		// edit.createFile(filePath, { ignoreIfExists: true });
-		// edit.delete(filePath, new vscode.Range(new vscode.Position(0, 0), new vscode.Position(9999, 9999)));
-		// edit.insert(filePath, new vscode.Position(0, 0), output);
-		await vscode.workspace.applyEdit(edit);
+		// -----------------------------------------------------
+		// CREATE FOLDERS
+		if (createFolders) {
+			const textureCfgPath = path.join(__WORKDIR__, 'texture.cfg');
+			const textureCfgExists = fs.existsSync(textureCfgPath);
 
-		vscode.workspace.openTextDocument(filePath).then((doc: vscode.TextDocument) => {
-			doc.save();
-			vscode.window.showInformationMessage('aifp.cfg file created');
-		});
-		*/
-	}
-}
+			for (const entryData of fltsimEntries) {
+				if (entryData.texture) {
+					const dirName = `texture.${entryData.texture}`;
+					const dir = path.join(__WORKDIR__, dirName);
 
-async function handleTemplate(regs: string[], contents: string, templateDir: string, config: vscode.WorkspaceConfiguration) {
-	let operator = (await getTextInput('Operator', "The operator's (airline's) name. Leave empty if not applicable.")) as string;
-	let icao = (await getTextInput('ICAO', 'Leave empty if not applicable.')) as string;
-	let callsign = (await getTextInput('Callsign', 'Leave empty if not applicable.')) as string;
-	let author = (await getTextInput('Author', "The repaint's creator. Leave empty if not applicable.")) as string;
-
-	// TODO open aircraft.cfg, find last fltsim.x entry, use as index start
-
-	// console.log(contents);
-
-	let createFolders = config.get('createFolders') === 'Create';
-	if (config.get('createFolders') === 'Ask everytime') {
-		let userPick = await getDropdownSelection('Create Texture Folders?', ['Create folders', "Don't create folders"]);
-		createFolders = userPick === 'Create folders';
-	}
-
-	let fltsimEntries = createFltsimEntries(regs, contents, operator, icao, callsign, author, createFolders);
-	console.log(fltsimEntries);
-
-	// CREATE FOLDERS
-	if (createFolders) {
-		let textureCfgPath = path.join(templateDir, 'texture.cfg');
-		let textureCfgExists = fs.existsSync(textureCfgPath);
-
-		for (const entryData of fltsimEntries) {
-			if (entryData.texture) {
-				let dirName = `texture.${entryData.texture}`;
-				let dir = path.join(templateDir, dirName);
-
-				if (!fs.existsSync(dir)) {
-					await fs.mkdir(dir, { recursive: true }, (err: any) => {
-						if (err) {
-							throw err;
-						}
-					});
-
-					if (config.get('copyTextureCfgToTextureFolder') && textureCfgExists) {
-						await fs.copyFile(textureCfgPath, path.join(templateDir, dirName, 'texture.cfg'), (err: any) => {
+					if (!fs.existsSync(dir)) {
+						await fs.mkdir(dir, { recursive: true }, (err: any) => {
 							if (err) {
 								throw err;
 							}
 						});
+
+						if (config.get('copyTextureCfgToTextureFolder') && textureCfgExists) {
+							await fs.copyFile(textureCfgPath, path.join(__WORKDIR__, dirName, 'texture.cfg'), (err: any) => {
+								if (err) {
+									throw err;
+								}
+							});
+						}
 					}
+				} else {
+					// TODO WTF do I do now?
 				}
-			} else {
-				// TODO WTF do I do now?
 			}
 		}
+
+		vscode.window.showInformationMessage(plural(regs.length, 'entry', 'entries') + ' created');
 	}
 }
 
@@ -149,18 +139,16 @@ async function handleTemplate(regs: string[], contents: string, templateDir: str
  * @test https://regex101.com/r/YjtPK3/1/
  * @returns All [fltsim.x] entries in an array
  */
-function createFltsimEntries(
-	regs: string[],
-	template: string,
-	operator: string,
-	icao: string,
-	callsign: string,
-	author: string,
-	createFolders: boolean = true
-) {
+async function createFltsimEntries(regs: string[], template: string, startIndex: number = 0, createFolders: boolean = true) {
 	const entries: FltsimEntry[] = [];
 
-	for (let [index, reg] of regs.entries()) {
+	const operator = (await getTextInput('Operator', "The operator's (airline's) name. Leave empty if not applicable.")) as string;
+	const icao = (await getTextInput('ICAO', 'Leave empty if not applicable.')) as string;
+	const callsign = (await getTextInput('Callsign', 'Leave empty if not applicable.')) as string;
+	const author = (await getTextInput('Author', "The repaint's creator. Leave empty if not applicable.")) as string;
+
+	let index = startIndex;
+	for (let reg of regs) {
 		let text = template
 			.replace(/\[fltsim\..*?\]/g, `[fltsim.${index}]`)
 			.replace(/{reg(?:\??)(.*?)}/g, reg + '$1')
@@ -179,9 +167,18 @@ function createFltsimEntries(
 		}
 
 		entries.push({ fltsim: text + '\n', texture: texture });
+
+		index++;
 	}
 
 	return entries;
+}
+
+async function getFileContents(path: string, encoding: string = 'utf8') {
+	return await fs.promises.readFile(path, encoding).catch((err: any) => {
+		console.error(`Failed to read file at "${path}"`, err);
+		vscode.window.showErrorMessage(`Failed to read file at "${path}": ${err}`);
+	});
 }
 
 async function getDropdownSelection(title: string, items: string[]) {

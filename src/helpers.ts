@@ -55,3 +55,12 @@ export function arrayMove(array: any[], from: number, to: number): any[] {
 export function roundUpToNearest(num: number, nearest: number = 10): number {
 	return Math.ceil((num + 1) / nearest) * nearest;
 }
+
+export function plural(num: number, singleWord: string, pluralWord?: string) {
+	if (num === 1) {
+		return `${num} ${singleWord}`;
+	} else if (pluralWord) {
+		return `${num} ${pluralWord}`;
+	}
+	return `${num} ${singleWord}s`;
+}
