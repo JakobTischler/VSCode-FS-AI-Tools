@@ -341,6 +341,21 @@
 					"markdownDescription": "Adds the \"Create aircraft\" function to the context menu when text is selected.",
 					"scope": "window"
 				},
+				"fs-ai-tools.createAircraft.createFolders": {
+					"type": "string",
+					"default": "Create",
+					"enum": [
+						"Create",
+						"Don't create",
+						"Ask everytime"
+					],
+					"enumDescriptions": [
+						"Always creates the texture folders in the template's directory",
+						"Never creates the texture folders in the template's directory",
+						"You will be asked during the data input process if the texture folders should be created"
+					],
+					"scope": "window"
+				},
 				"fs-ai-tools.createAircraft.templates": {
 					"type": "array",
 					"title": "Templates",

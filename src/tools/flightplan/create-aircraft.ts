@@ -2,6 +2,11 @@ import * as vscode from 'vscode';
 import * as path from 'path';
 const fs = require('fs');
 
+interface FltsimEntry {
+	fltsim: string;
+	texture?: string;
+}
+
 export async function CreateAircraft() {
 	console.log('CreateAircraft()');
 
@@ -44,7 +49,7 @@ export async function CreateAircraft() {
 			return false;
 		}
 
-		let templatePathStr = await getTemplate(templatePaths.sort());
+		let templatePathStr = await getDropdownSelection('Select template', templatePaths.sort());
 		if (!templatePathStr) {
 			return false;
 		}
@@ -52,7 +57,7 @@ export async function CreateAircraft() {
 		const templateDir = templatePath.dir;
 
 		// -----------------------------------------------------
-		// GET TEMPLATE CONTENT
+		// GET TEMPLATE CONTENT AND START CREATION
 
 		fs.readFile(templatePathStr, 'utf8', (err: string, contents: string) => {
 			if (err) {
@@ -61,7 +66,7 @@ export async function CreateAircraft() {
 				return false;
 			}
 
-			handleTemplate(regs, contents, templateDir);
+			handleTemplate(regs, contents, templateDir, config);
 		});
 
 		/*
@@ -82,68 +87,102 @@ export async function CreateAircraft() {
 	}
 }
 
-async function handleTemplate(regs: string[], contents: string, templateDir: string) {
-	let operator = (await getTextInput('Operator name')) as string;
-	let icao = (await getTextInput('ICAO')) as string;
-	let callsign = (await getTextInput('Callsign')) as string;
-	let author = (await getTextInput('Author')) as string;
+async function handleTemplate(regs: string[], contents: string, templateDir: string, config: vscode.WorkspaceConfiguration) {
+	let operator = (await getTextInput('Operator', "The operator's (airline's) name. Leave empty if not applicable.")) as string;
+	let icao = (await getTextInput('ICAO', 'Leave empty if not applicable.')) as string;
+	let callsign = (await getTextInput('Callsign', 'Leave empty if not applicable.')) as string;
+	let author = (await getTextInput('Author', "The repaint's creator. Leave empty if not applicable.")) as string;
 
-	console.log(contents);
+	// TODO open aircraft.cfg, find last fltsim.x entry, use as index start
 
-	let fltsimEntries = createFltsimEntries(regs, contents, operator, icao, callsign, author);
+	// console.log(contents);
+
+	let createFolders = config.get('createFolders') === 'Create';
+	if (config.get('createFolders') === 'Ask everytime') {
+		let userPick = await getDropdownSelection('Create Texture Folders?', ['Create folders', "Don't create folders"]);
+		createFolders = userPick === 'Create folders';
+	}
+
+	let fltsimEntries = createFltsimEntries(regs, contents, operator, icao, callsign, author, createFolders);
 	console.log(fltsimEntries);
+
+	// CREATE FOLDERS
+	if (createFolders) {
+		for (const entryData of fltsimEntries) {
+			if (entryData.texture) {
+				let dirName = `texture.${entryData.texture}`;
+				let dir = path.join(templateDir, dirName);
+
+				if (!fs.existsSync(dir)) {
+					await fs.mkdir(dir, { recursive: true }, (err: any) => {
+						if (err) {
+							throw err;
+						}
+					});
+				}
+			} else {
+				// TODO WTF do I do now?
+			}
+		}
+	}
 }
 
 /**
- *
+ * For a list of `regs`, copy the template and replace placeholders with reg/operator/icao/callsign/author data.
  * @param regs The list of all registrations
  * @param template The content of the template file
- * @param data The user input data
- * @returns The full [fltsim.x] entries text
+ * @param operator The user input "Operator" data
+ * @param icao The user input "ICAO" data
+ * @param callsign The user input "Callsign" data
+ * @param author The user input "Author" data
+ * @test https://regex101.com/r/YjtPK3/1/
+ * @returns All [fltsim.x] entries in an array
  */
-function createFltsimEntries(regs: string[], template: string, operator: string, icao: string, callsign: string, author: string) {
-	/*
-	https://regex101.com/r/YjtPK3/1/
-
-	{reg? }			/{reg(?>\??)(.*?)}/g
-	{icao?-}		/{icao(?>\??)(.*?)}/g
-	{operator}		/{operator(?>\??)(.*?)}/g
-	{callsign}		/{callsign(?>\??)(.*?)}/g
-	{author}		/{author(?>\??)(.*?)}/g
-	var a = template.replace(/\{reg(?>\??)(.*?)\}/g, "NEW-REG" + '$1');
-	*/
-
-	const entries: string[] = [];
+function createFltsimEntries(
+	regs: string[],
+	template: string,
+	operator: string,
+	icao: string,
+	callsign: string,
+	author: string,
+	createFolders: boolean = true
+) {
+	const entries: FltsimEntry[] = [];
 
 	for (let [index, reg] of regs.entries()) {
 		let text = template
-			.replace(/\[fltsim\.(.*?)\]/g, `[fltsim.${index}]`)
+			.replace(/\[fltsim\..*?\]/g, `[fltsim.${index}]`)
 			.replace(/{reg(?:\??)(.*?)}/g, reg + '$1')
 			.replace(/{operator(?:\??)(.*?)}/g, operator?.length > 0 ? operator + '$1' : '')
 			.replace(/{icao(?:\??)(.*?)}/g, icao?.length > 0 ? icao + '$1' : '')
 			.replace(/{callsign(?:\??)(.*?)}/g, callsign?.length > 0 ? callsign + '$1' : '')
 			.replace(/{author(?:\??)(.*?)}/g, author?.length > 0 ? author + '$1' : '');
 
-		entries.push(text + '\n');
-	}
+		let texture;
+		if (createFolders) {
+			let textureMatch = text.match(/texture=(.*)(?:\n|\r)/i);
+			if (textureMatch && textureMatch[1]) {
+				texture = textureMatch[1];
+			}
+			// TODO what if there's no texture match? Skip folder creation?
+		}
 
-	// TODO use texture=... for folder names?
-	// template.match(/texture=(.*)/i)
-	// could use map with texture as key
-	// Settings: 3er dropdown "Create Folders" → "Create","Don't create","Ask everytime"
+		entries.push({ fltsim: text + '\n', texture: texture });
+	}
 
 	return entries;
 }
 
-async function getTemplate(paths: string[]) {
-	return await vscode.window.showQuickPick(paths, { canPickMany: false });
+async function getDropdownSelection(title: string, items: string[]) {
+	return await vscode.window.showQuickPick(items, { title: title, canPickMany: false, ignoreFocusOut: true });
 }
 
-async function getTextInput(placeholderText: string) {
+async function getTextInput(placeholderText: string, prompt?: string) {
 	return await vscode.window.showInputBox({
 		value: '',
 		valueSelection: undefined,
 		placeHolder: placeholderText,
-		prompt: placeholderText,
+		prompt: prompt ? prompt : placeholderText,
+		ignoreFocusOut: true,
 	});
 }

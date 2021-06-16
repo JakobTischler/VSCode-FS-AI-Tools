@@ -1,6 +1,6 @@
 # **FS AI** Tools
 
-A handful of tools to format and clean up `Aircraft.cfg`, `Aircraft_….txt`, `Flightplans_….txt`, `add-ons.cfg` and `scenery.cfg` files. All options are configurable in the extension settings.
+A Visual Studio Code extension for managing, cleaning and improving FS/Prepar3D AI flightplans, `aircraft.cfg` files as well as `add-ons.cfg` and `scenery.cfg` files. All options are configurable in the extension settings.
 
 ## Features
 
