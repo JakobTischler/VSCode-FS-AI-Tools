@@ -20,6 +20,7 @@
 		"onCommand:extension.changeAircraftNumber",
 		"onCommand:extension.countAircraft",
 		"onCommand:extension.createAifpCfg",
+		"onCommand:extension.createAircraft",
 		"onCommand:extension.createFlightplanHeader",
 		"onCommand:extension.createFlightplanHeaderFromAifp",
 		"onCommand:extension.rebaseAircraftNumbers",
@@ -58,6 +59,12 @@
 				"title": "Create aifp.cfg File",
 				"category": "FS AI Tools",
 				"when": "resourceFilename =~ /^flightplans.*txt$/i')"
+			},
+			{
+				"command": "extension.createAircraft",
+				"title": "Create Aircraft from Registrations",
+				"category": "FS AI Tools",
+				"when": "editorHasSelection"
 			},
 			{
 				"command": "extension.createFlightplanHeader",
@@ -116,6 +123,11 @@
 					"command": "extension.createAifpCfg",
 					"group": "FS AI Tools",
 					"when": "config.fs-ai-tools.showCreateAifpCfgInContextMenu && resourceFilename =~ /^flightplans.*txt$/i')"
+				},
+				{
+					"command": "extension.createAircraft",
+					"group": "FS AI Tools",
+					"when": "config.fs-ai-tools.createAircraft.showCreateAircraftInContextMenu && editorHasSelection"
 				},
 				{
 					"command": "extension.createFlightplanHeader",
@@ -322,6 +334,25 @@
 					"markdownDescription": "Adds the \"Create aifp.cfg\" function to the context menu when a `Flightplan….txt` file is open.",
 					"scope": "window"
 				},
+				"fs-ai-tools.createAircraft.showCreateAircraftInContextMenu": {
+					"type": "boolean",
+					"default": true,
+					"title": "Add to Context Menu",
+					"markdownDescription": "Adds the \"Create aircraft\" function to the context menu when text is selected.",
+					"scope": "window"
+				},
+				"fs-ai-tools.createAircraft.templates": {
+					"type": "array",
+					"title": "Templates",
+					"markdownDescription": "List of templates (file paths)",
+					"scope": "window",
+					"items": {
+						"type": "string"
+					},
+					"default": [
+						"K:\\Prepar3D\\_AI Aircraft\\HTAI\\HTAI Cessna 172 Skyhawk\\fltsim-template.cfg"
+					]
+				},
 				"fs-ai-tools.showCreateFlightplanHeaderInContextMenu": {
 					"type": "boolean",
 					"default": true,
@@ -376,5 +407,8 @@
 		"vscode": "^1.1.36",
 		"vsce": "^1.93.0"
 	},
-	"dependencies": {}
+	"dependencies": {
+		"path": "~0.12.7",
+		"fs": "~0.0.1-security"
+	}
 }
