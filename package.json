@@ -127,7 +127,7 @@
 				{
 					"command": "extension.createAircraft",
 					"group": "FS AI Tools",
-					"when": "config.fs-ai-tools.createAircraft.showCreateAircraftInContextMenu && editorHasSelection"
+					"when": "config.fs-ai-tools.createAircraft._ShowCreateAircraftInContextMenu && editorHasSelection"
 				},
 				{
 					"command": "extension.createFlightplanHeader",
@@ -313,6 +313,34 @@
 						"WRSQ:WARQ"
 					]
 				},
+				"fs-ai-tools.createAircraft._ShowCreateAircraftInContextMenu": {
+					"type": "boolean",
+					"default": true,
+					"title": "Add to Context Menu",
+					"markdownDescription": "Adds the \"Create aircraft\" function to the context menu when text is selected.",
+					"scope": "window"
+				},
+				"fs-ai-tools.createAircraft.copyTextureCfgToTextureFolder": {
+					"type": "boolean",
+					"default": true,
+					"markdownDescription": "If a `texture.cfg` file exists in the aircraft folder, copy it to the newly created texture folders.",
+					"scope": "window"
+				},
+				"fs-ai-tools.createAircraft.createFolders": {
+					"type": "string",
+					"default": "Create",
+					"enum": [
+						"Create",
+						"Don't create",
+						"Ask everytime"
+					],
+					"enumDescriptions": [
+						"Always creates the texture folders in the template's directory",
+						"Never creates the texture folders in the template's directory",
+						"You will be asked during the data input process if the texture folders should be created"
+					],
+					"scope": "window"
+				},
 				"fs-ai-tools.showChangeAircraftNumberInContextMenu": {
 					"type": "boolean",
 					"default": true,
@@ -332,28 +360,6 @@
 					"default": true,
 					"title": "Add to Context Menu",
 					"markdownDescription": "Adds the \"Create aifp.cfg\" function to the context menu when a `Flightplan….txt` file is open.",
-					"scope": "window"
-				},
-				"fs-ai-tools.createAircraft.showCreateAircraftInContextMenu": {
-					"type": "boolean",
-					"default": true,
-					"title": "Add to Context Menu",
-					"markdownDescription": "Adds the \"Create aircraft\" function to the context menu when text is selected.",
-					"scope": "window"
-				},
-				"fs-ai-tools.createAircraft.createFolders": {
-					"type": "string",
-					"default": "Create",
-					"enum": [
-						"Create",
-						"Don't create",
-						"Ask everytime"
-					],
-					"enumDescriptions": [
-						"Always creates the texture folders in the template's directory",
-						"Never creates the texture folders in the template's directory",
-						"You will be asked during the data input process if the texture folders should be created"
-					],
 					"scope": "window"
 				},
 				"fs-ai-tools.createAircraft.templates": {

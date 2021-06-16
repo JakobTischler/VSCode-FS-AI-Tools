@@ -108,6 +108,9 @@ async function handleTemplate(regs: string[], contents: string, templateDir: str
 
 	// CREATE FOLDERS
 	if (createFolders) {
+		let textureCfgPath = path.join(templateDir, 'texture.cfg');
+		let textureCfgExists = fs.existsSync(textureCfgPath);
+
 		for (const entryData of fltsimEntries) {
 			if (entryData.texture) {
 				let dirName = `texture.${entryData.texture}`;
@@ -119,6 +122,14 @@ async function handleTemplate(regs: string[], contents: string, templateDir: str
 							throw err;
 						}
 					});
+
+					if (config.get('copyTextureCfgToTextureFolder') && textureCfgExists) {
+						await fs.copyFile(textureCfgPath, path.join(templateDir, dirName, 'texture.cfg'), (err: any) => {
+							if (err) {
+								throw err;
+							}
+						});
+					}
 				}
 			} else {
 				// TODO WTF do I do now?
