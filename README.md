@@ -110,7 +110,25 @@ Uses the flightplans.txt [Flightplan Header](#create-flightplan-header) data and
 
 ### Create Aircraft
 From a list of registrations, use a fltsim entry template file to create entries in the `aircraft.cfg` for each registration. Operator name, ICAO, callsign and author can be supplied (via text input boxes). Also optionally creates folders for those aircraft, and optionally copies texture.cfg to them.
-* List of registrations can be one selection of all (1 reg per line), or a multi selection of them.
+* List of registrations can be the following (> ... < indicate the selection start and end):
+  * One block selection of all (1 reg per line, where each item is 7 characters or less)
+    ```
+    >N12345
+     F-ABCD
+     ZS-ABC<
+	```
+  * Multi selection with each reg selected separatedly (where each item is 7 characters or less)
+    ```
+    >N12345<
+    >F-ABCD<
+    >ZS-ABC<
+	```
+  * List of flightplans (selection has to start at "AC#") (reg will be picked out), This is only valid in flightplans.txt files, not in aircraft.txt files.
+    ```
+    >AC#1,N12345,1%,5WEEKS,IFR,0/18:59,@0/20:02 ...
+     AC#2,F-ABCD,1%,5WEEKS,IFR,0/18:59,@0/20:02 ...
+     AC#3,ZS-ABC,1%,5WEEKS,IFR,0/18:59,@0/20:02 ... <
+	```
 * The template file can have four placeholder types. The placeholders will be replaced with the registrations/user data input.
   * Registration: `{reg}`
   * Operator/Airline: `{operator}`

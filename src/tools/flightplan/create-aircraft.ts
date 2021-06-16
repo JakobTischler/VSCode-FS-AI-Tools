@@ -25,21 +25,36 @@ export async function CreateAircraft() {
 
 	// -----------------------------------------------------
 	// GET LIST OF REGISTRATIONS
-	let regs: string[] = [];
+	const regs: string[] = [];
 	const selections = editor.selections;
 	if (!selections) {
 		return false;
 	}
 
 	for (const selection of selections) {
-		let text = document.getText(selection);
-		let split = text.split('\n').map((item) => item.trim());
-		regs.push(...split);
+		const text = document.getText(selection);
+		text.split('\n').forEach((item: string) => {
+			item = item.trim();
+			if (item && item.length) {
+				if (item.startsWith('AC#')) {
+					const commaSplit = item.split(',');
+					if (commaSplit && commaSplit.length > 6 && commaSplit[1]) {
+						// Flightplans.txt
+						const reg = commaSplit[1];
+						if (reg && reg.length) {
+							regs.push(reg);
+						}
+					}
+				} else if (item.length <= 7 && !item.startsWith('//')) {
+					regs.push(item);
+				}
+			}
+		});
 	}
 	// console.log({ regs });
 
 	if (regs.length === 0) {
-		vscode.window.showErrorMessage('No selected text found');
+		vscode.window.showErrorMessage('No valid registrations found');
 		return false;
 	}
 
