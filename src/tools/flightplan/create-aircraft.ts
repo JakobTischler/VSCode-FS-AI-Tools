@@ -13,141 +13,141 @@ export async function CreateAircraft() {
 	console.log('CreateAircraft()');
 
 	const editor = vscode.window.activeTextEditor;
-	if (editor) {
-		const document = editor.document;
-		if ('file' !== document.uri.scheme) {
-			return false;
+	if (!editor) {
+		return false;
+	}
+	const document = editor.document;
+	if ('file' !== document.uri.scheme) {
+		return false;
+	}
+
+	const config = vscode.workspace.getConfiguration('fs-ai-tools.createAircraft', undefined);
+
+	// -----------------------------------------------------
+	// GET LIST OF REGISTRATIONS
+	let regs: string[] = [];
+	const selections = editor.selections;
+	if (!selections) {
+		return false;
+	}
+
+	for (const selection of selections) {
+		let text = document.getText(selection);
+		let split = text.split('\n').map((item) => item.trim());
+		regs.push(...split);
+	}
+	// console.log({ regs });
+
+	if (regs.length === 0) {
+		vscode.window.showErrorMessage('No selected text found');
+		return false;
+	}
+
+	// -----------------------------------------------------
+	// GET TEMPLATE PATH AND CONTENT
+	let templatePaths = config.get('templates') as string[];
+	if (templatePaths?.length === 0) {
+		vscode.window.showErrorMessage('No templates defined');
+		return false;
+	}
+
+	let templatePathStr = await getDropdownSelection('Select template', templatePaths.sort());
+	if (!templatePathStr) {
+		return false;
+	}
+
+	let templatePath = path.parse(templatePathStr);
+	const __WORKDIR__ = templatePath.dir;
+	const template = (await getFileContents(templatePathStr)) as string;
+
+	// -----------------------------------------------------
+	// READ AIRCRAFT.CFG TO GET LAST FLTSIM.X
+	const aircraftCfgPath = path.join(__WORKDIR__, 'aircraft.cfg');
+	if (!fs.existsSync(aircraftCfgPath)) {
+		console.error(`aircraft.cfg file couldn't be found in "${__WORKDIR__}"`);
+		vscode.window.showErrorMessage(`aircraft.cfg file couldn't be found in "${__WORKDIR__}"`);
+	}
+	const aircraftCfgContents = (await getFileContents(aircraftCfgPath)) as string;
+	const fltsimXMatches = aircraftCfgContents.match(/\[fltsim\.(\d+)\]/gi);
+	let startIndex = 0;
+	if (fltsimXMatches) {
+		// console.log(fltsimXMatches, fltsimXMatches[fltsimXMatches.length - 1]);
+		let last = fltsimXMatches[fltsimXMatches.length - 1];
+		let match = last.match(/\[fltsim\.(\d+)\]/i);
+		if (match && match[1]) {
+			startIndex = Number(match[1]) + 1;
 		}
+		console.log({ last, match, startIndex });
+	}
 
-		const config = vscode.workspace.getConfiguration('fs-ai-tools.createAircraft', undefined);
+	// -----------------------------------------------------
+	// CREATE FLTSIM ENTRIES
+	let createFolders = config.get('createFolders') === 'Create';
+	if (config.get('createFolders') === 'Ask everytime') {
+		const userPick = await getDropdownSelection('Create Texture Folders?', ['Create folders', "Don't create folders"]);
+		createFolders = userPick === 'Create folders';
+	}
+	const fltsimEntries = await createFltsimEntries(regs, template, startIndex, createFolders);
+	console.log(fltsimEntries);
 
-		// -----------------------------------------------------
-		// GET LIST OF REGISTRATIONS
-		let regs: string[] = [];
-		const selections = editor.selections;
-		if (!selections) {
-			return false;
+	// -----------------------------------------------------
+	// APPEND ENTRIES TO AIRCRAFT.CFG
+	const fltsimEntriesText = fltsimEntries.map((entry) => entry.fltsim).join('\n');
+	fs.appendFile(aircraftCfgPath, fltsimEntriesText, 'utf8', (err: any) => {
+		if (err) {
+			throw err;
 		}
+	});
 
-		for (const selection of selections) {
-			let text = document.getText(selection);
-			let split = text.split('\n').map((item) => item.trim());
-			regs.push(...split);
-		}
-		// console.log({ regs });
+	// -----------------------------------------------------
+	// COPY TITLES TO CLIPBOARD
+	if (config.get('copyTitlesToClipboard')) {
+		const titles = fltsimEntries
+			.map((entry) => entry.title)
+			.filter((title) => title && title.length > 0)
+			.join('\n');
+		writeTextToClipboard(titles);
+	}
 
-		if (regs.length === 0) {
-			vscode.window.showErrorMessage('No selected text found');
-			return false;
-		}
+	// -----------------------------------------------------
+	// CREATE FOLDERS
+	if (createFolders) {
+		const textureCfgPath = path.join(__WORKDIR__, 'texture.cfg');
+		const textureCfgExists = fs.existsSync(textureCfgPath);
 
-		// -----------------------------------------------------
-		// GET TEMPLATE PATH AND CONTENT
-		let templatePaths = config.get('templates') as string[];
-		if (templatePaths?.length === 0) {
-			vscode.window.showErrorMessage('No templates defined');
-			return false;
-		}
+		for (const entryData of fltsimEntries) {
+			if (entryData.texture) {
+				const dirName = `texture.${entryData.texture}`;
+				const dir = path.join(__WORKDIR__, dirName);
 
-		let templatePathStr = await getDropdownSelection('Select template', templatePaths.sort());
-		if (!templatePathStr) {
-			return false;
-		}
+				if (!fs.existsSync(dir)) {
+					await fs.mkdir(dir, { recursive: true }, (err: any) => {
+						if (err) {
+							throw err;
+						}
+					});
 
-		let templatePath = path.parse(templatePathStr);
-		const __WORKDIR__ = templatePath.dir;
-		const template = (await getFileContents(templatePathStr)) as string;
-
-		// -----------------------------------------------------
-		// READ AIRCRAFT.CFG TO GET LAST FLTSIM.X
-		const aircraftCfgPath = path.join(__WORKDIR__, 'aircraft.cfg');
-		if (!fs.existsSync(aircraftCfgPath)) {
-			console.error(`aircraft.cfg file couldn't be found in "${__WORKDIR__}"`);
-			vscode.window.showErrorMessage(`aircraft.cfg file couldn't be found in "${__WORKDIR__}"`);
-		}
-		const aircraftCfgContents = (await getFileContents(aircraftCfgPath)) as string;
-		const fltsimXMatches = aircraftCfgContents.match(/\[fltsim\.(\d+)\]/gi);
-		let startIndex = 0;
-		if (fltsimXMatches) {
-			// console.log(fltsimXMatches, fltsimXMatches[fltsimXMatches.length - 1]);
-			let last = fltsimXMatches[fltsimXMatches.length - 1];
-			let match = last.match(/\[fltsim\.(\d+)\]/i);
-			if (match && match[1]) {
-				startIndex = Number(match[1]) + 1;
-			}
-			console.log({ last, match, startIndex });
-		}
-
-		// -----------------------------------------------------
-		// CREATE FLTSIM ENTRIES
-		let createFolders = config.get('createFolders') === 'Create';
-		if (config.get('createFolders') === 'Ask everytime') {
-			const userPick = await getDropdownSelection('Create Texture Folders?', ['Create folders', "Don't create folders"]);
-			createFolders = userPick === 'Create folders';
-		}
-		const fltsimEntries = await createFltsimEntries(regs, template, startIndex, createFolders);
-		console.log(fltsimEntries);
-
-		// -----------------------------------------------------
-		// APPEND ENTRIES TO AIRCRAFT.CFG
-		// fs.appendFile(path, data[, options], callback)
-		const fltsimEntriesText = fltsimEntries.map((entry) => entry.fltsim).join('\n');
-		fs.appendFile(aircraftCfgPath, fltsimEntriesText, 'utf8', (err: any) => {
-			if (err) {
-				throw err;
-			}
-		});
-
-		// -----------------------------------------------------
-		// COPY TITLES TO CLIPBOARD
-		if (config.get('copyTitlesToClipboard')) {
-			const titles = fltsimEntries
-				.map((entry) => entry.title)
-				.filter((title) => title && title.length > 0)
-				.join('\n');
-			writeTextToClipboard(titles);
-		}
-
-		// -----------------------------------------------------
-		// CREATE FOLDERS
-		if (createFolders) {
-			const textureCfgPath = path.join(__WORKDIR__, 'texture.cfg');
-			const textureCfgExists = fs.existsSync(textureCfgPath);
-
-			for (const entryData of fltsimEntries) {
-				if (entryData.texture) {
-					const dirName = `texture.${entryData.texture}`;
-					const dir = path.join(__WORKDIR__, dirName);
-
-					if (!fs.existsSync(dir)) {
-						await fs.mkdir(dir, { recursive: true }, (err: any) => {
+					if (config.get('copyTextureCfgToTextureFolder') && textureCfgExists) {
+						await fs.copyFile(textureCfgPath, path.join(__WORKDIR__, dirName, 'texture.cfg'), (err: any) => {
 							if (err) {
 								throw err;
 							}
 						});
-
-						if (config.get('copyTextureCfgToTextureFolder') && textureCfgExists) {
-							await fs.copyFile(textureCfgPath, path.join(__WORKDIR__, dirName, 'texture.cfg'), (err: any) => {
-								if (err) {
-									throw err;
-								}
-							});
-						}
 					}
-				} else {
-					// TODO WTF do I do now?
 				}
+			} else {
+				// TODO WTF do I do now?
 			}
 		}
-
-		// -----------------------------------------------------
-		// SUCCESS MESSAGE
-		let msg = `${plural(regs.length, 'entry', 'entries')} created`;
-		if (config.get('copyTitlesToClipboard')) {
-			msg += ` and ${plural(regs.length, 'title')} copied`;
-		}
-		vscode.window.showInformationMessage(msg);
 	}
+
+	// -----------------------------------------------------
+	// SUCCESS MESSAGE
+	let msg = `${plural(regs.length, 'entry', 'entries')} created`;
+	if (config.get('copyTitlesToClipboard')) {
+		msg += ` and ${plural(regs.length, 'title')} copied`;
+	}
+	vscode.window.showInformationMessage(msg);
 }
 
 /**

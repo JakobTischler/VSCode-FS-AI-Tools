@@ -2,6 +2,15 @@
 
 A Visual Studio Code extension for managing, cleaning and improving FS/Prepar3D AI flightplans, `aircraft.cfg` files as well as `add-ons.cfg` and `scenery.cfg` files. All options are configurable in the extension settings.
 
+## Installation
+
+1. Download the [latest release `.vsix` file](https://github.com/JakobTischler/VSCode-FS-AI-Tools/releases/latest)
+2. In VS Code, use the command "Extensions: Install from VSIX..."
+3. Select the downloaded `.vsix` file and install
+4. Reload window.
+
+---
+
 ## Features
 
 ### Clean Aircraft.cfg
@@ -25,7 +34,7 @@ A Visual Studio Code extension for managing, cleaning and improving FS/Prepar3D 
 
 * Add leading zeroes to flightnumbers so they have 4 digits (`12` ➞ `0012`)
 * Add leading zeroes to flight levels so they have 3 digits (`70` ➞ `070`)
-* Add `@` to departure times (`3/14:31` ➞ `@3/14:31`)
+* Add `@` to arrival times (`3/14:31` ➞ `@3/14:31`)
 * Remove seconds from flight times (`hh:mm:ss` ➞ `hh:mm`)
 * Convert the flightplan to uppercase
 * Randomize the flight percentages to between configurable min and max values
