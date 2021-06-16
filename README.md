@@ -99,6 +99,46 @@ Uses the flightplans.txt [Flightplan Header](#create-flightplan-header) data and
 <br>
 <br>
 
+### Create Aircraft
+From a list of registrations, use a fltsim entry template file to create entries in the `aircraft.cfg` for each registration. Operator name, ICAO, callsign and author can be supplied (via text input boxes). Also optionally creates folders for those aircraft, and optionally copies texture.cfg to them.
+* List of registrations can be one selection of all (1 reg per line), or a multi selection of them.
+* The template file can have four placeholder types. The placeholders will be replaced with the registrations/user data input.
+  * Registration: `{reg}`
+  * Operator/Airline: `{operator}`
+  * ICAO: `{icao}`
+  * Callsign: `{callsign}`
+  * Author: `{author}`
+* Each input data point is optional. If not supplied, it will be removed from the created entry.
+* Each placeholder can have an optional separator that only gets used if the placeholder is used. The separator is anything after a question mark (?), e.g. `{reg? }` means there will be one space after the registration, while `{icao?---}` will have three dashes (-) after the ICAO.
+* The new fltsim.X number will be based on the last existing entry number in the aircraft.cfg file.
+* The template file has to be in the aircraft folder, on the same hierarchical level as the `aircraft.cfg` file.
+* Template file example "fltsim-template.cfg":
+  ```cfg
+  [fltsim.0]
+  title=HTAI Cessna 172 Skyhawk {reg? }{icao?-}{operator}
+  sim=HTAI Cessna 172 Skyhawk
+  model=
+  texture={reg? }{icao?-}{operator}
+  atc_airline={callsign}
+  ui_manufacturer=Henry Tomkiewicz
+  ui_type=Cessna 172 Skyhawk
+  ui_variation={reg? }{operator}
+  atc_parking_codes={icao?,}GA2J,C172
+  atc_parking_types=RAMP
+  ui_createdby={author}
+  ```
+* Template file paths must be added to the "FS AI Tools → Create Aircraft → Templates" setting (`fs-ai-tools.createAircraft.templates`).
+  * *If adding them in the JSON settings file, please note that backslashes have to be escaped.*
+* The corresponding texture folder creation has three settings:
+  * Create folders → Folders will always be created
+  * Don't create folders → Folders will never be created
+  * Ask everytime → You will be asked everytime you run the "Create Aircraft" function
+* If there is a `texture.cfg` file on the same hierarchical level as the `aircraft.cfg`/template file, it can optionally be copied to the newly created folders. This can be toggled in the settings.
+
+<br>
+<br>
+<br>
+
 ### Create Flightplan Header
 Uses a series of text input boxes to created a three-line header with flightplan data (name, icao, callsign, author, season). Tries to read the airline name and ICAO code from the filename.
 
