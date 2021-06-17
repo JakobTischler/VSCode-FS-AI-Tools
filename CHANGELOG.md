@@ -2,6 +2,7 @@
 
 ### 1.0.17
 - `Create Aircraft` improvements: any leading or trailing spaces in a template are now trimmed away (was producing file system errors before)
+- `Clean Aircraft.cfg`: Fixed "Remove unused lines" case where no value was provided (`key`) (lines weren't deleted before)
 
 ### 1.0.16
 - New function `Create Aircraft`: From a list of registrations, use a fltsim entry template file to create entries in the aircraft.cfg for each registration. Also optionally create folders for those aircraft, and optionally copy texture.cfg to them.

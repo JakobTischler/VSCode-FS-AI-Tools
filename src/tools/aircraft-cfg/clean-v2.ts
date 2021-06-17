@@ -80,7 +80,9 @@ export async function CleanAircraftCfg() {
 							if (config.cleanAircraftCfg.removeUnusedLines) {
 								if (removeProperties.has(key)) {
 									let removeValue = removeProperties.get(key);
-									if (removeValue === '*' && value) {
+									if (removeValue === undefined) {
+										add = false;
+									} else if (removeValue === '*' && value) {
 										add = false;
 									} else if (removeValue === '_' && !value) {
 										add = false;
