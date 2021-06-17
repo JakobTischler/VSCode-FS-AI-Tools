@@ -73,7 +73,14 @@ export async function CreateAircraft() {
 
 	let templatePath = path.parse(templatePathStr);
 	const __WORKDIR__ = templatePath.dir;
-	const template = (await getFileContents(templatePathStr)) as string;
+	let template = (await getFileContents(templatePathStr)) as string;
+
+	// Clean up template
+	template = template
+		.trim()
+		.split('\n')
+		.map((line) => line.trim())
+		.join('\n');
 
 	// -----------------------------------------------------
 	// READ AIRCRAFT.CFG TO GET LAST FLTSIM.X
@@ -107,7 +114,7 @@ export async function CreateAircraft() {
 
 	// -----------------------------------------------------
 	// APPEND ENTRIES TO AIRCRAFT.CFG
-	const fltsimEntriesText = fltsimEntries.map((entry) => entry.fltsim).join('\n');
+	const fltsimEntriesText = '\n' + [...fltsimEntries.map((entry) => entry.fltsim)].join('\n\n');
 	fs.appendFile(aircraftCfgPath, fltsimEntriesText, 'utf8', (err: any) => {
 		if (err) {
 			throw err;
@@ -194,11 +201,17 @@ async function createFltsimEntries(regs: string[], template: string, startIndex:
 			.replace(/{callsign(?:\??)(.*?)}/g, callsign?.length > 0 ? callsign + '$1' : '')
 			.replace(/{author(?:\??)(.*?)}/g, author?.length > 0 ? author + '$1' : '');
 
+		// Trim each line
+		text = text
+			.split('\n')
+			.map((line) => line.trim())
+			.join('\n');
+
 		let texture;
 		if (createFolders) {
 			const textureMatch = text.match(/texture=(.*)(?:\n|\r)/i);
 			if (textureMatch && textureMatch[1]) {
-				texture = textureMatch[1];
+				texture = textureMatch[1].trim();
 			}
 			// TODO what if there's no texture match? Skip folder creation?
 		}
