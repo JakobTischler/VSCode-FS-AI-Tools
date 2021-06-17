@@ -17,7 +17,7 @@ export async function CreateAircraft() {
 		return false;
 	}
 	const document = editor.document;
-	if ('file' !== document.uri.scheme) {
+	if (!['file', 'untitled'].includes(document.uri.scheme)) {
 		return false;
 	}
 

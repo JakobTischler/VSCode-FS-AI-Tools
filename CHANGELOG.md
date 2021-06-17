@@ -1,7 +1,9 @@
 # Change Log
 
 ### 1.0.17
-- `Create Aircraft` improvements: any leading or trailing spaces in a template are now trimmed away (was producing file system errors before)
+- `Create Aircraft` improvements:
+  - Any leading or trailing spaces in a template are now trimmed away (was producing file system errors before)
+  - Now also works from unsaved (untitled) documents (e.g. copied list of regs to a new, empty file)
 - `Clean Aircraft.cfg`: Fixed "Remove unused lines" case where no value was provided (`key`) (lines weren't deleted before)
 
 ### 1.0.16
