@@ -30,8 +30,8 @@ export async function CountAircraft() {
 				}
 
 				// New group or end of file
-				if ((line.startsWith('//') && lines[index + 1]?.startsWith('AC#')) || isLastLine) {
-					if (currentGroupLineIndex !== null) {
+				if (line.startsWith('//') || isLastLine) {
+					if (currentGroupLineIndex !== null && groupCount > 0) {
 						// Append count text to header line
 						total += groupCount;
 
@@ -43,12 +43,13 @@ export async function CountAircraft() {
 
 						text = text.trim() + ` [${groupCount}]`;
 						lines[currentGroupLineIndex] = text;
+
+						numTypes++;
 					}
 
 					if (!isLastLine) {
 						currentGroupLineIndex = index;
 						groupCount = 0;
-						numTypes++;
 					}
 
 					// Count aircraft
