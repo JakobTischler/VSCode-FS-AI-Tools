@@ -6,7 +6,7 @@
 	},
 	"displayName": "FS AI Tools",
 	"description": "A bag of tools for AI flightplans and .cfg files",
-	"version": "1.0.17",
+	"version": "1.0.18",
 	"license": "",
 	"engines": {
 		"vscode": "^1.57.0"
@@ -312,6 +312,21 @@
 						"WRSJ:WARR",
 						"WRSQ:WARQ"
 					]
+				},
+				"fs-ai-tools.cleanFlightplan.adjustComments": {
+					"type": "string",
+					"default": "Don't change",
+					"enum": [
+						"Don't change",
+						"1 space",
+						"No space"
+					],
+					"enumDescriptions": [
+						"Doesn't change any comments.",
+						"Adds/removes space(s) after double slashes so that there is exactly 1 space after each \"//\".",
+						"Removes all spaces after double slashes so that there is no space after each \"//\"."
+					],
+					"scope": "window"
 				},
 				"fs-ai-tools.createAircraft._ShowCreateAircraftInContextMenu": {
 					"type": "boolean",

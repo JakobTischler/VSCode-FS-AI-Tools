@@ -39,6 +39,7 @@ A Visual Studio Code extension for managing, cleaning and improving FS/Prepar3D 
 * Convert the flightplan to uppercase
 * Randomize the flight percentages to between configurable min and max values
 * Change definable airport codes to new ones
+* Add or remove spaces after `//`
 <br>
 <br>
 <br>

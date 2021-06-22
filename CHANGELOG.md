@@ -1,5 +1,8 @@
 # Change Log
 
+### 1.0.18
+- `Clean Flightplan`: new option to add/remove spaces after `//`. See "Clean Flightplan" → "Ajust Comments" setting.
+
 ### 1.0.17
 - `Create Aircraft` improvements:
   - Any leading or trailing spaces in a template are now trimmed away (was producing file system errors before)

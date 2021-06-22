@@ -10,7 +10,7 @@ export async function CreateAifpCfg() {
 		const filename = path.basename(document.uri.path).toLocaleLowerCase();
 		if ('file' === document.uri.scheme && filename.startsWith('flightplans')) {
 			let lines = document.getText().trim().split('\n');
-			if (!lines[0].startsWith('//FSXDAYS')) {
+			if (!lines[0].startsWith('//FSXDAYS') && !lines[0].startsWith('// FSXDAYS')) {
 				console.error(`First line doesn\'t start with "//FSXDAYS". Aborting.`);
 				return false;
 			}

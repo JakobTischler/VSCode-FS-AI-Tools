@@ -2,7 +2,7 @@ import * as vscode from 'vscode';
 import { getRandomInt, padNumber, getFilenameFromPath } from '../../helpers';
 
 export function CleanFlightplan() {
-	const config = vscode.workspace.getConfiguration('fs-ai-tools', undefined);
+	const config = vscode.workspace.getConfiguration('fs-ai-tools.cleanFlightplan', undefined);
 
 	const editor = vscode.window.activeTextEditor;
 	if (editor) {
@@ -12,7 +12,7 @@ export function CleanFlightplan() {
 			let text = document.getText();
 
 			// Change airports
-			let airportList = config.cleanFlightplan.changeAirports;
+			let airportList = config.changeAirports;
 			if (airportList && airportList !== null && airportList.length > 0) {
 				for (let set of airportList) {
 					set = set.split(':').map((icao: string) => icao.trim().toUpperCase());
@@ -24,34 +24,38 @@ export function CleanFlightplan() {
 				}
 			}
 
+			const commentsNumSpaces = config.adjustComments === '1 space' ? 1 : config.adjustComments === 'No space' ? 0 : -1;
+
 			const ret = [];
 			const splitData = text.trim().split('\n');
 			for (let line of splitData) {
 				if (line.startsWith('AC#') || line.startsWith('//#')) {
-					if (config.cleanFlightplan.removeSeconds || config.cleanFlightplan.addAtToArrivalTimes) {
-						line = formatTimes(line, config.cleanFlightplan.removeSeconds, config.cleanFlightplan.addAtToArrivalTimes);
+					if (config.removeSeconds || config.addAtToArrivalTimes) {
+						line = formatTimes(line, config.removeSeconds, config.addAtToArrivalTimes);
 					}
 
-					if (config.cleanFlightplan.randomPercentages) {
-						line = randomizePercentage(
-							line,
-							config.cleanFlightplan.randomPercentagesMin,
-							config.cleanFlightplan.randomPercentagesMax
-						);
+					if (config.randomPercentages) {
+						line = randomizePercentage(line, config.randomPercentagesMin, config.randomPercentagesMax);
 					}
 
-					if (config.cleanFlightplan.uppercase) {
+					if (config.uppercase) {
 						line = transformToUppercase(line);
 					}
 
-					if (config.cleanFlightplan.leadingZeroesFlightnumbers) {
+					if (config.leadingZeroesFlightnumbers) {
 						line = padFlightNumbers(line);
 					}
 
-					if (config.cleanFlightplan.leadingZeroesFlightLevels) {
+					if (config.leadingZeroesFlightLevels) {
 						line = padFlightLevels(line);
 					}
 				}
+
+				// Adjust comments
+				if (commentsNumSpaces > -1 && line.trimStart().startsWith('//')) {
+					line = changeComments(line, commentsNumSpaces);
+				}
+
 				ret.push(line);
 			}
 			ret.push('');
@@ -123,5 +127,23 @@ function padFlightLevels(text: string): string {
 	text = text.replace(/,(\d+),([FfRr]{1})/gi, (fullMatch, g1, g2) => {
 		return `,${padNumber(g1, 3)},${g2}`;
 	});
+	return text;
+}
+
+/**
+ * Adds a single space / removes all spaces after comment start "//"
+ * @1 space: https://regex101.com/r/kmRPUa/1
+ * @0 spaces: https://regex101.com/r/iKJTud/1/
+ */
+function changeComments(text: string, numSpaces: number = 1): string {
+	if (numSpaces > 0) {
+		text = text.replace(/^(\s*?)\/\/(\s*?)(\S)/, (fullMatch, g1, g2, g3) => {
+			return `${g1}//${' '.repeat(numSpaces) + g3}`;
+		});
+	} else {
+		text = text.replace(/^(\s*?)\/\/(\s+)/, (fullMatch, g1, g2) => {
+			return g1 + '//';
+		});
+	}
 	return text;
 }
