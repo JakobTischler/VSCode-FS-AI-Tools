@@ -86,3 +86,33 @@ export const writeTextToClipboard = (text: string, message?: string) => {
 		}
 	});
 };
+
+/**
+ * Creates a dropdown (`showQuickPick`) with custom items and asynchronously returns the value selected by the user.
+ * @param title The dropdown's title
+ * @param items An array of the selectable dropdown items as strings
+ * @param canPickMany If `true`, multiple values can be selected. Default: `false`
+ * @param ignoreFocusOut If `true`, the dropdown stays open when clicking somewhere else. Default: `true`
+ * @returns The value selected by the user as string, or `undefined` if cancelled by user.
+ */
+export async function getDropdownSelection(title: string, items: string[], canPickMany: boolean = false, ignoreFocusOut: boolean = true) {
+	return await window.showQuickPick(items, { title: title, canPickMany: canPickMany, ignoreFocusOut: ignoreFocusOut });
+}
+
+/**
+ * Simple number loop with step size of 1 / -1. Returns the next value in the loop.
+ * @param num Initial number
+ * @param min Minimum bounds of loop
+ * @param max Maximum bounds of loop
+ * @param dir Loop direction (1 or -1)
+ * @returns Returns the next value in the loop based on direction
+ */
+export function loopNumber(num: number, min: number, max: number, dir: 1 | -1 = 1) {
+	let ret = num + dir;
+	if (ret < min) {
+		return max;
+	} else if (ret > max) {
+		return min;
+	}
+	return ret;
+}

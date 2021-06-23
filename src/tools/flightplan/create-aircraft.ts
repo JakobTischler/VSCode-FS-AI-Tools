@@ -1,6 +1,6 @@
 import * as vscode from 'vscode';
 import * as path from 'path';
-import { plural, writeTextToClipboard } from '../../helpers';
+import { getDropdownSelection, plural, writeTextToClipboard } from '../../helpers';
 const fs = require('fs');
 
 interface FltsimEntry {
@@ -236,10 +236,6 @@ async function getFileContents(path: string, encoding: string = 'utf8') {
 		vscode.window.showErrorMessage(`Failed to read file at "${path}": ${err}`);
 	});
 	return data;
-}
-
-async function getDropdownSelection(title: string, items: string[]) {
-	return await vscode.window.showQuickPick(items, { title: title, canPickMany: false, ignoreFocusOut: true });
 }
 
 async function getTextInput(placeholderText: string, prompt?: string) {

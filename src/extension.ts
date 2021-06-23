@@ -11,6 +11,7 @@ import { CreateFlightplanHeaderFromAifp } from './tools/flightplan/create-header
 import { RebaseAircraftNumbers } from './tools/flightplan/rebase-ac-numbers';
 import { RenumberAddOnsCfg } from './tools/add-ons-cfg/renumber';
 import { RenumberSceneryCfg } from './tools/scenery-cfg/renumber';
+import { SwitchFS9FSX } from './tools/flightplan/switch-fs9-fsx';
 
 export function activate(context: vscode.ExtensionContext) {
 	let commands = new Map();
@@ -25,6 +26,7 @@ export function activate(context: vscode.ExtensionContext) {
 	commands.set('rebaseAircraftNumbers', RebaseAircraftNumbers);
 	commands.set('renumberAddOnsCfg', RenumberAddOnsCfg);
 	commands.set('renumberSceneryCfg', RenumberSceneryCfg);
+	commands.set('switchFS9FSX', SwitchFS9FSX);
 
 	for (let [cmd, fn] of commands.entries()) {
 		context.subscriptions.push(

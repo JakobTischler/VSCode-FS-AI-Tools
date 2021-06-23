@@ -31,8 +31,8 @@ export async function CountAircraft() {
 
 				// New group or end of file
 				if (line.startsWith('//') || isLastLine) {
+					// Current group complete → append count text to header line
 					if (currentGroupLineIndex !== null && groupCount > 0) {
-						// Append count text to header line
 						total += groupCount;
 
 						let text = lines[currentGroupLineIndex].trim();
@@ -65,33 +65,4 @@ export async function CountAircraft() {
 			window.showInformationMessage(`Aircraft counted (${total} total, with ${numTypes} different types)`);
 		}
 	}
-}
-
-async function getNumberInput(value: string = '1', placeholderText: string) {
-	const result = await window.showInputBox({
-		value: value,
-		valueSelection: undefined,
-		placeHolder: placeholderText,
-		prompt: placeholderText,
-		validateInput: (text) => {
-			// window.showInformationMessage(`Validating "${text}"`);
-			if (text.length === 0) {
-				return 'Anything? Anything at all?!';
-			}
-			if (text === '0') {
-				return 'Maybe a little more?';
-			}
-			if (isNaN(Number(text))) {
-				return "This isn't a number";
-			}
-			if (Number(text) <= 0) {
-				return 'Must be greater than zero';
-			}
-			if (text.search(/\./) >= 0) {
-				return 'Number must not have decimals';
-			}
-			return null;
-		},
-	});
-	return Number(result);
 }

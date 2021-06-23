@@ -137,9 +137,11 @@ function padFlightLevels(text: string): string {
  */
 function changeComments(text: string, numSpaces: number = 1): string {
 	if (numSpaces > 0) {
-		text = text.replace(/^(\s*?)\/\/(\s*?)(\S)/, (fullMatch, g1, g2, g3) => {
-			return `${g1}//${' '.repeat(numSpaces) + g3}`;
-		});
+		text = text
+			.replace(/^(\s*?)\/\/(\s*?)(\S)/, (fullMatch, g1, g2, g3) => {
+				return `${g1}//${' '.repeat(numSpaces) + g3}`;
+			})
+			.replace('// FSXDAYS', '//FSXDAYS');
 	} else {
 		text = text.replace(/^(\s*?)\/\/(\s+)/, (fullMatch, g1, g2) => {
 			return g1 + '//';

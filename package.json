@@ -25,7 +25,8 @@
 		"onCommand:extension.createFlightplanHeaderFromAifp",
 		"onCommand:extension.rebaseAircraftNumbers",
 		"onCommand:extension.renumberAddOnsCfg",
-		"onCommand:extension.renumberSceneryCfg"
+		"onCommand:extension.renumberSceneryCfg",
+		"onCommand:extension.switchFS9FSX"
 	],
 	"main": "./out/extension.js",
 	"contributes": {
@@ -95,6 +96,12 @@
 				"title": "Renumber scenery.cfg",
 				"category": "FS AI Tools",
 				"when": "resourceFilename =~ /^scenery.cfg/i"
+			},
+			{
+				"command": "extension.switchFS9FSX",
+				"title": "Switch FS9 ⟷ FSX",
+				"category": "FS AI Tools",
+				"when": "editorHasSelection && resourceFilename =~ /^flightplans.*txt$/i')"
 			}
 		],
 		"menus": {
@@ -153,6 +160,11 @@
 					"command": "extension.renumberSceneryCfg",
 					"group": "FS AI Tools",
 					"when": "config.fs-ai-tools.showRenumberSceneryCfgInContextMenu && resourceFilename =~ /^scenery.cfg/i"
+				},
+				{
+					"command": "extension.switchFS9FSX",
+					"group": "FS AI Tools",
+					"when": "config.fs-ai-tools.showSwitchFS9FsxInContextMenu && editorHasSelection && resourceFilename =~ /^flightplans.*txt$/i"
 				}
 			]
 		},
@@ -428,6 +440,13 @@
 					"default": true,
 					"title": "Add to Context Menu",
 					"markdownDescription": "Adds the \"Renumber\" function to the context menu when a `scenery.cfg` file is open.",
+					"scope": "window"
+				},
+				"fs-ai-tools.showSwitchFS9FsxInContextMenu": {
+					"type": "boolean",
+					"default": false,
+					"title": "Add to Context Menu",
+					"markdownDescription": "Adds the \"Switch FS9 ⟷ FSX\" function to the context menu when a `Flightplan….txt` file is open and text has been selected.",
 					"scope": "window"
 				}
 			}
