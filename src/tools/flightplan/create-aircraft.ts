@@ -1,7 +1,9 @@
 import * as vscode from 'vscode';
-import * as path from 'path';
-import { getDropdownSelection, plural, writeTextToClipboard } from '../../helpers';
-const fs = require('fs');
+import * as Path from 'path';
+import * as fs from 'fs';
+import { getFileContents, plural, writeTextToClipboard } from '../../helpers';
+import { getDropdownSelection, getTextInput } from '../../input';
+import { AifpData, readAifpCfg } from '../../read-aifp';
 
 interface FltsimEntry {
 	fltsim: string;
@@ -71,7 +73,7 @@ export async function CreateAircraft() {
 		return false;
 	}
 
-	let templatePath = path.parse(templatePathStr);
+	let templatePath = Path.parse(templatePathStr);
 	const __WORKDIR__ = templatePath.dir;
 	let template = (await getFileContents(templatePathStr)) as string;
 
@@ -84,7 +86,7 @@ export async function CreateAircraft() {
 
 	// -----------------------------------------------------
 	// READ AIRCRAFT.CFG TO GET LAST FLTSIM.X
-	const aircraftCfgPath = path.join(__WORKDIR__, 'aircraft.cfg');
+	const aircraftCfgPath = Path.join(__WORKDIR__, 'aircraft.cfg');
 	if (!fs.existsSync(aircraftCfgPath)) {
 		console.error(`aircraft.cfg file couldn't be found in "${__WORKDIR__}"`);
 		vscode.window.showErrorMessage(`aircraft.cfg file couldn't be found in "${__WORKDIR__}"`);
@@ -103,13 +105,18 @@ export async function CreateAircraft() {
 	}
 
 	// -----------------------------------------------------
+	// READ AIFP.CFG DATA TO PRE-FILL INPUTS
+	const aifpCfgPath = Path.join(Path.dirname(editor.document.uri.path), 'aifp.cfg');
+	const aifpCfgData = await readAifpCfg(aifpCfgPath);
+
+	// -----------------------------------------------------
 	// CREATE FLTSIM ENTRIES
 	let createFolders = config.get('createFolders') === 'Create';
 	if (config.get('createFolders') === 'Ask everytime') {
 		const userPick = await getDropdownSelection('Create Texture Folders?', ['Create folders', "Don't create folders"]);
 		createFolders = userPick === 'Create folders';
 	}
-	const fltsimEntries = await createFltsimEntries(regs, template, startIndex, createFolders);
+	const fltsimEntries = await createFltsimEntries(regs, template, aifpCfgData, startIndex, createFolders);
 	console.log(fltsimEntries);
 
 	// -----------------------------------------------------
@@ -134,13 +141,13 @@ export async function CreateAircraft() {
 	// -----------------------------------------------------
 	// CREATE FOLDERS
 	if (createFolders) {
-		const textureCfgPath = path.join(__WORKDIR__, 'texture.cfg');
+		const textureCfgPath = Path.join(__WORKDIR__, 'texture.cfg');
 		const textureCfgExists = fs.existsSync(textureCfgPath);
 
 		for (const entryData of fltsimEntries) {
 			if (entryData.texture) {
 				const dirName = `texture.${entryData.texture}`;
-				const dir = path.join(__WORKDIR__, dirName);
+				const dir = Path.join(__WORKDIR__, dirName);
 
 				if (!fs.existsSync(dir)) {
 					await fs.mkdir(dir, { recursive: true }, (err: any) => {
@@ -150,7 +157,7 @@ export async function CreateAircraft() {
 					});
 
 					if (config.get('copyTextureCfgToTextureFolder') && textureCfgExists) {
-						await fs.copyFile(textureCfgPath, path.join(__WORKDIR__, dirName, 'texture.cfg'), (err: any) => {
+						await fs.copyFile(textureCfgPath, Path.join(__WORKDIR__, dirName, 'texture.cfg'), (err: any) => {
 							if (err) {
 								throw err;
 							}
@@ -183,13 +190,23 @@ export async function CreateAircraft() {
  * @test https://regex101.com/r/YjtPK3/1/
  * @returns All [fltsim.x] entries in an array
  */
-async function createFltsimEntries(regs: string[], template: string, startIndex: number = 0, createFolders: boolean = true) {
+async function createFltsimEntries(
+	regs: string[],
+	template: string,
+	aifpCfgData: AifpData,
+	startIndex: number = 0,
+	createFolders: boolean = true
+) {
 	const entries: FltsimEntry[] = [];
 
-	const operator = (await getTextInput('Operator', "The operator's (airline's) name. Leave empty if not applicable.")) as string;
-	const icao = (await getTextInput('ICAO', 'Leave empty if not applicable.')) as string;
-	const callsign = (await getTextInput('Callsign', 'Leave empty if not applicable.')) as string;
-	const author = (await getTextInput('Author', "The repaint's creator. Leave empty if not applicable.")) as string;
+	const operator = (await getTextInput(
+		'Operator',
+		'Operator (airline). Leave empty if not applicable.',
+		aifpCfgData.airline || ''
+	)) as string;
+	const icao = (await getTextInput('ICAO', 'ICAO. Leave empty if not applicable.', aifpCfgData.icao || '')) as string;
+	const callsign = (await getTextInput('Callsign', 'Callsign. Leave empty if not applicable.', aifpCfgData.callsign || '')) as string;
+	const author = (await getTextInput('Author', 'Repaint creator. Leave empty if not applicable.')) as string;
 
 	let index = startIndex;
 	for (let reg of regs) {
@@ -228,22 +245,4 @@ async function createFltsimEntries(regs: string[], template: string, startIndex:
 	}
 
 	return entries;
-}
-
-async function getFileContents(path: string, encoding: string = 'utf8') {
-	const data = await fs.promises.readFile(path, encoding).catch((err: any) => {
-		console.error(`Failed to read file at "${path}"`, err);
-		vscode.window.showErrorMessage(`Failed to read file at "${path}": ${err}`);
-	});
-	return data;
-}
-
-async function getTextInput(placeholderText: string, prompt?: string) {
-	return await vscode.window.showInputBox({
-		value: '',
-		valueSelection: undefined,
-		placeHolder: placeholderText,
-		prompt: prompt ? prompt : placeholderText,
-		ignoreFocusOut: true,
-	});
 }

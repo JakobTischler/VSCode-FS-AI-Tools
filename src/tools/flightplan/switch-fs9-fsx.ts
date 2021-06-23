@@ -1,5 +1,6 @@
 import { window } from 'vscode';
-import { getDropdownSelection, getFilenameFromPath, loopNumber } from '../../helpers';
+import { getFilenameFromPath, loopNumber } from '../../helpers';
+import { getDropdownSelection } from '../../input';
 
 export async function SwitchFS9FSX() {
 	const editor = window.activeTextEditor;

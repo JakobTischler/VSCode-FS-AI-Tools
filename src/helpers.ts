@@ -1,4 +1,5 @@
 import { env, window } from 'vscode';
+import * as Fs from 'fs';
 
 export function replacePartAtPos(str: string, position: number, length: number, newText: string): string {
 	const before = str.substr(0, position);
@@ -88,18 +89,6 @@ export const writeTextToClipboard = (text: string, message?: string) => {
 };
 
 /**
- * Creates a dropdown (`showQuickPick`) with custom items and asynchronously returns the value selected by the user.
- * @param title The dropdown's title
- * @param items An array of the selectable dropdown items as strings
- * @param canPickMany If `true`, multiple values can be selected. Default: `false`
- * @param ignoreFocusOut If `true`, the dropdown stays open when clicking somewhere else. Default: `true`
- * @returns The value selected by the user as string, or `undefined` if cancelled by user.
- */
-export async function getDropdownSelection(title: string, items: string[], canPickMany: boolean = false, ignoreFocusOut: boolean = true) {
-	return await window.showQuickPick(items, { title: title, canPickMany: canPickMany, ignoreFocusOut: ignoreFocusOut });
-}
-
-/**
  * Simple number loop with step size of 1 / -1. Returns the next value in the loop.
  * @param num Initial number
  * @param min Minimum bounds of loop
@@ -115,4 +104,29 @@ export function loopNumber(num: number, min: number, max: number, dir: 1 | -1 = 
 		return min;
 	}
 	return ret;
+}
+
+/**
+ * Asynchronously reads and returns the contents of the file at the given path. Early out if file doesn't exist.
+ * @param path The file path
+ * @param encoding The file encoding, defaults to "utf8"
+ * @returns The file contents as string
+ */
+export async function getFileContents(path: string, encoding: string = 'utf8') {
+	if (!Fs.existsSync(path)) {
+		console.error(`File at "${path}" couldn't be found`);
+		window.showErrorMessage(`File at "${path}" couldn't be found`);
+		return null;
+	}
+
+	const data = await Fs.promises.readFile(path, encoding).catch((err: any) => {
+		console.error(`Failed to read file at "${path}"`, err);
+		window.showErrorMessage(`Failed to read file at "${path}": ${err}`);
+		return null;
+	});
+	if (!data || typeof data !== 'string') {
+		return null;
+	}
+
+	return data;
 }
