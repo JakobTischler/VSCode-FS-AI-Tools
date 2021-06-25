@@ -47,7 +47,7 @@ export async function SwitchFS9FSX() {
 		}
 		const maxDays = periods.get(period);
 
-		lines[index] = line.replace(/(\,@?)(\d+)\//gi, (fullMatch, pre: string, number: string) => {
+		lines[index] = line.replace(/(\,@?(?:TNG)?)(\d+)\//gi, (fullMatch, pre: string, number: string) => {
 			// In FS9 the week starts on Sunday which has the number 0. In FSX the week starts on Monday with the number 0.
 			//      M T W T F S S
 			// FS9: 1 2 3 4 5 6 0
