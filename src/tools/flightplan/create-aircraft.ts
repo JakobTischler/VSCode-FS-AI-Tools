@@ -118,6 +118,10 @@ export async function CreateAircraft() {
 	}
 	const fltsimEntries = await createFltsimEntries(regs, template, aifpCfgData, startIndex, createFolders);
 	console.log(fltsimEntries);
+	if (fltsimEntries === null) {
+		vscode.window.showInformationMessage(`"Create aircraft" cancelled`);
+		return false;
+	}
 
 	// -----------------------------------------------------
 	// APPEND ENTRIES TO AIRCRAFT.CFG
@@ -204,9 +208,21 @@ async function createFltsimEntries(
 		'Operator (airline). Leave empty if not applicable.',
 		aifpCfgData.airline || ''
 	)) as string;
+	if (operator === undefined) {
+		return null;
+	}
 	const icao = (await getTextInput('ICAO', 'ICAO. Leave empty if not applicable.', aifpCfgData.icao || '')) as string;
+	if (icao === undefined) {
+		return null;
+	}
 	const callsign = (await getTextInput('Callsign', 'Callsign. Leave empty if not applicable.', aifpCfgData.callsign || '')) as string;
+	if (callsign === undefined) {
+		return null;
+	}
 	const author = (await getTextInput('Author', 'Repaint creator. Leave empty if not applicable.')) as string;
+	if (author === undefined) {
+		return null;
+	}
 
 	let index = startIndex;
 	for (let reg of regs) {
