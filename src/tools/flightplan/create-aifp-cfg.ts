@@ -10,41 +10,43 @@ export async function CreateAifpCfg() {
 		const filename = path.basename(document.uri.path).toLocaleLowerCase();
 		if ('file' === document.uri.scheme && filename.startsWith('flightplans')) {
 			let lines = document.getText().trim().split('\n');
-			if (!lines[0].startsWith('//FSXDAYS') && !lines[0].startsWith('// FSXDAYS')) {
-				console.error(`First line doesn\'t start with "//FSXDAYS". Aborting.`);
-				return false;
+			lines.length = 3;
+
+			// Validation
+			for (let [index, line] of lines.entries()) {
+				if (!line.length || !line.startsWith('//')) {
+					console.error(`Line ${index + 1} doesn't start with "//".`);
+					vscode.window.showErrorMessage(`Line ${index + 1} doesn't start with "//".`);
+					return false;
+				}
+				if (index === 0 && !line.startsWith('//FSXDAYS')) {
+					console.error(`First line doesn't start with "//FSXDAYS"`);
+					vscode.window.showErrorMessage(`First line doesn't start with "//FSXDAYS"`);
+					return false;
+				}
 			}
 
 			// -----------------------------------------------------
 			// PARSE DATA
 
-			lines.length = 3;
-
-			let data = {
-				name: '',
-				icao: '',
-				callsign: '',
-				author: '',
-				season: '',
-				fsVersion: '',
-			};
-
 			// Remove double slashes
 			lines = lines.map((line: string) => line.replace(/^\/*/, '').trim());
+
+			const data: { [key: string]: string } = {};
 
 			// Line 1
 			data.fsVersion = lines[0].split('=')[1] === 'TRUE' ? 'FSX' : 'FS9';
 
 			// Line 2
 			let airlineData = trimArrayItems(lines[1].split('|'));
-			data.name = airlineData[0];
-			data.icao = airlineData[1] ? airlineData[1] : '';
-			data.callsign = airlineData[2] ? airlineData[2].match(/"(.+?)"/i)[1] : '';
+			data.name = airlineData[0] || '';
+			data.icao = airlineData[1] || '';
+			data.callsign = airlineData[2]?.match(/"(.+?)"/i)[1] || '';
 
 			// Line 3
 			if (lines[2]) {
 				let metaData = trimArrayItems(lines[2].split(','));
-				data.author = metaData[0] ? metaData[0] : '';
+				data.author = metaData[0] || '';
 
 				if (metaData[1]) {
 					let season = metaData[1].match(/(\w\w)(\d\d)(\d\d)?/);
@@ -60,6 +62,7 @@ AIRLINE=${data.name}
 AIRLINE_ICAO=${data.icao}
 CALLSIGN=${data.callsign}
 SEASON=${data.season}
+SEEK=atc_airline=${data.callsign}
 PROVIDER=${data.author}
 FS_Version=${data.fsVersion}
 `;
@@ -86,3 +89,13 @@ FS_Version=${data.fsVersion}
 }
 
 const trimArrayItems = (array: string[]) => array.map((item: any) => item.trim());
+
+const validateEachLine = (array: string[], callback: (arg0: string) => boolean) => {
+	for (const line of array) {
+		let valid = callback(line);
+		if (!valid) {
+			return false;
+		}
+	}
+	return true;
+};
