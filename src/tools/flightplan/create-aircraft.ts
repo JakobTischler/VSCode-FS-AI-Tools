@@ -125,7 +125,7 @@ export async function CreateAircraft() {
 
 	// -----------------------------------------------------
 	// APPEND ENTRIES TO AIRCRAFT.CFG
-	const fltsimEntriesText = '\n' + [...fltsimEntries.map((entry) => entry.fltsim)].join('\n\n');
+	const fltsimEntriesText = '\n\n' + [...fltsimEntries.map((entry) => entry.fltsim)].join('\n\n') + '\n';
 	fs.appendFile(aircraftCfgPath, fltsimEntriesText, 'utf8', (err: any) => {
 		if (err) {
 			throw err;
