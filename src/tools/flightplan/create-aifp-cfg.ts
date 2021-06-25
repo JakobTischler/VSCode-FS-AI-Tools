@@ -32,7 +32,9 @@ export async function CreateAifpCfg() {
 			// Remove double slashes
 			lines = lines.map((line: string) => line.replace(/^\/*/, '').trim());
 
-			const data: { [key: string]: string } = {};
+			const data: { [key: string]: string } = {
+				callsign: '',
+			};
 
 			// Line 1
 			data.fsVersion = lines[0].split('=')[1] === 'TRUE' ? 'FSX' : 'FS9';
@@ -41,7 +43,9 @@ export async function CreateAifpCfg() {
 			let airlineData = trimArrayItems(lines[1].split('|'));
 			data.name = airlineData[0] || '';
 			data.icao = airlineData[1] || '';
-			data.callsign = airlineData[2]?.match(/"(.+?)"/i)[1] || '';
+			if (airlineData[2]) {
+				data.callsign = airlineData[2].match(/"(.+?)"/i)[1] || '';
+			}
 
 			// Line 3
 			if (lines[2]) {
