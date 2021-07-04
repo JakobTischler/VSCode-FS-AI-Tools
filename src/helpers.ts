@@ -130,3 +130,12 @@ export async function getFileContents(path: string, encoding: string = 'utf8') {
 
 	return data;
 }
+
+/**
+ * Capitalizes each word's first letter and changes the rest to lower case
+ * @param str The original text
+ * @returns The text, which each word's first letter capitalized and the rest in lower case
+ */
+export function titleCase(str: string) {
+	return str.replace(/\w\S*/g, (txt) => txt.charAt(0).toUpperCase() + txt.substr(1).toLowerCase());
+}

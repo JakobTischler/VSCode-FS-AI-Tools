@@ -9,6 +9,7 @@ import { CreateAircraft } from './tools/flightplan/create-aircraft';
 import { CreateFlightplanHeader } from './tools/flightplan/create-header';
 import { CreateFlightplanHeaderFromAifp } from './tools/flightplan/create-header-from-aifp';
 import { RebaseAircraftNumbers } from './tools/flightplan/rebase-ac-numbers';
+import { RenameFiles } from './tools/flightplan/rename-files';
 import { RenumberAddOnsCfg } from './tools/add-ons-cfg/renumber';
 import { RenumberSceneryCfg } from './tools/scenery-cfg/renumber';
 import { SwitchFS9FSX } from './tools/flightplan/switch-fs9-fsx';
@@ -24,13 +25,14 @@ export function activate(context: vscode.ExtensionContext) {
 	commands.set('createFlightplanHeader', CreateFlightplanHeader);
 	commands.set('createFlightplanHeaderFromAifp', CreateFlightplanHeaderFromAifp);
 	commands.set('rebaseAircraftNumbers', RebaseAircraftNumbers);
+	commands.set('renameFiles', RenameFiles);
 	commands.set('renumberAddOnsCfg', RenumberAddOnsCfg);
 	commands.set('renumberSceneryCfg', RenumberSceneryCfg);
 	commands.set('switchFS9FSX', SwitchFS9FSX);
 
 	for (let [cmd, fn] of commands.entries()) {
 		context.subscriptions.push(
-			vscode.commands.registerCommand(`extension.${cmd}`, () => {
+			vscode.commands.registerCommand('extension.' + cmd, () => {
 				fn();
 			})
 		);

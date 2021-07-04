@@ -224,6 +224,26 @@ Works both with Aircraft.txt and Flightplans.txt files.
 <br>
 <br>
 
+### Rename Files
+Renames the flightplan files ("Aircraft…", "Airports…", "Flightplans…") in the current file's folder to a pre-defined pattern. The pattern can hold different placeholders `{asdf}`, which will then be replaced with user-input data. As in `Create Aircraft` templates, placeholders can have optional suffixes (defined as anything after the `?`) that will be used if the placeholder is actually used, and otherwise omitted.
+
+**Example**
+`{Base}_{season?_}{icao?_}{name}` will become `Flightplans_Wi2021_AAL_American Airlines.txt`, and respectively `Aircraft…` and `Airports…`.
+
+**Available placeholders**
+* `Base` → "Aircraft", "Airports", "Flightplans"
+* `base` → "aircraft", "airports", "flightplans"
+* `name` → Airline name
+* `icao` → ICAO
+* `callsign` → Callsign
+* `author` → Author name
+* `season` → Can be either full season or shortened, will be shortened either way
+  * "Summer 2021" → "Su21"
+  * "Winter 2020-2021" → Wi2021
+  * "Winter 2020/2021" → Wi2021
+  * "Su21" → Su21
+  * "Wi2021" → Wi2021
+
 ### Renumber add-ons.cfg
 Renumbers the `[Package.x]` entries sequentially.
 <br>

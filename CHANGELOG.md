@@ -1,8 +1,9 @@
 # Change Log
 
 ### 1.0.18
-- `Clean Flightplan`: new option to add/remove spaces after `//`. See "Clean Flightplan" → "Ajust Comments" setting.
 - New function `Switch FS9 ⟷ FSX`: changes the days of selected flightplans to either FSX or FS9 (increase/decrease day number).
+- New function `Rename files`: renames the flightplan files ("Aircraft…", "Airports…", "Flightplans…") in the current file's folder to a pre-defined pattern.
+- `Clean Flightplan`: new option to add/remove spaces after `//`. See "Clean Flightplan" → "Ajust Comments" setting.
 - `Create Aircraft` now checks for aifp.cfg file and pre-enters its values into the input text fields
 
 ### 1.0.17

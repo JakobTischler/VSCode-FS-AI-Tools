@@ -24,6 +24,7 @@
 		"onCommand:extension.createFlightplanHeader",
 		"onCommand:extension.createFlightplanHeaderFromAifp",
 		"onCommand:extension.rebaseAircraftNumbers",
+		"onCommand:extension.renameFiles",
 		"onCommand:extension.renumberAddOnsCfg",
 		"onCommand:extension.renumberSceneryCfg",
 		"onCommand:extension.switchFS9FSX"
@@ -84,6 +85,12 @@
 				"title": "Rebase AC#s",
 				"category": "FS AI Tools",
 				"when": "editorHasSelection && resourceFilename =~ /^((flightplans)|(aircraft)).*txt$/i"
+			},
+			{
+				"command": "extension.renameFiles",
+				"title": "Rename flightplan files",
+				"category": "FS AI Tools",
+				"when": "resourceFilename =~ /^((flightplans)|(aircraft)|(airports)).*txt$/i"
 			},
 			{
 				"command": "extension.renumberAddOnsCfg",
@@ -150,6 +157,11 @@
 					"command": "extension.rebaseAircraftNumbers",
 					"group": "FS AI Tools",
 					"when": "config.fs-ai-tools.showRebaseAircraftNumbersInContextMenu && editorHasSelection && resourceFilename =~ /^((flightplans)|(aircraft)).*txt$/i"
+				},
+				{
+					"command": "extension.renameFiles",
+					"group": "FS AI Tools",
+					"when": "config.fs-ai-tools.renameFiles._ShowRenameFilesInContextMenu && resourceFilename =~ /^((flightplans)|(aircraft)|(airports)).*txt$/i"
 				},
 				{
 					"command": "extension.renumberAddOnsCfg",
@@ -385,6 +397,27 @@
 					"default": [
 						"K:\\Prepar3D\\_AI Aircraft\\HTAI\\HTAI Cessna 172 Skyhawk\\fltsim-template.cfg"
 					]
+				},
+				"fs-ai-tools.renameFiles._ShowRenameFilesInContextMenu": {
+					"type": "boolean",
+					"default": true,
+					"title": "Add to Context Menu",
+					"markdownDescription": "Adds the \"Rename Files\" function to the context menu when a `Aircraft….txt`, `Airports….txt` or `Flightplan….txt` file is open.",
+					"scope": "window"
+				},
+				"fs-ai-tools.renameFiles.filenameTemplate": {
+					"type": "string",
+					"default": "{Base}_{icao?_}{name}",
+					"title": "Filename template",
+					"markdownDescription": "The format with which the files will be renamed. Available placeholders: `{Base}`, `{base}`, `{name}`, `{icao}`, `{callsign}`, `{author}`, `{season}`",
+					"scope": "window"
+				},
+				"fs-ai-tools.renameFiles.replaceSpacesWithUnderscores": {
+					"type": "boolean",
+					"default": false,
+					"title": "Replace spaces with underscores",
+					"markdownDescription": "If activated, the spaces **within** a placeholder will be replaced with underscores (\"_\"). Spaces defined in the template itself will remain.",
+					"scope": "window"
 				},
 				"fs-ai-tools.showChangeAircraftNumberInContextMenu": {
 					"type": "boolean",
