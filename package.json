@@ -6,7 +6,7 @@
 	},
 	"displayName": "FS AI Tools",
 	"description": "A bag of tools for AI flightplans and .cfg files",
-	"version": "1.0.18",
+	"version": "1.1.0",
 	"license": "",
 	"engines": {
 		"vscode": "^1.57.0"
