@@ -1,5 +1,4 @@
 /*
- * [ ] TODO alternatively, or additionally, use aifp.cfg?
  * [ ] TODO Execute command: support right click in file browser
  * [ ] TODO Use internal F2 rename so file stays open
  */
@@ -19,6 +18,27 @@ import * as Fs from 'fs';
 import * as Path from 'path';
 import { titleCase } from '../../helpers';
 import { getTextInput } from '../../input';
+import { AifpData, readAifpCfg } from '../../read-aifp';
+
+// Property definitions
+const properties = new Map();
+properties.set('name', { placeholder: 'Airline name', prompt: "Enter the airline's name" });
+properties.set('icao', {
+	placeholder: 'ICAO',
+	prompt: "Enter the airline's ICAO. Leave empty if not applicable.",
+});
+properties.set('callsign', {
+	placeholder: 'Callsign',
+	prompt: "Enter the airline's callsign. Leave empty if not applicable.",
+});
+properties.set('author', {
+	placeholder: 'Author',
+	prompt: "Enter the airline's author. Leave empty if not applicable.",
+});
+properties.set('season', {
+	placeholder: 'Season',
+	prompt: "Enter the flightplan's season. Leave empty if not applicable.",
+});
 
 export async function RenameFiles() {
 	const editor = vscode.window.activeTextEditor;
@@ -58,12 +78,22 @@ export async function RenameFiles() {
 		}
 	}
 
+	// Get aifp.cfg parsed data for pre-filling inputs
+	const aifpData = await readAifpCfg(Path.join(dirPath, 'aifp.cfg'));
+	const aifpDict = new Map();
+	if (aifpData.found) {
+		aifpDict.set('name', aifpData.airline);
+		aifpDict.set('icao', aifpData.icao);
+		aifpDict.set('callsign', aifpData.callsign);
+		aifpDict.set('author', aifpData.author);
+		aifpDict.set('season', aifpData.season);
+	}
+
 	// Get replacer inputs and replace in template
 	let result = template.replace(/\{base\}/i, '');
 	if (!result.endsWith('.txt')) {
 		result += '.txt';
 	}
-
 	for (const item of replacers) {
 		// Search value
 		let searchValue = `{${item[0]}}`;
@@ -72,7 +102,9 @@ export async function RenameFiles() {
 		}
 
 		// Replace value
-		item[1][0] = await getTextInput(titleCase(item[0]));
+		const property = properties.get(item[0]);
+		const aifpValue = aifpDict.get(item[0]);
+		item[1][0] = await getTextInput(property.placeholder, property.prompt, aifpValue);
 		if (item[1][0] === undefined) {
 			vscode.window.showErrorMessage('User input cancelled → renaming aborted');
 			return false;
