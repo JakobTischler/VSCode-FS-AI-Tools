@@ -1,5 +1,8 @@
 # Change Log
 
+### 1.1.1
+- `Switch FS9 ⟷ FSX`: Repeating period are now parsed no matter if they're uppercase, lowercase or a mixture
+
 ### 1.1.0
 - New function `Switch FS9 ⟷ FSX`: changes the days of selected flightplans to either FSX or FS9 (increase/decrease day number).
 - New function `Rename files`: renames the flightplan files ("Aircraft…", "Airports…", "Flightplans…") in the current file's folder to a pre-defined pattern.

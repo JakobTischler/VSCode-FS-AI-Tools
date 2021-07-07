@@ -49,21 +49,21 @@ Changes the AC# of the selected `Aircraft_….txt` or `Flightplans_….txt` line
 
 #### Example
 * **Old**:
-  ```
+  ```log
   AC#11,450,"Aircraft 1"
   AC#11,450,"Aircraft 2"
 
   AC#35,450,"Aircraft 3"
   ```
 * **New**, with change = 510:
-  ```
+  ```log
   AC#521,450,"Aircraft 1"
   AC#521,450,"Aircraft 2"
 
   AC#545,450,"Aircraft 3"
   ```
 * **New**, with change = -5:
-  ```
+  ```log
   AC#6,450,"Aircraft 1"
   AC#6,450,"Aircraft 2"
 
@@ -78,7 +78,7 @@ Counts the aircraft in each "block" in a flightplans.txt file and appends that c
 
 #### Example
 * **Old**:
-  ```
+  ```log
   //Aircraft Name 1
   AC#1,N12345,IFR,...
   AC#1,N12345,IFR,...
@@ -89,7 +89,7 @@ Counts the aircraft in each "block" in a flightplans.txt file and appends that c
   AC#4,N12345,IFR,...
   ```
 * **New**:
-  ```
+  ```log
   //Aircraft Name 1 [4]
   AC#1,N12345,IFR,...
   AC#1,N12345,IFR,...
@@ -125,7 +125,7 @@ From a list of registrations, use a fltsim entry template file to create entries
     >ZS-ABC<
 	```
   * List of flightplans (selection has to start at "AC#") (reg will be picked out), This is only valid in flightplans.txt files, not in aircraft.txt files.
-    ```
+    ```log
     >AC#1,N12345,1%,5WEEKS,IFR,0/18:59,@0/20:02 ...
      AC#2,F-ABCD,1%,5WEEKS,IFR,0/18:59,@0/20:02 ...
      AC#3,ZS-ABC,1%,5WEEKS,IFR,0/18:59,@0/20:02 ... <
@@ -193,7 +193,7 @@ Works both with Aircraft.txt and Flightplans.txt files.
 
 #### Example
 * **Old**:
-  ```
+  ```log
   AC#1,450,"Aircraft 1"
   AC#1,450,"Aircraft 2"
   AC#2,450,"Aircraft 3"
@@ -207,7 +207,7 @@ Works both with Aircraft.txt and Flightplans.txt files.
   AC#5,450,"Aircraft 9"
   ```
 * **New**, with Start=1000, Large step size=10, small step size=1:
-  ```
+  ```log
   AC#1000,450,"Aircraft 1"
   AC#1000,450,"Aircraft 2"
   AC#1001,450,"Aircraft 3"
@@ -225,7 +225,7 @@ Works both with Aircraft.txt and Flightplans.txt files.
 <br>
 
 ### Rename Files
-Renames the flightplan files ("Aircraft…", "Airports…", "Flightplans…") in the current file's folder to a pre-defined pattern. The pattern can hold different placeholders `{asdf}`, which will then be replaced with user-input data. As in `Create Aircraft` templates, placeholders can have optional suffixes (defined as anything after the `?`) that will be used if the placeholder is actually used, and otherwise omitted.
+Renames the flightplan files ("Aircraft…", "Airports…", "Flightplans…") in the current file's folder to a pre-defined pattern. The pattern can hold different placeholders `{asdf}`, which will then be replaced with user-input data. As in `Create Aircraft` templates, placeholders can have optional suffixes (defined as anything after the `?`) that will be used if the placeholder is actually used, and otherwise omitted. If a placeholder receives an empty value, it will be removed from the filename.
 
 **Example**
 `{Base}_{season?_}{icao?_}{name}` will become `Flightplans_Wi2021_AAL_American Airlines.txt`, and respectively `Aircraft…` and `Airports…`.
@@ -239,10 +239,13 @@ Renames the flightplan files ("Aircraft…", "Airports…", "Flightplans…") in
 * `author` → Author name
 * `season` → Can be either full season or shortened, will be shortened either way
   * "Summer 2021" → "Su21"
-  * "Winter 2020-2021" → Wi2021
-  * "Winter 2020/2021" → Wi2021
-  * "Su21" → Su21
-  * "Wi2021" → Wi2021
+  * "Winter 2020-2021" → "Wi2021"
+  * "Winter 2020/2021" → "Wi2021"
+  * "Su21" → "Su21"
+  * "Wi2021" → "Wi2021"
+<br>
+<br>
+<br>
 
 ### Renumber add-ons.cfg
 Renumbers the `[Package.x]` entries sequentially.
@@ -252,12 +255,19 @@ Renumbers the `[Package.x]` entries sequentially.
 
 ### Renumber scenery.cfg
 Renumbers the `[Area.xxx]` entries sequentially and sets the `Layer=x` properties to the same number.
+<br>
+<br>
+<br>
+
+### Switch FS9 ⟷ FSX
+Changes the selected flightplans' days from FS9 to FSX or vice versa. Change direction can be selected each time. *Note the known issues.*
 
 ---
 
 ## Known Issues
 
-* Clean Flightplan: seconds aren't removed from TNG times
+* Clean Flightplan: [seconds aren't removed from TNG times](https://github.com/JakobTischler/VSCode-FS-AI-Tools/projects/3#card-63691307)
+* Switch FS9 ⟷ FSX: [Multi-week flightplans with specific week values aren't supported yet](https://github.com/JakobTischler/VSCode-FS-AI-Tools/projects/4#card-64459468)
 
 ---
 

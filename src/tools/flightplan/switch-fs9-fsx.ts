@@ -1,5 +1,5 @@
 import { window } from 'vscode';
-import { getFilenameFromPath, loopNumber } from '../../helpers';
+import { getFilenameFromPath, loopNumber, plural } from '../../helpers';
 import { getDropdownSelection } from '../../input';
 
 export async function SwitchFS9FSX() {
@@ -17,6 +17,8 @@ export async function SwitchFS9FSX() {
 	if (!filename.startsWith('flightplans')) {
 		return;
 	}
+
+	let flightplansChanged = 0;
 
 	const selection = editor.selection;
 	let text = document.getText(selection);
@@ -41,8 +43,14 @@ export async function SwitchFS9FSX() {
 			continue;
 		}
 
-		const period = line.split(',')[3];
+		const split = line.split(',');
+		const period = split[3]?.toUpperCase();
+		if (!period) {
+			window.showErrorMessage(`Aircraft "${split[1]}": Couldn't find any repeating period`);
+			continue;
+		}
 		if (!periods.has(period)) {
+			window.showErrorMessage(`Aircraft "${split[1]}": invalid repeating period "${period}"`);
 			continue;
 		}
 		const maxDays = periods.get(period);
@@ -59,6 +67,8 @@ export async function SwitchFS9FSX() {
 
 			return `${pre}${num}/`;
 		});
+
+		flightplansChanged++;
 	}
 
 	editor.edit((editBuilder) => {
@@ -67,5 +77,5 @@ export async function SwitchFS9FSX() {
 
 	const from = toFS9 ? 'FSX' : 'FS9';
 	const to = toFS9 ? 'FS9' : 'FSX';
-	window.showInformationMessage(`Selected flightplans changed from ${from} to ${to}`);
+	window.showInformationMessage(`${plural(flightplansChanged, 'flightplan')} changed from ${from} to ${to}`);
 }
