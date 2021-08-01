@@ -1,5 +1,6 @@
 import * as vscode from 'vscode';
 
+import { AirlinePresentationPanel } from './tools/flightplan/presentation';
 import { CleanAircraftCfg } from './tools/aircraft-cfg/clean-v2';
 import { CleanFlightplan } from './tools/flightplan/clean';
 import { ChangeAircraftNumber } from './tools/flightplan/change-ac-number';
@@ -36,6 +37,24 @@ export function activate(context: vscode.ExtensionContext) {
 				fn();
 			})
 		);
+	}
+
+	// Airline Presentation
+	context.subscriptions.push(
+		vscode.commands.registerCommand('extension.presentAirline', () => {
+			AirlinePresentationPanel.createOrShow(context.extensionUri);
+		})
+	);
+	if (vscode.window.registerWebviewPanelSerializer) {
+		// Make sure we register a serializer in activation event
+		vscode.window.registerWebviewPanelSerializer(AirlinePresentationPanel.viewType, {
+			async deserializeWebviewPanel(webviewPanel: vscode.WebviewPanel, state: any) {
+				console.log(`Got state: ${state}`);
+				// Reset the webview options so we use latest uri for `localResourceRoots`.
+				webviewPanel.webview.options = AirlinePresentationPanel.getWebviewOptions(context.extensionUri);
+				AirlinePresentationPanel.revive(webviewPanel, context.extensionUri);
+			},
+		});
 	}
 }
 

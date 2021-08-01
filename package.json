@@ -23,6 +23,7 @@
 		"onCommand:extension.createAircraft",
 		"onCommand:extension.createFlightplanHeader",
 		"onCommand:extension.createFlightplanHeaderFromAifp",
+		"onCommand:extension.presentAirline",
 		"onCommand:extension.rebaseAircraftNumbers",
 		"onCommand:extension.renameFiles",
 		"onCommand:extension.renumberAddOnsCfg",
@@ -79,6 +80,11 @@
 				"title": "Create Flightplan Header from aifp.cfg",
 				"category": "FS AI Tools",
 				"when": "resourceFilename =~ /^flightplans.*txt$/i')"
+			},
+			{
+				"command": "extension.presentAirline",
+				"title": "PRESENT AIRLINE",
+				"category": "FS AI Tools"
 			},
 			{
 				"command": "extension.rebaseAircraftNumbers",
