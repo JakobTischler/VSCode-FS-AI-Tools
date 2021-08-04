@@ -45,7 +45,22 @@
 				"An-32",
 				"Xian"
 			],
-			"AN74": ["An74", "An-74"],
+			"AN74": [
+				"An70",
+				"An-70",
+				"An72",
+				"An-72",
+				"An74",
+				"An-74",
+				"An140",
+				"An-140",
+				"An148",
+				"An-148",
+				"An158",
+				"An-158",
+				"An178",
+				"An-178"
+			],
 			"AN124": ["An124", "An-124", "An225", "An-225"]
 		}
 	},
@@ -124,40 +139,45 @@
 	"Cessna": {
 		"names": ["Cessna"],
 		"types": {
-			"C152": ["Cessna 150", "Cessna 152"],
-			"C172": ["Cessna 170", "Cessna 172", "Cessna 175"],
-			"C182": [],
-			"C208": [],
-			"C402": [],
-			"C421": [],
-			"C525": [],
-			"C25A": [],
-			"C25B": [],
-			"C25C": [],
-			"C500": [],
-			"C510": [],
-			"C550": [],
-			"C560": [],
-			"C56X": [],
-			"C680": [],
-			"C68A": [],
-			"C750": []
+			"C152": ["Cessna 150", "Cessna 152", "Cessna C150", "Cessna C152"],
+			"C172": ["Cessna 170", "Cessna 172", "Cessna 175", "Cessna C170", "Cessna C172", "Cessna C175"],
+			"C182": ["Cessna 180", "Cessna 182", "Cessna 185", "Cessna C180", "Cessna C182", "Cessna C185"],
+			"C208": ["Cessna 207", "Cessna 208", "Cessna 210", "Cessna C207", "Cessna C208", "Cessna C210"],
+			"C402": ["Cessna 402", "Cessna 404", "Cessna C402", "Cessna C404"],
+			"C421": ["Cessna 414", "Cessna 421", "Cessna 441", "Cessna C414", "Cessna C421", "Cessna C441"],
+			"C525": ["Cessna 525 ", "Cessna C525 ", "CitationJet 1", "CitationJet CJ1"],
+			"C25A": ["Cessna 525A", "Cessna C525A", "CitationJet 2", "CitationJet CJ2"],
+			"C25B": ["Cessna 525B", "Cessna C525B", "CitationJet 3", "CitationJet CJ3"],
+			"C25C": ["Cessna 525C", "Cessna C525C", "CitationJet 4", "CitationJet CJ4"],
+			"C500": ["Cessna 500", "Cessna C500", "Citation I "],
+			"C510": ["Cessna 510", "Cessna C510", "Citation Mustang"],
+			"C550": ["Cessna 550", "Cessna C550", "Citation II"],
+			"C560": ["Cessna 560 ", "Cessna C560 ", "Citation V"],
+			"C56X": ["Cessna 560XL", "Cessna C560XL", "Citation XLS"],
+			"C680": ["Cessna 680 ", "Cessna C680 ", "Citation Sovereign"],
+			"C68A": ["Cessna 680A", "Cessna C680A", "Citation Latitude"],
+			"C750": ["Cessna 750", "Cessna C750", "Cessna Citation X "]
 		}
 	},
 	"Comac": {
 		"names": ["Comac"],
 		"types": {
-			"AJ27": [],
-			"AJ29": []
+			"AJ27": ["ARJ 21-7", "ARJ21-7"],
+			"AJ29": ["ARJ 21-9", "ARJ21-9"]
 		}
 	},
 	"Dassault": {
 		"names": ["Dassault"],
-		"types": {}
+		"types": {
+			"F2TH": ["Falcon 2000"],
+			"FA7X": ["Falcon 7X"],
+			"FA8X": ["Falcon 8X"],
+			"F900": ["Falcon 900"]
+		}
 	},
 	"de Havilland": {
 		"names": ["de Havilland", "DeHavilland"],
-		"types": {}
+		"types": { "DHC7": ["DHC7", "DHC-7"], "DHC6": ["DHC6", "DHC-6"] }
 	},
 	"Dornier": {
 		"names": ["Dornier"],
@@ -184,11 +204,46 @@
 	},
 	"Fokker": {
 		"names": ["Fokker"],
-		"types": {}
+		"types": {
+			"F50": ["Fokker 50", "F50"],
+			"F70": ["Fokker 70", "F70"],
+			"F100": ["Fokker 100", "F100"]
+		}
 	},
 	"Gulfstream": {
 		"names": ["Gulfstream"],
-		"types": {}
+		"types": {
+			"GLF2": ["Gulfstream G-II ", "Gulfstream GII ", "Gulfstream II ", "Gulfstream 200", "Gulfstream 280"],
+			"GLF3": ["Gulfstream G-III", "Gulfstream GIII", "Gulfstream III", "Gulfstream G3", "Gulfstream 3"],
+			"GLF4": [
+				"Gulfstream G-IV",
+				"Gulfstream GIV",
+				"Gulfstream IV",
+				"Gulfstream G4",
+				"Gulfstream G400",
+				"Gulfstream 400",
+				"Gulfstream G450",
+				"Gulfstream 450"
+			],
+			"GLF5": [
+				"Gulfstream G-V ",
+				"Gulfstream GV ",
+				"Gulfstream V ",
+				"Gulfstream G500",
+				"Gulfstream 500",
+				"Gulfstream G550",
+				"Gulfstream 550"
+			],
+			"GLF6": [
+				"Gulfstream G-VI",
+				"Gulfstream GVI",
+				"Gulfstream VI",
+				"Gulfstream G600",
+				"Gulfstream 600",
+				"Gulfstream G650",
+				"Gulfstream 650"
+			]
+		}
 	},
 	"Hawker Beechcraft": {
 		"names": ["Hawker", "Hawker Beechcraft"],
