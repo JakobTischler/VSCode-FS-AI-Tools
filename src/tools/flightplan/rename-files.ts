@@ -46,7 +46,7 @@ export async function RenameFiles() {
 		return false;
 	}
 	const filePath = editor.document.uri.path;
-	let dirPath = Path.dirname(filePath).replace(/^\/+/, '');
+	const dirPath = Path.dirname(filePath).replace(/^\/+/, '');
 
 	const config = vscode.workspace.getConfiguration('fs-ai-tools.renameFiles', undefined);
 
@@ -114,18 +114,16 @@ export async function RenameFiles() {
 
 		// Shorten season
 		// https://regex101.com/r/7iMw7H/1/
-		if (replaceValue && replaceValue.length && item[0] === 'season') {
+		if (replaceValue?.length && item[0] === 'season') {
 			let seasonShort = undefined;
 			let matches = replaceValue.match(/^(\w{2})((?:\w+ )?(?:\d\d)?)?(\d{2})(?:(?:[-\/])?(?:\d\d)?(\d{2}))?/);
-			if (matches) {
-				if (matches.length === 5) {
-					if (matches[4]) {
-						seasonShort = matches[1] + matches[3] + matches[4];
-					} else if (matches[2].length === 2) {
-						seasonShort = matches[1] + matches[2] + matches[3];
-					} else {
-						seasonShort = matches[1] + matches[3];
-					}
+			if (matches && matches.length === 5) {
+				if (matches[4]) {
+					seasonShort = matches[1] + matches[3] + matches[4];
+				} else if (matches[2].length === 2) {
+					seasonShort = matches[1] + matches[2] + matches[3];
+				} else {
+					seasonShort = matches[1] + matches[3];
 				}
 			}
 
@@ -135,7 +133,7 @@ export async function RenameFiles() {
 		if (config.get('replaceSpacesWithUnderscores')) {
 			replaceValue = replaceValue.replace(/ /g, '_');
 		}
-		if (!(replaceValue && replaceValue.length)) {
+		if (!replaceValue?.length) {
 			replaceValue = '';
 		} else if (item[1][1]) {
 			replaceValue += item[1][1];
@@ -150,9 +148,9 @@ export async function RenameFiles() {
 	const files = await Fs.promises.readdir(dirPath);
 	const fileRegex = /^(aircraft|airports|flightplans).*\.txt$/i;
 	for (const file of files) {
-		let matches = file.match(fileRegex);
+		const matches = file.match(fileRegex);
 
-		if (!(matches && matches[1])) {
+		if (!matches?.[1]) {
 			continue;
 		}
 

@@ -37,13 +37,13 @@ export async function CreateAircraft() {
 		const text = document.getText(selection);
 		text.split('\n').forEach((item: string) => {
 			item = item.trim();
-			if (item && item.length) {
+			if (item?.length) {
 				if (item.startsWith('AC#')) {
 					const commaSplit = item.split(',');
-					if (commaSplit && commaSplit.length > 6 && commaSplit[1]) {
+					if (commaSplit?.length > 6 && commaSplit[1]) {
 						// Flightplans.txt
 						const reg = commaSplit[1];
-						if (reg && reg.length) {
+						if (reg?.length) {
 							regs.push(reg);
 						}
 					}
@@ -113,7 +113,10 @@ export async function CreateAircraft() {
 	// CREATE FLTSIM ENTRIES
 	let createFolders = config.get('createFolders') === 'Create';
 	if (config.get('createFolders') === 'Ask everytime') {
-		const userPick = await getDropdownSelection('Create Texture Folders?', ['Create folders', "Don't create folders"]);
+		const userPick = await getDropdownSelection('Create Texture Folders?', [
+			'Create folders',
+			"Don't create folders",
+		]);
 		createFolders = userPick === 'Create folders';
 	}
 	const fltsimEntries = await createFltsimEntries(regs, template, aifpCfgData, startIndex, createFolders);
@@ -161,11 +164,15 @@ export async function CreateAircraft() {
 					});
 
 					if (config.get('copyTextureCfgToTextureFolder') && textureCfgExists) {
-						await fs.copyFile(textureCfgPath, Path.join(__WORKDIR__, dirName, 'texture.cfg'), (err: any) => {
-							if (err) {
-								throw err;
+						await fs.copyFile(
+							textureCfgPath,
+							Path.join(__WORKDIR__, dirName, 'texture.cfg'),
+							(err: any) => {
+								if (err) {
+									throw err;
+								}
 							}
-						});
+						);
 					}
 				}
 			} else {
@@ -215,7 +222,11 @@ async function createFltsimEntries(
 	if (icao === undefined) {
 		return null;
 	}
-	const callsign = (await getTextInput('Callsign', 'Callsign. Leave empty if not applicable.', aifpCfgData.callsign || '')) as string;
+	const callsign = (await getTextInput(
+		'Callsign',
+		'Callsign. Leave empty if not applicable.',
+		aifpCfgData.callsign || ''
+	)) as string;
 	if (callsign === undefined) {
 		return null;
 	}
