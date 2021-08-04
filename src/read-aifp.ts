@@ -1,5 +1,4 @@
-import { window } from 'vscode';
-import { getFileContents } from './helpers';
+import { getFileContents, showError } from './helpers';
 
 export interface AifpData {
 	found: boolean;
@@ -41,9 +40,7 @@ export async function readAifpCfg(path: string): Promise<AifpData> {
 
 	const contents = await getFileContents(path);
 	if (!contents) {
-		let msg = `No file contents found in "${path}".`;
-		console.error(msg);
-		window.showErrorMessage(msg);
+		showError(`No file contents found in "${path}".`);
 		return data;
 	}
 

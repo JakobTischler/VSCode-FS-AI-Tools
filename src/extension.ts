@@ -12,6 +12,7 @@ import { RebaseAircraftNumbers } from './tools/flightplan/rebase-ac-numbers';
 import { RenameFiles } from './tools/flightplan/rename-files';
 import { RenumberAddOnsCfg } from './tools/add-ons-cfg/renumber';
 import { RenumberSceneryCfg } from './tools/scenery-cfg/renumber';
+import { ShowAircraftList } from './tools/flightplan/show-aircraft-list';
 import { SwitchFS9FSX } from './tools/flightplan/switch-fs9-fsx';
 
 export function activate(context: vscode.ExtensionContext) {
@@ -28,11 +29,12 @@ export function activate(context: vscode.ExtensionContext) {
 	commands.set('renameFiles', RenameFiles);
 	commands.set('renumberAddOnsCfg', RenumberAddOnsCfg);
 	commands.set('renumberSceneryCfg', RenumberSceneryCfg);
+	commands.set('showAircraftList', ShowAircraftList);
 	commands.set('switchFS9FSX', SwitchFS9FSX);
 
 	for (let [cmd, fn] of commands.entries()) {
 		context.subscriptions.push(
-			vscode.commands.registerCommand('extension.' + cmd, () => {
+			vscode.commands.registerCommand(`extension.${cmd}`, () => {
 				fn();
 			})
 		);

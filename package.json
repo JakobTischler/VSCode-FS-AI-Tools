@@ -6,7 +6,7 @@
 	},
 	"displayName": "FS AI Tools",
 	"description": "A bag of tools for AI flightplans and .cfg files",
-	"version": "1.1.1",
+	"version": "1.2.0",
 	"license": "",
 	"engines": {
 		"vscode": "^1.57.0"
@@ -27,6 +27,7 @@
 		"onCommand:extension.renameFiles",
 		"onCommand:extension.renumberAddOnsCfg",
 		"onCommand:extension.renumberSceneryCfg",
+		"onCommand:extension.showAircraftList",
 		"onCommand:extension.switchFS9FSX"
 	],
 	"main": "./out/extension.js",
@@ -103,6 +104,12 @@
 				"title": "Renumber scenery.cfg",
 				"category": "FS AI Tools",
 				"when": "resourceFilename =~ /^scenery.cfg/i"
+			},
+			{
+				"command": "extension.showAircraftList",
+				"title": "Show Aircraft List",
+				"category": "FS AI Tools",
+				"when": "resourceFilename =~ /^((flightplans)|(aircraft)).*txt$/i"
 			},
 			{
 				"command": "extension.switchFS9FSX",
