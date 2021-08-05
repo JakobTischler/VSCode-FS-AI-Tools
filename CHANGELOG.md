@@ -1,5 +1,9 @@
 # Change Log
 
+### 1.1.2
+- `Clean Aircraft.cfg`: Sort Properties Order (`fs-ai-tools.cleanAircraftCfg.sortPropertiesOrder`) changed to actual array instead of string list
+- Min version updated to v1.59.0 (re-ordering config arrays necessary)
+
 ### 1.1.1
 - `Switch FS9 ⟷ FSX`: Repeating period are now parsed no matter if they're uppercase, lowercase or a mixture
 

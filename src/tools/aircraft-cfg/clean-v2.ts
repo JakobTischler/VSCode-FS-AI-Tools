@@ -77,18 +77,16 @@ export async function CleanAircraftCfg() {
 							let value = prop[1];
 
 							// Remove unused lines
-							if (config.cleanAircraftCfg.removeUnusedLines) {
-								if (removeProperties.has(key)) {
-									let removeValue = removeProperties.get(key);
-									if (removeValue === undefined) {
-										add = false;
-									} else if (removeValue === '*' && value) {
-										add = false;
-									} else if (removeValue === '_' && !value) {
-										add = false;
-									} else if (removeValue === value) {
-										add = false;
-									}
+							if (config.cleanAircraftCfg.removeUnusedLines && removeProperties.has(key)) {
+								let removeValue = removeProperties.get(key);
+								if (removeValue === undefined) {
+									add = false;
+								} else if (removeValue === '*' && value) {
+									add = false;
+								} else if (removeValue === '_' && !value) {
+									add = false;
+								} else if (removeValue === value) {
+									add = false;
 								}
 							}
 
@@ -109,12 +107,10 @@ export async function CleanAircraftCfg() {
 					} else {
 						cleanTextArray.push(line);
 					}
+				} else if (currentSection && isFltsimSection) {
+					//ignore line
 				} else {
-					if (currentSection && isFltsimSection) {
-						//ignore line
-					} else {
-						cleanTextArray.push(line);
-					}
+					cleanTextArray.push(line);
 				}
 
 				// Last line, push entry to list if necessary
@@ -132,7 +128,9 @@ export async function CleanAircraftCfg() {
 
 			// Add to text array in sorted order
 			if (config.cleanAircraftCfg.sortProperties) {
-				let sortProperties: string[] = config.cleanAircraftCfg.sortPropertiesOrder.split('>').map((item: string) => item.trim());
+				const sortProperties: string[] = config.cleanAircraftCfg.sortPropertiesOrder.map((item: string) =>
+					item.trim()
+				);
 
 				fltsimEntries.forEach((entry, i) => {
 					const props = [entry._header];
@@ -151,7 +149,7 @@ export async function CleanAircraftCfg() {
 						props.push(`${prop}=${entry[prop]}`);
 					}
 
-					cleanTextArray = [...cleanTextArray, ...props, ''];
+					cleanTextArray.push(...props, '');
 				});
 			} else {
 			}

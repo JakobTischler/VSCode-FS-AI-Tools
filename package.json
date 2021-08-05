@@ -6,10 +6,10 @@
 	},
 	"displayName": "FS AI Tools",
 	"description": "A bag of tools for AI flightplans and .cfg files",
-	"version": "1.2.0",
+	"version": "1.1.2",
 	"license": "",
 	"engines": {
-		"vscode": "^1.57.0"
+		"vscode": "^1.59.0"
 	},
 	"categories": [
 		"Other"
@@ -242,11 +242,33 @@
 					"scope": "window"
 				},
 				"fs-ai-tools.cleanAircraftCfg.sortPropertiesOrder": {
-					"type": "string",
-					"default": "title>sim>model>panel>sound>texture>atc_airline>atc_id>ui_manufacturer>ui_type>ui_variation>atc_parking_codes>atc_parking_types>atc_heavy>prop_anim_ratio>visual_damage>description>ui_createdby",
-					"title": "Sort Properties Order",
-					"markdownDescription": "Defines the sort order of the `fltsim` entries' properties. Only applicable if `#fs-ai-tools.cleanAircraftCfg.sortProperties#` is active. Usage: `first>second>third>…`. Undefined keys are appended at the end.",
-					"scope": "window"
+					"markdownDescription": "Defines the sort order of the `fltsim` entries' properties. Only applicable if `#fs-ai-tools.cleanAircraftCfg.sortProperties#` is active. Reorder by drag and dropping. Undefined keys are appended at the end.",
+					"scope": "window",
+					"type": "array",
+					"items": {
+						"type": "string"
+					},
+					"default": [
+						"title",
+						"sim",
+						"model",
+						"panel",
+						"sound",
+						"texture",
+						"atc_airline",
+						"atc_id",
+						"ui_manufacturer",
+						"ui_type",
+						"ui_variation",
+						"atc_parking_codes",
+						"atc_parking_types",
+						"atc_heavy",
+						"prop_anim_ratio",
+						"visual_damage",
+						"description",
+						"ui_createdby"
+					],
+					"title": "Sort Properties Order"
 				},
 				"fs-ai-tools.cleanFlightplan._ShowCleanFlightplanInContextMenu": {
 					"type": "boolean",
