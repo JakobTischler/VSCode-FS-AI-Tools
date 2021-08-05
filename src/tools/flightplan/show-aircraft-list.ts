@@ -146,7 +146,7 @@ async function countAircraft(list: aircraftListRaw, filePath: string) {
  * Goes through `aircraftNaming` to match each title to an ICAO type name.
  *
  * Uses two methods to keep the iterations to a minimum:
- * 1. Keep a list of successful matches as well as the result, and go through them for each aircraft title first to check for a possible match
+ * 1. Keep a list of successful matches as well as their respective result, and go through them for each aircraft title first to check for a possible match
  * 2. Check for manufacturer match before deep-iterating through the manufacturer's aircraft types
  * @param inputList The `aircraftListRaw` that includes all aircraft titles as well as counts
  * @returns An `aircraftList` Map where the ICAO type name is the key, and the count as well as the matching aircraft titles are the value object
@@ -155,20 +155,22 @@ function matchTitleToType(inputList: aircraftListRaw) {
 	const ret: aircraftList = new Map();
 	const matches = new Map();
 
-	const addAircraftData = (typeName: string, inputData: aircraftDataRaw) => {
-		ret.set(typeName, {
-			count: inputData.count,
-			aircraft: new Set([inputData.title]),
-		});
-	};
-	const updateAircraftData = (typeName: string, inputData: aircraftDataRaw) => {
-		const data = ret.get(typeName);
-		if (data) {
-			data.count += inputData.count;
-			data.aircraft.add(inputData.title);
-			ret.set(typeName, data);
+	const addOrUpdateAircraftData = (typeName: string, inputData: aircraftDataRaw, update: boolean = false) => {
+		if (update) {
+			const data = ret.get(typeName);
+			if (data) {
+				data.count += inputData.count;
+				data.aircraft.add(inputData.title);
+				ret.set(typeName, data);
+			}
+		} else {
+			ret.set(typeName, {
+				count: inputData.count,
+				aircraft: new Set([inputData.title]),
+			});
 		}
 	};
+	const updateAircraftData = (typeName: string, inputData: aircraftDataRaw) => {};
 
 	titlesLoop: for (const [inputKey, inputData] of inputList.entries()) {
 		const title = inputData.title.toLowerCase();
@@ -194,14 +196,8 @@ function matchTitleToType(inputList: aircraftListRaw) {
 								inputData.icao = typeName;
 								inputList.set(inputKey, inputData);
 
-								// Add data to aircraftList
-								if (ret.has(typeName)) {
-									// Update existing
-									updateAircraftData(typeName, inputData);
-								} else {
-									// Create new
-									addAircraftData(typeName, inputData);
-								}
+								// Add data to aircraftList: create new or update existing
+								addOrUpdateAircraftData(typeName, inputData, ret.has(typeName));
 
 								// Add to successful matches
 								if (!matches.has(subStringLow)) {
