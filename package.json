@@ -213,7 +213,7 @@
 					"scope": "window"
 				},
 				"fs-ai-tools.cleanAircraftCfg.removeUnusedLinesItems": {
-					"markdownDescription": "List of entry settings to be removed. • `key=value` for distinct values, `key=*` for any non-empty value, `key=_` for only empty values, `key` for all values.",
+					"markdownDescription": "List of `fltsim` entry lines to be removed.\n\n• `key=value` for distinct values\n\n• `key=*` for any non-empty value\n\n• `key=_` for only empty values\n\n• `key` for all values.",
 					"scope": "window",
 					"type": "array",
 					"items": {
@@ -242,12 +242,39 @@
 					"scope": "window"
 				},
 				"fs-ai-tools.cleanAircraftCfg.sortPropertiesOrder": {
-					"markdownDescription": "Defines the sort order of the `fltsim` entries' properties. Only applicable if `#fs-ai-tools.cleanAircraftCfg.sortProperties#` is active. Reorder by drag and dropping. Undefined keys are appended at the end.",
-					"scope": "window",
+					"title": "Sort Properties Order",
 					"type": "array",
 					"items": {
-						"type": "string"
+						"type": "string",
+						"enum": [
+							"atc_airline",
+							"atc_flight_number",
+							"atc_heavy",
+							"atc_id",
+							"atc_id_color",
+							"atc_model",
+							"atc_parking_codes",
+							"atc_parking_types",
+							"description",
+							"kb_checklists",
+							"kb_reference",
+							"model",
+							"panel",
+							"prop_anim_ratio",
+							"sim",
+							"sound",
+							"texture",
+							"title",
+							"ui_createdby",
+							"ui_manufacturer",
+							"ui_type",
+							"ui_typerole",
+							"ui_variation",
+							"visual_damage"
+						]
 					},
+					"uniqueItems": true,
+					"markdownDescription": "Defines the sort order of the `fltsim` entries' properties. Only applicable if `#fs-ai-tools.cleanAircraftCfg.sortProperties#` is active. Reorder by drag and dropping. Undefined keys are appended at the end of the `fltsim` entry.",
 					"default": [
 						"title",
 						"sim",
@@ -267,8 +294,7 @@
 						"visual_damage",
 						"description",
 						"ui_createdby"
-					],
-					"title": "Sort Properties Order"
+					]
 				},
 				"fs-ai-tools.cleanFlightplan._ShowCleanFlightplanInContextMenu": {
 					"type": "boolean",
