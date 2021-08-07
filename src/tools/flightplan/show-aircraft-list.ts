@@ -170,22 +170,20 @@ function matchTitleToType(inputList: aircraftListRaw) {
 			});
 		}
 	};
-	const updateAircraftData = (typeName: string, inputData: aircraftDataRaw) => {};
 
 	titlesLoop: for (const [inputKey, inputData] of inputList.entries()) {
 		const title = inputData.title.toLowerCase();
-		console.log(title);
 
 		// First check previous successful search terms to find a quick match
 		for (const [searchTerm, typeName] of matches.entries()) {
 			if (title.includes(searchTerm)) {
-				updateAircraftData(typeName, inputData);
+				addOrUpdateAircraftData(typeName, inputData, true);
 				continue titlesLoop;
 			}
 		}
 
 		// Then, if nothing found, go through possible typenames
-		manufacturersLoop: for (const [manufacturer, manufacturerData] of Object.entries(aircraftNaming)) {
+		for (const [manufacturer, manufacturerData] of Object.entries(aircraftNaming)) {
 			for (const manufacturerName of manufacturerData.names) {
 				if (title.includes(manufacturerName.toLowerCase())) {
 					for (const [typeName, subStrings] of Object.entries(manufacturerData.types)) {
@@ -204,7 +202,7 @@ function matchTitleToType(inputList: aircraftListRaw) {
 									matches.set(subStringLow, typeName);
 								}
 
-								break manufacturersLoop;
+								continue titlesLoop;
 							}
 						}
 					}

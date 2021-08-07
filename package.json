@@ -213,7 +213,7 @@
 					"scope": "window"
 				},
 				"fs-ai-tools.cleanAircraftCfg.removeUnusedLinesItems": {
-					"markdownDescription": "List of `fltsim` entry lines to be removed.\n\n• `key=value` for distinct values\n\n• `key=*` for any non-empty value\n\n• `key=_` for only empty values\n\n• `key` for all values.",
+					"markdownDescription": "List of `fltsim` entry lines to be removed.\n\n* `key=value` for distinct values\n\n* `key=*` for any non-empty value\n\n* `key=_` for only empty values\n\n* `key` for all values.",
 					"scope": "window",
 					"type": "array",
 					"items": {
@@ -365,12 +365,14 @@
 				},
 				"fs-ai-tools.cleanFlightplan.changeAirports": {
 					"title": "Change Airport Codes",
-					"markdownDescription": "Changes each occurrence of the old airport code to the new one. Format: \"OldICAO:NewICAO\". Leave empty for no airport changes.",
+					"markdownDescription": "Changes each occurrence of the old airport code to the new one.\n\n* Format: `OldICAO:NewICAO`.\n\n* Leave empty for no airport changes.",
 					"scope": "window",
 					"type": "array",
 					"items": {
-						"type": "string"
+						"type": "string",
+						"pattern": "^(\\w{3,4}):(\\w{3,4})$"
 					},
+					"uniqueItems": true,
 					"default": [
 						"FAJS:FAOR",
 						"FLND:FLSK",
