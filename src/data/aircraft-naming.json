@@ -72,7 +72,7 @@
 		}
 	},
 	"BAe": {
-		"names": ["BAe", "British Aerospace"],
+		"names": ["BAe", "British Aerospace", "Jetstream"],
 		"types": {
 			"BA46": ["146-", "RJ75", "RJ85", "RJ100"],
 			"JS31": ["JS3", "JS-3"],
@@ -148,7 +148,7 @@
 		}
 	},
 	"Britten-Norman": {
-		"names": ["Britten-Norman", "Britten Norman", "BrittenNorman"],
+		"names": ["Britten-Norman", "Britten Norman", "BrittenNorman", "BN-"],
 		"types": { "BN2": ["BN-2", "Islander", "Trislander"] }
 	},
 	"Cessna": {
