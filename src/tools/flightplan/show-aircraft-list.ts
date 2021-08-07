@@ -58,7 +58,7 @@ export async function ShowAircraftList() {
 	}
 
 	// 3. Match titles to types
-	const aircraftList = matchTitleToType(aircraftListRaw);
+	const { aircraftList, totalCount } = matchTitleToType(aircraftListRaw);
 }
 
 /**
@@ -152,22 +152,26 @@ async function countAircraft(list: aircraftListRaw, filePath: string) {
  * @returns An `aircraftList` Map where the ICAO type name is the key, and the count as well as the matching aircraft titles are the value object
  */
 function matchTitleToType(inputList: aircraftListRaw) {
-	const ret: aircraftList = new Map();
+	const aircraftList: aircraftList = new Map();
 	const matches = new Map();
+
+	let totalCount = 0;
 
 	const addOrUpdateAircraftData = (typeName: string, inputData: aircraftDataRaw, update: boolean = false) => {
 		if (update) {
-			const data = ret.get(typeName);
+			const data = aircraftList.get(typeName);
 			if (data) {
 				data.count += inputData.count;
 				data.aircraft.add(inputData.title);
-				ret.set(typeName, data);
+				aircraftList.set(typeName, data);
+				totalCount += inputData.count;
 			}
 		} else {
-			ret.set(typeName, {
+			aircraftList.set(typeName, {
 				count: inputData.count,
 				aircraft: new Set([inputData.title]),
 			});
+			totalCount += inputData.count;
 		}
 	};
 
@@ -195,7 +199,7 @@ function matchTitleToType(inputList: aircraftListRaw) {
 								inputList.set(inputKey, inputData);
 
 								// Add data to aircraftList: create new or update existing
-								addOrUpdateAircraftData(typeName, inputData, ret.has(typeName));
+								addOrUpdateAircraftData(typeName, inputData, aircraftList.has(typeName));
 
 								// Add to successful matches
 								if (!matches.has(subStringLow)) {
@@ -211,5 +215,5 @@ function matchTitleToType(inputList: aircraftListRaw) {
 		}
 	}
 
-	return ret;
+	return { aircraftList, totalCount };
 }
