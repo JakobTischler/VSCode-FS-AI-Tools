@@ -1,384 +1,550 @@
 {
-	"Airbus": {
-		"names": ["Airbus"],
-		"types": {
-			"A221": ["A220-100"],
-			"A223": ["A220-300"],
-			"A300": ["A300"],
-			"A310": ["A310"],
-			"A318": ["A318-"],
-			"A319": ["A319-"],
-			"A320": ["A320-"],
-			"A321": ["A321-"],
-			"A19N": ["A319neo"],
-			"A20N": ["A320neo"],
-			"A21N": ["A321neo"],
-			"A332": ["A330-2"],
-			"A333": ["A330-3"],
-			"A338": ["A330-8"],
-			"A339": ["A330-9"],
-			"A342": ["A340-2"],
-			"A343": ["A340-3"],
-			"A345": ["A340-5"],
-			"A346": ["A340-6"],
-			"A359": ["A350-9"],
-			"A35X": ["A350-1"],
-			"A380": ["A380"]
-		}
-	},
-	"Antonov": {
-		"names": ["Antonov"],
-		"types": {
-			"AN12": ["An12", "An-12"],
-			"AN24": [
-				"An22",
-				"An24",
-				"An26",
-				"An28",
-				"An30",
-				"An32",
-				"An-22",
-				"An-24",
-				"An-26",
-				"An-28",
-				"An-30",
-				"An-32",
-				"Xian"
-			],
-			"AN74": [
-				"An70",
-				"An-70",
-				"An72",
-				"An-72",
-				"An74",
-				"An-74",
-				"An140",
-				"An-140",
-				"An148",
-				"An-148",
-				"An158",
-				"An-158",
-				"An178",
-				"An-178"
-			],
-			"AN124": ["An124", "An-124", "An225", "An-225"]
-		}
-	},
-	"ATR": {
-		"names": ["ATR"],
-		"types": {
-			"AT42": ["ATR 42"],
-			"AT72": ["ATR 72"]
-		}
-	},
-	"BAe": {
-		"names": ["BAe", "British Aerospace", "Jetstream"],
-		"types": {
-			"BA46": ["146-", "RJ75", "RJ85", "RJ100"],
-			"JS31": ["JS3", "JS-3"],
-			"JS41": ["JS4", "JS-4"]
-		}
-	},
-	"Beechcraft": {
-		"names": ["Beech", "Beechcraft", "Hawker"],
-		"types": {
-			"B190": ["B1900", "1900C", "1900D"],
-			"BE20": [
-				"King Air 200",
-				"King Air B200",
-				"King Air 250",
-				"King Air B250",
-				"Beech 200",
-				"Beech B200",
-				"C90 ",
-				"C99 ",
-				"A100 "
-			],
-			"B350": ["King Air 350", "King Air B350", "Beech 350", "Beech B350"],
-			"BE40": ["Beechjet 400", "Beech 400", "BJ-400", "Hawker 400", "Nextant 400"]
-		}
-	},
-	"Boeing": {
-		"names": ["Boeing"],
-		"types": {
-			"B707": ["707-"],
-			"B717": ["717-"],
-			"B727": ["727-"],
-			"B732": ["737-2"],
-			"B733": ["737-3"],
-			"B734": ["737-4"],
-			"B735": ["737-5"],
-			"B736": ["737-6"],
-			"B737": ["737-7"],
-			"B738": ["737-8"],
-			"B739": ["737-9"],
-			"B37M": ["737 MAX 7"],
-			"B38M": ["737 MAX 8"],
-			"B39M": ["737 MAX 9"],
-			"B741-2": ["747-1", "747-2", "747SP"],
-			"B743": ["747-3"],
-			"B744": ["747-4"],
-			"B748": ["747-8"],
-			"B752": ["757-2"],
-			"B753": ["757-3"],
-			"B762": ["767-2"],
-			"B763": ["767-3"],
-			"B764": ["767-4"],
-			"B772": ["777-2"],
-			"B773": ["777-3"],
-			"B788": ["787-8"],
-			"B789": ["787-9"],
-			"B78X": ["787-10"]
-		}
-	},
-	"Bombardier": {
-		"names": ["Bombardier", "Dash", "Mitsubishi"],
-		"types": {
-			"CL30": ["Challenger 300", "CL-300"],
-			"CL35": ["Challenger 350", "CL-350"],
-			"CL60": ["Challenger 600", "CL-6"],
-			"GLEX": ["Global Express", "Global 5000", "Global 6000"],
-			"CRJ2": ["CRJ-100", "CRJ-2", "Legacy 800", "Legacy 850"],
-			"CRJ7": ["CRJ-7"],
-			"CRJ9": ["CRJ-9"],
-			"CRJX": ["CRJ-1000"],
-			"DH8A/B": ["Dash 8-100", "Dash 8/100", "Dash 8-200", "Dash 8/200"],
-			"DH8C": ["Dash 8-300", "Dash 8/300"],
-			"DH8D": ["Dash 8-400", "Dash 8/400", "Dash 8-Q400", "Dash 8/Q400"]
-		}
-	},
-	"Britten-Norman": {
-		"names": ["Britten-Norman", "Britten Norman", "BrittenNorman", "BN-"],
-		"types": { "BN2": ["BN-2", "Islander", "Trislander"] }
-	},
-	"Cessna": {
-		"names": ["Cessna"],
-		"types": {
-			"C152": ["Cessna 150", "Cessna 152", "Cessna C150", "Cessna C152"],
-			"C172": ["Cessna 170", "Cessna 172", "Cessna 175", "Cessna C170", "Cessna C172", "Cessna C175"],
-			"C182": ["Cessna 180", "Cessna 182", "Cessna 185", "Cessna C180", "Cessna C182", "Cessna C185"],
-			"C208": ["Cessna 207", "Cessna 208", "Cessna 210", "Cessna C207", "Cessna C208", "Cessna C210"],
-			"C402": ["Cessna 402", "Cessna 404", "Cessna C402", "Cessna C404"],
-			"C421": ["Cessna 414", "Cessna 421", "Cessna 441", "Cessna C414", "Cessna C421", "Cessna C441"],
-			"C525": ["Cessna 525 ", "Cessna C525 ", "CitationJet 1", "CitationJet CJ1"],
-			"C25A": ["Cessna 525A", "Cessna C525A", "CitationJet 2", "CitationJet CJ2"],
-			"C25B": ["Cessna 525B", "Cessna C525B", "CitationJet 3", "CitationJet CJ3"],
-			"C25C": ["Cessna 525C", "Cessna C525C", "CitationJet 4", "CitationJet CJ4"],
-			"C500": ["Cessna 500", "Cessna C500", "Citation I "],
-			"C510": ["Cessna 510", "Cessna C510", "Citation Mustang"],
-			"C550": ["Cessna 550", "Cessna C550", "Citation II"],
-			"C560": ["Cessna 560 ", "Cessna C560 ", "Citation V"],
-			"C56X": ["Cessna 560XL", "Cessna C560XL", "Citation XLS"],
-			"C680": ["Cessna 680 ", "Cessna C680 ", "Citation Sovereign"],
-			"C68A": ["Cessna 680A", "Cessna C680A", "Citation Latitude"],
-			"C750": ["Cessna 750", "Cessna C750", "Cessna Citation X "]
-		}
-	},
-	"Comac": {
-		"names": ["Comac"],
-		"types": {
-			"AJ27": ["ARJ 21-7", "ARJ21-7"],
-			"AJ29": ["ARJ 21-9", "ARJ21-9"]
-		}
-	},
-	"Dassault": {
-		"names": ["Dassault"],
-		"types": {
-			"F2TH": ["Falcon 2000"],
-			"FA7X": ["Falcon 7X"],
-			"FA8X": ["Falcon 8X"],
-			"F900": ["Falcon 900"]
-		}
-	},
-	"de Havilland": {
-		"names": ["de Havilland", "DeHavilland"],
-		"types": { "DHC7": ["DHC7", "DHC-7"], "DHC6": ["DHC6", "DHC-6"] }
-	},
-	"Dornier": {
-		"names": ["Dornier"],
-		"types": {
-			"D228": ["Do228", "Do-228", "Dornier 228"],
-			"D328": ["Do328", "Do-328", "Dornier 328"]
-		}
-	},
-	"Douglas": {
-		"names": ["Douglas"],
-		"types": {
-			"DC8": ["DC8", "DC-8"],
-			"DC91": ["DC9-1", "DC-9-1", "DC 9-1"],
-			"DC93": ["DC9-3", "DC-9-3", "DC 9-3"],
-			"DC94": ["DC9-4", "DC-9-4", "DC 9-4"],
-			"DC95": ["DC9-5", "DC-9-5", "DC 9-5"]
-		}
-	},
-	"Embraer": {
-		"names": ["Embraer"],
-		"types": {
-			"E120": ["EMB-120", "EMB120", "Embraer 120"],
-			"E135": ["ERJ-135", "ERJ135", "EMB-135", "EMB135"],
-			"E140": ["ERJ-140", "ERJ140", "EMB-140", "EMB140"],
-			"E145": ["ERJ-145", "ERJ145", "EMB-145", "EMB145"],
-			"E170": ["ERJ-170", "ERJ170", "EMB-170", "EMB170"],
-			"E175": ["ERJ-175", "ERJ175", "EMB-175", "EMB175"],
-			"E190": ["ERJ-190", "ERJ190", "EMB-190", "EMB190"],
-			"E195": ["ERJ-195", "ERJ195", "EMB-195", "EMB195"],
-			"E50P": ["Phenom 100"],
-			"E55P": ["Phenom 300"]
-		}
-	},
-	"Fokker": {
-		"names": ["Fokker"],
-		"types": {
-			"F50": ["Fokker 50", "F50"],
-			"F70": ["Fokker 70", "F70"],
-			"F100": ["Fokker 100", "F100"]
-		}
-	},
-	"Gulfstream": {
-		"names": ["Gulfstream"],
-		"types": {
-			"GLF2": ["Gulfstream G-II ", "Gulfstream GII ", "Gulfstream II ", "Gulfstream 200", "Gulfstream 280"],
-			"GLF3": ["Gulfstream G-III", "Gulfstream GIII", "Gulfstream III", "Gulfstream G3", "Gulfstream 3"],
-			"GLF4": [
-				"Gulfstream G-IV",
-				"Gulfstream GIV",
-				"Gulfstream IV",
-				"Gulfstream G4",
-				"Gulfstream G400",
-				"Gulfstream 400",
-				"Gulfstream G450",
-				"Gulfstream 450"
-			],
-			"GLF5": [
-				"Gulfstream G-V ",
-				"Gulfstream GV ",
-				"Gulfstream V ",
-				"Gulfstream G500",
-				"Gulfstream 500",
-				"Gulfstream G550",
-				"Gulfstream 550"
-			],
-			"GLF6": [
-				"Gulfstream G-VI",
-				"Gulfstream GVI",
-				"Gulfstream VI",
-				"Gulfstream G600",
-				"Gulfstream 600",
-				"Gulfstream G650",
-				"Gulfstream 650"
-			]
-		}
-	},
-	"Hawker Beechcraft": {
-		"names": ["Hawker", "Hawker Beechcraft", "BAe"],
-		"types": {
-			"H25B": [
-				"Hawker 750",
-				"Hawker 800",
-				"Hawker 850",
-				"Hawker 900",
-				"Hawker 950",
-				"HS125-7",
-				"HS125-8",
-				"HS-125-7",
-				"HS-125-8"
-			]
-		}
-	},
-	"Ilyushin": {
-		"names": ["Ilyushin"],
-		"types": {
-			"IL62": ["IL62", "IL-62"],
-			"IL76": ["IL76", "IL-76"],
-			"IL86": ["IL86", "IL-86"],
-			"IL96": ["IL96", "IL-96"]
-		}
-	},
-	"Learjet": {
-		"names": ["Learjet"],
-		"types": {
-			"LJ24": ["Learjet 24", "LJ24", "LJ-24"],
-			"LJ25": ["Learjet 25", "LJ25", "LJ-25"],
-			"LJ31": ["Learjet 31", "LJ31", "LJ-31"],
-			"LJ35": ["Learjet 35", "LJ35", "LJ-35"],
-			"LJ40": ["Learjet 40", "LJ40", "LJ-40"],
-			"LJ45": ["Learjet 45", "LJ45", "LJ-45"],
-			"LJ55": ["Learjet 55", "LJ55", "LJ-55"],
-			"LJ60": ["Learjet 60", "LJ60", "LJ-60"],
-			"LJ75": ["Learjet 75", "LJ75", "LJ-75"]
-		}
-	},
-	"Lockheed": {
-		"names": ["Lockheed"],
-		"types": {
-			"C130": ["C130", "C-130", "L100", "Hercules"]
-		}
-	},
-	"McDonnell Douglas": {
-		"names": ["McDonnell Douglas", "McDonnell-Douglas"],
-		"types": {
-			"DC10": ["DC10", "DC-10", "MD10", "MD-10"],
-			"MD11": ["MD11", "MD-11"],
-			"MD80": ["MD80", "MD81", "MD82", "MD83", "MD-80", "MD-81", "MD-82", "MD-83"],
-			"MD87": ["MD87", "MD-87"],
-			"MD90": ["MD90", "MD-90"]
-		}
-	},
-	"Pilatus": {
-		"names": ["Pilatus"],
-		"types": {
-			"PC12": ["PC12", "PC-12"]
-		}
-	},
-	"Piper": {
-		"names": ["Piper"],
-		"types": {
-			"PA28": [],
-			"PA46": [],
-			"PA23": [],
-			"PA31": [],
-			"PA34": [],
-			"PA44": []
-		}
-	},
-	"Saab": {
-		"names": ["Saab"],
-		"types": {
-			"S340": ["Saab 340", "Saab S340", "Saab 100", "Saab S100"],
-			"SB20": ["Saab 2000", "Saab S2000"]
-		}
-	},
-	"Shorts": {
-		"names": ["Shorts"],
-		"types": {
-			"SD36": ["SD360", "SD-360"]
-		}
-	},
-	"Sukhoi": {
-		"names": ["Sukhoi"],
-		"types": {
-			"SU95": ["Su195", "Su-195"]
-		}
-	},
-	"Swaeringen": {
-		"names": ["Swaeringen", "Fairchild"],
-		"types": {
-			"METRO": ["Metro", "Merlin"]
-		}
-	},
-	"Tupolev": {
-		"names": ["Tupolev"],
-		"types": {
-			"T134": ["Tu134", "Tu-134"],
-			"T154": ["Tu154", "Tu-154"],
-			"T204": ["Tu204", "Tu-204"]
-		}
-	},
-	"Yakolev": {
-		"names": ["Yakolev"],
-		"types": {
-			"YK40": ["Yak40", "Yak-40"],
-			"YK42": ["Yak42", "Yak-42"]
+	"list": [
+		"A221",
+		"A223",
+		"A300",
+		"A310",
+		"A318",
+		"A319",
+		"A320",
+		"A321",
+		"A19N",
+		"A20N",
+		"A21N",
+		"A332",
+		"A333",
+		"A338",
+		"A339",
+		"A342",
+		"A343",
+		"A345",
+		"A346",
+		"A359",
+		"A35X",
+		"A380",
+		"AN12",
+		"AN24",
+		"AN74",
+		"A124",
+		"AT42",
+		"AT72",
+		"BA46",
+		"JS31",
+		"JS41",
+		"B190",
+		"BE20",
+		"B350",
+		"BE40",
+		"B707",
+		"B717",
+		"B727",
+		"B732",
+		"B733",
+		"B734",
+		"B735",
+		"B736",
+		"B737",
+		"B738",
+		"B739",
+		"B37M",
+		"B38M",
+		"B39M",
+		"B741-2",
+		"B743",
+		"B744",
+		"B748",
+		"B752",
+		"B753",
+		"B762",
+		"B763",
+		"B764",
+		"B772",
+		"B773",
+		"B788",
+		"B789",
+		"B78X",
+		"CL30",
+		"CL35",
+		"CL60",
+		"GLEX",
+		"CRJ2",
+		"CRJ7",
+		"CRJ9",
+		"CRJX",
+		"DH8A/B",
+		"DH8C",
+		"DH8D",
+		"BN2",
+		"C152",
+		"C172",
+		"C182",
+		"C208",
+		"C402",
+		"C421",
+		"C525",
+		"C25A",
+		"C25B",
+		"C25C",
+		"C500",
+		"C510",
+		"C550",
+		"C560",
+		"C56X",
+		"C680",
+		"C68A",
+		"C750",
+		"AJ27",
+		"AJ29",
+		"FA7X",
+		"FA8X",
+		"F900",
+		"F2TH",
+		"DHC6",
+		"D228",
+		"D328",
+		"DC8",
+		"DC91",
+		"DC93",
+		"DC94",
+		"DC95",
+		"E120",
+		"E135",
+		"E140",
+		"E145",
+		"E170",
+		"E175",
+		"E190",
+		"E195",
+		"E50P",
+		"E55P",
+		"F50",
+		"F70",
+		"F100",
+		"GLF2",
+		"GLF3",
+		"GLF4",
+		"GLF5",
+		"GLF6",
+		"H25B",
+		"IL62",
+		"IL76",
+		"IL86",
+		"IL96",
+		"LJ24",
+		"LJ25",
+		"LJ31",
+		"LJ35",
+		"LJ40",
+		"LJ45",
+		"LJ55",
+		"LJ60",
+		"LJ75",
+		"C130",
+		"DC10",
+		"MD11",
+		"MD80",
+		"MD87",
+		"MD90",
+		"PC12",
+		"PA28",
+		"PA46",
+		"PA23",
+		"PA31",
+		"PA34",
+		"PA44",
+		"S340",
+		"SB20",
+		"SD36",
+		"SU95",
+		"METRO",
+		"T134",
+		"T154",
+		"T204",
+		"YK40",
+		"YK42"
+	],
+	"types": {
+		"Airbus": {
+			"names": ["Airbus"],
+			"types": {
+				"A221": ["A220-100"],
+				"A223": ["A220-300"],
+				"A300": ["A300"],
+				"A310": ["A310"],
+				"A318": ["A318-"],
+				"A319": ["A319-"],
+				"A320": ["A320-"],
+				"A321": ["A321-"],
+				"A19N": ["A319neo"],
+				"A20N": ["A320neo"],
+				"A21N": ["A321neo"],
+				"A332": ["A330-2"],
+				"A333": ["A330-3"],
+				"A338": ["A330-8"],
+				"A339": ["A330-9"],
+				"A342": ["A340-2"],
+				"A343": ["A340-3"],
+				"A345": ["A340-5"],
+				"A346": ["A340-6"],
+				"A359": ["A350-9"],
+				"A35X": ["A350-1"],
+				"A380": ["A380"]
+			}
+		},
+		"Antonov": {
+			"names": ["Antonov"],
+			"types": {
+				"AN12": ["An12", "An-12"],
+				"AN24": [
+					"An22",
+					"An24",
+					"An26",
+					"An28",
+					"An30",
+					"An32",
+					"An-22",
+					"An-24",
+					"An-26",
+					"An-28",
+					"An-30",
+					"An-32",
+					"Xian"
+				],
+				"AN74": [
+					"An70",
+					"An-70",
+					"An72",
+					"An-72",
+					"An74",
+					"An-74",
+					"An140",
+					"An-140",
+					"An148",
+					"An-148",
+					"An158",
+					"An-158",
+					"An178",
+					"An-178"
+				],
+				"A124": ["An124", "An-124", "An225", "An-225"]
+			}
+		},
+		"ATR": {
+			"names": ["ATR"],
+			"types": {
+				"AT42": ["ATR 42"],
+				"AT72": ["ATR 72"]
+			}
+		},
+		"BAe": {
+			"names": ["BAe", "British Aerospace", "Jetstream"],
+			"types": {
+				"BA46": ["146-", "RJ75", "RJ85", "RJ100"],
+				"JS31": ["JS3", "JS-3"],
+				"JS41": ["JS4", "JS-4"]
+			}
+		},
+		"Beechcraft": {
+			"names": ["Beech", "Beechcraft", "Hawker"],
+			"types": {
+				"B190": ["B1900", "1900C", "1900D"],
+				"BE20": [
+					"King Air 200",
+					"King Air B200",
+					"King Air 250",
+					"King Air B250",
+					"Beech 200",
+					"Beech B200",
+					"C90 ",
+					"C99 ",
+					"A100 "
+				],
+				"B350": ["King Air 350", "King Air B350", "Beech 350", "Beech B350"],
+				"BE40": ["Beechjet 400", "Beech 400", "BJ-400", "Hawker 400", "Nextant 400"]
+			}
+		},
+		"Boeing": {
+			"names": ["Boeing"],
+			"types": {
+				"B707": ["707-"],
+				"B717": ["717-"],
+				"B727": ["727-"],
+				"B732": ["737-2"],
+				"B733": ["737-3"],
+				"B734": ["737-4"],
+				"B735": ["737-5"],
+				"B736": ["737-6"],
+				"B737": ["737-7"],
+				"B738": ["737-8"],
+				"B739": ["737-9"],
+				"B37M": ["737 MAX 7"],
+				"B38M": ["737 MAX 8"],
+				"B39M": ["737 MAX 9"],
+				"B741-2": ["747-1", "747-2", "747SP"],
+				"B743": ["747-3"],
+				"B744": ["747-4"],
+				"B748": ["747-8"],
+				"B752": ["757-2"],
+				"B753": ["757-3"],
+				"B762": ["767-2"],
+				"B763": ["767-3"],
+				"B764": ["767-4"],
+				"B772": ["777-2"],
+				"B773": ["777-3"],
+				"B788": ["787-8"],
+				"B789": ["787-9"],
+				"B78X": ["787-10"]
+			}
+		},
+		"Bombardier": {
+			"names": ["Bombardier", "Dash", "Mitsubishi"],
+			"types": {
+				"CL30": ["Challenger 300", "CL-300"],
+				"CL35": ["Challenger 350", "CL-350"],
+				"CL60": ["Challenger 600", "CL-6"],
+				"GLEX": ["Global Express", "Global 5000", "Global 6000"],
+				"CRJ2": ["CRJ-100", "CRJ-2", "Legacy 800", "Legacy 850"],
+				"CRJ7": ["CRJ-7"],
+				"CRJ9": ["CRJ-9"],
+				"CRJX": ["CRJ-1000"],
+				"DH8A/B": ["Dash 8-100", "Dash 8/100", "Dash 8-200", "Dash 8/200"],
+				"DH8C": ["Dash 8-300", "Dash 8/300"],
+				"DH8D": ["Dash 8-400", "Dash 8/400", "Dash 8-Q400", "Dash 8/Q400"]
+			}
+		},
+		"Britten-Norman": {
+			"names": ["Britten-Norman", "Britten Norman", "BrittenNorman", "BN-"],
+			"types": { "BN2": ["BN-2", "Islander", "Trislander"] }
+		},
+		"Cessna": {
+			"names": ["Cessna"],
+			"types": {
+				"C152": ["Cessna 150", "Cessna 152", "Cessna C150", "Cessna C152"],
+				"C172": ["Cessna 170", "Cessna 172", "Cessna 175", "Cessna C170", "Cessna C172", "Cessna C175"],
+				"C182": ["Cessna 180", "Cessna 182", "Cessna 185", "Cessna C180", "Cessna C182", "Cessna C185"],
+				"C208": ["Cessna 207", "Cessna 208", "Cessna 210", "Cessna C207", "Cessna C208", "Cessna C210"],
+				"C402": ["Cessna 402", "Cessna 404", "Cessna C402", "Cessna C404"],
+				"C421": ["Cessna 414", "Cessna 421", "Cessna 441", "Cessna C414", "Cessna C421", "Cessna C441"],
+				"C525": ["Cessna 525 ", "Cessna C525 ", "CitationJet 1", "CitationJet CJ1"],
+				"C25A": ["Cessna 525A", "Cessna C525A", "CitationJet 2", "CitationJet CJ2"],
+				"C25B": ["Cessna 525B", "Cessna C525B", "CitationJet 3", "CitationJet CJ3"],
+				"C25C": ["Cessna 525C", "Cessna C525C", "CitationJet 4", "CitationJet CJ4"],
+				"C500": ["Cessna 500", "Cessna C500", "Citation I "],
+				"C510": ["Cessna 510", "Cessna C510", "Citation Mustang"],
+				"C550": ["Cessna 550", "Cessna C550", "Citation II"],
+				"C560": ["Cessna 560 ", "Cessna C560 ", "Citation V"],
+				"C56X": ["Cessna 560XL", "Cessna C560XL", "Citation XLS"],
+				"C680": ["Cessna 680 ", "Cessna C680 ", "Citation Sovereign"],
+				"C68A": ["Cessna 680A", "Cessna C680A", "Citation Latitude"],
+				"C750": ["Cessna 750", "Cessna C750", "Cessna Citation X "]
+			}
+		},
+		"Comac": {
+			"names": ["Comac"],
+			"types": {
+				"AJ27": ["ARJ 21-7", "ARJ21-7"],
+				"AJ29": ["ARJ 21-9", "ARJ21-9"]
+			}
+		},
+		"Dassault": {
+			"names": ["Dassault"],
+			"types": {
+				"F2TH": ["Falcon 2000"],
+				"FA7X": ["Falcon 7X"],
+				"FA8X": ["Falcon 8X"],
+				"F900": ["Falcon 900"]
+			}
+		},
+		"de Havilland": {
+			"names": ["de Havilland", "DeHavilland"],
+			"types": { "DHC7": ["DHC7", "DHC-7"], "DHC6": ["DHC6", "DHC-6"] }
+		},
+		"Dornier": {
+			"names": ["Dornier"],
+			"types": {
+				"D228": ["Do228", "Do-228", "Dornier 228"],
+				"D328": ["Do328", "Do-328", "Dornier 328"]
+			}
+		},
+		"Douglas": {
+			"names": ["Douglas"],
+			"types": {
+				"DC8": ["DC8", "DC-8"],
+				"DC91": ["DC9-1", "DC-9-1", "DC 9-1"],
+				"DC93": ["DC9-3", "DC-9-3", "DC 9-3"],
+				"DC94": ["DC9-4", "DC-9-4", "DC 9-4"],
+				"DC95": ["DC9-5", "DC-9-5", "DC 9-5"]
+			}
+		},
+		"Embraer": {
+			"names": ["Embraer"],
+			"types": {
+				"E120": ["EMB-120", "EMB120", "Embraer 120"],
+				"E135": ["ERJ-135", "ERJ135", "EMB-135", "EMB135"],
+				"E140": ["ERJ-140", "ERJ140", "EMB-140", "EMB140"],
+				"E145": ["ERJ-145", "ERJ145", "EMB-145", "EMB145"],
+				"E170": ["ERJ-170", "ERJ170", "EMB-170", "EMB170"],
+				"E175": ["ERJ-175", "ERJ175", "EMB-175", "EMB175"],
+				"E190": ["ERJ-190", "ERJ190", "EMB-190", "EMB190"],
+				"E195": ["ERJ-195", "ERJ195", "EMB-195", "EMB195"],
+				"E50P": ["Phenom 100"],
+				"E55P": ["Phenom 300"]
+			}
+		},
+		"Fokker": {
+			"names": ["Fokker"],
+			"types": {
+				"F50": ["Fokker 50", "F50"],
+				"F70": ["Fokker 70", "F70"],
+				"F100": ["Fokker 100", "F100"]
+			}
+		},
+		"Gulfstream": {
+			"names": ["Gulfstream"],
+			"types": {
+				"GLF2": ["Gulfstream G-II ", "Gulfstream GII ", "Gulfstream II ", "Gulfstream 200", "Gulfstream 280"],
+				"GLF3": ["Gulfstream G-III", "Gulfstream GIII", "Gulfstream III", "Gulfstream G3", "Gulfstream 3"],
+				"GLF4": [
+					"Gulfstream G-IV",
+					"Gulfstream GIV",
+					"Gulfstream IV",
+					"Gulfstream G4",
+					"Gulfstream G400",
+					"Gulfstream 400",
+					"Gulfstream G450",
+					"Gulfstream 450"
+				],
+				"GLF5": [
+					"Gulfstream G-V ",
+					"Gulfstream GV ",
+					"Gulfstream V ",
+					"Gulfstream G500",
+					"Gulfstream 500",
+					"Gulfstream G550",
+					"Gulfstream 550"
+				],
+				"GLF6": [
+					"Gulfstream G-VI",
+					"Gulfstream GVI",
+					"Gulfstream VI",
+					"Gulfstream G600",
+					"Gulfstream 600",
+					"Gulfstream G650",
+					"Gulfstream 650"
+				]
+			}
+		},
+		"Hawker Beechcraft": {
+			"names": ["Hawker", "Hawker Beechcraft", "BAe"],
+			"types": {
+				"H25B": [
+					"Hawker 750",
+					"Hawker 800",
+					"Hawker 850",
+					"Hawker 900",
+					"Hawker 950",
+					"HS125-7",
+					"HS125-8",
+					"HS-125-7",
+					"HS-125-8"
+				]
+			}
+		},
+		"Ilyushin": {
+			"names": ["Ilyushin"],
+			"types": {
+				"IL62": ["IL62", "IL-62"],
+				"IL76": ["IL76", "IL-76"],
+				"IL86": ["IL86", "IL-86"],
+				"IL96": ["IL96", "IL-96"]
+			}
+		},
+		"Learjet": {
+			"names": ["Learjet"],
+			"types": {
+				"LJ24": ["Learjet 24", "LJ24", "LJ-24"],
+				"LJ25": ["Learjet 25", "LJ25", "LJ-25"],
+				"LJ31": ["Learjet 31", "LJ31", "LJ-31"],
+				"LJ35": ["Learjet 35", "LJ35", "LJ-35"],
+				"LJ40": ["Learjet 40", "LJ40", "LJ-40"],
+				"LJ45": ["Learjet 45", "LJ45", "LJ-45"],
+				"LJ55": ["Learjet 55", "LJ55", "LJ-55"],
+				"LJ60": ["Learjet 60", "LJ60", "LJ-60"],
+				"LJ75": ["Learjet 75", "LJ75", "LJ-75"]
+			}
+		},
+		"Lockheed": {
+			"names": ["Lockheed"],
+			"types": {
+				"C130": ["C130", "C-130", "L100", "Hercules"]
+			}
+		},
+		"McDonnell Douglas": {
+			"names": ["McDonnell Douglas", "McDonnell-Douglas"],
+			"types": {
+				"DC10": ["DC10", "DC-10", "MD10", "MD-10"],
+				"MD11": ["MD11", "MD-11"],
+				"MD80": ["MD80", "MD81", "MD82", "MD83", "MD-80", "MD-81", "MD-82", "MD-83"],
+				"MD87": ["MD87", "MD-87"],
+				"MD90": ["MD90", "MD-90"]
+			}
+		},
+		"Pilatus": {
+			"names": ["Pilatus"],
+			"types": {
+				"PC12": ["PC12", "PC-12"]
+			}
+		},
+		"Piper": {
+			"names": ["Piper"],
+			"types": {
+				"PA28": ["PA28", "PA-28", "Piper 28"],
+				"PA46": ["PA46", "PA-46", "Piper 46"],
+				"PA23": ["PA23", "PA-23", "Piper 23"],
+				"PA31": ["PA31", "PA-31", "Piper 31"],
+				"PA34": ["PA34", "PA-34", "Piper 34"],
+				"PA44": ["PA44", "PA-44", "Piper 44"]
+			}
+		},
+		"Saab": {
+			"names": ["Saab"],
+			"types": {
+				"S340": ["Saab 340", "Saab S340", "Saab 100", "Saab S100"],
+				"SB20": ["Saab 2000", "Saab S2000"]
+			}
+		},
+		"Shorts": {
+			"names": ["Shorts"],
+			"types": {
+				"SD36": ["SD360", "SD-360"]
+			}
+		},
+		"Sukhoi": {
+			"names": ["Sukhoi"],
+			"types": {
+				"SU95": ["Su195", "Su-195"]
+			}
+		},
+		"Swaeringen": {
+			"names": ["Swaeringen", "Fairchild"],
+			"types": {
+				"METRO": ["Metro", "Merlin"]
+			}
+		},
+		"Tupolev": {
+			"names": ["Tupolev"],
+			"types": {
+				"T134": ["Tu134", "Tu-134"],
+				"T154": ["Tu154", "Tu-154"],
+				"T204": ["Tu204", "Tu-204"]
+			}
+		},
+		"Yakolev": {
+			"names": ["Yakolev"],
+			"types": {
+				"YK40": ["Yak40", "Yak-40"],
+				"YK42": ["Yak42", "Yak-42"]
+			}
 		}
 	}
 }

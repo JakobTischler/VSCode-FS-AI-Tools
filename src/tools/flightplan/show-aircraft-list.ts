@@ -1,7 +1,7 @@
 import * as vscode from 'vscode';
 import * as Fs from 'fs';
 import * as Path from 'path';
-import { getFileContents, showError } from '../../helpers';
+import { getFileContents, showError, writeTextToClipboard } from '../../helpers';
 import * as aircraftNaming from '../../data/aircraft-naming.json';
 
 interface aircraftDataRaw {
@@ -59,6 +59,10 @@ export async function ShowAircraftList() {
 
 	// 3. Match titles to types
 	const { aircraftList, totalCount } = matchTitleToType(aircraftListRaw);
+
+	// 4. Get Google Sheets output
+	const sheetsOutput = generateGoogleSheetsOutput(aircraftList);
+	writeTextToClipboard(sheetsOutput, 'Google Sheets aircraft count copied to clipboard');
 }
 
 /**
@@ -187,7 +191,7 @@ function matchTitleToType(inputList: aircraftListRaw) {
 		}
 
 		// Then, if nothing found, go through possible typenames
-		for (const [manufacturer, manufacturerData] of Object.entries(aircraftNaming)) {
+		for (const [manufacturer, manufacturerData] of Object.entries(aircraftNaming.types)) {
 			for (const manufacturerName of manufacturerData.names) {
 				if (title.includes(manufacturerName.toLowerCase())) {
 					for (const [typeName, subStrings] of Object.entries(manufacturerData.types)) {
@@ -216,4 +220,10 @@ function matchTitleToType(inputList: aircraftListRaw) {
 	}
 
 	return { aircraftList, totalCount };
+}
+
+function generateGoogleSheetsOutput(aircraftList: aircraftList) {
+	return aircraftNaming.list
+		.map((item) => (aircraftList.has(item) ? aircraftList.get(item)?.count || '' : ''))
+		.join('\t');
 }
