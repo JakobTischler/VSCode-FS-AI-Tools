@@ -1,5 +1,5 @@
 import { window } from 'vscode';
-import { getFilenameFromPath, loopNumber, plural } from '../../helpers';
+import { getFilenameFromPath, loopNumber, plural, showError } from '../../helpers';
 import { getDropdownSelection } from '../../input';
 
 export async function SwitchFS9FSX() {
@@ -46,11 +46,11 @@ export async function SwitchFS9FSX() {
 		const split = line.split(',');
 		const period = split[3]?.toUpperCase();
 		if (!period) {
-			window.showErrorMessage(`Aircraft "${split[1]}": Couldn't find any repeating period`);
+			showError(`Aircraft "${split[1]}": Couldn't find any repeating period`);
 			continue;
 		}
 		if (!periods.has(period)) {
-			window.showErrorMessage(`Aircraft "${split[1]}": invalid repeating period "${period}"`);
+			showError(`Aircraft "${split[1]}": invalid repeating period "${period}"`);
 			continue;
 		}
 		const maxDays = periods.get(period);

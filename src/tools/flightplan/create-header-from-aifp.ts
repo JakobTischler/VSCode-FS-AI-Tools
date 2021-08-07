@@ -1,5 +1,6 @@
 import * as Path from 'path';
 import { window, Position } from 'vscode';
+import { showError } from '../../helpers';
 import { readAifpCfg } from '../../read-aifp';
 
 export async function CreateFlightplanHeaderFromAifp() {
@@ -13,7 +14,7 @@ export async function CreateFlightplanHeaderFromAifp() {
 			Path.basename(editor.document.uri.path).toLocaleLowerCase().startsWith('flightplans')
 		)
 	) {
-		window.showErrorMessage('Header can only be created when in a "Flightplans.txt" file');
+		showError('Header can only be created when in a "Flightplans.txt" file');
 		return false;
 	}
 
@@ -21,7 +22,7 @@ export async function CreateFlightplanHeaderFromAifp() {
 	let aifpPath = Path.join(Path.dirname(editor.document.uri.path), 'aifp.cfg');
 	let data = await readAifpCfg(aifpPath);
 	if (!data || !data.found) {
-		window.showErrorMessage(`"aifp.cfg" couldn't be found.`);
+		showError(`"aifp.cfg" couldn't be found.`);
 		return;
 	}
 

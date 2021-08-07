@@ -16,7 +16,7 @@
 import * as vscode from 'vscode';
 import * as Fs from 'fs';
 import * as Path from 'path';
-import { titleCase } from '../../helpers';
+import { showError, titleCase } from '../../helpers';
 import { getTextInput } from '../../input';
 import { AifpData, readAifpCfg } from '../../read-aifp';
 
@@ -106,7 +106,7 @@ export async function RenameFiles() {
 		const aifpValue = aifpDict.get(item[0]);
 		item[1][0] = await getTextInput(property.placeholder, property.prompt, aifpValue);
 		if (item[1][0] === undefined) {
-			vscode.window.showErrorMessage('User input cancelled → renaming aborted');
+			showError('User input cancelled → renaming aborted');
 			return false;
 		}
 

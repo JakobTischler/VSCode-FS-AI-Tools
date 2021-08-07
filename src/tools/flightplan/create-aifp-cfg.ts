@@ -1,5 +1,6 @@
 import * as vscode from 'vscode';
 import * as path from 'path';
+import { showError } from '../../helpers';
 
 export async function CreateAifpCfg() {
 	console.log('CreateAifpCfg()');
@@ -15,13 +16,11 @@ export async function CreateAifpCfg() {
 			// Validation
 			for (let [index, line] of lines.entries()) {
 				if (!line.length || !line.startsWith('//')) {
-					console.error(`Line ${index + 1} doesn't start with "//".`);
-					vscode.window.showErrorMessage(`Line ${index + 1} doesn't start with "//".`);
+					showError(`Line ${index + 1} doesn't start with "//".`);
 					return false;
 				}
 				if (index === 0 && !line.startsWith('//FSXDAYS')) {
-					console.error(`First line doesn't start with "//FSXDAYS"`);
-					vscode.window.showErrorMessage(`First line doesn't start with "//FSXDAYS"`);
+					showError(`First line doesn't start with "//FSXDAYS"`);
 					return false;
 				}
 			}

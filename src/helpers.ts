@@ -114,14 +114,12 @@ export function loopNumber(num: number, min: number, max: number, dir: 1 | -1 = 
  */
 export async function getFileContents(path: string, encoding: string = 'utf8') {
 	if (!Fs.existsSync(path)) {
-		console.error(`File at "${path}" couldn't be found`);
-		window.showErrorMessage(`File at "${path}" couldn't be found`);
+		showError(`File at "${path}" couldn't be found`);
 		return null;
 	}
 
 	const data = await Fs.promises.readFile(path, encoding).catch((err: any) => {
-		console.error(`Failed to read file at "${path}"`, err);
-		window.showErrorMessage(`Failed to read file at "${path}": ${err}`);
+		showError(`Failed to read file at "${path}"`, err);
 		return null;
 	});
 	if (!data || typeof data !== 'string') {

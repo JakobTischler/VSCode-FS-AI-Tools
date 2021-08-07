@@ -1,7 +1,7 @@
 import * as vscode from 'vscode';
 import * as Path from 'path';
 import * as fs from 'fs';
-import { getFileContents, plural, writeTextToClipboard } from '../../helpers';
+import { getFileContents, plural, showError, writeTextToClipboard } from '../../helpers';
 import { getDropdownSelection, getTextInput } from '../../input';
 import { AifpData, readAifpCfg } from '../../read-aifp';
 
@@ -56,7 +56,7 @@ export async function CreateAircraft() {
 	// console.log({ regs });
 
 	if (regs.length === 0) {
-		vscode.window.showErrorMessage('No valid registrations found');
+		showError('No valid registrations found');
 		return false;
 	}
 
@@ -64,7 +64,7 @@ export async function CreateAircraft() {
 	// GET TEMPLATE PATH AND CONTENT
 	let templatePaths = config.get('templates') as string[];
 	if (templatePaths?.length === 0) {
-		vscode.window.showErrorMessage('No templates defined');
+		showError('No templates defined');
 		return false;
 	}
 
@@ -88,8 +88,7 @@ export async function CreateAircraft() {
 	// READ AIRCRAFT.CFG TO GET LAST FLTSIM.X
 	const aircraftCfgPath = Path.join(__WORKDIR__, 'aircraft.cfg');
 	if (!fs.existsSync(aircraftCfgPath)) {
-		console.error(`aircraft.cfg file couldn't be found in "${__WORKDIR__}"`);
-		vscode.window.showErrorMessage(`aircraft.cfg file couldn't be found in "${__WORKDIR__}"`);
+		showError(`aircraft.cfg file couldn't be found in "${__WORKDIR__}"`);
 	}
 	const aircraftCfgContents = (await getFileContents(aircraftCfgPath)) as string;
 	const fltsimXMatches = aircraftCfgContents.match(/\[fltsim\.(\d+)\]/gi);
