@@ -1,5 +1,4 @@
 /*
- * [ ] TODO Execute command: support right click in file browser
  * [ ] TODO Use internal F2 rename so file stays open
  */
 
@@ -40,14 +39,18 @@ properties.set('season', {
 	prompt: "Enter the flightplan's season. Leave empty if not applicable.",
 });
 
-export async function RenameFiles() {
-	const editor = vscode.window.activeTextEditor;
-	if (!editor) {
+export async function RenameFiles(filePath?: string) {
+	// No filePath passed as argument → check a possible currently open file
+	if (!filePath) {
+		filePath = vscode.window.activeTextEditor?.document.uri.path;
+	}
+
+	// Neither argument nor editor has file → cancel
+	if (!filePath) {
 		return false;
 	}
-	const filePath = editor.document.uri.path;
-	const dirPath = Path.dirname(filePath).replace(/^\/+/, '');
 
+	const dirPath = Path.dirname(filePath).replace(/^\/+/, '');
 	const config = vscode.workspace.getConfiguration('fs-ai-tools.renameFiles', undefined);
 
 	// Get template and parse

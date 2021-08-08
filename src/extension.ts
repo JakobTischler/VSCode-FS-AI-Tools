@@ -16,29 +16,63 @@ import { ShowAircraftList } from './tools/flightplan/show-aircraft-list';
 import { SwitchFS9FSX } from './tools/flightplan/switch-fs9-fsx';
 
 export function activate(context: vscode.ExtensionContext) {
-	let commands = new Map();
-	commands.set('cleanAircraftCfg', CleanAircraftCfg);
-	commands.set('cleanFlightplan', CleanFlightplan);
-	commands.set('changeAircraftNumber', ChangeAircraftNumber);
-	commands.set('countAircraft', CountAircraft);
-	commands.set('createAifpCfg', CreateAifpCfg);
-	commands.set('createAircraft', CreateAircraft);
-	commands.set('createFlightplanHeader', CreateFlightplanHeader);
-	commands.set('createFlightplanHeaderFromAifp', CreateFlightplanHeaderFromAifp);
-	commands.set('rebaseAircraftNumbers', RebaseAircraftNumbers);
-	commands.set('renameFiles', RenameFiles);
-	commands.set('renumberAddOnsCfg', RenumberAddOnsCfg);
-	commands.set('renumberSceneryCfg', RenumberSceneryCfg);
-	commands.set('showAircraftList', ShowAircraftList);
-	commands.set('switchFS9FSX', SwitchFS9FSX);
+	context.subscriptions.push(
+		vscode.commands.registerCommand('extension.cleanAircraftCfg', () => {
+			CleanAircraftCfg();
+		}),
 
-	for (let [cmd, fn] of commands.entries()) {
-		context.subscriptions.push(
-			vscode.commands.registerCommand(`extension.${cmd}`, () => {
-				fn();
-			})
-		);
-	}
+		vscode.commands.registerCommand('extension.cleanFlightplan', () => {
+			CleanFlightplan();
+		}),
+
+		vscode.commands.registerCommand('extension.changeAircraftNumber', () => {
+			ChangeAircraftNumber();
+		}),
+
+		vscode.commands.registerCommand('extension.countAircraft', () => {
+			CountAircraft();
+		}),
+
+		vscode.commands.registerCommand('extension.createAifpCfg', () => {
+			CreateAifpCfg();
+		}),
+
+		vscode.commands.registerCommand('extension.createAircraft', () => {
+			CreateAircraft();
+		}),
+
+		vscode.commands.registerCommand('extension.createFlightplanHeader', () => {
+			CreateFlightplanHeader();
+		}),
+
+		vscode.commands.registerCommand('extension.createFlightplanHeaderFromAifp', () => {
+			CreateFlightplanHeaderFromAifp();
+		}),
+
+		vscode.commands.registerCommand('extension.rebaseAircraftNumbers', () => {
+			RebaseAircraftNumbers();
+		}),
+
+		vscode.commands.registerCommand('extension.renameFiles', (uri: vscode.Uri) => {
+			RenameFiles(uri.fsPath);
+		}),
+
+		vscode.commands.registerCommand('extension.renumberAddOnsCfg', () => {
+			RenumberAddOnsCfg();
+		}),
+
+		vscode.commands.registerCommand('extension.renumberSceneryCfg', () => {
+			RenumberSceneryCfg();
+		}),
+
+		vscode.commands.registerCommand('extension.showAircraftList', () => {
+			ShowAircraftList();
+		}),
+
+		vscode.commands.registerCommand('extension.switchFS9FSX', () => {
+			SwitchFS9FSX();
+		})
+	);
 }
 
 // this method is called when your extension is deactivated

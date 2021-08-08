@@ -185,6 +185,13 @@
 					"group": "FS AI Tools",
 					"when": "config.fs-ai-tools.showSwitchFS9FsxInContextMenu && editorHasSelection && resourceFilename =~ /^flightplans.*txt$/i"
 				}
+			],
+			"explorer/context": [
+				{
+					"command": "extension.renameFiles",
+					"group": "FS AI Tools",
+					"when": "resourceFilename =~ /^((flightplans)|(aircraft)|(airports)).*txt$/i"
+				}
 			]
 		},
 		"configuration": {
