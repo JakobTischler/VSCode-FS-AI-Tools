@@ -54,7 +54,11 @@ export function activate(context: vscode.ExtensionContext) {
 		}),
 
 		vscode.commands.registerCommand('extension.renameFiles', (uri: vscode.Uri) => {
-			RenameFiles(uri.fsPath);
+			if (uri?.fsPath) {
+				RenameFiles(uri.fsPath);
+			} else {
+				RenameFiles();
+			}
 		}),
 
 		vscode.commands.registerCommand('extension.renumberAddOnsCfg', () => {

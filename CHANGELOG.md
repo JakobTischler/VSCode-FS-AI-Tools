@@ -1,8 +1,13 @@
 # Change Log
 
 ### 1.1.2
-- `Clean Aircraft.cfg`: Sort Properties Order (`fs-ai-tools.cleanAircraftCfg.sortPropertiesOrder`) changed to actual array instead of string list
+- `Clean Aircraft.cfg`:
+  - Sort Properties Order (`fs-ai-tools.cleanAircraftCfg.sortPropertiesOrder`) changed to actual array instead of string list
+  - "Change Airports" setting: airport pairs will now be validated (has to use format "XXX(X):YYY(Y)")
 - Min version updated to v1.59.0 (re-ordering config arrays necessary)
+- `Rename files`:
+  - Can now be called via right click context menu on a file in the explorer
+  - Now uses VSCode's internal `renameFile` function, which allows opened files being renamed to stay open, as well as allowing undo the renaming using <kbd>Ctrl</kbd>+<kbd>Z</kbd>
 
 ### 1.1.1
 - `Switch FS9 ⟷ FSX`: Repeating period are now parsed no matter if they're uppercase, lowercase or a mixture

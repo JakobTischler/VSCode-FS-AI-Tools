@@ -43,11 +43,12 @@ export async function RenameFiles(filePath?: string) {
 	// No filePath passed as argument → check a possible currently open file
 	if (!filePath) {
 		filePath = vscode.window.activeTextEditor?.document.uri.path;
-	}
 
-	// Neither argument nor editor has file → cancel
-	if (!filePath) {
-		return false;
+		// Neither argument nor editor has file → cancel
+		if (!filePath) {
+			showError('No valid file path provided');
+			return false;
+		}
 	}
 
 	const dirPath = Path.dirname(filePath).replace(/^\/+/, '');
@@ -150,6 +151,8 @@ export async function RenameFiles(filePath?: string) {
 	// Find files in current folder and rename
 	const files = await Fs.promises.readdir(dirPath);
 	const fileRegex = /^(aircraft|airports|flightplans).*\.txt$/i;
+	const edit = new vscode.WorkspaceEdit();
+
 	for (const file of files) {
 		const matches = file.match(fileRegex);
 
@@ -157,10 +160,18 @@ export async function RenameFiles(filePath?: string) {
 			continue;
 		}
 
-		const oldFile = Path.join(dirPath, file);
-		const newFile = Path.join(dirPath, (upperCaseBase ? titleCase(matches[1]) : matches[1]) + result);
-		await Fs.promises.rename(oldFile, newFile);
+		const oldFile = vscode.Uri.file(Path.join(dirPath, file));
+		const newFile = vscode.Uri.file(
+			Path.join(dirPath, (upperCaseBase ? titleCase(matches[1]) : matches[1]) + result)
+		);
+		// await Fs.promises.rename(oldFile, newFile);
+		edit.renameFile(oldFile, newFile);
 	}
 
-	vscode.window.showInformationMessage(`Files renamed to "…${result}"`);
+	const success = await vscode.workspace.applyEdit(edit); // This is when it happens
+	if (success) {
+		vscode.window.showInformationMessage(`Files renamed to "…${result}"`);
+	} else {
+		showError(`Files couldn't be renamed to "…${result}"`);
+	}
 }
