@@ -40,7 +40,7 @@ export async function readAifpCfg(path: string): Promise<AifpData> {
 
 	const contents = await getFileContents(path);
 	if (!contents) {
-		showError(`No file contents found in "${path}".`);
+		// showError(`No file contents found in "${path}".`);
 		return data;
 	}
 

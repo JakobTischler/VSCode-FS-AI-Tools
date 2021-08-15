@@ -1,7 +1,3 @@
-/*
- * [ ] TODO Use internal F2 rename so file stays open
- */
-
 /* Placeholders:
  * [x] Base → "Aircraft", "Airports", "Flightplans"
  * [x] base → "aircraft", "airports", "flightplans"

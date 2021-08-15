@@ -1,7 +1,7 @@
 import * as vscode from 'vscode';
 import * as Fs from 'fs';
 import * as Path from 'path';
-import { getFileContents, showError, writeTextToClipboard } from '../../helpers';
+import { getFileContents, plural, showError, writeTextToClipboard } from '../../helpers';
 import * as aircraftNaming from '../../data/aircraft-naming.json';
 
 interface aircraftDataRaw {
@@ -60,9 +60,19 @@ export async function ShowAircraftList() {
 	// 3. Match titles to types
 	const { aircraftList, totalCount } = matchTitleToType(aircraftListRaw);
 
-	// 4. Get Google Sheets output
-	const sheetsOutput = generateGoogleSheetsOutput(aircraftList);
-	writeTextToClipboard(sheetsOutput, 'Google Sheets aircraft count copied to clipboard');
+	// 4. Show formatted message with "copy" button
+	vscode.window
+		.showInformationMessage(
+			getFormattedAircraftList(aircraftList, totalCount),
+			{ modal: true },
+			'Copy for Google Sheets'
+		)
+		.then((buttonText) => {
+			if (buttonText) {
+				const sheetsOutput = generateGoogleSheetsOutput(aircraftList);
+				writeTextToClipboard(sheetsOutput, 'Google Sheets aircraft count copied to clipboard');
+			}
+		});
 }
 
 /**
@@ -226,4 +236,13 @@ function generateGoogleSheetsOutput(aircraftList: aircraftList) {
 	return aircraftNaming.list
 		.map((item) => (aircraftList.has(item) ? aircraftList.get(item)?.count || '' : ''))
 		.join('\t');
+}
+
+function getFormattedAircraftList(aircraftList: aircraftList, totalCount: number): string {
+	const output: string[] = [`${totalCount} aircraft`, ''];
+	aircraftList.forEach((data, key) => {
+		output.push(`• ${data.name || key}: ${data.count}× (${plural(data.aircraft.size, 'variation')})`);
+	});
+
+	return output.join('\n');
 }
