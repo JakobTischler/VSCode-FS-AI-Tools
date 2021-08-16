@@ -6,34 +6,49 @@ export async function RebaseAircraftNumbers() {
 	if (editor) {
 		const document = editor.document;
 		const filename = getFilenameFromPath(document.uri.path).toLocaleLowerCase();
-		if ('file' === document.uri.scheme && (filename.startsWith('aircraft') || filename.startsWith('flightplans'))) {
-			const selection = editor.selection;
-			const start = await getNumberInput('1000', 'The new starting AC#. Must be > 0.');
-			const bigStep = await getNumberInput('10', 'The step size between groups (separated by empty lines). Must be > 0.');
-			const smallStep = await getNumberInput('1', 'The step size between AC#s within groups. Must be > 0.');
+		const isAircraftTxt = filename.startsWith('aircraft');
+		const isFlightplansTxt = filename.startsWith('flightplans');
+		if (!('file' === document.uri.scheme && (isAircraftTxt || isFlightplansTxt))) {
+			return;
+		}
 
-			if (!(selection && start && bigStep && smallStep)) {
-				return false;
-			}
+		const selection = editor.selection;
+		const start = await getNumberInput('1000', 'The new starting AC#. Must be > 0.');
+		const bigStep = await getNumberInput(
+			'10',
+			'The step size between groups (separated by empty lines). Must be > 0.'
+		);
+		const smallStep = await getNumberInput('1', 'The step size between AC#s within groups. Must be > 0.');
 
-			let text = document.getText(selection);
+		if (!(selection && start && bigStep && smallStep)) {
+			return false;
+		}
 
-			let ret: string[] = [];
-			let previousOldNum = null;
-			let currentOldNum = null;
-			let currentGroupNum = start;
-			let currentSingleNum = start;
-			let anyNumberInGroupReplaced = false;
+		let text = document.getText(selection);
 
-			for (let line of text.split('\n')) {
-				let l = line.trim();
+		let ret: string[] = [];
+		let previousOldNum = null;
+		let currentOldNum = null;
+		let currentGroupNum = start;
+		let currentSingleNum = start;
+		let anyNumberInGroupReplaced = false;
 
-				if (l.length === 0 && anyNumberInGroupReplaced) {
-					// currentSingleNum + 10 -> floor
-					currentGroupNum = roundUpToNearest(currentSingleNum, bigStep);
-					currentSingleNum = currentGroupNum;
-					anyNumberInGroupReplaced = false;
-				} else if (line.trim().startsWith('AC#')) {
+		for (let line of text.split('\n')) {
+			let l = line.trim();
+
+			if (l.length === 0 && anyNumberInGroupReplaced) {
+				// currentSingleNum + 10 -> floor
+				currentGroupNum = roundUpToNearest(currentSingleNum, bigStep);
+				currentSingleNum = currentGroupNum;
+				anyNumberInGroupReplaced = false;
+			} else if (line.trim().startsWith('AC#')) {
+				if (isAircraftTxt) {
+					if (anyNumberInGroupReplaced) {
+						currentSingleNum += smallStep;
+					}
+					line = line.replace(/AC#\d+,/, `AC#${currentSingleNum},`);
+					anyNumberInGroupReplaced = true;
+				} else if (isFlightplansTxt) {
 					// Find line's AC#
 					const match = line.match(/AC#(\d+),/);
 					if (match && match[1]) {
@@ -42,25 +57,25 @@ export async function RebaseAircraftNumbers() {
 						// Number change
 						if (currentOldNum !== previousOldNum) {
 							if (anyNumberInGroupReplaced) {
-								currentSingleNum = currentSingleNum + smallStep;
+								currentSingleNum += smallStep;
 							}
 							previousOldNum = currentOldNum;
 						}
 
-						line = line.replace('AC#' + currentOldNum, 'AC#' + currentSingleNum);
+						line = line.replace(`AC#${currentOldNum}`, `AC#${currentSingleNum}`);
 						anyNumberInGroupReplaced = true;
 					}
 				}
-
-				ret.push(line);
 			}
-			const newText = ret.join('\n');
 
-			editor.edit((editBuilder) => {
-				editBuilder.replace(selection, newText);
-			});
-			window.showInformationMessage(`Selected AC#s rebased to ${start}`);
+			ret.push(line);
 		}
+		const newText = ret.join('\n');
+
+		editor.edit((editBuilder) => {
+			editBuilder.replace(selection, newText);
+		});
+		window.showInformationMessage(`Selected AC#s rebased to ${start}`);
 	}
 }
 
