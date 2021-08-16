@@ -171,8 +171,8 @@ function matchTitleToType(inputList: aircraftListRaw) {
 
 	let totalCount = 0;
 
-	const addOrUpdateAircraftData = (typeName: string, inputData: aircraftDataRaw, update: boolean = false) => {
-		if (update) {
+	const addOrUpdateAircraftData = (typeName: string, inputData: aircraftDataRaw) => {
+		if (aircraftList.has(typeName)) {
 			const data = aircraftList.get(typeName);
 			if (data) {
 				data.count += inputData.count;
@@ -195,7 +195,7 @@ function matchTitleToType(inputList: aircraftListRaw) {
 		// First check previous successful search terms to find a quick match
 		for (const [searchTerm, typeName] of matches.entries()) {
 			if (title.includes(searchTerm)) {
-				addOrUpdateAircraftData(typeName, inputData, true);
+				addOrUpdateAircraftData(typeName, inputData);
 				continue titlesLoop;
 			}
 		}
@@ -213,7 +213,7 @@ function matchTitleToType(inputList: aircraftListRaw) {
 								inputList.set(inputKey, inputData);
 
 								// Add data to aircraftList: create new or update existing
-								addOrUpdateAircraftData(typeName, inputData, aircraftList.has(typeName));
+								addOrUpdateAircraftData(typeName, inputData);
 
 								// Add to successful matches
 								if (!matches.has(subStringLow)) {
@@ -241,7 +241,11 @@ function generateGoogleSheetsOutput(aircraftList: aircraftList) {
 function getFormattedAircraftList(aircraftList: aircraftList, totalCount: number): string {
 	const output: string[] = [`${totalCount} aircraft`, ''];
 	aircraftList.forEach((data, key) => {
-		output.push(`• ${data.name || key}: ${data.count}× (${plural(data.aircraft.size, 'variation')})`);
+		let text = `• ${data.name || key}: ${data.count}×`;
+		if (data.aircraft.size > 1) {
+			text += ` (${plural(data.aircraft.size, 'variation')})`;
+		}
+		output.push(text);
 	});
 
 	return output.join('\n');

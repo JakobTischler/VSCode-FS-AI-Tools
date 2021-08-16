@@ -563,11 +563,11 @@
 		"@types/node": "^10.17.13",
 		"tslint": "^5.20.1",
 		"typescript": "^3.7.4",
-		"vscode": "^1.1.36",
-		"vsce": "^1.93.0"
+		"vsce": "^1.96.1",
+		"vscode": "^1.1.36"
 	},
 	"dependencies": {
-		"path": "~0.12.7",
-		"fs": "~0.0.1-security"
+		"fs": "~0.0.1-security",
+		"path": "~0.12.7"
 	}
 }
