@@ -1,5 +1,6 @@
 import * as vscode from 'vscode';
-import { getRandomInt, padNumber, getFilenameFromPath } from '../../helpers';
+import { getRandomInt, getFilenameFromPath } from '../../helpers';
+import '../../ext/number';
 
 export function CleanFlightplan() {
 	const config = vscode.workspace.getConfiguration('fs-ai-tools.cleanFlightplan', undefined);
@@ -24,7 +25,8 @@ export function CleanFlightplan() {
 				}
 			}
 
-			const commentsNumSpaces = config.adjustComments === '1 space' ? 1 : config.adjustComments === 'No space' ? 0 : -1;
+			const commentsNumSpaces =
+				config.adjustComments === '1 space' ? 1 : config.adjustComments === 'No space' ? 0 : -1;
 
 			const ret = [];
 			const splitData = text.trim().split('\n');
@@ -96,10 +98,10 @@ function formatTimes(text: string, removeSeconds: boolean, addAtToDepTimes: bool
 function randomizePercentage(text: string, min: number = 10, max: number = 99): string {
 	const regex = /(\d+%)/g;
 	if (min === max) {
-		return text.replace(regex, min + '%');
+		return text.replace(regex, `${min}%`);
 	}
 	return text.replace(regex, (v) => {
-		return getRandomInt(min, max) + '%';
+		return `${getRandomInt(min, max)}%`;
 	});
 }
 
@@ -115,7 +117,7 @@ function transformToUppercase(text: string): string {
  */
 function padFlightNumbers(text: string): string {
 	text = text.replace(/,([FfRr]{1}),(\d+)/gi, (fullMatch, g1, g2) => {
-		return `,${g1},${padNumber(g2, 4)}`;
+		return `,${g1},${g2.pad(4)}`;
 	});
 	return text;
 }
@@ -125,7 +127,7 @@ function padFlightNumbers(text: string): string {
  */
 function padFlightLevels(text: string): string {
 	text = text.replace(/,(\d+),([FfRr]{1})/gi, (fullMatch, g1, g2) => {
-		return `,${padNumber(g1, 3)},${g2}`;
+		return `,${g1.pad(3)},${g2}`;
 	});
 	return text;
 }

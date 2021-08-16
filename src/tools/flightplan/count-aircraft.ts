@@ -1,6 +1,5 @@
-import { group } from 'console';
 import { window } from 'vscode';
-import { getFilenameFromPath, roundUpToNearest } from '../../helpers';
+import { getFilenameFromPath } from '../../helpers';
 
 export async function CountAircraft() {
 	const editor = window.activeTextEditor;
@@ -41,7 +40,7 @@ export async function CountAircraft() {
 							text = text.substr(0, text.length - existingCount[1].length);
 						}
 
-						text = text.trim() + ` [${groupCount}]`;
+						text = `${text.trim()} [${groupCount}]`;
 						lines[currentGroupLineIndex] = text;
 
 						numTypes++;

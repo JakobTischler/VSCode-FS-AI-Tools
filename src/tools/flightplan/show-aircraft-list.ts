@@ -1,7 +1,8 @@
 import * as vscode from 'vscode';
 import * as Fs from 'fs';
 import * as Path from 'path';
-import { getFileContents, plural, showError, writeTextToClipboard } from '../../helpers';
+import { getFileContents, showError, writeTextToClipboard } from '../../helpers';
+import '../../ext/string';
 import * as aircraftNaming from '../../data/aircraft-naming.json';
 
 interface aircraftDataRaw {
@@ -238,12 +239,15 @@ function generateGoogleSheetsOutput(aircraftList: aircraftList) {
 		.join('\t');
 }
 
+/**
+ * Iterates through the aircraftList items to provide a single formatted, readable string with "{type}: {count}× ({number of variations})"
+ */
 function getFormattedAircraftList(aircraftList: aircraftList, totalCount: number): string {
 	const output: string[] = [`${totalCount} aircraft`, ''];
 	aircraftList.forEach((data, key) => {
 		let text = `• ${data.name || key}: ${data.count}×`;
 		if (data.aircraft.size > 1) {
-			text += ` (${plural(data.aircraft.size, 'variation')})`;
+			text += ` (${'variation'.plural(data.aircraft.size)})`;
 		}
 		output.push(text);
 	});

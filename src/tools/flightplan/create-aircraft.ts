@@ -1,7 +1,7 @@
 import * as vscode from 'vscode';
 import * as Path from 'path';
 import * as fs from 'fs';
-import { getFileContents, plural, showError, writeTextToClipboard } from '../../helpers';
+import { getFileContents, showError, writeTextToClipboard } from '../../helpers';
 import { getDropdownSelection, getTextInput } from '../../input';
 import { AifpData, readAifpCfg } from '../../read-aifp';
 
@@ -182,9 +182,9 @@ export async function CreateAircraft() {
 
 	// -----------------------------------------------------
 	// SUCCESS MESSAGE
-	let msg = `${plural(regs.length, 'entry', 'entries')} created`;
+	let msg = `${'entry'.plural(regs.length, 'entries')} created`;
 	if (config.get('copyTitlesToClipboard')) {
-		msg += ` and ${plural(regs.length, 'title')} copied`;
+		msg += ` and ${'title'.plural(regs.length)} copied`;
 	}
 	vscode.window.showInformationMessage(msg);
 }

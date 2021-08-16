@@ -1,5 +1,5 @@
 import { window } from 'vscode';
-import { getFilenameFromPath, loopNumber, plural, showError } from '../../helpers';
+import { getFilenameFromPath, loopNumber, showError } from '../../helpers';
 import { getDropdownSelection } from '../../input';
 
 export async function SwitchFS9FSX() {
@@ -77,5 +77,5 @@ export async function SwitchFS9FSX() {
 
 	const from = toFS9 ? 'FSX' : 'FS9';
 	const to = toFS9 ? 'FS9' : 'FSX';
-	window.showInformationMessage(`${plural(flightplansChanged, 'flightplan')} changed from ${from} to ${to}`);
+	window.showInformationMessage(`${'flightplan'.plural(flightplansChanged)} changed from ${from} to ${to}`);
 }

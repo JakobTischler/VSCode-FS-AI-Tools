@@ -1,19 +1,19 @@
 /* Placeholders:
- * [x] Base → "Aircraft", "Airports", "Flightplans"
- * [x] base → "aircraft", "airports", "flightplans"
- * [x] name → Airline name
- * [x] icao → ICAO
- * [x] callsign → Callsign
- * [x] author → Author name
- * [x] season → Season short ("Wi2021")
+ * Base → "Aircraft", "Airports", "Flightplans"
+ * base → "aircraft", "airports", "flightplans"
+ * name → Airline name
+ * icao → ICAO
+ * callsign → Callsign
+ * author → Author name
+ * season → Season short ("Wi2021")
  */
 
 import * as vscode from 'vscode';
 import * as Fs from 'fs';
 import * as Path from 'path';
-import { showError, titleCase } from '../../helpers';
+import { capitalize, showError } from '../../helpers';
 import { getTextInput } from '../../input';
-import { AifpData, readAifpCfg } from '../../read-aifp';
+import { readAifpCfg } from '../../read-aifp';
 
 // Property definitions
 const properties = new Map();
@@ -158,7 +158,7 @@ export async function RenameFiles(filePath?: string) {
 
 		const oldFile = vscode.Uri.file(Path.join(dirPath, file));
 		const newFile = vscode.Uri.file(
-			Path.join(dirPath, (upperCaseBase ? titleCase(matches[1]) : matches[1]) + result)
+			Path.join(dirPath, (upperCaseBase ? capitalize(matches[1]) : matches[1]) + result)
 		);
 		// await Fs.promises.rename(oldFile, newFile);
 		edit.renameFile(oldFile, newFile);

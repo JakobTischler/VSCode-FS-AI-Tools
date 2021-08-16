@@ -16,11 +16,6 @@ export function getRandomInt(min: number, max: number): number {
 	return Math.floor(Math.random() * (max - min)) + min;
 }
 
-export function padNumber(num: number, width: number, z: string = '0'): string {
-	const n = num + '';
-	return n.length >= width ? n : new Array(width - n.length + 1).join(z) + n;
-}
-
 export function getFilenameFromPath(path: string): string {
 	return path.replace(/^.*[\\\/]/, '');
 }
@@ -60,22 +55,6 @@ export function roundUpToNearest(num: number, nearest: number = 10): number {
 }
 
 /**
- * Returns a string "number word", with "word" being either singular or plural depending on the number.
- * @param num The number to be used for calculation
- * @param singleWord The word if the number is 1
- * @param pluralWord The word if the number is not 1. If not supplied, `singleWord` + "s" will be used
- * @returns A string with "number word"
- */
-export function plural(num: number, singleWord: string, pluralWord?: string) {
-	if (num === 1) {
-		return `${num} ${singleWord}`;
-	} else if (pluralWord) {
-		return `${num} ${pluralWord}`;
-	}
-	return `${num} ${singleWord}s`;
-}
-
-/**
  * Writes the provided text to the user's clipboard
  * @param text The text to be written to the clipboard
  * @param message The optional success message to be shown
@@ -97,7 +76,7 @@ export const writeTextToClipboard = (text: string, message?: string) => {
  * @returns Returns the next value in the loop based on direction
  */
 export function loopNumber(num: number, min: number, max: number, dir: 1 | -1 = 1) {
-	let ret = num + dir;
+	const ret = num + dir;
 	if (ret < min) {
 		return max;
 	} else if (ret > max) {
@@ -127,15 +106,6 @@ export async function getFileContents(path: string, encoding: string = 'utf8') {
 	}
 
 	return data;
-}
-
-/**
- * Capitalizes each word's first letter and changes the rest to lower case
- * @param str The original text
- * @returns The text, which each word's first letter capitalized and the rest in lower case
- */
-export function titleCase(str: string) {
-	return str.replace(/\w\S*/g, (txt) => txt.charAt(0).toUpperCase() + txt.substr(1).toLowerCase());
 }
 
 export function showError(message: string, showPopup: boolean = true) {
