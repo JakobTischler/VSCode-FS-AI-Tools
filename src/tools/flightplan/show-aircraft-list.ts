@@ -59,12 +59,12 @@ export async function ShowAircraftList() {
 	}
 
 	// 3. Match titles to types
-	const { aircraftList, totalCount } = matchTitleToType(aircraftListRaw);
+	const { aircraftList, totalCount, nonMatches } = matchTitleToType(aircraftListRaw);
 
 	// 4. Show formatted message with "copy" button
 	vscode.window
 		.showInformationMessage(
-			getFormattedAircraftList(aircraftList, totalCount),
+			getFormattedAircraftList(aircraftList, totalCount, nonMatches),
 			{ modal: true },
 			'Copy for Google Sheets'
 		)
@@ -161,16 +161,20 @@ async function countAircraft(list: aircraftListRaw, filePath: string) {
  * Goes through `aircraftNaming` to match each title to an ICAO type name.
  *
  * Uses two methods to keep the iterations to a minimum:
- * 1. Keep a list of successful matches as well as their respective result, and go through them for each aircraft title first to check for a possible match
- * 2. Check for manufacturer match before deep-iterating through the manufacturer's aircraft types
+ * 1. Keep a list of successful matches as well as their respective result,
+ * and go through them for each aircraft title first to check for a possible
+ * match
+ * 2. Check for manufacturer match before deep-iterating through the
+ * manufacturer's aircraft types
  * @param inputList The `aircraftListRaw` that includes all aircraft titles as well as counts
- * @returns An `aircraftList` Map where the ICAO type name is the key, and the count as well as the matching aircraft titles are the value object
+ * @returns An `aircraftList` Map where the ICAO type name is the key, and the count as well as the matching aircraft titles are the value object. Also: `totalNumber` = the total number of matched aircraft (not aircraft types), `nonMatches` = the number of aircraft types that couldn't be matched
  */
 function matchTitleToType(inputList: aircraftListRaw) {
 	const aircraftList: aircraftList = new Map();
 	const matches = new Map();
 
 	let totalCount = 0;
+	let nonMatches = inputList.size;
 
 	const addOrUpdateAircraftData = (typeName: string, inputData: aircraftDataRaw) => {
 		if (aircraftList.has(typeName)) {
@@ -180,6 +184,7 @@ function matchTitleToType(inputList: aircraftListRaw) {
 				data.aircraft.add(inputData.title);
 				aircraftList.set(typeName, data);
 				totalCount += inputData.count;
+				nonMatches--;
 			}
 		} else {
 			aircraftList.set(typeName, {
@@ -187,6 +192,7 @@ function matchTitleToType(inputList: aircraftListRaw) {
 				aircraft: new Set([inputData.title]),
 			});
 			totalCount += inputData.count;
+			nonMatches--;
 		}
 	};
 
@@ -230,7 +236,7 @@ function matchTitleToType(inputList: aircraftListRaw) {
 		}
 	}
 
-	return { aircraftList, totalCount };
+	return { aircraftList, totalCount, nonMatches };
 }
 
 function generateGoogleSheetsOutput(aircraftList: aircraftList) {
@@ -242,7 +248,7 @@ function generateGoogleSheetsOutput(aircraftList: aircraftList) {
 /**
  * Iterates through the aircraftList items to provide a single formatted, readable string with "{type}: {count}× ({number of variations})"
  */
-function getFormattedAircraftList(aircraftList: aircraftList, totalCount: number): string {
+function getFormattedAircraftList(aircraftList: aircraftList, totalCount: number, nonMatches: number): string {
 	const output: string[] = [`${totalCount} aircraft`, ''];
 	aircraftList.forEach((data, key) => {
 		let text = `• ${data.name || key}: ${data.count}×`;
@@ -251,6 +257,10 @@ function getFormattedAircraftList(aircraftList: aircraftList, totalCount: number
 		}
 		output.push(text);
 	});
+
+	if (nonMatches) {
+		output.push('', `${'aircraft title'.plural(nonMatches)} couldn't be matched to an aircraft type.`);
+	}
 
 	return output.join('\n');
 }
