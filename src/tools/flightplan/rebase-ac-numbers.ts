@@ -13,7 +13,9 @@ export async function RebaseAircraftNumbers() {
 		}
 
 		const selection = editor.selection;
-		const start = await getNumberInput('1000', 'The new starting AC#. Must be > 0.');
+		const text = document.getText(selection);
+		const existingStartNumber = text.match(/AC#(\d+)/i)?.[1];
+		const start = await getNumberInput(existingStartNumber || '1000', 'The new starting AC#. Must be > 0.');
 		const bigStep = await getNumberInput(
 			'10',
 			'The step size between groups (separated by empty lines). Must be > 0.'
@@ -23,8 +25,6 @@ export async function RebaseAircraftNumbers() {
 		if (!(selection && start && bigStep && smallStep)) {
 			return false;
 		}
-
-		let text = document.getText(selection);
 
 		let ret: string[] = [];
 		let previousOldNum = null;
