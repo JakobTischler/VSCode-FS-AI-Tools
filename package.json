@@ -86,7 +86,7 @@
 				"command": "extension.rebaseAircraftNumbers",
 				"title": "Rebase AC#s",
 				"category": "FS AI Tools",
-				"when": "editorHasSelection && resourceFilename =~ /^((flightplans)|(aircraft)).*txt$/i"
+				"when": "resourceFilename =~ /^((flightplans)|(aircraft)).*txt$/i"
 			},
 			{
 				"command": "extension.renameFiles",
@@ -164,7 +164,7 @@
 				{
 					"command": "extension.rebaseAircraftNumbers",
 					"group": "FS AI Tools",
-					"when": "config.fs-ai-tools.showRebaseAircraftNumbersInContextMenu && editorHasSelection && resourceFilename =~ /^((flightplans)|(aircraft)).*txt$/i"
+					"when": "config.fs-ai-tools.showRebaseAircraftNumbersInContextMenu && resourceFilename =~ /^((flightplans)|(aircraft)).*txt$/i"
 				},
 				{
 					"command": "extension.renameFiles",

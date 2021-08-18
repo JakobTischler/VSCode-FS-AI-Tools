@@ -1,4 +1,4 @@
-import { window } from 'vscode';
+import { window, Range } from 'vscode';
 import { getFilenameFromPath, roundUpToNearest } from '../../helpers';
 
 export async function RebaseAircraftNumbers() {
@@ -13,7 +13,8 @@ export async function RebaseAircraftNumbers() {
 		}
 
 		const selection = editor.selection;
-		const text = document.getText(selection);
+		const text = document.getText(!selection.isEmpty ? selection : undefined);
+
 		const existingStartNumber = text.match(/AC#(\d+)/i)?.[1];
 		const start = await getNumberInput(existingStartNumber || '1000', 'The new starting AC#. Must be > 0.');
 		const bigStep = await getNumberInput(
@@ -22,7 +23,7 @@ export async function RebaseAircraftNumbers() {
 		);
 		const smallStep = await getNumberInput('1', 'The step size between AC#s within groups. Must be > 0.');
 
-		if (!(selection && start && bigStep && smallStep)) {
+		if (!(start && bigStep && smallStep)) {
 			return false;
 		}
 
@@ -73,7 +74,10 @@ export async function RebaseAircraftNumbers() {
 		const newText = ret.join('\n');
 
 		editor.edit((editBuilder) => {
-			editBuilder.replace(selection, newText);
+			const range = !selection.isEmpty
+				? selection
+				: new Range(document.lineAt(0).range.start, document.lineAt(document.lineCount - 1).range.end);
+			editBuilder.replace(range, newText);
 		});
 		window.showInformationMessage(`Selected AC#s rebased to ${start}`);
 	}
