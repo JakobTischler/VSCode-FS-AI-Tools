@@ -1,10 +1,17 @@
 # Change Log
 
-### 1.1.2
+### 1.2.0
+- New function `Show Aircraft List`: Goes through the Aircraft.txt and Flightplans.txt file and displays a list of used aircraft types, their count, and the number of variations.
+  - Shows a "Copy for Google Sheets" button which copies a one-liner list of the counts to the clipboard. This is for my personal use and I will make this optional in the next release.
+  - The data to match the aircraft titles to the actual aircraft types is defined in a [JSON file](./src/data/aircraft-naming.json) within the extension. This will be made configurable or extendable in the future.
 - `Clean Aircraft.cfg`:
-  - Sort Properties Order (`fs-ai-tools.cleanAircraftCfg.sortPropertiesOrder`) changed to actual array instead of string list
+  - Sort Properties Order option (`fs-ai-tools.cleanAircraftCfg.sortPropertiesOrder`) changed to actual array instead of string list
   - "Change Airports" setting: airport pairs will now be validated (has to use format "XXX(X):YYY(Y)")
-- Min version updated to v1.59.0 (re-ordering config arrays necessary)
+- Min version updated to v1.59.0 (required for re-ordering config arrays)
+- `Rebase AC#`:
+  - Rebasing Aircraft.txt works better when two sequential aircraft have the same AC#. Now each aircraft will definitely have its own, new number.
+  - The placeholder value for the start value (1000) is now the first number encountered in the file instead.
+  - Now can also be called without any selected text - the whole file will be rebased that way.
 - `Rename files`:
   - Can now be called via right click context menu on a file in the explorer
   - Now uses VSCode's internal `renameFile` function, which allows opened files being renamed to stay open, as well as allowing undo the renaming using <kbd>Ctrl</kbd>+<kbd>Z</kbd>
