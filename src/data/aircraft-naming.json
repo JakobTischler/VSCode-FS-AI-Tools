@@ -194,45 +194,16 @@
 		"Antonov": {
 			"search": ["Antonov"],
 			"types": {
-				"AN12": { "name": "An-12", "search": ["An12", "An-12"] },
+				"AN12": { "name": "An-12", "search": ["/An[- ]12[bp ]/"] },
 				"AN24": {
 					"name": "An-22/24/26/28/30/32",
-					"search": [
-						"An22",
-						"An24",
-						"An26",
-						"An28",
-						"An30",
-						"An32",
-						"An-22",
-						"An-24",
-						"An-26",
-						"An-28",
-						"An-30",
-						"An-32",
-						"Xian"
-					]
+					"search": ["/(?:An[- ]?(?:22|24|26|28|30|32)[-ar ]|Xian)/"]
 				},
 				"AN74": {
 					"name": "An-70/72/74/140/148/158/178",
-					"search": [
-						"An70",
-						"An-70",
-						"An72",
-						"An-72",
-						"An74",
-						"An-74",
-						"An140",
-						"An-140",
-						"An148",
-						"An-148",
-						"An158",
-						"An-158",
-						"An178",
-						"An-178"
-					]
+					"search": ["/An[- ]?(?:70|72|74|140|148|158|178)[-ab ]/"]
 				},
-				"A124": { "name": "An-124/225", "search": ["An124", "An-124", "An225", "An-225"] }
+				"A124": { "name": "An-124/225", "search": ["/An[- ]?(?:124|225)/"] }
 			}
 		},
 		"ATR": {
@@ -245,7 +216,7 @@
 		"BAe": {
 			"search": ["BAe", "British Aerospace", "Jetstream"],
 			"types": {
-				"BA46": { "name": "146-100/200/300 / RJ-70/85/100", "search": ["146-", "RJ75", "RJ85", "RJ100"] },
+				"BA46": { "name": "146-100/200/300 / RJ-70/85/100", "search": ["146-", "/RJ[- ]?(?:75|85|100)/"] },
 				"JS31": { "name": "JS-31/32", "search": ["JS3", "JS-3"] },
 				"JS41": { "name": "JS-41/42", "search": ["JS4", "JS-4"] }
 			}
@@ -255,22 +226,12 @@
 			"types": {
 				"B190": { "name": "1900C/D", "search": ["B1900", "1900C", "1900D"] },
 				"BE20": {
-					"name": "King Air 200/C90/A100",
-					"search": [
-						"King Air 200",
-						"King Air B200",
-						"King Air 250",
-						"King Air B250",
-						"Beech 200",
-						"Beech B200",
-						"C90 ",
-						"C99 ",
-						"A100 "
-					]
+					"name": "King Air 200/C90/A100 / Bonanza 36",
+					"search": ["/King Air B?2[05]0/", "Beech 200", "Beech B200", "C90 ", "C99 ", "A100 ", "Bonanza 36"]
 				},
 				"B350": {
-					"name": "King Air 350",
-					"search": ["King Air 350", "King Air B350", "Beech 350", "Beech B350"]
+					"name": "King Air 350 / Baron 58",
+					"search": ["/(?:King Air|Beech) B?350/", "Baron 58"]
 				},
 				"BE40": {
 					"name": "Beechjet 400/Hawker 400/Nextant 400",
@@ -312,7 +273,7 @@
 			}
 		},
 		"Bombardier": {
-			"search": ["Bombardier", "Dash", "Mitsubishi"],
+			"search": ["Bombardier", "Dash", "Mitsubishi", "Challenger"],
 			"types": {
 				"CL30": { "name": "Challenger 300", "search": ["Challenger 300", "CL-300"] },
 				"CL35": { "name": "Challenger 350", "search": ["Challenger 350", "CL-350"] },
@@ -330,10 +291,10 @@
 				"CRJX": { "name": "CRJ-1000", "search": ["CRJ-1000"] },
 				"DH8A/B": {
 					"name": "Dash 8-100/200",
-					"search": ["Dash 8-100", "Dash 8/100", "Dash 8-200", "Dash 8/200"]
+					"search": ["/Dash 8[-/]Q?[12]]00/"]
 				},
-				"DH8C": { "name": "Dash 8-300", "search": ["Dash 8-300", "Dash 8/300"] },
-				"DH8D": { "name": "Dash 8-Q400", "search": ["Dash 8-400", "Dash 8/400", "Dash 8-Q400", "Dash 8/Q400"] }
+				"DH8C": { "name": "Dash 8-300", "search": ["/Dash 8[-/]Q?300/"] },
+				"DH8D": { "name": "Dash 8-Q400", "search": ["/Dash 8[-/]Q?400/"] }
 			}
 		},
 		"Britten-Norman": {
@@ -345,66 +306,66 @@
 			"types": {
 				"C152": {
 					"name": "150/152",
-					"search": ["Cessna 150", "Cessna 152", "Cessna C150", "Cessna C152"]
+					"search": ["/Cessna C?15[02]/"]
 				},
 				"C172": {
 					"name": "170/172/175",
-					"search": ["Cessna 170", "Cessna 172", "Cessna 175", "Cessna C170", "Cessna C172", "Cessna C175"]
+					"search": ["/Cessna C?17[025]/"]
 				},
 				"C182": {
 					"name": "180/182",
-					"search": ["Cessna 180", "Cessna 182", "Cessna 185", "Cessna C180", "Cessna C182", "Cessna C185"]
+					"search": ["/Cessna C?18[025]/"]
 				},
 				"C208": {
-					"name": "207/208/210",
-					"search": ["Cessna 207", "Cessna 208", "Cessna 210", "Cessna C207", "Cessna C208", "Cessna C210"]
+					"name": "206/207/208/210",
+					"search": ["/Cessna C?2(?:06|07|08|10)/"]
 				},
 				"C402": {
 					"name": "402/404",
-					"search": ["Cessna 402", "Cessna 404", "Cessna C402", "Cessna C404"]
+					"search": ["/Cessna C?40[24]/"]
 				},
 				"C421": {
 					"name": "414/421/441",
-					"search": ["Cessna 414", "Cessna 421", "Cessna 441", "Cessna C414", "Cessna C421", "Cessna C441"]
+					"search": ["/Cessna C?4(?:14|21|41)/"]
 				},
 				"C525": {
 					"name": "525",
-					"search": ["Cessna 525 ", "Cessna C525 ", "CitationJet 1", "CitationJet CJ1"]
+					"search": ["/Cessna C?525 /", "/CitationJet (?:CJ)?1/"]
 				},
 				"C25A": {
 					"name": "525A",
-					"search": ["Cessna 525A", "Cessna C525A", "CitationJet 2", "CitationJet CJ2"]
+					"search": ["/Cessna C?525A/", "/CitationJet (?:CJ)?2/"]
 				},
 				"C25B": {
 					"name": "525B",
-					"search": ["Cessna 525B", "Cessna C525B", "CitationJet 3", "CitationJet CJ3"]
+					"search": ["/Cessna C?525B/", "/CitationJet (?:CJ)?3/"]
 				},
 				"C25C": {
 					"name": "525C",
-					"search": ["Cessna 525C", "Cessna C525C", "CitationJet 4", "CitationJet CJ4"]
+					"search": ["/Cessna C?525C/", "/CitationJet (?:CJ)?4/"]
 				},
-				"C500": { "name": "500 Citation I", "search": ["Cessna 500", "Cessna C500", "Citation I "] },
+				"C500": { "name": "500 Citation I", "search": ["/Cessna C?500/", "Citation I "] },
 				"C510": {
 					"name": "510 Citation Mustang",
-					"search": ["Cessna 510", "Cessna C510", "Citation Mustang"]
+					"search": ["/Cessna C?510/", "Citation Mustang"]
 				},
-				"C550": { "name": "550 Citation II", "search": ["Cessna 550", "Cessna C550", "Citation II"] },
-				"C560": { "name": "560 Citation V", "search": ["Cessna 560 ", "Cessna C560 ", "Citation V"] },
+				"C550": { "name": "550 Citation II", "search": ["/Cessna C?550/", "Citation II"] },
+				"C560": { "name": "560 Citation V", "search": ["/Cessna C?560 /", "Citation V"] },
 				"C56X": {
 					"name": "560XL Citation XLS",
-					"search": ["Cessna 560XL", "Cessna C560XL", "Citation XLS"]
+					"search": ["/Cessna C?560XL/", "Citation XLS"]
 				},
 				"C680": {
 					"name": "680 Citation Sovereign",
-					"search": ["Cessna 680 ", "Cessna C680 ", "Citation Sovereign"]
+					"search": ["/Cessna C?680 /", "Citation Sovereign"]
 				},
 				"C68A": {
 					"name": "680A Citation Latitude",
-					"search": ["Cessna 680A", "Cessna C680A", "Citation Latitude"]
+					"search": ["/Cessna C?680A/", "Citation Latitude"]
 				},
 				"C750": {
 					"name": "750 Citation X",
-					"search": ["Cessna 750", "Cessna C750", "Cessna Citation X "]
+					"search": ["/Cessna C?750/", "Cessna Citation X "]
 				}
 			}
 		},
@@ -434,34 +395,34 @@
 		"Dornier": {
 			"search": ["Dornier"],
 			"types": {
-				"D228": { "name": "Do-228-100/200", "search": ["Do228", "Do-228", "Dornier 228"] },
-				"D328": { "name": "Do-328-110/JET", "search": ["Do328", "Do-328", "Dornier 328"] }
+				"D228": { "name": "Do-228-100/200", "search": ["/Do(?:rnier)?[- ]?228/"] },
+				"D328": { "name": "Do-328-110/JET", "search": ["/Do(?:rnier)?[- ]?328/"] }
 			}
 		},
 		"Douglas": {
 			"search": ["Douglas"],
 			"types": {
 				"DC8": { "name": "DC-8", "search": ["DC8", "DC-8"] },
-				"DC91": { "name": "DC-9-10", "search": ["DC9-1", "DC-9-1", "DC 9-1"] },
-				"DC93": { "name": "DC-9-30", "search": ["DC9-3", "DC-9-3", "DC 9-3"] },
-				"DC94": { "name": "DC-9-40", "search": ["DC9-4", "DC-9-4", "DC 9-4"] },
-				"DC95": { "name": "DC-9-50", "search": ["DC9-5", "DC-9-5", "DC 9-5"] }
+				"DC91": { "name": "DC-9-10", "search": ["/DC[- ]?9-1/"] },
+				"DC93": { "name": "DC-9-30", "search": ["/DC[- ]?9-3/"] },
+				"DC94": { "name": "DC-9-40", "search": ["/DC[- ]?9-4/"] },
+				"DC95": { "name": "DC-9-50", "search": ["/DC[- ]?9-5/"] }
 			}
 		},
 		"Embraer": {
 			"search": ["Embraer"],
 			"types": {
 				"E120": { "name": "EMB-120", "search": ["EMB-120", "EMB120", "Embraer 120"] },
-				"E135": { "name": "ERJ-135 / Legacy 600", "search": ["ERJ-135", "ERJ135", "EMB-135", "EMB135"] },
-				"E140": { "name": "ERJ-140", "search": ["ERJ-140", "ERJ140", "EMB-140", "EMB140"] },
-				"E145": { "name": "ERJ-145 / Legacy 650", "search": ["ERJ-145", "ERJ145", "EMB-145", "EMB145"] },
-				"E170": { "name": "E170", "search": ["ERJ-170", "ERJ170", "EMB-170", "EMB170"] },
-				"E175": { "name": "E175", "search": ["ERJ-175", "ERJ175", "EMB-175", "EMB175"] },
+				"E135": { "name": "ERJ-135 / Legacy 600", "search": ["/(?:ERJ|EMB)[- ]?135/"] },
+				"E140": { "name": "ERJ-140", "search": ["/(?:ERJ|EMB)[- ]?140/"] },
+				"E145": { "name": "ERJ-145 / Legacy 650", "search": ["/(?:ERJ|EMB)[- ]?145/"] },
+				"E170": { "name": "E170", "search": ["/(?:ERJ|EMB)[- ]?170/"] },
+				"E175": { "name": "E175", "search": ["/(?:ERJ|EMB)[- ]?175/"] },
 				"E190": {
 					"name": "E190 / Lineage 1000",
-					"search": ["ERJ-190", "ERJ190", "EMB-190", "EMB190", "Lineage 1000"]
+					"search": ["/(?:ERJ|EMB)[- ]?190/", "Lineage 1000"]
 				},
-				"E195": { "name": "E195", "search": ["ERJ-195", "ERJ195", "EMB-195", "EMB195"] },
+				"E195": { "name": "E195", "search": ["/(?:ERJ|EMB)[- ]?195/"] },
 				"E50P": { "name": "Phenom 100", "search": ["Phenom 100"] },
 				"E55P": { "name": "Phenom 300", "search": ["Phenom 300"] }
 			}
@@ -585,7 +546,7 @@
 				"MD11": { "name": "MD-11", "search": ["MD11", "MD-11"] },
 				"MD80": {
 					"name": "MD-80/81/82/83/88",
-					"search": ["MD80", "MD81", "MD82", "MD83", "MD88", "MD-80", "MD-81", "MD-82", "MD-83", "MD-88"]
+					"search": ["/MD[- ]?(?:80|81|82|83|88)/"]
 				},
 				"MD87": { "name": "MD-87", "search": ["MD87", "MD-87"] },
 				"MD90": { "name": "MD-90", "search": ["MD90", "MD-90"] }
@@ -646,6 +607,24 @@
 			"types": {
 				"YK40": { "name": "Yak-40", "search": ["Yak40", "Yak-40"] },
 				"YK42": { "name": "Yak-42", "search": ["Yak42", "Yak-42"] }
+			}
+		},
+		"Cirrus": {
+			"search": ["Cirrus"],
+			"types": {
+				"PROP": { "name": "General Prop", "search": ["/SR[- ]?2[02]/"] }
+			}
+		},
+		"Diamond": {
+			"search": ["Diamond"],
+			"types": {
+				"PROP": { "name": "General Prop", "search": ["DA40", "DA-40"] }
+			}
+		},
+		"Robin": {
+			"search": ["Robin"],
+			"types": {
+				"PROP": { "name": "General Prop", "search": ["DR400", "DR-400"] }
 			}
 		}
 	}

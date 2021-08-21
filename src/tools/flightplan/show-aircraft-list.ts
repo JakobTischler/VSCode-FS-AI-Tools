@@ -174,7 +174,7 @@ function matchTitleToType(inputList: aircraftListRaw) {
 	const matches = new Map();
 
 	let totalCount = 0;
-	let nonMatches = inputList.size;
+	const nonMatches: string[] = [];
 
 	const addOrUpdateAircraftData = (
 		type: string,
@@ -189,7 +189,6 @@ function matchTitleToType(inputList: aircraftListRaw) {
 				data.aircraft.add(inputData.title);
 				aircraftList.set(type, data);
 				totalCount += inputData.count;
-				nonMatches--;
 			}
 		} else {
 			aircraftList.set(type, {
@@ -198,7 +197,6 @@ function matchTitleToType(inputList: aircraftListRaw) {
 				name: `${manufacturerName} ${typeName}`,
 			});
 			totalCount += inputData.count;
-			nonMatches--;
 		}
 	};
 
@@ -213,15 +211,32 @@ function matchTitleToType(inputList: aircraftListRaw) {
 			}
 		}
 
-		// Then, if nothing found, go through possible typenames
+		// Then, if nothing found, go through possible search terms
 		for (const [manufacturer, manufacturerData] of Object.entries(aircraftNaming.types)) {
 			for (const manufacturerName of manufacturerData.search) {
 				if (title.includes(manufacturerName.toLowerCase())) {
 					for (const [type, typeData] of Object.entries(manufacturerData.types)) {
-						for (const searchTerm of typeData.search) {
-							const searchTermLow = searchTerm.toLowerCase();
-							if (title.includes(searchTermLow)) {
-								// Add typeName to aircraftListRaw
+						for (const searchTerm of typeData.search.map((searchTerm) => searchTerm.toLowerCase())) {
+							let add = false;
+							let matchTerm = searchTerm;
+
+							// Regex
+							if (searchTermIsRegex(searchTerm)) {
+								const regex = new RegExp(searchTerm.slice(1, -1), 'i');
+								const match = title.match(regex);
+
+								if (match) {
+									add = true;
+									matchTerm = match[0];
+								}
+
+								// Regular search
+							} else {
+								add = title.includes(searchTerm);
+							}
+
+							if (add) {
+								// Add type to aircraftListRaw
 								inputData.icao = type;
 								inputList.set(inputKey, inputData);
 
@@ -229,8 +244,8 @@ function matchTitleToType(inputList: aircraftListRaw) {
 								addOrUpdateAircraftData(type, inputData, manufacturer, typeData.name || type);
 
 								// Add to successful matches
-								if (!matches.has(searchTermLow)) {
-									matches.set(searchTermLow, type);
+								if (!matches.has(matchTerm)) {
+									matches.set(matchTerm, type);
 								}
 
 								continue titlesLoop;
@@ -240,6 +255,9 @@ function matchTitleToType(inputList: aircraftListRaw) {
 				}
 			}
 		}
+
+		// Aircraft title couldn't be matched
+		nonMatches.push(inputData.title);
 	}
 
 	return { aircraftList, totalCount, nonMatches };
@@ -254,7 +272,7 @@ function generateGoogleSheetsOutput(aircraftList: aircraftList) {
 /**
  * Iterates through the aircraftList items to provide a single formatted, readable string with "{type}: {count}× ({number of variations})"
  */
-function getFormattedAircraftList(aircraftList: aircraftList, totalCount: number, nonMatches: number): string {
+function getFormattedAircraftList(aircraftList: aircraftList, totalCount: number, nonMatches: string[]): string {
 	const title = `${'—'.repeat(10)}   ${totalCount} aircraft   ${'—'.repeat(10)}`;
 	const output: string[] = [title, ''];
 	aircraftList.forEach((data, key) => {
@@ -265,10 +283,18 @@ function getFormattedAircraftList(aircraftList: aircraftList, totalCount: number
 		output.push(text);
 	});
 
-	if (nonMatches) {
-		const footer = `${'aircraft title'.plural(nonMatches)} couldn't be matched to an aircraft type.`;
-		output.push('', '—'.repeat(footer.length), footer);
+	if (nonMatches.length) {
+		output.push(
+			'',
+			'—'.repeat(25),
+			`${'aircraft title'.plural(nonMatches.length)} couldn't be matched to any aircraft type:`
+		);
+		output.push(...nonMatches.map((title) => `• "${title}"`));
 	}
 
 	return output.join('\n');
+}
+
+function searchTermIsRegex(term: string): boolean {
+	return term.startsWith('/') && term.endsWith('/');
 }
