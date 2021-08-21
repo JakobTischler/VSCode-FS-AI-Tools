@@ -176,20 +176,26 @@ function matchTitleToType(inputList: aircraftListRaw) {
 	let totalCount = 0;
 	let nonMatches = inputList.size;
 
-	const addOrUpdateAircraftData = (typeName: string, inputData: aircraftDataRaw) => {
-		if (aircraftList.has(typeName)) {
-			const data = aircraftList.get(typeName);
+	const addOrUpdateAircraftData = (
+		type: string,
+		inputData: aircraftDataRaw,
+		manufacturerName?: string,
+		typeName?: string
+	) => {
+		if (aircraftList.has(type)) {
+			const data = aircraftList.get(type);
 			if (data) {
 				data.count += inputData.count;
 				data.aircraft.add(inputData.title);
-				aircraftList.set(typeName, data);
+				aircraftList.set(type, data);
 				totalCount += inputData.count;
 				nonMatches--;
 			}
 		} else {
-			aircraftList.set(typeName, {
+			aircraftList.set(type, {
 				count: inputData.count,
 				aircraft: new Set([inputData.title]),
+				name: `${manufacturerName} ${typeName}`,
 			});
 			totalCount += inputData.count;
 			nonMatches--;
@@ -209,22 +215,22 @@ function matchTitleToType(inputList: aircraftListRaw) {
 
 		// Then, if nothing found, go through possible typenames
 		for (const [manufacturer, manufacturerData] of Object.entries(aircraftNaming.types)) {
-			for (const manufacturerName of manufacturerData.names) {
+			for (const manufacturerName of manufacturerData.search) {
 				if (title.includes(manufacturerName.toLowerCase())) {
-					for (const [typeName, subStrings] of Object.entries(manufacturerData.types)) {
-						for (const subString of subStrings) {
-							const subStringLow = subString.toLowerCase();
-							if (title.includes(subStringLow)) {
+					for (const [type, typeData] of Object.entries(manufacturerData.types)) {
+						for (const searchTerm of typeData.search) {
+							const searchTermLow = searchTerm.toLowerCase();
+							if (title.includes(searchTermLow)) {
 								// Add typeName to aircraftListRaw
-								inputData.icao = typeName;
+								inputData.icao = type;
 								inputList.set(inputKey, inputData);
 
 								// Add data to aircraftList: create new or update existing
-								addOrUpdateAircraftData(typeName, inputData);
+								addOrUpdateAircraftData(type, inputData, manufacturer, typeData.name || type);
 
 								// Add to successful matches
-								if (!matches.has(subStringLow)) {
-									matches.set(subStringLow, typeName);
+								if (!matches.has(searchTermLow)) {
+									matches.set(searchTermLow, type);
 								}
 
 								continue titlesLoop;
@@ -249,7 +255,8 @@ function generateGoogleSheetsOutput(aircraftList: aircraftList) {
  * Iterates through the aircraftList items to provide a single formatted, readable string with "{type}: {count}× ({number of variations})"
  */
 function getFormattedAircraftList(aircraftList: aircraftList, totalCount: number, nonMatches: number): string {
-	const output: string[] = [`${totalCount} aircraft`, ''];
+	const title = `${'—'.repeat(10)}   ${totalCount} aircraft   ${'—'.repeat(10)}`;
+	const output: string[] = [title, ''];
 	aircraftList.forEach((data, key) => {
 		let text = `• ${data.name || key}: ${data.count}×`;
 		if (data.aircraft.size > 1) {
@@ -259,7 +266,8 @@ function getFormattedAircraftList(aircraftList: aircraftList, totalCount: number
 	});
 
 	if (nonMatches) {
-		output.push('', `${'aircraft title'.plural(nonMatches)} couldn't be matched to an aircraft type.`);
+		const footer = `${'aircraft title'.plural(nonMatches)} couldn't be matched to an aircraft type.`;
+		output.push('', '—'.repeat(footer.length), footer);
 	}
 
 	return output.join('\n');
