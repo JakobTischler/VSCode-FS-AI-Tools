@@ -1,5 +1,6 @@
 import * as vscode from 'vscode';
 import * as Fs from 'fs';
+import { isArray, merge, mergeWith } from 'lodash';
 import * as Path from 'path';
 import { getFileContents, showError, writeTextToClipboard } from '../../helpers';
 import '../../ext/string';
@@ -59,20 +60,44 @@ export async function ShowAircraftList() {
 		return;
 	}
 
-	// 3. Match titles to types
-	const { aircraftList, totalCount, nonMatches } = matchTitleToType(aircraftListRaw);
+	// 3. Get user data .json and merge with aircraftNaming
+	let data = aircraftNaming;
+	const config = vscode.workspace.getConfiguration('fs-ai-tools.showAircraftList', undefined);
+	const customDataPath = config.get('customDataFilePath') as string;
+	if (customDataPath?.length) {
+		// 3.1: Get custom file contents
+		const customDataContents = await getFileContents(customDataPath);
+		if (customDataContents) {
+			const customData = JSON.parse(customDataContents);
 
-	// 4. Show formatted message with "copy" button
-	const showGoogleSheetsButton = vscode.workspace
-		.getConfiguration('fs-ai-tools.showAircraftList', undefined)
-		.get('showGoogleSheetsButton');
+			// 3.2: Merge
+			if (customData.list || customData.types) {
+				/* data = mergeWith(aircraftNaming, customData, (origValue, newValue) => {
+					if (isArray(origValue)) {
+						return origValue.concat(newValue);
+					}
+				}); */
+				data = merge(aircraftNaming, customData);
+			} else {
+				showError(`Custom aircraft data couldn't be merged, as it has neither "list" nor "types"`);
+			}
+		} else {
+			showError(`Custom aircraft data couldn't be read. Please check file path.`);
+		}
+	}
+
+	// 4. Match titles to types
+	const { aircraftList, totalCount, nonMatches } = matchTitleToType(data, aircraftListRaw);
+
+	// 5. Show formatted message with "copy" button
+	const showGoogleSheetsButton = config.get('showGoogleSheetsButton');
 	const formattedList = getFormattedAircraftList(aircraftList, totalCount, nonMatches);
 	if (showGoogleSheetsButton) {
 		vscode.window
 			.showInformationMessage(formattedList, { modal: true }, 'Copy for Google Sheets')
 			.then((buttonText) => {
 				if (buttonText) {
-					const sheetsOutput = generateGoogleSheetsOutput(aircraftList);
+					const sheetsOutput = generateGoogleSheetsOutput(data, aircraftList);
 					writeTextToClipboard(sheetsOutput, 'Google Sheets aircraft count copied to clipboard');
 				}
 			});
@@ -174,7 +199,7 @@ async function countAircraft(list: aircraftListRaw, filePath: string) {
  * @param inputList The `aircraftListRaw` that includes all aircraft titles as well as counts
  * @returns An `aircraftList` Map where the ICAO type name is the key, and the count as well as the matching aircraft titles are the value object. Also: `totalNumber` = the total number of matched aircraft (not aircraft types), `nonMatches` = the number of aircraft types that couldn't be matched
  */
-function matchTitleToType(inputList: aircraftListRaw) {
+function matchTitleToType(data: typeof aircraftNaming, inputList: aircraftListRaw) {
 	const aircraftList: aircraftList = new Map();
 	const matches = new Map();
 
@@ -217,7 +242,7 @@ function matchTitleToType(inputList: aircraftListRaw) {
 		}
 
 		// Then, if nothing found, go through possible search terms
-		for (const [manufacturer, manufacturerData] of Object.entries(aircraftNaming.types)) {
+		for (const [manufacturer, manufacturerData] of Object.entries(data.types)) {
 			for (const manufacturerName of manufacturerData.search) {
 				if (title.includes(manufacturerName.toLowerCase())) {
 					for (const [type, typeData] of Object.entries(manufacturerData.types)) {
@@ -268,10 +293,8 @@ function matchTitleToType(inputList: aircraftListRaw) {
 	return { aircraftList, totalCount, nonMatches };
 }
 
-function generateGoogleSheetsOutput(aircraftList: aircraftList) {
-	return aircraftNaming.list
-		.map((item) => (aircraftList.has(item) ? aircraftList.get(item)?.count || '' : ''))
-		.join('\t');
+function generateGoogleSheetsOutput(data: typeof aircraftNaming, aircraftList: aircraftList) {
+	return data.list.map((item) => (aircraftList.has(item) ? aircraftList.get(item)?.count || '' : '')).join('\t');
 }
 
 /**

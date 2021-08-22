@@ -262,6 +262,8 @@ Renumbers the `[Area.xxx]` entries sequentially and sets the `Layer=x` propertie
 ### Show aircraft list
 Goes through the Aircraft.txt and Flightplans.txt file and displays a list of used aircraft types, their count, and the number of variations. Optionally shows a "Copy for Google Sheets" button which copies a one-liner list of the counts to the clipboard.
 
+It is highly recommended to set `window.dialogStyle` to `custom` for best legibility.
+
 Preview:
 ```
 —————————— 20 aircraft ——————————

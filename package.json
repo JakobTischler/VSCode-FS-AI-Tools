@@ -496,6 +496,13 @@
 					"markdownDescription": "Adds the \"Show Aircraft List\" command to the context menu when an `Aircraft….txt` or `Flightplan….txt` file is open. Remember to set `#window.dialogStyle#` to `custom` for best legibility.",
 					"scope": "window"
 				},
+				"fs-ai-tools.showAircraftList.customDataFilePath": {
+					"type": "string",
+					"default": "",
+					"title": "Custom Aicraft Data File Path",
+					"markdownDescription": "Full path to a custom aircraft data JSON file. Will overwrite / add to default aircraft data. See _*[TODO]()*_ for format.",
+					"scope": "window"
+				},
 				"fs-ai-tools.showAircraftList.showGoogleSheetsButton": {
 					"type": "boolean",
 					"default": false,
@@ -578,6 +585,7 @@
 		"test": "npm run compile && node ./node_modules/vscode/bin/test"
 	},
 	"devDependencies": {
+		"@types/lodash": "^4.14.172",
 		"@types/mocha": "^2.2.42",
 		"@types/node": "^10.17.13",
 		"tslint": "^5.20.1",
@@ -587,6 +595,7 @@
 	},
 	"dependencies": {
 		"fs": "~0.0.1-security",
+		"lodash": "^4.17.21",
 		"path": "~0.12.7"
 	}
 }
