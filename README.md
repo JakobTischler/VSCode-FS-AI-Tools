@@ -259,6 +259,22 @@ Renumbers the `[Area.xxx]` entries sequentially and sets the `Layer=x` propertie
 <br>
 <br>
 
+### Show aircraft list
+Goes through the Aircraft.txt and Flightplans.txt file and displays a list of used aircraft types, their count, and the number of variations. Optionally shows a "Copy for Google Sheets" button which copies a one-liner list of the counts to the clipboard.
+
+Preview:
+```
+—————————— 20 aircraft ——————————
+
+• Antonov An-124/225: 8× (3 variations)
+• Antonov An-22/24/26/28/30/32: 4× (4 variations)
+• Antonov An-70/72/74/140/148/158/178: 7× (6 variations)
+• Antonov An-12: 1×
+```
+<br>
+<br>
+<br>
+
 ### Switch FS9 ⟷ FSX
 Changes the selected flightplans' days from FS9 to FSX or vice versa. Change direction can be selected each time. *Note the known issues.*
 

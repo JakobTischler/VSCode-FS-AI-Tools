@@ -4,6 +4,7 @@
 - New function `Show Aircraft List`: Goes through the Aircraft.txt and Flightplans.txt file and displays a list of used aircraft types, their count, and the number of variations.
   - Shows a "Copy for Google Sheets" button which copies a one-liner list of the counts to the clipboard. This is for my personal use and I will make this optional in the next release.
   - The data to match the aircraft titles to the actual aircraft types is defined in a [JSON file](./src/data/aircraft-naming.json) within the extension. This will be made configurable or extendable in the future.
+  - It is highly recommended to set `window.dialogStyle` to `custom` for best legibility.
 - `Clean Aircraft.cfg`:
   - Sort Properties Order option (`fs-ai-tools.cleanAircraftCfg.sortPropertiesOrder`) changed to actual array instead of string list
   - "Change Airports" setting: airport pairs will now be validated (has to use format "XXX(X):YYY(Y)")

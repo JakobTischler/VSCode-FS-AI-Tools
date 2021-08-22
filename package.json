@@ -493,7 +493,7 @@
 					"type": "boolean",
 					"default": false,
 					"title": "Add to Context Menu",
-					"markdownDescription": "Adds the \"Show Aircraft List\" command to the context menu when an `Aircraft….txt` or `Flightplan….txt` file is open.",
+					"markdownDescription": "Adds the \"Show Aircraft List\" command to the context menu when an `Aircraft….txt` or `Flightplan….txt` file is open. Remember to set `#window.dialogStyle#` to `custom` for best legibility.",
 					"scope": "window"
 				},
 				"fs-ai-tools.showAircraftList.showGoogleSheetsButton": {
