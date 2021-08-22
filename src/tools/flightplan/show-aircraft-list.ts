@@ -32,6 +32,8 @@ export async function ShowAircraftList() {
 	if (!editor) {
 		return;
 	}
+	const config = vscode.workspace.getConfiguration('fs-ai-tools.showAircraftList', undefined);
+
 	const filePath = editor.document.uri.path;
 	const dirPath = Path.dirname(filePath).replace(/^\/+/, '');
 
@@ -62,18 +64,19 @@ export async function ShowAircraftList() {
 	const { aircraftList, totalCount, nonMatches } = matchTitleToType(aircraftListRaw);
 
 	// 4. Show formatted message with "copy" button
-	vscode.window
-		.showInformationMessage(
-			getFormattedAircraftList(aircraftList, totalCount, nonMatches),
-			{ modal: true },
-			'Copy for Google Sheets'
-		)
-		.then((buttonText) => {
-			if (buttonText) {
-				const sheetsOutput = generateGoogleSheetsOutput(aircraftList);
-				writeTextToClipboard(sheetsOutput, 'Google Sheets aircraft count copied to clipboard');
-			}
-		});
+	const formattedList = getFormattedAircraftList(aircraftList, totalCount, nonMatches);
+	if (config.showGoogleSheetsButton) {
+		vscode.window
+			.showInformationMessage(formattedList, { modal: true }, 'Copy for Google Sheets')
+			.then((buttonText) => {
+				if (buttonText) {
+					const sheetsOutput = generateGoogleSheetsOutput(aircraftList);
+					writeTextToClipboard(sheetsOutput, 'Google Sheets aircraft count copied to clipboard');
+				}
+			});
+	} else {
+		vscode.window.showInformationMessage(formattedList, { modal: true });
+	}
 }
 
 /**
