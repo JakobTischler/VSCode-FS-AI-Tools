@@ -6,11 +6,11 @@
 	},
 	"displayName": "FS AI Tools",
 	"description": "A bag of tools for AI flightplans and .cfg files",
-	"version": "1.2.0",
+	"version": "1.2.1",
 	"icon": "icon.png",
 	"license": "",
 	"engines": {
-		"vscode": "^1.59.0"
+		"vscode": "^1.61.0"
 	},
 	"categories": [
 		"Other"
@@ -200,381 +200,449 @@
 				}
 			]
 		},
-		"configuration": {
-			"type": "object",
-			"title": "FS AI Tools",
-			"properties": {
-				"fs-ai-tools.cleanAircraftCfg._ShowCleanAircraftCfgInContextMenu": {
-					"type": "boolean",
-					"default": true,
-					"title": "Add to Context Menu",
-					"markdownDescription": "Adds the \"Clean Aircraft.cfg\" command to the context menu when an `aircraft.cfg` file is open.",
-					"scope": "window"
-				},
-				"fs-ai-tools.cleanAircraftCfg.callsignsUppercase": {
-					"type": "boolean",
-					"default": true,
-					"title": "Convert callsigns to uppercase",
-					"markdownDescription": "Converts all `atc_airline=…` callsigns to uppercase.",
-					"scope": "window"
-				},
-				"fs-ai-tools.cleanAircraftCfg.removeUnusedLines": {
-					"type": "boolean",
-					"default": true,
-					"title": "Remove unused lines",
-					"markdownDescription": "Removes the lines defined in *`#fs-ai-tools.cleanAircraftCfg.removeUnusedLinesItems#`* from the fltsim entries.",
-					"scope": "window"
-				},
-				"fs-ai-tools.cleanAircraftCfg.removeUnusedLinesItems": {
-					"markdownDescription": "List of `fltsim` entry lines to be removed.\n\n* `key=value` for distinct values\n\n* `key=*` for any non-empty value\n\n* `key=_` for only empty values\n\n* `key` for all values.",
-					"scope": "window",
-					"type": "array",
-					"items": {
-						"type": "string"
+		"configuration": [
+			{
+				"type": "object",
+				"title": "Clean aircraft.cfg",
+				"properties": {
+					"fs-ai-tools.cleanAircraftCfg._ShowCleanAircraftCfgInContextMenu": {
+						"type": "boolean",
+						"default": true,
+						"title": "Add to Context Menu",
+						"markdownDescription": "Adds the \"Clean Aircraft.cfg\" command to the context menu when an `aircraft.cfg` file is open.",
+						"scope": "window"
 					},
-					"default": [
-						"atc_id=_",
-						"atc_id_color",
-						"atc_flight_number",
-						"atc_heavy=0",
-						"visual_damage"
-					]
-				},
-				"fs-ai-tools.cleanAircraftCfg.renumber": {
-					"type": "boolean",
-					"default": true,
-					"title": "Renumber",
-					"markdownDescription": "Renumber the `fltsim` entries in sequence, starting at `0`.",
-					"scope": "window"
-				},
-				"fs-ai-tools.cleanAircraftCfg.sortProperties": {
-					"type": "boolean",
-					"default": true,
-					"title": "Sort Properties",
-					"markdownDescription": "Sort the `fltsim` entries' properties.",
-					"scope": "window"
-				},
-				"fs-ai-tools.cleanAircraftCfg.sortPropertiesOrder": {
-					"title": "Sort Properties Order",
-					"type": "array",
-					"items": {
-						"type": "string",
-						"enum": [
-							"atc_airline",
-							"atc_flight_number",
-							"atc_heavy",
-							"atc_id",
+					"fs-ai-tools.cleanAircraftCfg.callsignsUppercase": {
+						"type": "boolean",
+						"default": true,
+						"title": "Convert callsigns to uppercase",
+						"markdownDescription": "Converts all `atc_airline=…` callsigns to uppercase.",
+						"scope": "window"
+					},
+					"fs-ai-tools.cleanAircraftCfg.removeUnusedLines": {
+						"type": "boolean",
+						"default": true,
+						"title": "Remove unused lines",
+						"markdownDescription": "Removes the lines defined in *`#fs-ai-tools.cleanAircraftCfg.removeUnusedLinesItems#`* from the fltsim entries.",
+						"scope": "window"
+					},
+					"fs-ai-tools.cleanAircraftCfg.removeUnusedLinesItems": {
+						"markdownDescription": "List of `fltsim` entry lines to be removed.\n\n* `key=value` for distinct values\n\n* `key=*` for any non-empty value\n\n* `key=_` for only empty values\n\n* `key` for all values.",
+						"scope": "window",
+						"type": "array",
+						"items": {
+							"type": "string"
+						},
+						"default": [
+							"atc_id=_",
 							"atc_id_color",
-							"atc_model",
-							"atc_parking_codes",
-							"atc_parking_types",
-							"description",
-							"kb_checklists",
-							"kb_reference",
-							"model",
-							"panel",
-							"prop_anim_ratio",
-							"sim",
-							"sound",
-							"texture",
-							"title",
-							"ui_createdby",
-							"ui_manufacturer",
-							"ui_type",
-							"ui_typerole",
-							"ui_variation",
+							"atc_flight_number",
+							"atc_heavy=0",
 							"visual_damage"
 						]
 					},
-					"uniqueItems": true,
-					"markdownDescription": "Defines the sort order of the `fltsim` entries' properties. Only applicable if `#fs-ai-tools.cleanAircraftCfg.sortProperties#` is active. Reorder by drag and dropping. Undefined keys are appended at the end of the `fltsim` entry.",
-					"default": [
-						"title",
-						"sim",
-						"model",
-						"panel",
-						"sound",
-						"texture",
-						"atc_airline",
-						"atc_id",
-						"ui_manufacturer",
-						"ui_type",
-						"ui_variation",
-						"atc_parking_codes",
-						"atc_parking_types",
-						"atc_heavy",
-						"prop_anim_ratio",
-						"visual_damage",
-						"description",
-						"ui_createdby"
-					]
-				},
-				"fs-ai-tools.cleanFlightplan._ShowCleanFlightplanInContextMenu": {
-					"type": "boolean",
-					"default": true,
-					"title": "Add to Context Menu",
-					"markdownDescription": "Adds the \"Clean Flightplan\" command to the context menu when a `Flightplan….txt` file is open.",
-					"scope": "window"
-				},
-				"fs-ai-tools.cleanFlightplan.leadingZeroesFlightnumbers": {
-					"type": "boolean",
-					"default": true,
-					"title": "Leading zeroes flightnumbers",
-					"markdownDescription": "Pads the flightnumbers to 4 digits with zeroes (e.g. `12` becomes `0012`).",
-					"scope": "window"
-				},
-				"fs-ai-tools.cleanFlightplan.leadingZeroesFlightLevels": {
-					"type": "boolean",
-					"default": true,
-					"title": "Leading zeroes flight levels",
-					"markdownDescription": "Pads the flight levels to 3 digits with zeroes (e.g. `70` becomes `070`).",
-					"scope": "window"
-				},
-				"fs-ai-tools.cleanFlightplan.addAtToArrivalTimes": {
-					"type": "boolean",
-					"default": true,
-					"title": "Add @ to arrival times",
-					"markdownDescription": "Adds `@` to arrival times (e.g. `12:34` becomes `@12:34`).",
-					"scope": "window"
-				},
-				"fs-ai-tools.cleanFlightplan.removeSeconds": {
-					"type": "boolean",
-					"default": true,
-					"title": "Remove seconds",
-					"markdownDescription": "Removes seconds from arrival and departure times (e.g. `12:34:56` becomes `12:34`).",
-					"scope": "window"
-				},
-				"fs-ai-tools.cleanFlightplan.randomPercentages": {
-					"type": "boolean",
-					"default": true,
-					"title": "Randomize percentages",
-					"markdownDescription": "Randomizes the flightplans' percentages to values between the `min` and `max` set.",
-					"scope": "window"
-				},
-				"fs-ai-tools.cleanFlightplan.randomPercentagesMin": {
-					"type": "number",
-					"default": 1,
-					"minimum": 1,
-					"maximum": 100,
-					"title": "Randomize percentage min",
-					"markdownDescription": "If *`#fs-ai-tools.cleanFlightplan.randomPercentages#`* is activated, this will be the min value.",
-					"scope": "window"
-				},
-				"fs-ai-tools.cleanFlightplan.randomPercentagesMax": {
-					"type": "number",
-					"default": 1,
-					"minimum": 1,
-					"maximum": 100,
-					"title": "Randomize percentage max",
-					"markdownDescription": "If *`#fs-ai-tools.cleanFlightplan.randomPercentages#`* is activated, this will be the max value.",
-					"scope": "window"
-				},
-				"fs-ai-tools.cleanFlightplan.uppercase": {
-					"type": "boolean",
-					"default": true,
-					"title": "Uppercase",
-					"markdownDescription": "Transforms the flightplan to uppercase.",
-					"scope": "window"
-				},
-				"fs-ai-tools.cleanFlightplan.changeAirports": {
-					"title": "Change Airport Codes",
-					"markdownDescription": "Changes each occurrence of the old airport code to the new one.\n\n* Format: `OldICAO:NewICAO`.\n\n* Leave empty for no airport changes.",
-					"scope": "window",
-					"type": "array",
-					"items": {
+					"fs-ai-tools.cleanAircraftCfg.renumber": {
+						"type": "boolean",
+						"default": true,
+						"title": "Renumber",
+						"markdownDescription": "Renumber the `fltsim` entries in sequence, starting at `0`.",
+						"scope": "window"
+					},
+					"fs-ai-tools.cleanAircraftCfg.sortProperties": {
+						"type": "boolean",
+						"default": true,
+						"title": "Sort Properties",
+						"markdownDescription": "Sort the `fltsim` entries' properties.",
+						"scope": "window"
+					},
+					"fs-ai-tools.cleanAircraftCfg.sortPropertiesOrder": {
+						"title": "Sort Properties Order",
+						"type": "array",
+						"items": {
+							"type": "string",
+							"enum": [
+								"atc_airline",
+								"atc_flight_number",
+								"atc_heavy",
+								"atc_id",
+								"atc_id_color",
+								"atc_model",
+								"atc_parking_codes",
+								"atc_parking_types",
+								"description",
+								"kb_checklists",
+								"kb_reference",
+								"model",
+								"panel",
+								"prop_anim_ratio",
+								"sim",
+								"sound",
+								"texture",
+								"title",
+								"ui_createdby",
+								"ui_manufacturer",
+								"ui_type",
+								"ui_typerole",
+								"ui_variation",
+								"visual_damage"
+							]
+						},
+						"uniqueItems": true,
+						"markdownDescription": "Defines the sort order of the `fltsim` entries' properties. Only applicable if `#fs-ai-tools.cleanAircraftCfg.sortProperties#` is active. Reorder by drag and dropping. Undefined keys are appended at the end of the `fltsim` entry.",
+						"default": [
+							"title",
+							"sim",
+							"model",
+							"panel",
+							"sound",
+							"texture",
+							"atc_airline",
+							"atc_id",
+							"ui_manufacturer",
+							"ui_type",
+							"ui_variation",
+							"atc_parking_codes",
+							"atc_parking_types",
+							"atc_heavy",
+							"prop_anim_ratio",
+							"visual_damage",
+							"description",
+							"ui_createdby"
+						]
+					}
+				}
+			},
+			{
+				"type": "object",
+				"title": "Clean Flightplan",
+				"properties": {
+					"fs-ai-tools.cleanFlightplan._ShowCleanFlightplanInContextMenu": {
+						"type": "boolean",
+						"default": true,
+						"title": "Add to Context Menu",
+						"markdownDescription": "Adds the \"Clean Flightplan\" command to the context menu when a `Flightplan….txt` file is open.",
+						"scope": "window"
+					},
+					"fs-ai-tools.cleanFlightplan.leadingZeroesFlightnumbers": {
+						"type": "boolean",
+						"default": true,
+						"title": "Leading zeroes flightnumbers",
+						"markdownDescription": "Pads the flightnumbers to 4 digits with zeroes (e.g. `12` becomes `0012`).",
+						"scope": "window"
+					},
+					"fs-ai-tools.cleanFlightplan.leadingZeroesFlightLevels": {
+						"type": "boolean",
+						"default": true,
+						"title": "Leading zeroes flight levels",
+						"markdownDescription": "Pads the flight levels to 3 digits with zeroes (e.g. `70` becomes `070`).",
+						"scope": "window"
+					},
+					"fs-ai-tools.cleanFlightplan.addAtToArrivalTimes": {
+						"type": "boolean",
+						"default": true,
+						"title": "Add @ to arrival times",
+						"markdownDescription": "Adds `@` to arrival times (e.g. `12:34` becomes `@12:34`).",
+						"scope": "window"
+					},
+					"fs-ai-tools.cleanFlightplan.removeSeconds": {
+						"type": "boolean",
+						"default": true,
+						"title": "Remove seconds",
+						"markdownDescription": "Removes seconds from arrival and departure times (e.g. `12:34:56` becomes `12:34`).",
+						"scope": "window"
+					},
+					"fs-ai-tools.cleanFlightplan.randomPercentages": {
+						"type": "boolean",
+						"default": true,
+						"title": "Randomize percentages",
+						"markdownDescription": "Randomizes the flightplans' percentages to values between the `min` and `max` set.",
+						"scope": "window"
+					},
+					"fs-ai-tools.cleanFlightplan.randomPercentagesMin": {
+						"type": "number",
+						"default": 1,
+						"minimum": 1,
+						"maximum": 100,
+						"title": "Randomize percentage min",
+						"markdownDescription": "If *`#fs-ai-tools.cleanFlightplan.randomPercentages#`* is activated, this will be the min value.",
+						"scope": "window"
+					},
+					"fs-ai-tools.cleanFlightplan.randomPercentagesMax": {
+						"type": "number",
+						"default": 1,
+						"minimum": 1,
+						"maximum": 100,
+						"title": "Randomize percentage max",
+						"markdownDescription": "If *`#fs-ai-tools.cleanFlightplan.randomPercentages#`* is activated, this will be the max value.",
+						"scope": "window"
+					},
+					"fs-ai-tools.cleanFlightplan.uppercase": {
+						"type": "boolean",
+						"default": true,
+						"title": "Uppercase",
+						"markdownDescription": "Transforms the flightplan to uppercase.",
+						"scope": "window"
+					},
+					"fs-ai-tools.cleanFlightplan.changeAirports": {
+						"title": "Change Airport Codes",
+						"markdownDescription": "Changes each occurrence of the old airport code to the new one.\n\n* Format: `OldICAO:NewICAO`.\n\n* Leave empty for no airport changes.",
+						"scope": "window",
+						"type": "array",
+						"items": {
+							"type": "string",
+							"pattern": "^(\\w{3,4}):(\\w{3,4})$"
+						},
+						"uniqueItems": true,
+						"default": [
+							"FAJS:FAOR",
+							"FLND:FLSK",
+							"FWLI:FWKI",
+							"GQNO:GQNN",
+							"HSNL:HSNN",
+							"KDRU:M26",
+							"KNXP:NXP",
+							"LYPR:BKPR",
+							"ORBS:ORBI",
+							"UA0F:UASS",
+							"UGEE:UDYZ",
+							"UTSK:UTSL",
+							"VOBG:VOBL",
+							"WIIP:WIHP",
+							"WIKM:WIOM",
+							"WRRR:WADD",
+							"WRSJ:WARR",
+							"WRSQ:WARQ"
+						]
+					},
+					"fs-ai-tools.cleanFlightplan.adjustComments": {
 						"type": "string",
-						"pattern": "^(\\w{3,4}):(\\w{3,4})$"
+						"default": "Don't change",
+						"enum": [
+							"Don't change",
+							"1 space",
+							"No space"
+						],
+						"enumDescriptions": [
+							"Doesn't change any comments.",
+							"Adds/removes space(s) after double slashes so that there is exactly 1 space after each \"//\".",
+							"Removes all spaces after double slashes so that there is no space after each \"//\"."
+						],
+						"scope": "window"
+					}
+				}
+			},
+			{
+				"type": "object",
+				"title": "Create aircraft",
+				"properties": {
+					"fs-ai-tools.createAircraft._ShowCreateAircraftInContextMenu": {
+						"type": "boolean",
+						"default": true,
+						"title": "Add to Context Menu",
+						"markdownDescription": "Adds the \"Create aircraft\" command to the context menu when text is selected.",
+						"scope": "window"
 					},
-					"uniqueItems": true,
-					"default": [
-						"FAJS:FAOR",
-						"FLND:FLSK",
-						"FWLI:FWKI",
-						"GQNO:GQNN",
-						"HSNL:HSNN",
-						"KDRU:M26",
-						"KNXP:NXP",
-						"LYPR:BKPR",
-						"ORBS:ORBI",
-						"UA0F:UASS",
-						"UGEE:UDYZ",
-						"UTSK:UTSL",
-						"VOBG:VOBL",
-						"WIIP:WIHP",
-						"WIKM:WIOM",
-						"WRRR:WADD",
-						"WRSJ:WARR",
-						"WRSQ:WARQ"
-					]
-				},
-				"fs-ai-tools.cleanFlightplan.adjustComments": {
-					"type": "string",
-					"default": "Don't change",
-					"enum": [
-						"Don't change",
-						"1 space",
-						"No space"
-					],
-					"enumDescriptions": [
-						"Doesn't change any comments.",
-						"Adds/removes space(s) after double slashes so that there is exactly 1 space after each \"//\".",
-						"Removes all spaces after double slashes so that there is no space after each \"//\"."
-					],
-					"scope": "window"
-				},
-				"fs-ai-tools.createAircraft._ShowCreateAircraftInContextMenu": {
-					"type": "boolean",
-					"default": true,
-					"title": "Add to Context Menu",
-					"markdownDescription": "Adds the \"Create aircraft\" command to the context menu when text is selected.",
-					"scope": "window"
-				},
-				"fs-ai-tools.createAircraft.copyTextureCfgToTextureFolder": {
-					"type": "boolean",
-					"default": true,
-					"markdownDescription": "If a `texture.cfg` file exists in the aircraft folder, copy it to the newly created texture folders.",
-					"scope": "window"
-				},
-				"fs-ai-tools.createAircraft.copyTitlesToClipboard": {
-					"type": "boolean",
-					"default": true,
-					"markdownDescription": "Copy the titles of the created fltsim entries to the clipboard.",
-					"scope": "window"
-				},
-				"fs-ai-tools.createAircraft.createFolders": {
-					"type": "string",
-					"default": "Create",
-					"enum": [
-						"Create",
-						"Don't create",
-						"Ask everytime"
-					],
-					"enumDescriptions": [
-						"Always creates the texture folders in the template's directory",
-						"Never creates the texture folders in the template's directory",
-						"You will be asked during the data input process if the texture folders should be created"
-					],
-					"scope": "window"
-				},
-				"fs-ai-tools.createAircraft.templates": {
-					"type": "array",
-					"title": "Templates",
-					"markdownDescription": "List of templates (file paths)",
-					"scope": "window",
-					"items": {
-						"type": "string"
+					"fs-ai-tools.createAircraft.copyTextureCfgToTextureFolder": {
+						"type": "boolean",
+						"default": true,
+						"markdownDescription": "If a `texture.cfg` file exists in the aircraft folder, copy it to the newly created texture folders.",
+						"scope": "window"
 					},
-					"default": [
-						"K:\\Prepar3D\\_AI Aircraft\\HTAI\\HTAI Cessna 172 Skyhawk\\fltsim-template.cfg"
-					]
-				},
-				"fs-ai-tools.renameFiles._ShowRenameFilesInContextMenu": {
-					"type": "boolean",
-					"default": true,
-					"title": "Add to Context Menu",
-					"markdownDescription": "Adds the \"Rename Files\" command to the context menu when an `Aircraft….txt`, `Airports….txt` or `Flightplan….txt` file is open.",
-					"scope": "window"
-				},
-				"fs-ai-tools.renameFiles.filenameTemplate": {
-					"type": "string",
-					"default": "{Base}_{icao?_}{name}",
-					"title": "Filename template",
-					"markdownDescription": "The format with which the files will be renamed. Available placeholders: `{Base}`, `{base}`, `{name}`, `{icao}`, `{callsign}`, `{author}`, `{season}`",
-					"scope": "window"
-				},
-				"fs-ai-tools.renameFiles.replaceSpacesWithUnderscores": {
-					"type": "boolean",
-					"default": false,
-					"title": "Replace spaces with underscores",
-					"markdownDescription": "If activated, the spaces **within** a placeholder will be replaced with underscores (\"_\"). Spaces defined in the template itself will remain.",
-					"scope": "window"
-				},
-				"fs-ai-tools.showAircraftList._ShowInContextMenu": {
-					"type": "boolean",
-					"default": false,
-					"title": "Add to Context Menu",
-					"markdownDescription": "Adds the \"Show Aircraft List\" command to the context menu when an `Aircraft….txt` or `Flightplan….txt` file is open. Remember to set `#window.dialogStyle#` to `custom` for best legibility.",
-					"scope": "window"
-				},
-				"fs-ai-tools.showAircraftList.customDataFilePath": {
-					"type": "string",
-					"default": "",
-					"title": "Custom Aicraft Data File Path",
-					"markdownDescription": "Full path to a custom aircraft data JSON file. Will overwrite / add to default aircraft data. See _*[TODO]()*_ for format.",
-					"scope": "window"
-				},
-				"fs-ai-tools.showAircraftList.showGoogleSheetsButton": {
-					"type": "boolean",
-					"default": false,
-					"title": "Displays \"Copy for Google Sheets\" button",
-					"markdownDescription": "Displays \"Copy for Google Sheets\" button, which copies a tab-separated count list to the clipboard.",
-					"scope": "window"
-				},
-				"fs-ai-tools.changeAircraftNumber.showInContextMenu": {
-					"type": "boolean",
-					"default": true,
-					"title": "Add to Context Menu",
-					"markdownDescription": "Adds the \"Change Aircraft Number\" command to the context menu when a `Flightplan….txt` file is open and text has been selected.",
-					"scope": "window"
-				},
-				"fs-ai-tools.countAircraft.showInContextMenu": {
-					"type": "boolean",
-					"default": true,
-					"title": "Add to Context Menu",
-					"markdownDescription": "Adds the \"Count Aircraft\" command to the context menu when a `Flightplan….txt` file is open and text has been selected.",
-					"scope": "window"
-				},
-				"fs-ai-tools.createAifpCfg.showInContextMenu": {
-					"type": "boolean",
-					"default": true,
-					"title": "Add to Context Menu",
-					"markdownDescription": "Adds the \"Create aifp.cfg\" command to the context menu when a `Flightplan….txt` file is open.",
-					"scope": "window"
-				},
-				"fs-ai-tools.createFlightplanHeader.showInContextMenu": {
-					"type": "boolean",
-					"default": true,
-					"title": "Add to Context Menu",
-					"markdownDescription": "Adds the \"Create Flightplan Header\" command to the context menu when a `Flightplan….txt` file is open.",
-					"scope": "window"
-				},
-				"fs-ai-tools.createFlightplanHeaderFromAifp.showInContextMenu": {
-					"type": "boolean",
-					"default": true,
-					"title": "Add to Context Menu",
-					"markdownDescription": "Adds the \"Create Flightplan Header from aifp.cfg\" command to the context menu when a `Flightplan….txt` file is open.",
-					"scope": "window"
-				},
-				"fs-ai-tools.rebaseAircraftNumbers.showInContextMenu": {
-					"type": "boolean",
-					"default": true,
-					"title": "Add to Context Menu",
-					"markdownDescription": "Adds the \"Rebase AC#s\" command to the context menu when a `Flightplan….txt` file is open and text has been selected.",
-					"scope": "window"
-				},
-				"fs-ai-tools.renumberAddOnsCfg.showInContextMenu": {
-					"type": "boolean",
-					"default": true,
-					"title": "Add to Context Menu",
-					"markdownDescription": "Adds the \"Renumber\" command to the context menu when a `add-ons.cfg` file is open.",
-					"scope": "window"
-				},
-				"fs-ai-tools.renumberSceneryCfg.showInContextMenu": {
-					"type": "boolean",
-					"default": true,
-					"title": "Add to Context Menu",
-					"markdownDescription": "Adds the \"Renumber\" command to the context menu when a `scenery.cfg` file is open.",
-					"scope": "window"
-				},
-				"fs-ai-tools.switchFS9Fsx.showInContextMenu": {
-					"type": "boolean",
-					"default": false,
-					"title": "Add to Context Menu",
-					"markdownDescription": "Adds the \"Switch FS9 ⟷ FSX\" command to the context menu when a `Flightplan….txt` file is open and text has been selected.",
-					"scope": "window"
+					"fs-ai-tools.createAircraft.copyTitlesToClipboard": {
+						"type": "boolean",
+						"default": true,
+						"markdownDescription": "Copy the titles of the created fltsim entries to the clipboard.",
+						"scope": "window"
+					},
+					"fs-ai-tools.createAircraft.createFolders": {
+						"type": "string",
+						"default": "Create",
+						"enum": [
+							"Create",
+							"Don't create",
+							"Ask everytime"
+						],
+						"enumDescriptions": [
+							"Always creates the texture folders in the template's directory",
+							"Never creates the texture folders in the template's directory",
+							"You will be asked during the data input process if the texture folders should be created"
+						],
+						"scope": "window"
+					},
+					"fs-ai-tools.createAircraft.templates": {
+						"type": "array",
+						"title": "Templates",
+						"markdownDescription": "List of templates (file paths)",
+						"scope": "window",
+						"items": {
+							"type": "string"
+						},
+						"default": [
+							"K:\\Prepar3D\\_AI Aircraft\\HTAI\\HTAI Cessna 172 Skyhawk\\fltsim-template.cfg"
+						]
+					}
+				}
+			},
+			{
+				"type": "object",
+				"title": "Rename files",
+				"properties": {
+					"fs-ai-tools.renameFiles._ShowRenameFilesInContextMenu": {
+						"type": "boolean",
+						"default": true,
+						"title": "Add to Context Menu",
+						"markdownDescription": "Adds the \"Rename Files\" command to the context menu when an `Aircraft….txt`, `Airports….txt` or `Flightplan….txt` file is open.",
+						"scope": "window"
+					},
+					"fs-ai-tools.renameFiles.filenameTemplate": {
+						"type": "string",
+						"default": "{Base}_{icao?_}{name}",
+						"title": "Filename template",
+						"markdownDescription": "The format with which the files will be renamed. Available placeholders: `{Base}`, `{base}`, `{name}`, `{icao}`, `{callsign}`, `{author}`, `{season}`",
+						"scope": "window"
+					},
+					"fs-ai-tools.renameFiles.replaceSpacesWithUnderscores": {
+						"type": "boolean",
+						"default": false,
+						"title": "Replace spaces with underscores",
+						"markdownDescription": "If activated, the spaces **within** a placeholder will be replaced with underscores (\"_\"). Spaces defined in the template itself will remain.",
+						"scope": "window"
+					}
+				}
+			},
+			{
+				"type": "object",
+				"title": "Show Aircraft List",
+				"properties": {
+					"fs-ai-tools.showAircraftList._ShowInContextMenu": {
+						"type": "boolean",
+						"default": false,
+						"title": "Add to Context Menu",
+						"markdownDescription": "Adds the \"Show Aircraft List\" command to the context menu when an `Aircraft….txt` or `Flightplan….txt` file is open. Remember to set `#window.dialogStyle#` to `custom` for best legibility.",
+						"scope": "window"
+					},
+					"fs-ai-tools.showAircraftList.customDataFilePath": {
+						"type": "string",
+						"default": "",
+						"title": "Custom Aicraft Data File Path",
+						"markdownDescription": "Full path to a custom aircraft data JSON file. Will overwrite / add to default aircraft data. See _*[TODO]()*_ for format.",
+						"scope": "window"
+					},
+					"fs-ai-tools.showAircraftList.showGoogleSheetsButton": {
+						"type": "boolean",
+						"default": false,
+						"title": "Displays \"Copy for Google Sheets\" button",
+						"markdownDescription": "Displays \"Copy for Google Sheets\" button, which copies a tab-separated count list to the clipboard.",
+						"scope": "window"
+					}
+				}
+			},
+			{
+				"type": "object",
+				"title": "Change Aircraft Number",
+				"properties": {
+					"fs-ai-tools.changeAircraftNumber.showInContextMenu": {
+						"type": "boolean",
+						"default": true,
+						"title": "Add to Context Menu",
+						"markdownDescription": "Adds the \"Change Aircraft Number\" command to the context menu when a `Flightplan….txt` file is open and text has been selected.",
+						"scope": "window"
+					}
+				}
+			},
+			{
+				"type": "object",
+				"title": "Count Aircraft",
+				"properties": {
+					"fs-ai-tools.countAircraft.showInContextMenu": {
+						"type": "boolean",
+						"default": true,
+						"title": "Add to Context Menu",
+						"markdownDescription": "Adds the \"Count Aircraft\" command to the context menu when a `Flightplan….txt` file is open and text has been selected.",
+						"scope": "window"
+					}
+				}
+			},
+			{
+				"type": "object",
+				"title": "Create aifp.cfg",
+				"properties": {
+					"fs-ai-tools.createAifpCfg.showInContextMenu": {
+						"type": "boolean",
+						"default": true,
+						"title": "Add to Context Menu",
+						"markdownDescription": "Adds the \"Create aifp.cfg\" command to the context menu when a `Flightplan….txt` file is open.",
+						"scope": "window"
+					}
+				}
+			},
+			{
+				"type": "object",
+				"title": "Create Flightplan Header",
+				"properties": {
+					"fs-ai-tools.createFlightplanHeader.showInContextMenu": {
+						"type": "boolean",
+						"default": true,
+						"title": "Add to Context Menu",
+						"markdownDescription": "Adds the \"Create Flightplan Header\" command to the context menu when a `Flightplan….txt` file is open.",
+						"scope": "window"
+					},
+					"fs-ai-tools.createFlightplanHeaderFromAifp.showInContextMenu": {
+						"type": "boolean",
+						"default": true,
+						"title": "Add to Context Menu",
+						"markdownDescription": "Adds the \"Create Flightplan Header from aifp.cfg\" command to the context menu when a `Flightplan….txt` file is open.",
+						"scope": "window"
+					}
+				}
+			},
+			{
+				"type": "object",
+				"title": "Rebase Aircraft Numbers",
+				"properties": {
+					"fs-ai-tools.rebaseAircraftNumbers.showInContextMenu": {
+						"type": "boolean",
+						"default": true,
+						"title": "Add to Context Menu",
+						"markdownDescription": "Adds the \"Rebase AC#s\" command to the context menu when a `Flightplan….txt` file is open and text has been selected.",
+						"scope": "window"
+					}
+				}
+			},
+			{
+				"type": "object",
+				"title": "Renumber add-ons.cfg, scenery.cfg",
+				"properties": {
+					"fs-ai-tools.renumberAddOnsCfg.showInContextMenu": {
+						"type": "boolean",
+						"default": true,
+						"title": "Add to Context Menu",
+						"markdownDescription": "Adds the \"Renumber\" command to the context menu when a `add-ons.cfg` file is open.",
+						"scope": "window"
+					},
+					"fs-ai-tools.renumberSceneryCfg.showInContextMenu": {
+						"type": "boolean",
+						"default": true,
+						"title": "Add to Context Menu",
+						"markdownDescription": "Adds the \"Renumber\" command to the context menu when a `scenery.cfg` file is open.",
+						"scope": "window"
+					}
+				}
+			},
+			{
+				"type": "object",
+				"title": "Switch FS9 ⟷  FSX",
+				"properties": {
+					"fs-ai-tools.switchFS9Fsx.showInContextMenu": {
+						"type": "boolean",
+						"default": false,
+						"title": "Add to Context Menu",
+						"markdownDescription": "Adds the \"Switch FS9 ⟷ FSX\" command to the context menu when a `Flightplan….txt` file is open and text has been selected.",
+						"scope": "window"
+					}
 				}
 			}
-		}
+		]
 	},
 	"scripts": {
 		"vscode:prepublish": "npm run compile",

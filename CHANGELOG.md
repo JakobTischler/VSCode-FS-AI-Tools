@@ -1,5 +1,8 @@
 # Change Log
 
+### 1.2.1
+- Settings: separated into categories (requires VSCode v1.61.0)
+
 ### 1.2.0
 - New function `Show Aircraft List`: Goes through the Aircraft.txt and Flightplans.txt file and displays a list of used aircraft types, their count, and the number of variations.
   - Shows a "Copy for Google Sheets" button which copies a one-liner list of the counts to the clipboard. This is for my personal use and I will make this optional in the next release.
