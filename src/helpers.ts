@@ -91,13 +91,13 @@ export function loopNumber(num: number, min: number, max: number, dir: 1 | -1 = 
  * @param encoding The file encoding, defaults to "utf8"
  * @returns The file contents as string
  */
-export async function getFileContents(path: string, encoding: string = 'utf8') {
+export async function getFileContents(path: string) {
 	if (!Fs.existsSync(path)) {
 		showError(`File at "${path}" couldn't be found`);
 		return null;
 	}
 
-	const data = await Fs.promises.readFile(path, encoding).catch((err: any) => {
+	const data = await Fs.promises.readFile(path).catch((err: any) => {
 		showError(`Failed to read file at "${path}"`, err);
 		return null;
 	});
@@ -105,7 +105,7 @@ export async function getFileContents(path: string, encoding: string = 'utf8') {
 		return null;
 	}
 
-	return data;
+	return data as string;
 }
 
 export function showError(message: string, showPopup: boolean = true) {
