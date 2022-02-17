@@ -101,11 +101,11 @@ export async function getFileContents(path: string) {
 		showError(`Failed to read file at "${path}"`, err);
 		return null;
 	});
-	if (!data || typeof data !== 'string') {
+	if (!data /* || typeof data !== 'string' */) {
 		return null;
 	}
 
-	return data as string;
+	return String(data);
 }
 
 export function showError(message: string, showPopup: boolean = true) {
