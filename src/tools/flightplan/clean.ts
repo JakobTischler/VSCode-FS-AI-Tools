@@ -31,7 +31,7 @@ export function CleanFlightplan() {
 			const ret = [];
 			const splitData = text.trim().split('\n');
 			for (let line of splitData) {
-				if (line.startsWith('AC#') || line.startsWith('//#')) {
+				if (line.startsWith('AC#') || line.startsWith('ac#') || line.startsWith('//#')) {
 					if (config.removeSeconds || config.addAtToArrivalTimes) {
 						line = formatTimes(line, config.removeSeconds, config.addAtToArrivalTimes);
 					}
@@ -117,7 +117,7 @@ function transformToUppercase(text: string): string {
  */
 function padFlightNumbers(text: string): string {
 	text = text.replace(/,([FfRr]{1}),(\d+)/gi, (fullMatch, g1, g2) => {
-		return `,${g1},${g2.pad(4)}`;
+		return `,${g1},${Number(g2).pad(4)}`;
 	});
 	return text;
 }
@@ -127,7 +127,7 @@ function padFlightNumbers(text: string): string {
  */
 function padFlightLevels(text: string): string {
 	text = text.replace(/,(\d+),([FfRr]{1})/gi, (fullMatch, g1, g2) => {
-		return `,${g1.pad(3)},${g2}`;
+		return `,${Number(g1).pad(3)},${g2}`;
 	});
 	return text;
 }

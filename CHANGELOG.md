@@ -1,5 +1,8 @@
 # Change Log
 
+### 1.2.2
+- Clean Flightplan: Operation fixed (padding flight levels and numbers had a bug that blocked the whole process to go through)
+
 ### 1.2.1
 - Settings: separated into categories (requires VSCode v1.61.0)
 
