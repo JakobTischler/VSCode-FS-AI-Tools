@@ -3,5 +3,5 @@ interface Number {
 }
 
 Number.prototype.pad = function (maxLength: number, fillString: string = '0'): string {
-	return `${this}`.padStart(maxLength, fillString);
+	return String(this).padStart(maxLength, fillString);
 };

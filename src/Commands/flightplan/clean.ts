@@ -88,8 +88,7 @@ function formatTimes(text: string, removeSeconds: boolean, addAtToDepTimes: bool
 	} else {
 		subst = '$1,@$3';
 	}
-	text = text.replace(regex, subst);
-	return text;
+	return text.replace(regex, subst);
 }
 
 /**
@@ -116,20 +115,18 @@ function transformToUppercase(text: string): string {
  * Pads the flightnumbers to a `0000` format. Returns the complete string.
  */
 function padFlightNumbers(text: string): string {
-	text = text.replace(/,([FfRr]{1}),(\d+)/gi, (fullMatch, g1, g2) => {
+	return text.replace(/,([FfRr]{1}),(\d+)/gi, (fullMatch, g1, g2) => {
 		return `,${g1},${Number(g2).pad(4)}`;
 	});
-	return text;
 }
 
 /**
  * Pads the flight levels to a `000` format. Returns the complete string.
  */
 function padFlightLevels(text: string): string {
-	text = text.replace(/,(\d+),([FfRr]{1})/gi, (fullMatch, g1, g2) => {
-		return `,${Number(g1).pad(3)},${g2}`;
+	return text.replace(/,(\d+),([FfRr]{1}),/gi, (fullMatch, g1, g2) => {
+		return `,${Number(g1).pad(3)},${g2},`;
 	});
-	return text;
 }
 
 /**
