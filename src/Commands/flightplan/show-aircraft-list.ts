@@ -94,7 +94,11 @@ export async function ShowAircraftList() {
 	const formattedList = getFormattedAircraftList(aircraftList, totalCount, nonMatches);
 	if (showGoogleSheetsButton) {
 		vscode.window
-			.showInformationMessage(formattedList, { modal: true }, 'Copy for Google Sheets')
+			.showInformationMessage(
+				formattedList.title,
+				{ modal: true, detail: formattedList.text },
+				'Copy for Google Sheets'
+			)
 			.then((buttonText) => {
 				if (buttonText) {
 					const sheetsOutput = generateGoogleSheetsOutput(data, aircraftList);
@@ -102,7 +106,10 @@ export async function ShowAircraftList() {
 				}
 			});
 	} else {
-		vscode.window.showInformationMessage(formattedList, { modal: true });
+		vscode.window.showInformationMessage(formattedList.title, {
+			modal: true,
+			detail: formattedList.text,
+		});
 	}
 }
 
@@ -300,35 +307,34 @@ function generateGoogleSheetsOutput(data: typeof aircraftNaming, aircraftList: a
 /**
  * Iterates through the aircraftList items to provide a single formatted, readable string with "{type}: {count}× ({number of variations})"
  */
-function getFormattedAircraftList(aircraftList: aircraftList, totalCount: number, nonMatches: string[]): string {
-	const dialogStyle = vscode.workspace.getConfiguration('window', undefined).get('dialogStyle');
+function getFormattedAircraftList(aircraftList: aircraftList, totalCount: number, nonMatches: string[]) {
+	const title = `${totalCount} aircraft`;
 
-	let title: string;
-	if (dialogStyle === 'custom') {
-		title = `${'—'.repeat(10)}   ${totalCount} aircraft   ${'—'.repeat(10)}`;
-	} else {
-		title = `${totalCount} aircraft:`;
-	}
+	const lines: string[] = [];
 
-	const output: string[] = [title, ''];
 	aircraftList.forEach((data, key) => {
 		let text = `• ${data.name || key}: ${data.count}×`;
 		if (data.aircraft.size > 1) {
 			text += ` (${'variation'.plural(data.aircraft.size)})`;
 		}
-		output.push(text);
+		lines.push(text);
 	});
 
 	if (nonMatches.length) {
-		output.push(
+		lines.push(
 			'',
-			dialogStyle === 'custom' ? '—'.repeat(25) : '',
+			'—'.repeat(25),
 			`❌ ${'aircraft title'.plural(nonMatches.length)} couldn't be matched to any aircraft type:`
 		);
-		output.push(...nonMatches.map((title) => `• "${title}"`));
+		lines.push(...nonMatches.map((title) => `• "${title}"`));
 	}
 
-	return output.join(dialogStyle === 'custom' ? '\n' : ' ');
+	const text = lines.join('\n');
+
+	return {
+		title: title,
+		text: text,
+	};
 }
 
 function searchTermIsRegex(term: string): boolean {
