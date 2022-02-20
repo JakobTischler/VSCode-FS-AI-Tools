@@ -1,11 +1,12 @@
 import * as vscode from 'vscode';
-import * as path from 'path';
 import * as fs from 'fs';
+import * as path from 'path';
 import { getFileContents, plural, showError } from '../../Tools/helpers';
+import { LocalStorageService } from '../../Tools/LocalStorageService';
 
 type TAirports = Map<string, string>;
 
-export async function GenerateAirports() {
+export async function GenerateAirports(storageManager: LocalStorageService) {
 	console.log('GenerateAirports()');
 
 	const editor = vscode.window.activeTextEditor;
@@ -15,14 +16,16 @@ export async function GenerateAirports() {
 	const filename = path.basename(document.uri.path).toLocaleLowerCase();
 	if ('file' !== document.uri.scheme || !filename.startsWith('flightplans')) return;
 
-	/**
-	 * Master airports data
-	 */
-	const masterAirports: TAirports | null = await getMasterAirports(
-		'D:\\P3D Addons\\AI Flightplans\\ZZ_Airports\\Airports__MASTER.txt'
-	);
-	if (!masterAirports) {
-		showError(`Master airports file couldn't be parsed.`);
+	// Get master airports data
+	const masterAirportsFilePath: string | undefined = vscode.workspace
+		.getConfiguration('fs-ai-tools.generateAirports', undefined)
+		.get('masterAirportsFilePath');
+	if (!masterAirportsFilePath?.length) {
+		showError('Master airports file path has not been set in settings.');
+		return;
+	}
+	const masterAirports: TAirports | null = await getMasterAirports(masterAirportsFilePath, storageManager);
+	if (!masterAirports || !masterAirports.size) {
 		return;
 	}
 
@@ -38,24 +41,54 @@ export async function GenerateAirports() {
 	await writeToAirportsTxtFile(airports, document.uri.path);
 }
 
-// TODO store/load in session   /   remember file hash, check for changes → re-read
-async function getMasterAirports(filePath: string) {
-	const fileContents = await getFileContents(filePath);
-	if (!fileContents) return null;
+async function getMasterAirports(filePath: string, storageManager: LocalStorageService) {
+	if (!fs.existsSync(filePath)) {
+		showError(`Master airports file at _"${filePath}"_ couldn't be found`);
+		return null;
+	}
 
-	const airports: TAirports = new Map(
-		fileContents
-			.split('\n')
-			.filter((line) => line.length)
-			.map((line) => {
-				const lineTrimmed = line.trim();
-				const code = lineTrimmed.split(',')[0];
+	// Check for changes since last use
+	const savedModifiedTime = storageManager.getValue('airportMasterModifiedTime');
+	const modifiedTime = fs.statSync(filePath).mtimeMs;
 
-				return [code, lineTrimmed];
-			})
-	);
+	let loadFromStorage = savedModifiedTime && savedModifiedTime === modifiedTime;
 
-	return airports;
+	// Load storage data
+	if (loadFromStorage) {
+		const storedData = storageManager.getValue<TAirports>('airportMasterData');
+
+		if (storedData?.size) {
+			return storedData;
+		}
+		loadFromStorage = false;
+	}
+
+	// Read and parse file, save to storage
+	if (!loadFromStorage) {
+		const fileContents = await getFileContents(filePath);
+		if (!fileContents) return null;
+
+		const airports: TAirports = new Map(
+			fileContents
+				.split('\n')
+				.filter((line) => line.length)
+				.map((line) => {
+					const lineTrimmed = line.trim();
+					const code = lineTrimmed.split(',')[0];
+
+					return [code, lineTrimmed];
+				})
+		);
+
+		// Save to storage
+		storageManager.setValue<Number>('airportMasterModifiedTime', modifiedTime);
+		storageManager.setValue<TAirports>('airportMasterData', airports);
+
+		return airports;
+	}
+
+	showError(`Master airports file couldn't be parsed.`);
+	return null;
 }
 
 /**
@@ -97,6 +130,9 @@ async function writeToAirportsTxtFile(airports: Set<string>, flightplansTxtPath:
 
 	vscode.workspace.openTextDocument(filePath).then((doc: vscode.TextDocument) => {
 		doc.save();
-		vscode.window.showInformationMessage(`${plural('airport', airports.size)} generated, ${fileName} file written`);
+		vscode.window.showInformationMessage(
+			`${plural('airport', airports.size)} generated, _"${fileName}"_ file written`,
+			{ detail: 'asdf detail', modal: true }
+		);
 	});
 }

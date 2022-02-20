@@ -186,6 +186,12 @@ Reads the data from an `aifp.cfg` file in the same directory (if present), and u
 <br>
 <br>
 
+### Generate Airports
+Extracts the airports from a `Flightplans.txt` file, and uses an airports master file (containing every possible airport entry) to create this flightplan's `Airports.txt` file. The file path to the master file must be provided in the `fs-ai-tools.generateAirports.masterAirportsFilePath` setting.
+<br>
+<br>
+<br>
+
 ### Rebase AC#s
 Sets up a new AC# sequence for the selected aircraft, based on a large and a small step size. Sequential AC#s with the same number will get identical numbers, sequential AC#s with different numbers will get numbers with an increased small step, separations by an empty line will start a new "group" based on the large step size.
 

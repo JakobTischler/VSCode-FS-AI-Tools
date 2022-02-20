@@ -15,8 +15,13 @@ import { RenumberAddOnsCfg } from './Commands/add-ons-cfg/renumber';
 import { RenumberSceneryCfg } from './Commands/scenery-cfg/renumber';
 import { ShowAircraftList } from './Commands/flightplan/show-aircraft-list';
 import { SwitchFS9FSX } from './Commands/flightplan/switch-fs9-fsx';
+import { LocalStorageService } from './Tools/LocalStorageService';
 
 export function activate(context: vscode.ExtensionContext) {
+	// Storage Manager
+	const storageManager = new LocalStorageService(context.workspaceState);
+
+	// Commands
 	context.subscriptions.push(
 		vscode.commands.registerCommand('extension.cleanAircraftCfg', () => {
 			CleanAircraftCfg();
@@ -51,7 +56,7 @@ export function activate(context: vscode.ExtensionContext) {
 		}),
 
 		vscode.commands.registerCommand('extension.generateAirports', () => {
-			GenerateAirports();
+			GenerateAirports(storageManager);
 		}),
 
 		vscode.commands.registerCommand('extension.rebaseAircraftNumbers', () => {

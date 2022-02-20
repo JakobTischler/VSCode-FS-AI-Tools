@@ -1,5 +1,9 @@
 # Change Log
 
+### 1.3.0
+- New function `Generate Airports`: Extracts the airports from a `Flightplans.txt` file, and uses an airports master file (containing every possible airport entry) to create this flightplan's `Airports.txt` file.
+  - The file path to the master file must be provided in the `fs-ai-tools.generateAirports.masterAirportsFilePath` setting.
+
 ### 1.2.2
 - Clean Flightplan: Operation fixed (padding flight levels and numbers had a bug that blocked the whole process to go through)
 
