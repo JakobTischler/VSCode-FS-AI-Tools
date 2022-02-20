@@ -32,7 +32,7 @@ export async function GenerateAirports(storageManager: LocalStorageService) {
 	/**
 	 * Airports existing in flightplan, with duplicates removed, sorted alphabetically.
 	 */
-	const airports = await collectAirports(document.getText(), masterAirports);
+	const airports = await collectAirports(document.getText(), masterAirports, masterAirportsFilePath);
 	if (!airports) {
 		return;
 	}
@@ -95,7 +95,7 @@ async function getMasterAirports(filePath: string, storageManager: LocalStorageS
  * @param {string} text - The text to search for airports in.
  * @returns A set of airport codes, with duplicates removed, sorted alphabetically.
  */
-async function collectAirports(text: string, masterAirports: TAirports) {
+async function collectAirports(text: string, masterAirports: TAirports, masterAirportsFilePath: string) {
 	const matches = [...text.trim().matchAll(/,[FfRr],\d+,([A-Za-z0-9]{3,4})/gm)];
 	if (!matches?.length) {
 		showError('No airports could be found in the flightplan.');
@@ -124,13 +124,27 @@ async function collectAirports(text: string, masterAirports: TAirports) {
 			.join('\n');
 
 		await vscode.window
-			.showErrorMessage(title, { modal: true, detail: msg }, 'Continue anyway')
+			.showErrorMessage(title, { modal: true, detail: msg }, 'Continue anyway', 'Open Master File')
 			.then((buttonText) => {
 				if (!buttonText) {
 					continueWriting = false;
 					showError('Generating airports has been canceled.');
 				} else if (buttonText === 'Continue anyway') {
 					continueWriting = true;
+				} else if (buttonText === 'Open Master File') {
+					continueWriting = false;
+
+					const uri = vscode.Uri.file(masterAirportsFilePath);
+					vscode.workspace.openTextDocument(uri).then((doc) => {
+						vscode.window.showTextDocument(doc).then((editor) => {
+							// Jump to last line
+							const pos = new vscode.Position(doc.lineCount + 1, 0);
+
+							// Selection with same position twice → cursor jumps there
+							editor.selections = [new vscode.Selection(pos, pos)];
+							editor.revealRange(new vscode.Range(pos, pos));
+						});
+					});
 				}
 			});
 	}
