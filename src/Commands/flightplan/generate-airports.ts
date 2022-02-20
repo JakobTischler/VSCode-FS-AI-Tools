@@ -32,9 +32,8 @@ export async function GenerateAirports(storageManager: LocalStorageService) {
 	/**
 	 * Airports existing in flightplan, with duplicates removed, sorted alphabetically.
 	 */
-	const airports = collectAirports(document.getText(), masterAirports);
+	const airports = await collectAirports(document.getText(), masterAirports);
 	if (!airports) {
-		showError(`No airports could be found in flightplan.`);
 		return;
 	}
 
@@ -96,20 +95,49 @@ async function getMasterAirports(filePath: string, storageManager: LocalStorageS
  * @param {string} text - The text to search for airports in.
  * @returns A set of airport codes, with duplicates removed, sorted alphabetically.
  */
-function collectAirports(text: string, masterAirports: TAirports) {
+async function collectAirports(text: string, masterAirports: TAirports) {
 	const matches = [...text.trim().matchAll(/,[FfRr],\d+,([A-Za-z0-9]{3,4})/gm)];
-	if (!matches?.length) return null;
+	if (!matches?.length) {
+		showError('No airports could be found in the flightplan.');
+		return null;
+	}
 
 	const airportCodes = new Set(matches.map((match) => match[1]).sort());
 
-	const ret: string[] = [];
+	const found: string[] = [];
+	const missing: string[] = [];
 	for (const code of airportCodes.values()) {
 		if (code?.length && masterAirports.has(code)) {
 			const data = masterAirports.get(code);
-			ret.push(data!);
+			found.push(data!);
+		} else {
+			missing.push(code);
 		}
 	}
-	return new Set(ret.sort());
+
+	let continueWriting = true;
+	if (missing.length) {
+		const title = `${plural('airport', missing.length)} not found in the master file`;
+		const msg = missing
+			.sort()
+			.map((code) => `• ${code}`)
+			.join('\n');
+
+		await vscode.window
+			.showErrorMessage(title, { modal: true, detail: msg }, 'Continue anyway')
+			.then((buttonText) => {
+				if (!buttonText) {
+					continueWriting = false;
+					showError('Generating airports has been canceled.');
+				} else if (buttonText === 'Continue anyway') {
+					continueWriting = true;
+				}
+			});
+	}
+
+	if (continueWriting) return new Set(found.sort());
+
+	return null;
 }
 
 /**
