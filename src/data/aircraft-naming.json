@@ -291,7 +291,7 @@
 				"CRJX": { "name": "CRJ-1000", "search": ["CRJ-1000"] },
 				"DH8A/B": {
 					"name": "Dash 8-100/200",
-					"search": ["/Dash 8[-/]Q?[12]]00/"]
+					"search": ["/Dash 8[-/]Q?[12]00/"]
 				},
 				"DH8C": { "name": "Dash 8-300", "search": ["/Dash 8[-/]Q?300/"] },
 				"DH8D": { "name": "Dash 8-Q400", "search": ["/Dash 8[-/]Q?400/"] }
