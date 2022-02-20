@@ -16,6 +16,11 @@ export function getRandomInt(min: number, max: number): number {
 	return Math.floor(Math.random() * (max - min)) + min;
 }
 
+/**
+ * Get the filename from a path
+ * @param {string} path - The path to the file.
+ * @returns The filename without the path.
+ */
 export function getFilenameFromPath(path: string): string {
 	return path.replace(/^.*[\\\/]/, '');
 }
@@ -32,11 +37,18 @@ export function capitalize(text: string, all: boolean = false): string {
 	return text.replace(/^\w/, (c) => c.toUpperCase());
 }
 
+/**
+ * Move an item in an array from one index to another
+ * @param {any[]} array - the array to be mutated.
+ * @param {number} from - The index of the item to move.
+ * @param {number} to - The index of the item to move.
+ */
 const arrayMoveMutate = (array: any[], from: number, to: number) => {
 	const startIndex = to < 0 ? array.length + to : to;
 	const item = array.splice(from, 1)[0];
 	array.splice(startIndex, 0, item);
 };
+
 /**
  * Move an array item to a different position
  * @param array
@@ -50,6 +62,12 @@ export function arrayMove(array: any[], from: number, to: number): any[] {
 	return array;
 }
 
+/**
+ * Round up to the nearest multiple of the given number.
+ * @param {number} num - The number you want to round up.
+ * @param {number} [nearest=10] - The multiple to round up to.
+ * @returns The rounded up number.
+ */
 export function roundUpToNearest(num: number, nearest: number = 10): number {
 	return Math.ceil((num + 1) / nearest) * nearest;
 }
@@ -114,3 +132,39 @@ export function showError(message: string, showPopup: boolean = true) {
 		window.showErrorMessage(message);
 	}
 }
+
+type TPluralOptions = {
+	/** Whether to include the number in front of the word in the return value. Default: _`true`_. */
+	includeNumber: boolean;
+	/** Replaces the number with the corresponding word (if _`includeNumber`_ is set to _`true`_). */
+	numberToWord: { [id: string]: string };
+	/** Defines a custom word to use if the number does not equal 1. Default: _`word`_ + "s" */
+	pluralWord: string;
+};
+/**
+ * Returns the plural version of a word depending on a provided number
+ * @param word The word to be pluralized
+ * @param num The defining number. Default: `1`
+ * @param includeNumber If `true`, the number will be included in the return value ("23 apples"), otherwise only the word will be returned. Default: `true`
+ * @param pluralWord Optional. If defined, will be used if `num !== 1`. Otherwise `word` + s will be used
+ * @returns The pluralized word (if `num !== 1`), otherwise the singular word
+ */
+export const plural = (word: string, num: number = 1, userOptions: Partial<TPluralOptions> = {}) => {
+	const options: TPluralOptions = {
+		...{
+			includeNumber: true,
+			numberToWord: {
+				'0': 'No',
+			},
+			pluralWord: `${word}s`,
+		},
+		...userOptions,
+	};
+
+	const prefix = options.includeNumber ? `${options.numberToWord[String(num)] || String(num)} ` : '';
+
+	if (num === 1) {
+		return prefix + word;
+	}
+	return prefix + (options.pluralWord || `${word}s`);
+};

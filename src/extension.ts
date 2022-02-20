@@ -8,6 +8,7 @@ import { CreateAifpCfg } from './tools/flightplan/create-aifp-cfg';
 import { CreateAircraft } from './tools/flightplan/create-aircraft';
 import { CreateFlightplanHeader } from './tools/flightplan/create-header';
 import { CreateFlightplanHeaderFromAifp } from './tools/flightplan/create-header-from-aifp';
+import { GenerateAirports } from './tools/flightplan/generate-airports';
 import { RebaseAircraftNumbers } from './tools/flightplan/rebase-ac-numbers';
 import { RenameFiles } from './tools/flightplan/rename-files';
 import { RenumberAddOnsCfg } from './tools/add-ons-cfg/renumber';
@@ -47,6 +48,10 @@ export function activate(context: vscode.ExtensionContext) {
 
 		vscode.commands.registerCommand('extension.createFlightplanHeaderFromAifp', () => {
 			CreateFlightplanHeaderFromAifp();
+		}),
+
+		vscode.commands.registerCommand('extension.generateAirports', () => {
+			GenerateAirports();
 		}),
 
 		vscode.commands.registerCommand('extension.rebaseAircraftNumbers', () => {

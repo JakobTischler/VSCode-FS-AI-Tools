@@ -24,6 +24,7 @@
 		"onCommand:extension.createAircraft",
 		"onCommand:extension.createFlightplanHeader",
 		"onCommand:extension.createFlightplanHeaderFromAifp",
+		"onCommand:extension.generateAirports",
 		"onCommand:extension.rebaseAircraftNumbers",
 		"onCommand:extension.renameFiles",
 		"onCommand:extension.renumberAddOnsCfg",
@@ -79,6 +80,12 @@
 			{
 				"command": "extension.createFlightplanHeaderFromAifp",
 				"title": "Create Flightplan Header from aifp.cfg",
+				"category": "FS AI Tools",
+				"when": "resourceFilename =~ /^flightplans.*txt$/i')"
+			},
+			{
+				"command": "extension.generateAirports",
+				"title": "Generate Airports.txt",
 				"category": "FS AI Tools",
 				"when": "resourceFilename =~ /^flightplans.*txt$/i')"
 			},
@@ -162,6 +169,11 @@
 					"when": "config.fs-ai-tools.createFlightplanHeaderFromAifp.showInContextMenu && resourceFilename =~ /^flightplans.*txt$/i')"
 				},
 				{
+					"command": "extension.generateAirports",
+					"group": "FS AI Tools",
+					"when": "config.fs-ai-tools.generateAirports.showInContextMenu && resourceFilename =~ /^flightplans.*txt$/i')"
+				},
+				{
 					"command": "extension.rebaseAircraftNumbers",
 					"group": "FS AI Tools",
 					"when": "config.fs-ai-tools.rebaseAircraftNumbers.showInContextMenu && resourceFilename =~ /^((flightplans)|(aircraft)).*txt$/i"
@@ -193,6 +205,11 @@
 				}
 			],
 			"explorer/context": [
+				{
+					"command": "extension.generateAirports",
+					"group": "FS AI Tools",
+					"when": "resourceFilename =~ /^flightplans.*txt$/i"
+				},
 				{
 					"command": "extension.renameFiles",
 					"group": "FS AI Tools",
@@ -480,6 +497,19 @@
 						"default": [
 							"K:\\Prepar3D\\_AI Aircraft\\HTAI\\HTAI Cessna 172 Skyhawk\\fltsim-template.cfg"
 						]
+					}
+				}
+			},
+			{
+				"type": "object",
+				"title": "Generate Airports",
+				"properties": {
+					"fs-ai-tools.generateAirports._ShowInContextMenu": {
+						"type": "boolean",
+						"default": false,
+						"title": "Add to Context Menu",
+						"markdownDescription": "Adds the \"Generate Airports\" command to the context menu when a `Flightplan….txt` file is open.",
+						"scope": "window"
 					}
 				}
 			},
