@@ -131,8 +131,7 @@ async function writeToAirportsTxtFile(airports: Set<string>, flightplansTxtPath:
 	vscode.workspace.openTextDocument(filePath).then((doc: vscode.TextDocument) => {
 		doc.save();
 		vscode.window.showInformationMessage(
-			`${plural('airport', airports.size)} generated, _"${fileName}"_ file written`,
-			{ detail: 'asdf detail', modal: true }
+			`${plural('airport', airports.size)} generated, "${fileName}" file written`
 		);
 	});
 }
