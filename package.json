@@ -171,7 +171,7 @@
 				{
 					"command": "extension.generateAirports",
 					"group": "FS AI Tools",
-					"when": "config.fs-ai-tools.generateAirports.showInContextMenu && resourceFilename =~ /^flightplans.*txt$/i')"
+					"when": "config.fs-ai-tools.generateAirports._showInContextMenu && resourceFilename =~ /^flightplans.*txt$/i')"
 				},
 				{
 					"command": "extension.rebaseAircraftNumbers",
@@ -504,11 +504,11 @@
 				"type": "object",
 				"title": "Generate Airports",
 				"properties": {
-					"fs-ai-tools.generateAirports._ShowInContextMenu": {
+					"fs-ai-tools.generateAirports._showInContextMenu": {
 						"type": "boolean",
 						"default": false,
 						"title": "Add to Context Menu",
-						"markdownDescription": "Adds the \"Generate Airports\" command to the context menu when a `Flightplan….txt` file is open.",
+						"markdownDescription": "Adds the \"Generate Airports\" command to the context menu when a `Flightplans….txt` file is open.",
 						"scope": "window"
 					},
 					"fs-ai-tools.generateAirports.masterAirportsFilePath": {
