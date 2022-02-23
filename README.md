@@ -193,9 +193,10 @@ Extracts the airports from a `Flightplans.txt` file, and uses an airports master
 <br>
 
 ### Rebase AC#s
-Sets up a new AC# sequence for the selected aircraft, based on a large and a small step size. Sequential AC#s with the same number will get identical numbers, sequential AC#s with different numbers will get numbers with an increased small step, separations by an empty line will start a new "group" based on the large step size.
+Sets up a new AC# sequence for the selected aircraft, based on a large and a small step size. Sequential AC#s with the same number will get identical numbers, sequential AC#s with different numbers will get numbers with an increased small step, separations by a configurable number of empty lines will start a new "group" based on the large step size.
 
-Works both with Aircraft.txt and Flightplans.txt files.
+* Works both with Aircraft.txt and Flightplans.txt files.
+* Number of empty lines for new groups: `fs-ai-tools.rebaseAircraftNumbers.groupSeparationAircraftTxt` and `fs-ai-tools.rebaseAircraftNumbers.groupSeparationFlightplansTxt`
 
 #### Example
 * **Old**:

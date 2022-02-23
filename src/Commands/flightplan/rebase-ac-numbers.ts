@@ -1,4 +1,4 @@
-import { window, Range } from 'vscode';
+import { window, workspace, Range } from 'vscode';
 import { getFilenameFromPath, roundUpToNearest } from '../../Tools/helpers';
 
 export async function RebaseAircraftNumbers() {
@@ -27,22 +27,48 @@ export async function RebaseAircraftNumbers() {
 			return false;
 		}
 
-		let ret: string[] = [];
+		// Get config
+		const config = workspace.getConfiguration('fs-ai-tools.rebaseAircraftNumbers', undefined);
+
+		// Numbering variables
+		const ret: string[] = [];
 		let previousOldNum = null;
 		let currentOldNum = null;
 		let currentGroupNum = start;
 		let currentSingleNum = start;
 		let anyNumberInGroupReplaced = false;
 
-		for (let line of text.split('\n')) {
-			let l = line.trim();
+		// Empty lines variables
+		const minEmptyLinesForNewGroup = isAircraftTxt
+			? Number(config.get('emptyLinesBetweenGroupsAircraftTxt'))
+			: Number(config.get('emptyLinesBetweenGroupsFlightplansTxt'));
+		let emptyLineCounter = 0;
 
-			if (l.length === 0 && anyNumberInGroupReplaced) {
+		for (let line of text.split('\n')) {
+			const l = line.trim();
+
+			// Empty Line
+			let newGroup = false;
+			if (l.length === 0) {
+				emptyLineCounter++;
+
+				if (emptyLineCounter >= minEmptyLinesForNewGroup) {
+					emptyLineCounter = 0;
+					newGroup = true;
+				}
+			} else {
+				emptyLineCounter = 0;
+			}
+
+			// Create new group
+			if (newGroup && anyNumberInGroupReplaced) {
 				// currentSingleNum + 10 -> floor
 				currentGroupNum = roundUpToNearest(currentSingleNum, bigStep);
 				currentSingleNum = currentGroupNum;
 				anyNumberInGroupReplaced = false;
+				newGroup = false;
 			} else if (line.trim().startsWith('AC#')) {
+				// Handle aircraft line
 				if (isAircraftTxt) {
 					if (anyNumberInGroupReplaced) {
 						currentSingleNum += smallStep;
