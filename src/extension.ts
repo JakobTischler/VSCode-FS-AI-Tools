@@ -23,47 +23,47 @@ export function activate(context: vscode.ExtensionContext) {
 
 	// Commands
 	context.subscriptions.push(
-		vscode.commands.registerCommand('extension.cleanAircraftCfg', () => {
+		vscode.commands.registerCommand('fsAiTools.cleanAircraftCfg', () => {
 			CleanAircraftCfg();
 		}),
 
-		vscode.commands.registerCommand('extension.cleanFlightplan', () => {
+		vscode.commands.registerCommand('fsAiTools.cleanFlightplan', () => {
 			CleanFlightplan();
 		}),
 
-		vscode.commands.registerCommand('extension.changeAircraftNumber', () => {
+		vscode.commands.registerCommand('fsAiTools.changeAircraftNumber', () => {
 			ChangeAircraftNumber();
 		}),
 
-		vscode.commands.registerCommand('extension.countAircraft', () => {
+		vscode.commands.registerCommand('fsAiTools.countAircraft', () => {
 			CountAircraft();
 		}),
 
-		vscode.commands.registerCommand('extension.createAifpCfg', () => {
+		vscode.commands.registerCommand('fsAiTools.createAifpCfg', () => {
 			CreateAifpCfg();
 		}),
 
-		vscode.commands.registerCommand('extension.createAircraft', () => {
+		vscode.commands.registerCommand('fsAiTools.createAircraft', () => {
 			CreateAircraft();
 		}),
 
-		vscode.commands.registerCommand('extension.createFlightplanHeader', () => {
+		vscode.commands.registerCommand('fsAiTools.createFlightplanHeader', () => {
 			CreateFlightplanHeader();
 		}),
 
-		vscode.commands.registerCommand('extension.createFlightplanHeaderFromAifp', () => {
+		vscode.commands.registerCommand('fsAiTools.createFlightplanHeaderFromAifp', () => {
 			CreateFlightplanHeaderFromAifp();
 		}),
 
-		vscode.commands.registerCommand('extension.generateAirports', () => {
+		vscode.commands.registerCommand('fsAiTools.generateAirports', () => {
 			GenerateAirports(storageManager);
 		}),
 
-		vscode.commands.registerCommand('extension.rebaseAircraftNumbers', () => {
+		vscode.commands.registerCommand('fsAiTools.rebaseAircraftNumbers', () => {
 			RebaseAircraftNumbers();
 		}),
 
-		vscode.commands.registerCommand('extension.renameFiles', (uri: vscode.Uri) => {
+		vscode.commands.registerCommand('fsAiTools.renameFiles', (uri: vscode.Uri) => {
 			if (uri?.fsPath) {
 				RenameFiles(uri.fsPath);
 			} else {
@@ -71,19 +71,19 @@ export function activate(context: vscode.ExtensionContext) {
 			}
 		}),
 
-		vscode.commands.registerCommand('extension.renumberAddOnsCfg', () => {
+		vscode.commands.registerCommand('fsAiTools.renumberAddOnsCfg', () => {
 			RenumberAddOnsCfg();
 		}),
 
-		vscode.commands.registerCommand('extension.renumberSceneryCfg', () => {
+		vscode.commands.registerCommand('fsAiTools.renumberSceneryCfg', () => {
 			RenumberSceneryCfg();
 		}),
 
-		vscode.commands.registerCommand('extension.showAircraftList', () => {
+		vscode.commands.registerCommand('fsAiTools.showAircraftList', () => {
 			ShowAircraftList();
 		}),
 
-		vscode.commands.registerCommand('extension.switchFS9FSX', () => {
+		vscode.commands.registerCommand('fsAiTools.switchFS9FSX', () => {
 			SwitchFS9FSX();
 		})
 	);

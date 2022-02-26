@@ -16,111 +16,118 @@
 		"Other"
 	],
 	"activationEvents": [
-		"onCommand:extension.cleanAircraftCfg",
-		"onCommand:extension.cleanFlightplan",
-		"onCommand:extension.changeAircraftNumber",
-		"onCommand:extension.countAircraft",
-		"onCommand:extension.createAifpCfg",
-		"onCommand:extension.createAircraft",
-		"onCommand:extension.createFlightplanHeader",
-		"onCommand:extension.createFlightplanHeaderFromAifp",
-		"onCommand:extension.generateAirports",
-		"onCommand:extension.rebaseAircraftNumbers",
-		"onCommand:extension.renameFiles",
-		"onCommand:extension.renumberAddOnsCfg",
-		"onCommand:extension.renumberSceneryCfg",
-		"onCommand:extension.showAircraftList",
-		"onCommand:extension.switchFS9FSX"
+		"onCommand:fsAiTools.airlineView",
+		"onCommand:fsAiTools.cleanAircraftCfg",
+		"onCommand:fsAiTools.cleanFlightplan",
+		"onCommand:fsAiTools.changeAircraftNumber",
+		"onCommand:fsAiTools.countAircraft",
+		"onCommand:fsAiTools.createAifpCfg",
+		"onCommand:fsAiTools.createAircraft",
+		"onCommand:fsAiTools.createFlightplanHeader",
+		"onCommand:fsAiTools.createFlightplanHeaderFromAifp",
+		"onCommand:fsAiTools.generateAirports",
+		"onCommand:fsAiTools.rebaseAircraftNumbers",
+		"onCommand:fsAiTools.renameFiles",
+		"onCommand:fsAiTools.renumberAddOnsCfg",
+		"onCommand:fsAiTools.renumberSceneryCfg",
+		"onCommand:fsAiTools.showAircraftList",
+		"onCommand:fsAiTools.switchFS9FSX"
 	],
 	"main": "./out/extension.js",
 	"contributes": {
 		"commands": [
 			{
-				"command": "extension.cleanAircraftCfg",
+				"command": "fsAiTools.airlineData",
+				"title": "Show Airline Data",
+				"category": "FS AI Tools",
+				"when": "resourceFilename =~ /^((flightplans)|(aircraft)|(airports)).*txt$/i"
+			},
+			{
+				"command": "fsAiTools.cleanAircraftCfg",
 				"title": "Clean Aircraft.cfg",
 				"category": "FS AI Tools",
 				"when": "resourceFilename =~ /aircraft.cfg/i"
 			},
 			{
-				"command": "extension.cleanFlightplan",
+				"command": "fsAiTools.cleanFlightplan",
 				"title": "Clean Flightplan",
 				"category": "FS AI Tools",
 				"when": "resourceFilename =~ /^flightplans.*txt$/i')"
 			},
 			{
-				"command": "extension.changeAircraftNumber",
+				"command": "fsAiTools.changeAircraftNumber",
 				"title": "Change AC# Number",
 				"category": "FS AI Tools",
 				"when": "editorHasSelection && resourceFilename =~ /^((flightplans)|(aircraft)).*txt$/i"
 			},
 			{
-				"command": "extension.countAircraft",
+				"command": "fsAiTools.countAircraft",
 				"title": "Count Aircraft",
 				"category": "FS AI Tools",
 				"when": "resourceFilename =~ /^flightplans.*txt$/i')"
 			},
 			{
-				"command": "extension.createAifpCfg",
+				"command": "fsAiTools.createAifpCfg",
 				"title": "Create aifp.cfg File",
 				"category": "FS AI Tools",
 				"when": "resourceFilename =~ /^flightplans.*txt$/i')"
 			},
 			{
-				"command": "extension.createAircraft",
+				"command": "fsAiTools.createAircraft",
 				"title": "Create Aircraft from Registrations",
 				"category": "FS AI Tools",
 				"when": "editorHasSelection"
 			},
 			{
-				"command": "extension.createFlightplanHeader",
+				"command": "fsAiTools.createFlightplanHeader",
 				"title": "Create Flightplan Header",
 				"category": "FS AI Tools",
 				"when": "resourceFilename =~ /^flightplans.*txt$/i')"
 			},
 			{
-				"command": "extension.createFlightplanHeaderFromAifp",
+				"command": "fsAiTools.createFlightplanHeaderFromAifp",
 				"title": "Create Flightplan Header from aifp.cfg",
 				"category": "FS AI Tools",
 				"when": "resourceFilename =~ /^flightplans.*txt$/i')"
 			},
 			{
-				"command": "extension.generateAirports",
+				"command": "fsAiTools.generateAirports",
 				"title": "Generate Airports.txt",
 				"category": "FS AI Tools",
 				"when": "resourceFilename =~ /^flightplans.*txt$/i')"
 			},
 			{
-				"command": "extension.rebaseAircraftNumbers",
+				"command": "fsAiTools.rebaseAircraftNumbers",
 				"title": "Rebase AC#s",
 				"category": "FS AI Tools",
 				"when": "resourceFilename =~ /^((flightplans)|(aircraft)).*txt$/i"
 			},
 			{
-				"command": "extension.renameFiles",
+				"command": "fsAiTools.renameFiles",
 				"title": "Rename flightplan files",
 				"category": "FS AI Tools",
 				"when": "resourceFilename =~ /^((flightplans)|(aircraft)|(airports)).*txt$/i"
 			},
 			{
-				"command": "extension.renumberAddOnsCfg",
+				"command": "fsAiTools.renumberAddOnsCfg",
 				"title": "Renumber add-ons.cfg",
 				"category": "FS AI Tools",
 				"when": "resourceFilename =~ /^add-ons.cfg/i"
 			},
 			{
-				"command": "extension.renumberSceneryCfg",
+				"command": "fsAiTools.renumberSceneryCfg",
 				"title": "Renumber scenery.cfg",
 				"category": "FS AI Tools",
 				"when": "resourceFilename =~ /^scenery.cfg/i"
 			},
 			{
-				"command": "extension.showAircraftList",
+				"command": "fsAiTools.showAircraftList",
 				"title": "Show Aircraft List",
 				"category": "FS AI Tools",
 				"when": "resourceFilename =~ /^((flightplans)|(aircraft)).*txt$/i"
 			},
 			{
-				"command": "extension.switchFS9FSX",
+				"command": "fsAiTools.switchFS9FSX",
 				"title": "Switch FS9 ⟷ FSX",
 				"category": "FS AI Tools",
 				"when": "editorHasSelection && resourceFilename =~ /^flightplans.*txt$/i')"
@@ -129,89 +136,89 @@
 		"menus": {
 			"editor/context": [
 				{
-					"command": "extension.cleanAircraftCfg",
+					"command": "fsAiTools.cleanAircraftCfg",
 					"group": "FS AI Tools",
 					"when": "config.fs-ai-tools.cleanAircraftCfg._ShowCleanAircraftCfgInContextMenu && resourceFilename =~ /aircraft.cfg/i"
 				},
 				{
-					"command": "extension.cleanFlightplan",
+					"command": "fsAiTools.cleanFlightplan",
 					"group": "FS AI Tools",
 					"when": "config.fs-ai-tools.cleanFlightplan._ShowCleanFlightplanInContextMenu && resourceFilename =~ /^flightplans.*txt$/i')"
 				},
 				{
-					"command": "extension.changeAircraftNumber",
+					"command": "fsAiTools.changeAircraftNumber",
 					"group": "FS AI Tools",
 					"when": "config.fs-ai-tools.changeAircraftNumber.showInContextMenu && editorHasSelection && resourceFilename =~ /^((flightplans)|(aircraft)).*txt$/i"
 				},
 				{
-					"command": "extension.countAircraft",
+					"command": "fsAiTools.countAircraft",
 					"group": "FS AI Tools",
 					"when": "config.fs-ai-tools.countAircraft.showInContextMenu && editorHasSelection && resourceFilename =~ /^flightplans.*txt$/i"
 				},
 				{
-					"command": "extension.createAifpCfg",
+					"command": "fsAiTools.createAifpCfg",
 					"group": "FS AI Tools",
 					"when": "config.fs-ai-tools.createAifpCfg.showInContextMenu && resourceFilename =~ /^flightplans.*txt$/i')"
 				},
 				{
-					"command": "extension.createAircraft",
+					"command": "fsAiTools.createAircraft",
 					"group": "FS AI Tools",
 					"when": "config.fs-ai-tools.createAircraft._ShowCreateAircraftInContextMenu && editorHasSelection"
 				},
 				{
-					"command": "extension.createFlightplanHeader",
+					"command": "fsAiTools.createFlightplanHeader",
 					"group": "FS AI Tools",
 					"when": "config.fs-ai-tools.createFlightplanHeader.showInContextMenu && resourceFilename =~ /^flightplans.*txt$/i')"
 				},
 				{
-					"command": "extension.createFlightplanHeaderFromAifp",
+					"command": "fsAiTools.createFlightplanHeaderFromAifp",
 					"group": "FS AI Tools",
 					"when": "config.fs-ai-tools.createFlightplanHeaderFromAifp.showInContextMenu && resourceFilename =~ /^flightplans.*txt$/i')"
 				},
 				{
-					"command": "extension.generateAirports",
+					"command": "fsAiTools.generateAirports",
 					"group": "FS AI Tools",
 					"when": "config.fs-ai-tools.generateAirports._showInContextMenu && resourceFilename =~ /^flightplans.*txt$/i')"
 				},
 				{
-					"command": "extension.rebaseAircraftNumbers",
+					"command": "fsAiTools.rebaseAircraftNumbers",
 					"group": "FS AI Tools",
 					"when": "config.fs-ai-tools.rebaseAircraftNumbers.showInContextMenu && resourceFilename =~ /^((flightplans)|(aircraft)).*txt$/i"
 				},
 				{
-					"command": "extension.renameFiles",
+					"command": "fsAiTools.renameFiles",
 					"group": "FS AI Tools",
 					"when": "config.fs-ai-tools.renameFiles._ShowRenameFilesInContextMenu && resourceFilename =~ /^((flightplans)|(aircraft)|(airports)).*txt$/i"
 				},
 				{
-					"command": "extension.renumberAddOnsCfg",
+					"command": "fsAiTools.renumberAddOnsCfg",
 					"group": "FS AI Tools",
 					"when": "config.fs-ai-tools.renumberAddOnsCfg.showInContextMenu && resourceFilename =~ /^add-ons.cfg/i"
 				},
 				{
-					"command": "extension.renumberSceneryCfg",
+					"command": "fsAiTools.renumberSceneryCfg",
 					"group": "FS AI Tools",
 					"when": "config.fs-ai-tools.renumberSceneryCfg.showInContextMenu && resourceFilename =~ /^scenery.cfg/i"
 				},
 				{
-					"command": "extension.showAircraftList",
+					"command": "fsAiTools.showAircraftList",
 					"group": "FS AI Tools",
 					"when": "config.fs-ai-tools.showAircraftList._ShowInContextMenu && resourceFilename =~ /^((flightplans)|(aircraft)).*txt$/i"
 				},
 				{
-					"command": "extension.switchFS9FSX",
+					"command": "fsAiTools.switchFS9FSX",
 					"group": "FS AI Tools",
 					"when": "config.fs-ai-tools.switchFS9Fsx.showInContextMenu && editorHasSelection && resourceFilename =~ /^flightplans.*txt$/i"
 				}
 			],
 			"explorer/context": [
 				{
-					"command": "extension.generateAirports",
+					"command": "fsAiTools.generateAirports",
 					"group": "FS AI Tools",
 					"when": "resourceFilename =~ /^flightplans.*txt$/i"
 				},
 				{
-					"command": "extension.renameFiles",
+					"command": "fsAiTools.renameFiles",
 					"group": "FS AI Tools",
 					"when": "resourceFilename =~ /^((flightplans)|(aircraft)|(airports)).*txt$/i"
 				}
@@ -705,16 +712,17 @@
 	"devDependencies": {
 		"@types/lodash": "^4.14.178",
 		"@types/mocha": "^9.1.0",
-		"@types/node": "^17.0.19",
+		"@types/node": "^17.0.21",
 		"@types/vscode": "^1.64.0",
 		"@vscode/test-electron": "^2.1.2",
-		"tslint": "^6.1.3",
+		"eslint": "^8.9.0",
 		"typescript": "^4.5.5",
 		"vsce": "^2.6.7"
 	},
 	"dependencies": {
 		"fs": "~0.0.1-security",
 		"lodash": "^4.17.21",
+		"mocha": "^9.2.1",
 		"path": "~0.12.7"
 	}
 }
