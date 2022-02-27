@@ -1,4 +1,4 @@
-import { showError } from '../Tools/helpers';
+import { degreesToRadians, showError } from '../Tools/helpers';
 
 type TDistanceUnitFactor = {
 	km: number;
@@ -10,6 +10,7 @@ const distanceUnitFactor: TDistanceUnitFactor = {
 	mi: 0.00062137141841645,
 	nm: 0.000539957,
 };
+// TODO add to config
 const distanceUnit: keyof TDistanceUnitFactor = 'km';
 
 /**
@@ -95,11 +96,17 @@ class Coordinate {
 		this.minutes = Number(m[3]);
 	}
 
-	/** The  */
+	/** The full, absolute number value (`degrees + minutes/60`) */
 	get value() {
 		return this.degrees + this.minutes / 60;
 	}
 
+	/** The full number value (`degrees + minutes/60`). Negative if "W" or "S". */
+	get factoredValue() {
+		return this.value * this.factor;
+	}
+
+	/** The airports.txt format representation of the coordinate (e.g. `N64* 11.4400'`) */
 	get str() {
 		const deg = this.degrees.toLocaleString(undefined, {
 			minimumIntegerDigits: 2,
@@ -128,19 +135,20 @@ type TCoordinates = {
  * @source https://www.movable-type.co.uk/scripts/latlong.html
  */
 function distance(from: Airport, to: Airport) {
+	const { sin, cos, atan2, sqrt } = Math;
 	// TODO consider `factor` for "N" vs "S" and "E" vs "W"
 
 	// Convert the latitudes from degrees to radians.
-	const φ1 = (from.coordinates.lat.value * Math.PI) / 180; // φ, λ in radians
-	const φ2 = (to.coordinates.lat.value * Math.PI) / 180;
+	const φ1 = degreesToRadians(from.coordinates.lat.factoredValue); // φ, λ in radians
+	const φ2 = degreesToRadians(to.coordinates.lat.factoredValue);
 
 	// Converting the difference in latitude to radians.
-	const Δφ = ((to.coordinates.lat.value - from.coordinates.lat.value) * Math.PI) / 180;
-	const Δλ = ((to.coordinates.lon.value - from.coordinates.lon.value) * Math.PI) / 180;
+	const Δφ = degreesToRadians(to.coordinates.lat.factoredValue - from.coordinates.lat.factoredValue);
+	const Δλ = degreesToRadians(to.coordinates.lon.factoredValue - from.coordinates.lon.factoredValue);
 
 	// Haversine formula for calculating the distance between two points on a sphere.
-	const a = Math.sin(Δφ / 2) * Math.sin(Δφ / 2) + Math.cos(φ1) * Math.cos(φ2) * Math.sin(Δλ / 2) * Math.sin(Δλ / 2);
-	const c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1 - a));
+	const a = sin(Δφ / 2) * sin(Δφ / 2) + cos(φ1) * cos(φ2) * sin(Δλ / 2) * sin(Δλ / 2);
+	const c = 2 * atan2(sqrt(a), sqrt(1 - a));
 
 	/** Earth radius in meters */
 	const R = 6371e3;
@@ -150,3 +158,8 @@ function distance(from: Airport, to: Airport) {
 
 	return distance;
 }
+
+export type TAirportCodeCount = {
+	icao: string;
+	count: number;
+};

@@ -3,9 +3,10 @@ import * as fs from 'fs';
 import * as path from 'path';
 import { getFileContents, plural, showError } from '../../Tools/helpers';
 import { LocalStorageService } from '../../Tools/LocalStorageService';
-import { Airport } from '../../Classes/Airport';
+import { Airport, TAirportCodeCount } from '../../Classes/Airport';
+import { FlightplanRaw } from '../../Classes/Flightplan';
 
-type TAirports = Map<string, Airport>;
+type TAirports = Map<string, string>;
 
 export async function GenerateAirports(storageManager: LocalStorageService) {
 	console.log('GenerateAirports()');
@@ -33,14 +34,23 @@ export async function GenerateAirports(storageManager: LocalStorageService) {
 	/**
 	 * Airports existing in flightplan, with duplicates removed, sorted alphabetically.
 	 */
-	const airports = await collectAirports(document.getText(), masterAirports, masterAirportsFilePath);
+	const airports = await collectFlightplanAirports(document.getText(), masterAirports);
 	if (!airports) {
 		return;
 	}
 
-	await writeToAirportsTxtFile(airports, document.uri.path);
+	await writeToAirportsTxtFile(airports, document.uri.path, masterAirportsFilePath);
 }
 
+/**
+ * Parses the file defined in `filePath` to create a master airport data Map.
+ * Saves it to local storage, and retrieves it if used another time. If the
+ * master file has changed (checked via timestamp), it is parsed regardless.
+ * @param filePath Path to the master airports .txt file
+ * @param storageManager The LocalStorageService manager to store and retrieve
+ * the master airport data.
+ * @returns A Map of the master airports (`Map<ICAO, Airports.txt line>`)
+ */
 async function getMasterAirports(filePath: string, storageManager: LocalStorageService) {
 	if (!fs.existsSync(filePath)) {
 		showError(`Master airports file at _"${filePath}"_ couldn't be found`);
@@ -73,9 +83,9 @@ async function getMasterAirports(filePath: string, storageManager: LocalStorageS
 				.split('\n')
 				.filter((line) => line.length)
 				.map((line) => {
-					const airport = new Airport(line);
+					const icao = line.trim().split(',')[0];
 
-					return [airport.icao, airport];
+					return [icao, line];
 				})
 		);
 
@@ -91,36 +101,53 @@ async function getMasterAirports(filePath: string, storageManager: LocalStorageS
 }
 
 /**
- * It takes a string and returns an array of unique airport codes.
- * @param {string} text - The text to search for airports in.
+ * TODO move into Flightplan / FlightplanRaw class
+ * @param {string} flightplanText -
  * @returns A set of airport codes, with duplicates removed, sorted alphabetically.
  */
-async function collectAirports(text: string, masterAirports: TAirports, masterAirportsFilePath: string) {
-	const matches = [...text.trim().matchAll(/,[FfRr],\d+,([A-Za-z0-9]{3,4})/gm)];
-	if (!matches?.length) {
+async function collectFlightplanAirports(flightplanText: string, masterAirports: TAirports) {
+	const flightplan = new FlightplanRaw(flightplanText);
+
+	const airportCodes = flightplan.collectAirportCodes();
+	if (!airportCodes) {
 		showError('No airports could be found in the flightplan.');
 		return null;
 	}
 
-	const airportCodes = new Set(matches.map((match) => match[1]).sort());
-
 	const found: Airport[] = [];
 	const missing: string[] = [];
-	for (const code of airportCodes.values()) {
-		if (code?.length && masterAirports.has(code)) {
-			const data = masterAirports.get(code);
-			found.push(data!);
+	for (const airport of airportCodes.values()) {
+		if (airport.icao.length && masterAirports.has(airport.icao)) {
+			const data = masterAirports.get(airport.icao);
+
+			found.push(new Airport(data!));
 		} else {
-			missing.push(code);
+			missing.push(airport.icao);
 		}
 	}
 
-	(11.2).toLocaleString(undefined, {});
+	return {
+		found,
+		missing,
+	};
+}
 
+/**
+ * Writes the airports to the airports.txt file in the current directory. Creates file if it doesn't exist.
+ * @param airports - Airports list as `Set<Airport>`
+ * @param {string} flightplansTxtPath - The path to the flightplans.txt file.
+ */
+async function writeToAirportsTxtFile(
+	airports: { found: Airport[]; missing: string[] },
+	flightplansTxtPath: string,
+	masterAirportsFilePath: string
+) {
 	let continueWriting = true;
-	if (missing.length) {
-		const title = `${plural('airport', missing.length)} not found in the master file`;
-		const msg = missing
+
+	// Missing airports → Tell user and wait for deciscion to open the master file, cancel, or continue
+	if (airports.missing.length) {
+		const title = `${plural('airport', airports.missing.length)} not found in the master file`;
+		const msg = airports.missing
 			.sort()
 			.map((code) => `• ${code}`)
 			.join('\n');
@@ -151,22 +178,11 @@ async function collectAirports(text: string, masterAirports: TAirports, masterAi
 			});
 	}
 
-	if (continueWriting) return new Set(found.sort());
-
-	return null;
-}
-
-/**
- * Writes the airports to the airports.txt file in the current directory. Creates file if it doesn't exist.
- * @param airports - Airports list as `Set<Airport>`
- * @param {string} flightplansTxtPath - The path to the flightplans.txt file.
- */
-async function writeToAirportsTxtFile(airports: Set<Airport>, flightplansTxtPath: string) {
 	const dirPath = path.dirname(flightplansTxtPath).replace(/^\/+/, '');
 	const fileName = path.basename(flightplansTxtPath).replace(/^flightplans/i, 'Airports');
 	const filePath = vscode.Uri.file(path.join(dirPath, fileName));
 
-	const text = [...airports].map((airport) => airport.line).join('\n');
+	const text = airports.found.map((airport) => airport.line).join('\n');
 
 	const edit = new vscode.WorkspaceEdit();
 	edit.createFile(filePath, { ignoreIfExists: true });
@@ -177,7 +193,7 @@ async function writeToAirportsTxtFile(airports: Set<Airport>, flightplansTxtPath
 	vscode.workspace.openTextDocument(filePath).then((doc: vscode.TextDocument) => {
 		doc.save();
 		vscode.window.showInformationMessage(
-			`${plural('airport', airports.size)} generated, "${fileName}" file written`
+			`${plural('airport', airports.found.length)} generated, "${fileName}" file written`
 		);
 	});
 }
