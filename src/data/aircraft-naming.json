@@ -167,17 +167,17 @@
 		"Airbus": {
 			"search": ["Airbus"],
 			"types": {
-				"A221": { "name": "A220-100", "search": ["A220-100"] },
-				"A223": { "name": "A220-300", "search": ["A220-300"] },
+				"A221": { "name": "A220-100", "search": ["A220-100", "A221", "BCS1"] },
+				"A223": { "name": "A220-300", "search": ["A220-300", "A223", "BCS3"] },
 				"A300": { "name": "A300", "search": ["A300"] },
 				"A310": { "name": "A310", "search": ["A310"] },
 				"A318": { "name": "A318", "search": ["A318-"] },
 				"A319": { "name": "A319", "search": ["A319-"] },
 				"A320": { "name": "A320", "search": ["A320-"] },
 				"A321": { "name": "A321", "search": ["A321-"] },
-				"A19N": { "name": "A319neo", "search": ["A319neo"] },
-				"A20N": { "name": "A320neo", "search": ["A320neo"] },
-				"A21N": { "name": "A321neo", "search": ["A321neo"] },
+				"A19N": { "name": "A319neo", "search": ["/A19-[12]\\d{2}\\s*NX?/", "A319neo"] },
+				"A20N": { "name": "A320neo", "search": ["/A320-[12]\\d{2}\\s*NX?/", "A320neo"] },
+				"A21N": { "name": "A321neo", "search": ["/A321-[12]\\d{2}\\s*NX?/", "A321neo"] },
 				"A332": { "name": "A330-200", "search": ["A330-2"] },
 				"A333": { "name": "A330-300", "search": ["A330-3"] },
 				"A338": { "name": "A330-800", "search": ["A330-8"] },
@@ -216,7 +216,7 @@
 		"BAe": {
 			"search": ["BAe", "British Aerospace", "Jetstream"],
 			"types": {
-				"BA46": { "name": "146-100/200/300 / RJ-70/85/100", "search": ["146-", "/RJ[- ]?(?:75|85|100)/"] },
+				"BA46": { "name": "146-100/200/300 / RJ-70/85/100", "search": ["146-", "/RJ[- ]?(?:70|85|100)/"] },
 				"JS31": { "name": "JS-31/32", "search": ["JS3", "JS-3"] },
 				"JS41": { "name": "JS-41/42", "search": ["JS4", "JS-4"] }
 			}
@@ -284,7 +284,7 @@
 				},
 				"CRJ2": {
 					"name": "CRJ-100/200 / Legcy 800/850",
-					"search": ["CRJ-100", "CRJ-2", "Legacy 800", "Legacy 850"]
+					"search": ["/CRJ-100[A-Z\\s]/", "CRJ-2", "Legacy 800", "Legacy 850"]
 				},
 				"CRJ7": { "name": "CRJ-700", "search": ["CRJ-7"] },
 				"CRJ9": { "name": "CRJ-900", "search": ["CRJ-9"] },

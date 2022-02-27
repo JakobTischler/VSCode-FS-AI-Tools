@@ -1,5 +1,6 @@
 import * as vscode from 'vscode';
 
+import { ShowAirlineView } from './Commands/flightplan/airline-data';
 import { CleanAircraftCfg } from './Commands/aircraft-cfg/clean-v2';
 import { CleanFlightplan } from './Commands/flightplan/clean';
 import { ChangeAircraftNumber } from './Commands/flightplan/change-ac-number';
@@ -23,6 +24,10 @@ export function activate(context: vscode.ExtensionContext) {
 
 	// Commands
 	context.subscriptions.push(
+		vscode.commands.registerCommand('fsAiTools.airlineView', (uri: vscode.Uri) => {
+			ShowAirlineView(context, uri?.fsPath);
+		}),
+
 		vscode.commands.registerCommand('fsAiTools.cleanAircraftCfg', () => {
 			CleanAircraftCfg();
 		}),
@@ -64,11 +69,7 @@ export function activate(context: vscode.ExtensionContext) {
 		}),
 
 		vscode.commands.registerCommand('fsAiTools.renameFiles', (uri: vscode.Uri) => {
-			if (uri?.fsPath) {
-				RenameFiles(uri.fsPath);
-			} else {
-				RenameFiles();
-			}
+			RenameFiles(uri?.fsPath);
 		}),
 
 		vscode.commands.registerCommand('fsAiTools.renumberAddOnsCfg', () => {

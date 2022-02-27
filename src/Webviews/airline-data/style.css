@@ -1,0 +1,138 @@
+:root {
+	--color-light: #f0f0f0;
+	--color-light-secondary: #d2ecff;
+	--color-dark: hsl(189, 12%, 33%);
+	--color-dark-secondary: hsl(190, 11%, 50%);
+
+	--font-sans-serif: 'Fredoka', sans-serif;
+	--font-serif: 'Noto Serif Display', serif;
+}
+
+body {
+	color: var(--color-main);
+	font-family: var(--font-sans-serif);
+	font-size: var(--vscode-editor-font-size);
+}
+
+body.vscode-light {
+	--color-main: var(--color-dark);
+	--color-secondary: var(--color-dark-secondary);
+
+	--color-logo-shadow: rgba(74, 91, 94, 0.5);
+}
+body.vscode-dark {
+	--color-main: var(--color-light);
+	--color-secondary: var(--color-light-secondary);
+
+	--color-logo-shadow: rgba(255, 255, 255, 0.5);
+}
+body.vscode-high-contrast {
+	color: red;
+}
+
+h1,
+h2,
+h3 {
+	font-family: var(--font-serif);
+}
+
+/* TODO https://code.visualstudio.com/api/references/theme-color */
+/*
+    --vscode-editor-font-family - Editor font family (from the editor.fontFamily setting).
+    --vscode-editor-font-weight - Editor font weight (from the editor.fontWeight setting).
+    --vscode-editor-font-size - Editor font size (from the editor.fontSize setting).
+*/
+
+code {
+	color: var(--vscode-editor-foreground);
+}
+
+/* HEADER */
+header {
+	border-bottom: 1px solid var(--color-secondary);
+	margin-bottom: 2em;
+	padding-bottom: 1em;
+}
+
+header h1 {
+	font-size: 3em;
+	margin-block-end: 0.25em;
+
+	display: flex;
+	justify-content: center;
+	text-align: center;
+}
+
+.logo {
+	max-width: 500px;
+}
+.logo img {
+	filter: drop-shadow(0px 0px 5px var(--color-logo-shadow));
+}
+
+.subHeader {
+	display: flex;
+	gap: 0.2em 1.5em;
+	align-items: center;
+	justify-content: center;
+
+	font-size: 1.1em;
+	font-weight: 500;
+	letter-spacing: 0.3em;
+
+	color: var(--color-secondary);
+}
+.subHeader > div {
+	display: flex;
+	gap: 0.75em;
+	align-items: center;
+}
+
+.subHeader .icao,
+.subHeader .callsign {
+	font-family: var(--vscode-editor-font-family);
+}
+
+/* ICONS */
+i.icon {
+	display: block;
+	height: 1em;
+	width: 1em;
+
+	background-color: var(--color-secondary);
+	-webkit-mask-position: center center;
+	mask-position: center center;
+	-webkit-mask-repeat: no-repeat;
+	mask-repeat: no-repeat;
+	-webkit-mask-size: contain;
+	mask-size: contain;
+}
+
+i.icon.brackets-curly {
+	-webkit-mask-image: url(./icons/brackets-curly.svg);
+	mask-image: url(./icons/brackets-curly.svg);
+}
+i.icon.calendar-alt {
+	-webkit-mask-image: url(./icons/calendar-alt.svg);
+	mask-image: url(./icons/calendar-alt.svg);
+}
+i.icon.fingerprint {
+	-webkit-mask-image: url(./icons/fingerprint.svg);
+	mask-image: url(./icons/fingerprint.svg);
+}
+i.icon.microphone {
+	-webkit-mask-image: url(./icons/microphone.svg);
+	mask-image: url(./icons/microphone.svg);
+}
+i.icon.plane-arrival {
+	-webkit-mask-image: url(./icons/plane-arrival.svg);
+	mask-image: url(./icons/plane-arrival.svg);
+}
+i.icon.plane-departure {
+	-webkit-mask-image: url(./icons/plane-departure.svg);
+	mask-image: url(./icons/plane-departure.svg);
+}
+i.icon.user-edit {
+	-webkit-mask-image: url(./icons/user-edit.svg);
+	mask-image: url(./icons/user-edit.svg);
+}

@@ -37,7 +37,7 @@
 	"contributes": {
 		"commands": [
 			{
-				"command": "fsAiTools.airlineData",
+				"command": "fsAiTools.airlineView",
 				"title": "Show Airline Data",
 				"category": "FS AI Tools",
 				"when": "resourceFilename =~ /^((flightplans)|(aircraft)|(airports)).*txt$/i"

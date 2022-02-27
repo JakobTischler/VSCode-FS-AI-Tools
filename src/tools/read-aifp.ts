@@ -19,7 +19,7 @@ export async function readAifpCfg(path: string): Promise<AifpData> {
 	console.log('readAifpCfg()', path);
 
 	while (path.startsWith('\\')) {
-		path = path.substr(1);
+		path = path.substring(1);
 	}
 
 	/*
