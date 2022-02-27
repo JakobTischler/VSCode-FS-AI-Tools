@@ -3,8 +3,9 @@ import * as fs from 'fs';
 import * as path from 'path';
 import { getFileContents, plural, showError } from '../../Tools/helpers';
 import { LocalStorageService } from '../../Tools/LocalStorageService';
+import { Airport } from '../../Classes/Airport';
 
-type TAirports = Map<string, string>;
+type TAirports = Map<string, Airport>;
 
 export async function GenerateAirports(storageManager: LocalStorageService) {
 	console.log('GenerateAirports()');
@@ -72,10 +73,9 @@ async function getMasterAirports(filePath: string, storageManager: LocalStorageS
 				.split('\n')
 				.filter((line) => line.length)
 				.map((line) => {
-					const lineTrimmed = line.trim();
-					const code = lineTrimmed.split(',')[0];
+					const airport = new Airport(line);
 
-					return [code, lineTrimmed];
+					return [airport.icao, airport];
 				})
 		);
 
@@ -104,7 +104,7 @@ async function collectAirports(text: string, masterAirports: TAirports, masterAi
 
 	const airportCodes = new Set(matches.map((match) => match[1]).sort());
 
-	const found: string[] = [];
+	const found: Airport[] = [];
 	const missing: string[] = [];
 	for (const code of airportCodes.values()) {
 		if (code?.length && masterAirports.has(code)) {
@@ -114,6 +114,8 @@ async function collectAirports(text: string, masterAirports: TAirports, masterAi
 			missing.push(code);
 		}
 	}
+
+	(11.2).toLocaleString(undefined, {});
 
 	let continueWriting = true;
 	if (missing.length) {
@@ -156,18 +158,20 @@ async function collectAirports(text: string, masterAirports: TAirports, masterAi
 
 /**
  * Writes the airports to the airports.txt file in the current directory. Creates file if it doesn't exist.
- * @param airports - Airports list as `Set<string>`
+ * @param airports - Airports list as `Set<Airport>`
  * @param {string} flightplansTxtPath - The path to the flightplans.txt file.
  */
-async function writeToAirportsTxtFile(airports: Set<string>, flightplansTxtPath: string) {
+async function writeToAirportsTxtFile(airports: Set<Airport>, flightplansTxtPath: string) {
 	const dirPath = path.dirname(flightplansTxtPath).replace(/^\/+/, '');
 	const fileName = path.basename(flightplansTxtPath).replace(/^flightplans/i, 'Airports');
 	const filePath = vscode.Uri.file(path.join(dirPath, fileName));
 
+	const text = [...airports].map((airport) => airport.line).join('\n');
+
 	const edit = new vscode.WorkspaceEdit();
 	edit.createFile(filePath, { ignoreIfExists: true });
 	edit.delete(filePath, new vscode.Range(new vscode.Position(0, 0), new vscode.Position(9999, 9999)));
-	edit.insert(filePath, new vscode.Position(0, 0), [...airports].join('\n'));
+	edit.insert(filePath, new vscode.Position(0, 0), text);
 	await vscode.workspace.applyEdit(edit);
 
 	vscode.workspace.openTextDocument(filePath).then((doc: vscode.TextDocument) => {
