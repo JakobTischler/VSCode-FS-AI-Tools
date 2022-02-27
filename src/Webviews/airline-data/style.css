@@ -6,6 +6,8 @@
 
 	--font-sans-serif: 'Fredoka', sans-serif;
 	--font-serif: 'Noto Serif Display', serif;
+
+	--anim-length: 0.1s;
 }
 
 body {
@@ -90,7 +92,7 @@ header h1 {
 
 .subHeader .icao,
 .subHeader .callsign {
-	font-family: var(--vscode-editor-font-family);
+	/* font-family: var(--vscode-editor-font-family); */
 }
 
 /* ICONS */
@@ -135,4 +137,66 @@ i.icon.plane-departure {
 i.icon.user-edit {
 	-webkit-mask-image: url(./icons/user-edit.svg);
 	mask-image: url(./icons/user-edit.svg);
+}
+
+/* AIRPORT COUNT */
+dl.airport-count {
+	display: grid;
+	grid-template-columns: auto 1fr;
+	grid-gap: 0;
+
+	background: transparent;
+	padding: 1rem;
+	border: 1px solid var(--color-secondary);
+}
+dl.airport-count dt,
+dl.airport-count dd {
+	margin: 0;
+	padding: 0.5em 1em;
+	transform: scaleY(1);
+	height: auto;
+}
+dl.airport-count dd {
+	color: var(--color-secondary);
+}
+dl.airport-count dt:nth-of-type(even),
+dl.airport-count dd:nth-of-type(even) {
+	background: var(--vscode-tree-tableOddRowsBackground);
+}
+dt.hideable,
+dd.hideable {
+	transition: transform var(--anim-length), height var(--anim-length), padding-top var(--anim-length),
+		padding-bottom var(--anim-length);
+}
+dl.hidden dt.hideable,
+dl.hidden dd.hideable {
+	transform: scaleY(0);
+	height: 0;
+	padding-top: 0;
+	padding-bottom: 0;
+}
+
+/* BUTTON */
+button {
+	background: var(--vscode-button-background);
+	color: var(--vscode-button-foreground);
+	transition: background-color var(--anim-length);
+
+	outline: none;
+	border: none;
+	padding: 0.75em 2em;
+	border-radius: 4px;
+	cursor: pointer;
+	font-family: var(--font-sans-serif);
+	letter-spacing: 2px;
+}
+button:hover {
+	background: var(--vscode-button-hoverBackground);
+}
+button.secondary {
+	background: var(--vscode-button-secondaryBackground);
+	color: var(--vscode-button-secondaryForeground);
+}
+button.secondary:hover {
+	background: var(--vscode-button-secondaryHoverBackground);
 }
