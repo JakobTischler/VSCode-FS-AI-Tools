@@ -90,10 +90,10 @@ header h1 {
 	align-items: center;
 }
 
-.subHeader .icao,
+/* .subHeader .icao,
 .subHeader .callsign {
-	/* font-family: var(--vscode-editor-font-family); */
-}
+	font-family: var(--vscode-editor-font-family);
+} */
 
 /* ICONS */
 i.icon {

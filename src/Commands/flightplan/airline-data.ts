@@ -14,7 +14,7 @@ import * as fs from 'fs';
 import * as path from 'path';
 import { getFileContents, showError } from '../../Tools/helpers';
 import { AifpData, readAifpCfg } from '../../Tools/read-aifp';
-import { FlightplanRaw } from '../../Classes/Flightplan';
+import { Flightplan, FlightplanRaw } from '../../Classes/Flightplan';
 import { TAirportCodeCount } from '../../Classes/Airport';
 
 /** TODO add to config */
@@ -48,8 +48,8 @@ export async function ShowAirlineView(context: vscode.ExtensionContext, filePath
 		const flightplansFileContents = await getFileContents(filePaths.flightplans.path);
 
 		if (flightplansFileContents) {
-			const fp = new FlightplanRaw(flightplansFileContents);
-			const airports = fp.collectAirportCodes();
+			const fpRaw = new FlightplanRaw(flightplansFileContents);
+			const airports = fpRaw.collectAirportCodes();
 
 			if (airports) {
 				airportsByCount = [...airports].sort((a: TAirportCodeCount, b: TAirportCodeCount) => {
@@ -58,6 +58,19 @@ export async function ShowAirlineView(context: vscode.ExtensionContext, filePath
 					if (a.count > b.count) return -1;
 					return 0;
 				});
+			}
+
+			// TODO TEMPORARY TESTING
+			if (filePaths.aircraft) {
+				const aircraftFileContents = await getFileContents(filePaths.aircraft.path);
+				if (aircraftFileContents) {
+					const fp = new Flightplan(
+						aircraftFileContents,
+						filePaths.aicraft.fileName,
+						flightplansFileContents,
+						filePaths.flightplan.fileName
+					);
+				}
 			}
 		}
 	}

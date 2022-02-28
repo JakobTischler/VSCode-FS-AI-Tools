@@ -168,3 +168,20 @@ export const plural = (word: string, num: number = 1, userOptions: Partial<TPlur
 	}
 	return prefix + (options.pluralWord || `${word}s`);
 };
+
+/**
+ * Convert degrees to radians
+ * @param {number} degrees - The degree to convert to radians.
+ * @returns The radian value
+ */
+export function degreesToRadians(degrees: number) {
+	return (degrees * Math.PI) / 180;
+}
+
+/**
+ * It returns a new object with only the defined properties of the object.
+ * @param {any} obj - The initial object
+ * @source https://stackoverflow.com/a/56650790/677970
+ */
+export const getDefinedProps = (obj: any) =>
+	Object.fromEntries(Object.entries(obj).filter(([k, v]) => v !== undefined));

@@ -1,25 +1,10 @@
 import * as vscode from 'vscode';
 import * as Fs from 'fs';
-import { isArray, merge, mergeWith } from 'lodash';
 import * as Path from 'path';
-import { getFileContents, showError, writeTextToClipboard } from '../../Tools/helpers';
+import { showError, writeTextToClipboard } from '../../Tools/helpers';
 import '../../Extenders/string';
 import * as aircraftNaming from '../../data/aircraft-naming.json';
-
-interface aircraftDataRaw {
-	title: string;
-	count: number;
-	acNum: number;
-	icao?: string;
-}
-type aircraftListRaw = Map<number, aircraftDataRaw>;
-
-interface aircraftData {
-	name?: string;
-	count: number;
-	aircraft: Set<string>;
-}
-type aircraftList = Map<string, aircraftData>;
+import { parseAircraftTxt, TAircraftList } from '../../Content/Aircraft/parseAircraftTxt';
 
 export async function ShowAircraftList() {
 	/*
@@ -37,60 +22,31 @@ export async function ShowAircraftList() {
 	const filePath = editor.document.uri.path;
 	const dirPath = Path.dirname(filePath).replace(/^\/+/, '');
 
-	// Get Aicraft…, Flightplans… filenames
-	const files = await getFiles(dirPath);
-	if (!(files.aircraft && files.flightplans)) {
-		const name = !files.aircraft ? 'Aircraft' : 'Flightplans';
+	// Get Aicraft…, Flightplans… file paths
+	const filePaths = await getFiles(dirPath);
+	if (!(filePaths.aircraft && filePaths.flightplans)) {
+		const name = !filePaths.aircraft ? 'Aircraft' : 'Flightplans';
 		showError(`${name}….txt file couldn't be found in current directory.`);
 		return;
 	}
 
-	// 1. Get aircraft list from aircraft.txt file
-	const aircraftListRaw = await getAircraftListRaw(files.aircraft);
-	if (aircraftListRaw.size === 0) {
-		showError(`"${files.aircraft}" couldn't be read`);
-		return;
-	}
-	console.log({ aircraftListRaw });
+	const data = await parseAircraftTxt({
+		aircraft: {
+			fileName: Path.basename(filePaths.aircraft),
+			filePath: filePaths.aircraft,
+		},
+		flightplans: {
+			fileName: Path.basename(filePaths.flightplans),
+			filePath: filePaths.flightplans,
+		},
+	});
+	if (!data) return;
+	const { aircraftList, totalCount, nonMatches } = data;
 
-	// 2. Count aircraft in flightplans.txt file
-	const countSuccess = await countAircraft(aircraftListRaw, files.flightplans);
-	if (!countSuccess) {
-		showError(`Flightplans….txt file couldn't be read.`);
-		return;
-	}
-
-	// 3. Get user data .json and merge with aircraftNaming
-	let data = aircraftNaming;
-	const config = vscode.workspace.getConfiguration('fs-ai-tools.showAircraftList', undefined);
-	const customDataPath = config.get('customDataFilePath') as string;
-	if (customDataPath?.length) {
-		// 3.1: Get custom file contents
-		const customDataContents = await getFileContents(customDataPath);
-		if (customDataContents) {
-			const customData = JSON.parse(customDataContents);
-
-			// 3.2: Merge
-			if (customData.list || customData.types) {
-				/* data = mergeWith(aircraftNaming, customData, (origValue, newValue) => {
-					if (isArray(origValue)) {
-						return origValue.concat(newValue);
-					}
-				}); */
-				data = merge(aircraftNaming, customData);
-			} else {
-				showError(`Custom aircraft data couldn't be merged, as it has neither "list" nor "types"`);
-			}
-		} else {
-			showError(`Custom aircraft data couldn't be read. Please check file path.`);
-		}
-	}
-
-	// 4. Match titles to types
-	const { aircraftList, totalCount, nonMatches } = matchTitleToType(data, aircraftListRaw);
-
-	// 5. Show formatted message with "copy" button
-	const showGoogleSheetsButton = config.get('showGoogleSheetsButton');
+	// Show formatted message with "copy" button
+	const showGoogleSheetsButton = vscode.workspace
+		.getConfiguration('fs-ai-tools.showAircraftList', undefined)
+		.get('showGoogleSheetsButton');
 	const formattedList = getFormattedAircraftList(aircraftList, totalCount, nonMatches);
 	if (showGoogleSheetsButton) {
 		vscode.window
@@ -101,7 +57,7 @@ export async function ShowAircraftList() {
 			)
 			.then((buttonText) => {
 				if (buttonText) {
-					const sheetsOutput = generateGoogleSheetsOutput(data, aircraftList);
+					const sheetsOutput = generateGoogleSheetsOutput(aircraftNaming, aircraftList);
 					writeTextToClipboard(sheetsOutput, 'Google Sheets aircraft count copied to clipboard');
 				}
 			});
@@ -132,182 +88,14 @@ async function getFiles(dirPath: string) {
 	return { aircraft, flightplans };
 }
 
-/**
- * Collects the aircraft entries in an aircraft.txt file and returns an `aircraftListRaw` map with that data.
- * @param filePath Path to aircraft.txt file
- * @returns Map of type `aircraftListRaw` with collected aircraft data
- */
-async function getAircraftListRaw(filePath: string) {
-	const contents = await getFileContents(filePath);
-	const ret: aircraftListRaw = new Map();
-
-	if (contents) {
-		for (const line of contents.split('\n').map((line) => line.trim())) {
-			if (line?.length && line.startsWith('AC#')) {
-				const items = line.split(',');
-				const data: aircraftDataRaw = {
-					acNum: Number(items[0].replace(/[^0-9]/g, '')),
-					title: items[2].replace(/"/g, ''),
-					count: 0,
-				};
-				ret.set(data.acNum, data);
-			}
-		}
-	}
-
-	return ret;
-}
-
-/**
- * Counts the different AC#s in a flightplans.txt file and updates the counts in the provided `aircraftListRaw`
- * @param list The `aircraftListRaw` received from `getAircraftListRaw()`
- * @param filePath Path to flightplans.txt file
- * @returns `true` if flightplans.txt file could be read an the aircraft were counted, otherwise `false`
- */
-async function countAircraft(list: aircraftListRaw, filePath: string) {
-	const contents = await getFileContents(filePath);
-	if (!contents) {
-		return false;
-	}
-
-	for (const [index, line] of contents
-		.split('\n')
-		.map((line) => line.trim())
-		.entries()) {
-		if (line?.length && line.startsWith('AC#')) {
-			const items = line.split(',');
-			const acNum = Number(items[0].replace(/[^0-9]/g, ''));
-
-			if (!list.has(acNum)) {
-				showError(`Flightplans line ${index + 1}: AC# ${acNum} doesn't exist in Aircraft.txt file`);
-				continue;
-			}
-
-			const data = list.get(acNum);
-			if (data) {
-				data.count++;
-				list.set(acNum, data);
-			}
-		}
-	}
-
-	return true;
-}
-
-/**
- * Goes through `aircraftNaming` to match each title to an ICAO type name.
- *
- * Uses two methods to keep the iterations to a minimum:
- * 1. Keep a list of successful matches as well as their respective result,
- * and go through them for each aircraft title first to check for a possible
- * match
- * 2. Check for manufacturer match before deep-iterating through the
- * manufacturer's aircraft types
- * @param inputList The `aircraftListRaw` that includes all aircraft titles as well as counts
- * @returns An `aircraftList` Map where the ICAO type name is the key, and the count as well as the matching aircraft titles are the value object. Also: `totalNumber` = the total number of matched aircraft (not aircraft types), `nonMatches` = the number of aircraft types that couldn't be matched
- */
-function matchTitleToType(data: typeof aircraftNaming, inputList: aircraftListRaw) {
-	const aircraftList: aircraftList = new Map();
-	const matches = new Map();
-
-	let totalCount = 0;
-	const nonMatches: string[] = [];
-
-	const addOrUpdateAircraftData = (
-		type: string,
-		inputData: aircraftDataRaw,
-		manufacturerName?: string,
-		typeName?: string
-	) => {
-		if (aircraftList.has(type)) {
-			const data = aircraftList.get(type);
-			if (data) {
-				data.count += inputData.count;
-				data.aircraft.add(inputData.title);
-				aircraftList.set(type, data);
-				totalCount += inputData.count;
-			}
-		} else {
-			aircraftList.set(type, {
-				count: inputData.count,
-				aircraft: new Set([inputData.title]),
-				name: `${manufacturerName} ${typeName}`,
-			});
-			totalCount += inputData.count;
-		}
-	};
-
-	titlesLoop: for (const [inputKey, inputData] of inputList.entries()) {
-		const title = inputData.title.toLowerCase();
-
-		// First check previous successful search terms to find a quick match
-		for (const [searchTerm, typeName] of matches.entries()) {
-			if (title.includes(searchTerm)) {
-				addOrUpdateAircraftData(typeName, inputData);
-				continue titlesLoop;
-			}
-		}
-
-		// Then, if nothing found, go through possible search terms
-		for (const [manufacturer, manufacturerData] of Object.entries(data.types)) {
-			for (const manufacturerName of manufacturerData.search) {
-				if (title.includes(manufacturerName.toLowerCase())) {
-					for (const [type, typeData] of Object.entries(manufacturerData.types)) {
-						for (const searchTerm of typeData.search.map((searchTerm) => searchTerm.toLowerCase())) {
-							let add = false;
-							let matchTerm = searchTerm;
-
-							// Regex
-							if (searchTermIsRegex(searchTerm)) {
-								const regex = new RegExp(searchTerm.slice(1, -1), 'i');
-								const match = title.match(regex);
-
-								if (match) {
-									add = true;
-									matchTerm = match[0];
-								}
-
-								// Regular search
-							} else {
-								add = title.includes(searchTerm);
-							}
-
-							if (add) {
-								// Add type to aircraftListRaw
-								inputData.icao = type;
-								inputList.set(inputKey, inputData);
-
-								// Add data to aircraftList: create new or update existing
-								addOrUpdateAircraftData(type, inputData, manufacturer, typeData.name || type);
-
-								// Add to successful matches
-								if (!matches.has(matchTerm)) {
-									matches.set(matchTerm, type);
-								}
-
-								continue titlesLoop;
-							}
-						}
-					}
-				}
-			}
-		}
-
-		// Aircraft title couldn't be matched
-		nonMatches.push(inputData.title);
-	}
-
-	return { aircraftList, totalCount, nonMatches };
-}
-
-function generateGoogleSheetsOutput(data: typeof aircraftNaming, aircraftList: aircraftList) {
+function generateGoogleSheetsOutput(data: typeof aircraftNaming, aircraftList: TAircraftList) {
 	return data.list.map((item) => (aircraftList.has(item) ? aircraftList.get(item)?.count || '' : '')).join('\t');
 }
 
 /**
  * Iterates through the aircraftList items to provide a single formatted, readable string with "{type}: {count}× ({number of variations})"
  */
-function getFormattedAircraftList(aircraftList: aircraftList, totalCount: number, nonMatches: string[]) {
+function getFormattedAircraftList(aircraftList: TAircraftList, totalCount: number, nonMatches: string[]) {
 	const title = `${totalCount} aircraft`;
 
 	const lines: string[] = [];
@@ -335,8 +123,4 @@ function getFormattedAircraftList(aircraftList: aircraftList, totalCount: number
 		title: title,
 		text: text,
 	};
-}
-
-function searchTermIsRegex(term: string): boolean {
-	return term.startsWith('/') && term.endsWith('/');
 }
