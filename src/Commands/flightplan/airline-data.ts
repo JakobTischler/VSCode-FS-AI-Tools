@@ -1,24 +1,21 @@
 /*
- * [ ] Show title, icao, callsign
+ * [x] Show title, icao, callsign
  * [ ] Logo
  	1. {folder}/logo.[png,jpg]
 	2. {folder}/callsign.[png,jpg]
 	3. {logoFolder}/callsign.[png,jpg]
- * [ ] List of airports with counts
+ * [x] List of airports with counts
  * [ ] Routemap
- * [ ] List of aircraft types with counts
+ * [x] List of aircraft types with counts
 */
 
 import * as vscode from 'vscode';
-import * as fs from 'fs';
 import * as path from 'path';
-import { getFileContents, getFlightplanFiles, showError } from '../../Tools/helpers';
-import { AifpData, readAifpCfg } from '../../Tools/read-aifp';
-import { Flightplan, FlightplanRaw } from '../../Classes/Flightplan';
-import { TAirportCodeCount } from '../../Classes/Airport';
-
-/** TODO add to config */
-const logoFolderPath = 'D:\\P3D Addons\\Logos\\logos';
+import { getFlightplanFiles, showError } from '../../Tools/helpers';
+import { readAifpCfg } from '../../Tools/read-aifp';
+import { FlightplanRaw } from '../../Classes/Flightplan';
+import { parseAircraftTxt } from '../../Content/Aircraft/parseAircraftTxt';
+import { getWebviewContent } from '../../Webviews/airline-data/get-content';
 
 export async function ShowAirlineView(context: vscode.ExtensionContext, filePath?: string) {
 	// Get directory
@@ -58,6 +55,12 @@ export async function ShowAirlineView(context: vscode.ExtensionContext, filePath
 		return;
 	}
 
+	// Get Aircraft
+	const aircraftData = await parseAircraftTxt(fileData, true);
+	if (!aircraftData) {
+		return;
+	}
+
 	const fpRaw = new FlightplanRaw(fileData.flightplans.text);
 
 	// TODO TEMPORARY TESTING
@@ -69,145 +72,24 @@ export async function ShowAirlineView(context: vscode.ExtensionContext, filePath
 	); */
 
 	// Create Webview
+	const config = vscode.workspace.getConfiguration('fs-ai-tools.airlineView', undefined);
+	const logoDirectoryPath = config.get('logoDirectoryPath') as string;
+
+	const localResourceRoots = [vscode.Uri.file(path.join(context.extensionPath, 'src/Webviews/airline-data'))];
+	if (logoDirectoryPath?.length) {
+		localResourceRoots.push(vscode.Uri.file(logoDirectoryPath));
+	}
+
 	const panel = vscode.window.createWebviewPanel(
 		'airlineView',
 		`Airline Data${aifp.airline ? `: ${aifp.airline}` : ''}`,
 		vscode.ViewColumn.Active,
 		{
 			enableScripts: true,
-			localResourceRoots: [
-				vscode.Uri.file(path.join(context.extensionPath, 'src/Webviews/airline-data')),
-				vscode.Uri.file(logoFolderPath),
-			],
+			localResourceRoots: localResourceRoots,
 		}
 	);
 
 	// Set HTML content
-	panel.webview.html = await getWebviewContent(panel, context, aifp, fpRaw);
-}
-
-async function getWebviewContent(
-	panel: vscode.WebviewPanel,
-	context: vscode.ExtensionContext,
-	aifp: AifpData,
-	flightplanRaw?: FlightplanRaw
-): Promise<string> {
-	const paths = {
-		style: path.join(context.extensionPath, '/src/Webviews/airline-data/style.css'),
-		js: path.join(context.extensionPath, '/src/Webviews/airline-data/index.js'),
-	};
-	const src = {
-		style: vscode.Uri.file(paths.style).with({ scheme: 'vscode-resource' }),
-		js: vscode.Uri.file(paths.js).with({ scheme: 'vscode-resource' }),
-	};
-
-	let content = `<!DOCTYPE html>
-<html lang="en">
-<head>
-	<meta charset="UTF-8">
-	<meta name="viewport" content="width=device-width, initial-scale=1.0">
-	<title>Airline Data</title>
-
-	<link rel="preconnect" href="https://fonts.googleapis.com" />
-	<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
-	<link href="https://fonts.googleapis.com/css2?family=Fredoka:wght@300;500&family=Noto+Serif+Display:wght@300;600&display=swap" rel="stylesheet" />
-
-	<link rel="stylesheet" type="text/css" href="${src.style}" />
-</head>
-<body>
-	<header>`;
-
-	/**
-	 * HEADER
-	 */
-
-	const logoPath = await getLogoPath(aifp);
-	if (logoPath) {
-		const logoDiskPath = vscode.Uri.file(logoPath);
-		const logoSrc = panel.webview.asWebviewUri(logoDiskPath);
-
-		// console.log({ logoDiskPath, logoSrc });
-
-		content += `<h1 class="has-logo">
-			<div class="logo">
-				<img src="${logoSrc}" />
-			</div>
-		</h1>`;
-	} else {
-		content += `<h1><div>${aifp.airline}</div></h1>`;
-	}
-
-	content += `<div class="subHeader">
-			<div class="icao">
-				<i class="icon brackets-curly"></i>
-				<span class="value">${aifp.icao || '———'}</span>
-			</div>
-
-			<div class="separator">•</div>
-
-			<div class="callsign">
-				<i class="icon microphone"></i>
-				<span class="value">${aifp.callsign || '———'}</span>
-			</div>
-		</div>
-
-		<div class="subHeader">
-			<div class="author">
-				<i class="icon user-edit"></i>
-				<span class="value">${aifp.author || '———'}</span>
-			</div>
-
-			<div class="separator">•</div>
-
-			<div class="season">
-				<i class="icon calendar-alt"></i>
-				<span class="value">${aifp.season || '———'}</span>
-			</div>
-		</div>
-	</header>`;
-
-	content += '<main>';
-
-	/**
-	 * AIRPORTS
-	 */
-	if (flightplanRaw) {
-		content += `<div class="airports-by-count">
-		<h2>Airports</h2>
-		<button class="toggle-button" data-target=".airport-count">Show all</button>
-		<dl class="airport-count hidden">`;
-
-		for (const [index, airport] of flightplanRaw.airportCodesByCount.entries()) {
-			const elementClass = index > 9 ? 'hideable' : '';
-			content += `<dt class="${elementClass}" data-rank="${index + 1}">${airport.icao}</dt>
-			<dd class="${elementClass}">${airport.count.toLocaleString()}</dd>`;
-		}
-
-		content += `</dl>`;
-		content += `</div>`;
-	}
-
-	content += '</main>';
-
-	content += `<script src="${src.js}"></script>`;
-
-	content += `</body>
-</html>`;
-
-	return content;
-}
-
-async function getLogoPath(aifp: AifpData) {
-	if (aifp.callsign) {
-		const logoPath = path.join(logoFolderPath, aifp.callsign);
-
-		if (fs.existsSync(`${logoPath}.png`)) {
-			return `${logoPath}.png`;
-		}
-		if (fs.existsSync(`${logoPath}.jpg`)) {
-			return `${logoPath}.jpg`;
-		}
-	}
-
-	return null;
+	panel.webview.html = await getWebviewContent(panel, context, aifp, aircraftData, fpRaw);
 }

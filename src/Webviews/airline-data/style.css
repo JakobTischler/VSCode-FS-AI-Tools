@@ -139,28 +139,68 @@ i.icon.user-edit {
 	mask-image: url(./icons/user-edit.svg);
 }
 
-/* AIRPORT COUNT */
-dl.airport-count {
+/* Grid */
+section.grid {
+	display: flex;
+}
+section.grid.col-2 {
+	display: flex;
+	flex-wrap: wrap;
+	align-items: stretch;
+	gap: 3em;
+}
+section.grid > div.grid-item:first-child {
+	order: 1;
+}
+
+section.grid.col-2 > div.grid-item {
+	flex: 1;
+}
+section.grid.col-2 > div.grid-item:last-child {
+	order: 3;
+}
+
+section.grid.col-2:before {
+	content: '';
+	border: 0.5px solid var(--color-secondary);
+	order: 2;
+}
+
+@media (max-width: 700px) {
+	.grid {
+		align-items: center;
+		flex-direction: column;
+	}
+}
+
+section.grid div.grid-item > h2 {
+	display: flex;
+	align-items: center;
+	gap: 1em;
+	height: 1.5em;
+}
+/* Definition List */
+dl.table {
 	display: grid;
 	grid-template-columns: auto 1fr;
-	grid-gap: 0;
+	gap: 0;
 
 	background: transparent;
 	padding: 1rem;
 	border: 1px solid var(--color-secondary);
 }
-dl.airport-count dt,
-dl.airport-count dd {
+dl.table dt,
+dl.table dd {
 	margin: 0;
 	padding: 0.5em 1em;
 	transform: scaleY(1);
 	height: auto;
 }
-dl.airport-count dd {
+dl.table dd {
 	color: var(--color-secondary);
 }
-dl.airport-count dt:nth-of-type(even),
-dl.airport-count dd:nth-of-type(even) {
+dl.table dt:nth-of-type(even),
+dl.table dd:nth-of-type(even) {
 	background: var(--vscode-tree-tableOddRowsBackground);
 }
 dt.hideable,

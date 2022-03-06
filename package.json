@@ -38,7 +38,7 @@
 		"commands": [
 			{
 				"command": "fsAiTools.airlineView",
-				"title": "Show Airline Data",
+				"title": "Show Airline View",
 				"category": "FS AI Tools",
 				"when": "resourceFilename =~ /^((flightplans)|(aircraft)|(airports)).*txt$/i"
 			},
@@ -136,6 +136,11 @@
 		"menus": {
 			"editor/context": [
 				{
+					"command": "fsAiTools.airlineView",
+					"group": "FS AI Tools",
+					"when": "config.fs-ai-tools.airlineView._ShowInContextMenu && resourceFilename =~ /^((aircraft)|(flightplans)).*txt$/i"
+				},
+				{
 					"command": "fsAiTools.cleanAircraftCfg",
 					"group": "FS AI Tools",
 					"when": "config.fs-ai-tools.cleanAircraftCfg._ShowCleanAircraftCfgInContextMenu && resourceFilename =~ /aircraft.cfg/i"
@@ -225,6 +230,26 @@
 			]
 		},
 		"configuration": [
+			{
+				"type": "object",
+				"title": "Airline View",
+				"properties": {
+					"fs-ai-tools.airlineView._ShowInContextMenu": {
+						"type": "boolean",
+						"default": false,
+						"title": "Add to Context Menu",
+						"markdownDescription": "Adds the \"Airline View\" command to the context menu when an `Aircraft.txt` or `Flightplans.txt` file is open.",
+						"scope": "window"
+					},
+					"fs-ai-tools.airlineView.logoDirectoryPath": {
+						"type": "string",
+						"default": "",
+						"title": "Logo Directory Path",
+						"markdownDescription": "Absolute path to a directory containing airline logo files.",
+						"scope": "window"
+					}
+				}
+			},
 			{
 				"type": "object",
 				"title": "Clean aircraft.cfg",
