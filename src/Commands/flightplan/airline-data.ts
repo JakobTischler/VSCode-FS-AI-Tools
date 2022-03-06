@@ -45,7 +45,7 @@ export async function ShowAirlineView(context: vscode.ExtensionContext, filePath
 	let airportsByCount;
 	const filePaths = await getFlightplanFiles(dirPath);
 	if (filePaths.flightplans) {
-		const flightplansFileContents = await getFileContents(filePaths.flightplans.path);
+		const flightplansFileContents = await getFileContents(filePaths.flightplans.filePath);
 
 		if (flightplansFileContents) {
 			const fpRaw = new FlightplanRaw(flightplansFileContents);
@@ -62,13 +62,13 @@ export async function ShowAirlineView(context: vscode.ExtensionContext, filePath
 
 			// TODO TEMPORARY TESTING
 			if (filePaths.aircraft) {
-				const aircraftFileContents = await getFileContents(filePaths.aircraft.path);
+				const aircraftFileContents = await getFileContents(filePaths.aircraft.filePath);
 				if (aircraftFileContents) {
 					const fp = new Flightplan(
 						aircraftFileContents,
-						filePaths.aicraft.fileName,
+						filePaths.aircraft.fileName,
 						flightplansFileContents,
-						filePaths.flightplan.fileName
+						filePaths.flightplans.fileName
 					);
 				}
 			}

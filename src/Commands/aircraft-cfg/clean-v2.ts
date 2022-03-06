@@ -1,6 +1,4 @@
 import * as vscode from 'vscode';
-import { replacePartAtPos, arrayMove } from '../../Tools/helpers';
-// import { create } from 'domain';
 
 type FltsimEntry = { [key: string]: string };
 

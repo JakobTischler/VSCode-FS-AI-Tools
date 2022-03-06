@@ -2,145 +2,79 @@ import * as vscode from 'vscode';
 import { merge } from 'lodash';
 import { getFileContents, showError } from '../../Tools/helpers';
 import * as aircraftNaming from '../../data/aircraft-naming.json';
-
-export interface IAircraftData {
-	name?: string;
-	count: number;
-	aircraft: Set<string>;
-}
+import { TFlightplanFilesMetaData } from '../../Types/FlightplanFilesMetaData';
+import { AircraftLivery, TAircraftLiveriesByAcNum } from './AircraftLivery';
+import { AircraftType, TAircraftTypesByTypeCode } from './AircraftType';
 
 /**
- * ```
- * Map<acType, {
- *     aircraft: Set<string>,    ← Set of aircraft titles for each aircraft type
- *     count: number,            ← Number of aircraft of this acType
- *     name?: string             ← Formatted name of the aircraft type
- * }>
- * ```
+ * Collects each AC# entry in an aircraft.txt file, and matches it to an
+ * aircraft type. Additionally, counts the number of aircraft using this AC# in
+ * the corresponding flightplans.txt file.
+ * @param data The flightplans meta data, which must include the files' contents
+ * in their respective `text` variables.
+ * @param doAircraftCount If `true`, performs a quick count of each
+ * `AircraftLivery`'s AC# and saves it to its `manualCount` value.
+ * @returns
+ * • `aircraftTypes` = Map of type `TAircraftTypes` by ICAO type name. Each
+ * entry has a set of `AircraftLivery` entries, as well as total count of
+ * aircraft of this type.
+ *
+ * • `totalAircraftCount` = the total number of matched aircraft (not aircraft
+ * types)
+ *
+ * • `nonMatches` = array of aircraft titles that couldn't be matched
+ *
+ * • `aircraftLiveries` = Map of type `TAircraftLiveriesByAcNum` by AC#. Each
+ * entry
+ *
  */
-export type TAircraftList = Map<string, IAircraftData>;
-
-export interface IAircraftDataRaw {
-	title: string;
-	count: number;
-	acNum: number;
-	icao?: string;
-}
-
-/**
- * ```
- * Map<acNum, {
- *     acNum: number,    ← Aircraft number
- *     count: number,    ← Number of this variant in flightplan
- *     title: string,    ← Variant title
- *     icao?: string     ← Matched aircraft type ICAO (initally undefined)
- * }>
- * ```
- */
-export type TAircraftListRaw = Map<number, IAircraftDataRaw>;
-
-export async function parseAircraftTxt(data: {
-	aircraft: {
-		fileName: string;
-		filePath?: string;
-		text?: string;
-	};
-	flightplans: {
-		fileName: string;
-		filePath?: string;
-		text?: string;
-	};
-}) {
-	// return aircraft: { all: Aircraft[]; acNumToType: Map<number, Aircraft> };
-
-	// Aircraft.txt contents
-	let acContents: string | undefined | null = data.aircraft.text;
-	if (data.aircraft.filePath) {
-		acContents = await getFileContents(data.aircraft.filePath);
+export async function parseAircraftTxt(data: TFlightplanFilesMetaData, doAircraftCount: boolean = false) {
+	if (!data.aircraft.text) {
+		showError(`parseAircraftTxt(): aircraft.txt contents must included in data argument.`);
+		throw new Error(`parseAircraftTxt(): aircraft.txt contents must included in data argument.`);
 	}
-	if (!acContents) {
-		showError(`Contents of "${data.aircraft.fileName}" couldn't be read.`);
-		return;
+	if (!data.flightplans.text) {
+		showError(`parseAircraftTxt(): flightplans.txt contents must included in data argument.`);
+		throw new Error(`parseAircraftTxt(): flightplans.txt contents must included in data argument.`);
 	}
-
-	// Flightplans.txt contents
-	let fpContents: string | undefined | null = data.flightplans.text;
-	if (data.flightplans.filePath) {
-		fpContents = await getFileContents(data.flightplans.filePath);
-	}
-	if (!fpContents) {
-		showError(`Contents of "${data.flightplans.fileName}" couldn't be read.`);
-		return;
-	}
-
-	// ----------------------------------------------------------------------------------------
 
 	// 1. Get aircraft list from aircraft.txt file
-	const aircraftListRaw = await getAircraftListRaw(acContents);
-	if (aircraftListRaw.size === 0) {
-		showError(`"${data.aircraft.fileName}" couldn't be read`);
+	const liveries = getAircraftLiveries(data.aircraft.text);
+	if (liveries.size === 0) {
+		showError(`No aircraft found in "${data.aircraft.fileName}"`);
 		return;
 	}
-	console.log({ aircraftListRaw });
+	console.log({ aircraftDataRaw: liveries });
 
 	// 2. Count aircraft in flightplans.txt file
-	const countSuccess = await countAircraft(aircraftListRaw, fpContents);
-	if (!countSuccess) {
-		showError(`Flightplans….txt file couldn't be read.`);
-		return;
+	if (doAircraftCount) {
+		countAircraftSimple(liveries, data.flightplans.text);
 	}
 
-	// 3. Get user data .json and merge with aircraftNaming
-	let acData = aircraftNaming;
-	const config = vscode.workspace.getConfiguration('fs-ai-tools.showAircraftList', undefined);
-	const customDataPath = config.get('customDataFilePath') as string;
-	if (customDataPath?.length) {
-		// 3.1: Get custom file contents
-		const customDataContents = await getFileContents(customDataPath);
-		if (customDataContents) {
-			const customData = JSON.parse(customDataContents);
-
-			// 3.2: Merge
-			if (customData.list || customData.types) {
-				/* data = mergeWith(aircraftNaming, customData, (origValue, newValue) => {
-						if (isArray(origValue)) {
-							return origValue.concat(newValue);
-						}
-					}); */
-				acData = merge(aircraftNaming, customData);
-			} else {
-				showError(`Custom aircraft data couldn't be merged, as it has neither "list" nor "types"`);
-			}
-		} else {
-			showError(`Custom aircraft data couldn't be read. Please check file path.`);
-		}
-	}
+	// 3. Get aircraft type data (base and user data .json merged together)
+	const aircraftTypeMetaData = await getAircraftTypeMetaData();
 
 	// 4. Match titles to types
-	const { aircraftList, totalCount, nonMatches } = matchTitleToType(acData, aircraftListRaw);
+	const matchedData = matchTitleToType(aircraftTypeMetaData, liveries);
 
-	return { aircraftList, totalCount, nonMatches };
+	return { ...matchedData, aircraftLiveries: liveries };
 }
 
 /**
- * Collects the aircraft entries in an aircraft.txt file and returns an `aircraftListRaw` map with that data.
- * @param filePath Path to aircraft.txt file
- * @returns Map of type `TAircraftListRaw` with collected aircraft data
+ * Collects the aircraft entries in an aircraft.txt file and returns an
+ * AC#→AircraftLivery map with that data.
+ * @param text Aircraft.txt file contents
+ * @returns A `TAircraftLiveriesByAcNum` map by AC#
  */
-export async function getAircraftListRaw(text: string) {
-	const ret: TAircraftListRaw = new Map();
+function getAircraftLiveries(text: string) {
+	const ret: TAircraftLiveriesByAcNum = new Map();
 
-	if (text) {
-		for (const line of text.split('\n').map((line) => line.trim())) {
-			if (line?.length && line.startsWith('AC#')) {
-				const items = line.split(',');
-				const data: IAircraftDataRaw = {
-					acNum: Number(items[0].replace(/[^0-9]/g, '')),
-					title: items[2].replace(/"/g, ''),
-					count: 0,
-				};
-				ret.set(data.acNum, data);
-			}
+	const matches = text.matchAll(/^AC#(?<acNum>\d+),\d+,\"(?<title>.*)\"/gm);
+	if (matches) {
+		for (const match of [...matches]) {
+			const { acNum, title } = match.groups!;
+
+			ret.set(Number(acNum), new AircraftLivery(Number(acNum), title));
 		}
 	}
 
@@ -148,34 +82,49 @@ export async function getAircraftListRaw(text: string) {
 }
 
 /**
- * Counts the different AC#s in a flightplans.txt file and updates the counts in the provided `TAircraftListRaw`
- * @param list The `TAircraftListRaw` received from `getAircraftListRaw()`
+ * For each `AircraftLivery` entry, counts the number of occurring AC#s in a
+ * flightplans.txt file and updates the `manualCount` value in the livery entry.
+ * @param data The `TAircraftLiveriesByAcNum` map
  * @param flightplanText Flightplans.txt contents
- * @returns `true` if flightplans.txt file could be read an the aircraft were counted, otherwise `false`
  */
-export async function countAircraft(list: TAircraftListRaw, flightplanText: string) {
-	for (const [index, line] of flightplanText
-		.split('\n')
-		.map((line) => line.trim())
-		.entries()) {
-		if (line?.length && line.startsWith('AC#')) {
-			const items = line.split(',');
-			const acNum = Number(items[0].replace(/[^0-9]/g, ''));
+export function countAircraftSimple(data: TAircraftLiveriesByAcNum, flightplanText: string) {
+	for (const [acNum, livery] of data.entries()) {
+		const matches = flightplanText.match(new RegExp(`^AC#${acNum},`, 'gm'));
 
-			if (!list.has(acNum)) {
-				showError(`Flightplans line ${index + 1}: AC# ${acNum} doesn't exist in Aircraft.txt file`);
-				continue;
+		if (matches) {
+			livery.manualCount = matches.length;
+			data.set(acNum, livery);
+		}
+	}
+}
+
+/**
+ * Merges the user aicraft naming .json file with the base data
+ * @returns a JSON object with the aircraft names and types.
+ */
+async function getAircraftTypeMetaData() {
+	const config = vscode.workspace.getConfiguration('fs-ai-tools.showAircraftList', undefined);
+	const customDataPath = config.get('customDataFilePath') as string;
+
+	if (customDataPath?.length) {
+		// Get custom file contents
+		const customDataContents = await getFileContents(customDataPath);
+
+		if (customDataContents) {
+			const customData = JSON.parse(customDataContents);
+
+			// Merge
+			if (customData.list || customData.types) {
+				return merge(aircraftNaming, customData);
 			}
 
-			const data = list.get(acNum);
-			if (data) {
-				data.count++;
-				list.set(acNum, data);
-			}
+			showError(`Custom aircraft data couldn't be merged, as it has neither "list" nor "types"`);
+		} else {
+			showError(`Custom aircraft data couldn't be read. Please check file path.`);
 		}
 	}
 
-	return true;
+	return aircraftNaming;
 }
 
 /**
@@ -187,56 +136,64 @@ export async function countAircraft(list: TAircraftListRaw, flightplanText: stri
  * match
  * 2. Check for manufacturer match before deep-iterating through the
  * manufacturer's aircraft types
- * @param inputList The `TAircraftListRaw` that includes all aircraft titles as well as counts
+ * @param aircraftLiveries The `TAircraftLiveriesByAcNum` that includes all aircraft
+ * liveries
  * @returns
- * • `aircraftList` = Map of type `TAircraftList` Map where the ICAO type name is the
- * key, and the count as well as the matching aircraft titles are the value
- * object.
+ * • `aircraftTypes` = Map of type `TAircraftTypes` by ICAO type name. Each
+ * aircraftType has a set of `AircraftLivery` entries, as well as total count
+ * of aircraft of this type.
  *
- * • `totalNumber` = the total number of matched aircraft (not
+ * • `totalAircraftCount` = the total number of matched aircraft (not
  * aircraft types)
  *
  * • `nonMatches` = array of aircraft titles that couldn't
  * be matched
  */
-export function matchTitleToType(data: typeof aircraftNaming, inputList: TAircraftListRaw) {
-	const aircraftList: TAircraftList = new Map();
+export function matchTitleToType(data: typeof aircraftNaming, aircraftLiveries: TAircraftLiveriesByAcNum) {
 	const matches = new Map();
-
-	let totalCount = 0;
+	const aircraftTypes: TAircraftTypesByTypeCode = new Map();
+	let totalAircraftCount = 0;
 	const nonMatches: string[] = [];
 
 	const addOrUpdateAircraftData = (
-		type: string,
-		inputData: IAircraftDataRaw,
+		typeCode: string,
+		aircraftLivery: AircraftLivery,
 		manufacturerName?: string,
 		typeName?: string
 	) => {
-		if (aircraftList.has(type)) {
-			const data = aircraftList.get(type);
-			if (data) {
-				data.count += inputData.count;
-				data.aircraft.add(inputData.title);
-				aircraftList.set(type, data);
-				totalCount += inputData.count;
-			}
+		if (aircraftTypes.has(typeCode)) {
+			// Already exists → add to that
+			const aircraftType = aircraftTypes.get(typeCode);
+
+			// Add livery to aircraftType
+			aircraftType!.addLivery(aircraftLivery);
 		} else {
-			aircraftList.set(type, {
-				count: inputData.count,
-				aircraft: new Set([inputData.title]),
-				name: `${manufacturerName} ${typeName}`,
-			});
-			totalCount += inputData.count;
+			// Doesn't exist yet → create new AircraftType instance
+			const aircraftType = new AircraftType(typeCode);
+			if (manufacturerName) {
+				aircraftType.manufacturer = manufacturerName;
+			}
+			if (typeName) {
+				aircraftType.typeName = typeName;
+			}
+
+			// Add livery to aircraftType
+			aircraftType.addLivery(aircraftLivery);
+
+			aircraftTypes.set(typeCode, aircraftType);
 		}
+
+		// Update livery count
+		totalAircraftCount += aircraftLivery.count;
 	};
 
-	titlesLoop: for (const [inputKey, inputData] of inputList.entries()) {
-		const title = inputData.title.toLowerCase();
+	titlesLoop: for (const [acNum, livery] of aircraftLiveries.entries()) {
+		const title = livery.title.toLowerCase();
 
 		// First check previous successful search terms to find a quick match
 		for (const [searchTerm, typeName] of matches.entries()) {
 			if (title.includes(searchTerm)) {
-				addOrUpdateAircraftData(typeName, inputData);
+				addOrUpdateAircraftData(typeName, livery);
 				continue titlesLoop;
 			}
 		}
@@ -266,12 +223,8 @@ export function matchTitleToType(data: typeof aircraftNaming, inputList: TAircra
 							}
 
 							if (add) {
-								// Add type to aircraftListRaw
-								inputData.icao = type;
-								inputList.set(inputKey, inputData);
-
-								// Add data to aircraftList: create new or update existing
-								addOrUpdateAircraftData(type, inputData, manufacturer, typeData.name || type);
+								// Add data to aircraftTypes: create new or update existing
+								addOrUpdateAircraftData(type, livery, manufacturer, typeData.name || type);
 
 								// Add to successful matches
 								if (!matches.has(matchTerm)) {
@@ -287,10 +240,10 @@ export function matchTitleToType(data: typeof aircraftNaming, inputList: TAircra
 		}
 
 		// Aircraft title couldn't be matched
-		nonMatches.push(inputData.title);
+		nonMatches.push(livery.title);
 	}
 
-	return { aircraftList, totalCount, nonMatches };
+	return { aircraftTypes, totalAircraftCount, nonMatches };
 }
 
 function searchTermIsRegex(term: string): boolean {

@@ -40,12 +40,14 @@ export class Flightplan {
 		flightplanText: string,
 		flightplansTxtFilename: string
 	) {
+		// TODO temp filePath prop
 		const ret = await parseAircraftTxt({
-			aircraft: { fileName: aircraftTxtFilename, text: aircraftText },
-			flightplans: { fileName: flightplansTxtFilename, text: flightplanText },
+			aircraft: { fileName: aircraftTxtFilename, filePath: '', text: aircraftText },
+			airports: { fileName: '', filePath: '' },
+			flightplans: { fileName: flightplansTxtFilename, filePath: '', text: flightplanText },
 		});
 		if (ret) {
-			const { aircraftList, totalCount, nonMatches } = ret;
+			const { aircraftTypes, totalAircraftCount, nonMatches } = ret;
 		}
 	}
 

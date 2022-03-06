@@ -1,10 +1,10 @@
 import * as vscode from 'vscode';
-import * as Fs from 'fs';
 import * as Path from 'path';
 import { getFlightplanFiles, showError, writeTextToClipboard } from '../../Tools/helpers';
 import '../../Extenders/string';
 import * as aircraftNaming from '../../data/aircraft-naming.json';
-import { parseAircraftTxt, TAircraftList } from '../../Content/Aircraft/parseAircraftTxt';
+import { parseAircraftTxt } from '../../Content/Aircraft/parseAircraftTxt';
+import { TAircraftTypesByTypeCode } from '../../Content/Aircraft/AircraftType';
 
 export async function ShowAircraftList() {
 	/*
@@ -23,29 +23,20 @@ export async function ShowAircraftList() {
 	const dirPath = Path.dirname(filePath).replace(/^\/+/, '');
 
 	// Get Aicraft…, Flightplans… file paths
-	const files = await getFlightplanFiles(dirPath);
-	if (!(files.aircraft && files.flightplans)) {
-		const name = !files.aircraft ? 'Aircraft' : 'Flightplans';
+	const fileData = await getFlightplanFiles(dirPath, true);
+	if (!fileData.aircraft || !fileData.flightplans) {
+		const name = !fileData.aircraft ? 'Aircraft' : 'Flightplans';
 		showError(`${name}….txt file couldn't be found in current directory.`);
 		return;
 	}
 
-	const parsedData = await parseAircraftTxt({
-		aircraft: {
-			fileName: files.aircraft.fileName,
-			filePath: files.aircraft.path,
-		},
-		flightplans: {
-			fileName: files.flightplans.fileName,
-			filePath: files.flightplans.path,
-		},
-	});
+	const parsedData = await parseAircraftTxt(fileData, true);
 	if (!parsedData) return;
 
 	// Show formatted message with "copy" button
 	const formattedList = getFormattedAircraftList(
-		parsedData.aircraftList,
-		parsedData.totalCount,
+		parsedData.aircraftTypes,
+		parsedData.totalAircraftCount,
 		parsedData.nonMatches
 	);
 	const showGoogleSheetsButton = vscode.workspace
@@ -60,7 +51,7 @@ export async function ShowAircraftList() {
 			)
 			.then((buttonText) => {
 				if (buttonText) {
-					const sheetsOutput = generateGoogleSheetsOutput(aircraftNaming, parsedData.aircraftList);
+					const sheetsOutput = generateGoogleSheetsOutput(aircraftNaming, parsedData.aircraftTypes);
 					writeTextToClipboard(sheetsOutput, 'Google Sheets aircraft count copied to clipboard');
 				}
 			});
@@ -72,22 +63,35 @@ export async function ShowAircraftList() {
 	}
 }
 
-function generateGoogleSheetsOutput(data: typeof aircraftNaming, aircraftList: TAircraftList) {
-	return data.list.map((item) => (aircraftList.has(item) ? aircraftList.get(item)?.count || '' : '')).join('\t');
+/**
+ * Generates a string representing the count cells for all possible aircraft
+ * types. If the count for an aircraft type is 0, the cell is left blank.
+ * The cells are joined with a tab (`\t`).
+ *
+ * Note: uses the order and values of the `list` array in `aircraft-naming.json`.
+ * @param data The `aircraft-naming` reference object
+ * @param aircraftTypes The list of matched aircraft types
+ * @returns The genereated cell output for Google Sheets
+ */
+function generateGoogleSheetsOutput(data: typeof aircraftNaming, aircraftTypes: TAircraftTypesByTypeCode) {
+	return data.list
+		.map((item) => (aircraftTypes.has(item) ? aircraftTypes.get(item)?.aircraftCount || '' : ''))
+		.join('\t');
 }
 
 /**
- * Iterates through the aircraftList items to provide a single formatted, readable string with "{type}: {count}× ({number of variations})"
+ * Iterates through the aircraftTypes entries to provide a single formatted,
+ * readable string with "{type}: {count}× ({number of variations})"
  */
-function getFormattedAircraftList(aircraftList: TAircraftList, totalCount: number, nonMatches: string[]) {
+function getFormattedAircraftList(aircraftTypes: TAircraftTypesByTypeCode, totalCount: number, nonMatches: string[]) {
 	const title = `${totalCount} aircraft`;
 
 	const lines: string[] = [];
 
-	aircraftList.forEach((data, key) => {
-		let text = `• ${data.name || key}: ${data.count}×`;
-		if (data.aircraft.size > 1) {
-			text += ` (${'variation'.plural(data.aircraft.size)})`;
+	aircraftTypes.forEach((data, key) => {
+		let text = `• ${data.name}: ${data.aircraftCount}×`;
+		if (data.liveries.size > 1) {
+			text += ` (${'variation'.plural(data.liveries.size)})`;
 		}
 		lines.push(text);
 	});
