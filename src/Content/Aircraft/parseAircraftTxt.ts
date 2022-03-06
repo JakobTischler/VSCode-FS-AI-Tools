@@ -8,6 +8,16 @@ export interface IAircraftData {
 	count: number;
 	aircraft: Set<string>;
 }
+
+/**
+ * ```
+ * Map<acType, {
+ *     aircraft: Set<string>,    ← Set of aircraft titles for each aircraft type
+ *     count: number,            ← Number of aircraft of this acType
+ *     name?: string             ← Formatted name of the aircraft type
+ * }>
+ * ```
+ */
 export type TAircraftList = Map<string, IAircraftData>;
 
 export interface IAircraftDataRaw {
@@ -16,6 +26,17 @@ export interface IAircraftDataRaw {
 	acNum: number;
 	icao?: string;
 }
+
+/**
+ * ```
+ * Map<acNum, {
+ *     acNum: number,    ← Aircraft number
+ *     count: number,    ← Number of this variant in flightplan
+ *     title: string,    ← Variant title
+ *     icao?: string     ← Matched aircraft type ICAO (initally undefined)
+ * }>
+ * ```
+ */
 export type TAircraftListRaw = Map<number, IAircraftDataRaw>;
 
 export async function parseAircraftTxt(data: {
@@ -127,9 +148,9 @@ export async function getAircraftListRaw(text: string) {
 }
 
 /**
- * Counts the different AC#s in a flightplans.txt file and updates the counts in the provided `aircraftListRaw`
- * @param list The `aircraftListRaw` received from `getAircraftListRaw()`
- * @param filePath Path to flightplans.txt file
+ * Counts the different AC#s in a flightplans.txt file and updates the counts in the provided `TAircraftListRaw`
+ * @param list The `TAircraftListRaw` received from `getAircraftListRaw()`
+ * @param flightplanText Flightplans.txt contents
  * @returns `true` if flightplans.txt file could be read an the aircraft were counted, otherwise `false`
  */
 export async function countAircraft(list: TAircraftListRaw, flightplanText: string) {
@@ -166,8 +187,17 @@ export async function countAircraft(list: TAircraftListRaw, flightplanText: stri
  * match
  * 2. Check for manufacturer match before deep-iterating through the
  * manufacturer's aircraft types
- * @param inputList The `aircraftListRaw` that includes all aircraft titles as well as counts
- * @returns An `aircraftList` Map where the ICAO type name is the key, and the count as well as the matching aircraft titles are the value object. Also: `totalNumber` = the total number of matched aircraft (not aircraft types), `nonMatches` = the number of aircraft types that couldn't be matched
+ * @param inputList The `TAircraftListRaw` that includes all aircraft titles as well as counts
+ * @returns
+ * • `aircraftList` = Map of type `TAircraftList` Map where the ICAO type name is the
+ * key, and the count as well as the matching aircraft titles are the value
+ * object.
+ *
+ * • `totalNumber` = the total number of matched aircraft (not
+ * aircraft types)
+ *
+ * • `nonMatches` = array of aircraft titles that couldn't
+ * be matched
  */
 export function matchTitleToType(data: typeof aircraftNaming, inputList: TAircraftListRaw) {
 	const aircraftList: TAircraftList = new Map();

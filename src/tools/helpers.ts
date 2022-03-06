@@ -1,5 +1,6 @@
-import { env, window } from 'vscode';
+import { env, window, Uri } from 'vscode';
 import * as Fs from 'fs';
+import * as Path from 'path';
 
 export function replacePartAtPos(str: string, position: number, length: number, newText: string): string {
 	const before = str.substr(0, position);
@@ -79,7 +80,7 @@ export function roundUpToNearest(num: number, nearest: number = 10): number {
  */
 export const writeTextToClipboard = (text: string, message?: string) => {
 	env.clipboard.writeText(text).then(() => {
-		if (message && message.length > 0) {
+		if (message?.length) {
 			window.showInformationMessage(message);
 		}
 	});
@@ -183,5 +184,40 @@ export function degreesToRadians(degrees: number) {
  * @param {any} obj - The initial object
  * @source https://stackoverflow.com/a/56650790/677970
  */
-export const getDefinedProps = (obj: any) =>
-	Object.fromEntries(Object.entries(obj).filter(([k, v]) => v !== undefined));
+export const getDefinedProps = (obj: any) => {
+	return Object.fromEntries(Object.entries(obj).filter(([k, v]) => v !== undefined));
+};
+
+/**
+ * Finds the `Aircraft.txt`, `Airports.txt` and `Flightplans.txt` files in the given directory and returns their file data.
+ * @param dirPath The directory's absolute path
+ * @returns A set of objects containing - for each found file - its respective file name, file path, and `vscode.Uri` representation
+ */
+export async function getFlightplanFiles(dirPath: string) {
+	const files = await Fs.promises.readdir(dirPath);
+	const fileRegex = /^(aircraft|airports|flightplans).*\.txt$/i;
+
+	const ret: {
+		[type: string]: {
+			fileName: string;
+			path: string;
+			file: Uri;
+		};
+	} = {};
+
+	for (const file of files) {
+		const matches = file.match(fileRegex);
+
+		if (!matches?.[1]) {
+			continue;
+		}
+
+		ret[matches[1].toLowerCase()] = {
+			fileName: file,
+			path: Path.join(dirPath, file),
+			file: Uri.file(Path.join(dirPath, file)),
+		};
+	}
+
+	return ret;
+}

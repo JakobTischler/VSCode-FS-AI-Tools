@@ -1,7 +1,7 @@
 import * as vscode from 'vscode';
 import * as Fs from 'fs';
 import * as Path from 'path';
-import { showError, writeTextToClipboard } from '../../Tools/helpers';
+import { getFlightplanFiles, showError, writeTextToClipboard } from '../../Tools/helpers';
 import '../../Extenders/string';
 import * as aircraftNaming from '../../data/aircraft-naming.json';
 import { parseAircraftTxt, TAircraftList } from '../../Content/Aircraft/parseAircraftTxt';
@@ -23,31 +23,34 @@ export async function ShowAircraftList() {
 	const dirPath = Path.dirname(filePath).replace(/^\/+/, '');
 
 	// Get Aicraft…, Flightplans… file paths
-	const filePaths = await getFiles(dirPath);
-	if (!(filePaths.aircraft && filePaths.flightplans)) {
-		const name = !filePaths.aircraft ? 'Aircraft' : 'Flightplans';
+	const files = await getFlightplanFiles(dirPath);
+	if (!(files.aircraft && files.flightplans)) {
+		const name = !files.aircraft ? 'Aircraft' : 'Flightplans';
 		showError(`${name}….txt file couldn't be found in current directory.`);
 		return;
 	}
 
-	const data = await parseAircraftTxt({
+	const parsedData = await parseAircraftTxt({
 		aircraft: {
-			fileName: Path.basename(filePaths.aircraft),
-			filePath: filePaths.aircraft,
+			fileName: files.aircraft.fileName,
+			filePath: files.aircraft.path,
 		},
 		flightplans: {
-			fileName: Path.basename(filePaths.flightplans),
-			filePath: filePaths.flightplans,
+			fileName: files.flightplans.fileName,
+			filePath: files.flightplans.path,
 		},
 	});
-	if (!data) return;
-	const { aircraftList, totalCount, nonMatches } = data;
+	if (!parsedData) return;
 
 	// Show formatted message with "copy" button
+	const formattedList = getFormattedAircraftList(
+		parsedData.aircraftList,
+		parsedData.totalCount,
+		parsedData.nonMatches
+	);
 	const showGoogleSheetsButton = vscode.workspace
 		.getConfiguration('fs-ai-tools.showAircraftList', undefined)
 		.get('showGoogleSheetsButton');
-	const formattedList = getFormattedAircraftList(aircraftList, totalCount, nonMatches);
 	if (showGoogleSheetsButton) {
 		vscode.window
 			.showInformationMessage(
@@ -57,7 +60,7 @@ export async function ShowAircraftList() {
 			)
 			.then((buttonText) => {
 				if (buttonText) {
-					const sheetsOutput = generateGoogleSheetsOutput(aircraftNaming, aircraftList);
+					const sheetsOutput = generateGoogleSheetsOutput(aircraftNaming, parsedData.aircraftList);
 					writeTextToClipboard(sheetsOutput, 'Google Sheets aircraft count copied to clipboard');
 				}
 			});
@@ -67,25 +70,6 @@ export async function ShowAircraftList() {
 			detail: formattedList.text,
 		});
 	}
-}
-
-/**
- * Goes through the directory's files and returns the "Aicraft…" and "Flightplans…" filenames
- * @param dirPath The directory to search in
- * @returns Object `{ aircraft: string, flightplans: string }` with filenames. Single values can be undefined if not found.
- */
-async function getFiles(dirPath: string) {
-	const dirFilenames = await Fs.promises.readdir(dirPath);
-
-	const [aircraft, flightplans] = dirFilenames
-		.filter((name) => {
-			const n = name.toLowerCase();
-			return n.startsWith('aircraft') || n.startsWith('flightplans');
-		})
-		.sort()
-		.map((filename) => Path.join(dirPath, filename));
-
-	return { aircraft, flightplans };
 }
 
 function generateGoogleSheetsOutput(data: typeof aircraftNaming, aircraftList: TAircraftList) {

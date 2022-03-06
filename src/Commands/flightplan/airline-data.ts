@@ -12,7 +12,7 @@
 import * as vscode from 'vscode';
 import * as fs from 'fs';
 import * as path from 'path';
-import { getFileContents, showError } from '../../Tools/helpers';
+import { getFileContents, getFlightplanFiles, showError } from '../../Tools/helpers';
 import { AifpData, readAifpCfg } from '../../Tools/read-aifp';
 import { Flightplan, FlightplanRaw } from '../../Classes/Flightplan';
 import { TAirportCodeCount } from '../../Classes/Airport';
@@ -217,33 +217,4 @@ async function getLogoPath(aifp: AifpData) {
 	}
 
 	return null;
-}
-
-async function getFlightplanFiles(dirPath: string) {
-	const files = await fs.promises.readdir(dirPath);
-	const fileRegex = /^(aircraft|airports|flightplans).*\.txt$/i;
-
-	const ret: {
-		[type: string]: {
-			fileName: string;
-			path: string;
-			file: vscode.Uri;
-		};
-	} = {};
-
-	for (const file of files) {
-		const matches = file.match(fileRegex);
-
-		if (!matches?.[1]) {
-			continue;
-		}
-
-		ret[matches[1].toLowerCase()] = {
-			fileName: file,
-			path: path.join(dirPath, file),
-			file: vscode.Uri.file(path.join(dirPath, file)),
-		};
-	}
-
-	return ret;
 }
