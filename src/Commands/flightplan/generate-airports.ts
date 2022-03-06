@@ -108,15 +108,14 @@ async function getMasterAirports(filePath: string, storageManager: LocalStorageS
 async function collectFlightplanAirports(flightplanText: string, masterAirports: TAirports) {
 	const flightplan = new FlightplanRaw(flightplanText);
 
-	const airportCodes = flightplan.collectAirportCodes();
-	if (!airportCodes) {
+	if (!flightplan.airportCodes.size) {
 		showError('No airports could be found in the flightplan.');
 		return null;
 	}
 
 	const found: Airport[] = [];
 	const missing: string[] = [];
-	for (const airport of airportCodes.values()) {
+	for (const airport of flightplan.airportCodes.values()) {
 		if (airport.icao.length && masterAirports.has(airport.icao)) {
 			const data = masterAirports.get(airport.icao);
 

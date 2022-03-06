@@ -193,17 +193,30 @@ export class RouteSegment {
 }
 
 export class FlightplanRaw {
+	/** The Flightplan.txt file contents */
 	text: string;
+	/** Map that holds airport entries which contain the ICAO code and the count */
+	airportCodes: Map<string, TAirportCodeCount>;
+	/**
+	 * Array that holds airport entries which contain the ICAO code and the
+	 * count, sorted descending by count
+	 */
+	airportCodesByCount: TAirportCodeCount[];
 
 	constructor(flightplanText: string) {
 		this.text = flightplanText;
+
+		this.airportCodes = this.collectAirportCodes();
+		this.airportCodesByCount = [...this.airportCodes.values()].sort(
+			(a: TAirportCodeCount, b: TAirportCodeCount) => b.count - a.count
+		);
 	}
 
 	collectAirportCodes() {
 		const matches = [...this.text.trim().matchAll(/,[FfRr],\d+,([A-Za-z0-9]{3,4})/gm)];
 		if (!matches?.length) {
 			showError('No airports could be found in the flightplan.');
-			return null;
+			return new Map();
 		}
 
 		const data: { [icao: string]: TAirportCodeCount } = {};
@@ -213,17 +226,19 @@ export class FlightplanRaw {
 			if (data[icao]) {
 				data[icao].count = data[icao].count! + 1;
 			} else {
-				data[icao] = { icao, count: 0 };
+				data[icao] = { icao, count: 1 };
 			}
 		}
 
-		return new Set(
-			Object.values(data).sort((a: TAirportCodeCount, b: TAirportCodeCount) => {
-				// Sort ascending
-				if (a.icao < b.icao) return -1;
-				if (a.icao > b.icao) return 1;
-				return 0;
-			})
+		return new Map(
+			Object.values(data)
+				.sort((a: TAirportCodeCount, b: TAirportCodeCount) => {
+					// Sort ascending
+					if (a.icao < b.icao) return -1;
+					if (a.icao > b.icao) return 1;
+					return 0;
+				})
+				.map((entry) => [entry.icao, entry])
 		);
 	}
 }

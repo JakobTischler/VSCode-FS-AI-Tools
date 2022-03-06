@@ -42,38 +42,31 @@ export async function ShowAirlineView(context: vscode.ExtensionContext, filePath
 	}
 
 	// Flightplans.txt content
-	let airportsByCount;
-	const filePaths = await getFlightplanFiles(dirPath);
-	if (filePaths.flightplans) {
-		const flightplansFileContents = await getFileContents(filePaths.flightplans.filePath);
-
-		if (flightplansFileContents) {
-			const fpRaw = new FlightplanRaw(flightplansFileContents);
-			const airports = fpRaw.collectAirportCodes();
-
-			if (airports) {
-				airportsByCount = [...airports].sort((a: TAirportCodeCount, b: TAirportCodeCount) => {
-					// Sort descending
-					if (a.count < b.count) return 1;
-					if (a.count > b.count) return -1;
-					return 0;
-				});
-			}
-
-			// TODO TEMPORARY TESTING
-			if (filePaths.aircraft) {
-				const aircraftFileContents = await getFileContents(filePaths.aircraft.filePath);
-				if (aircraftFileContents) {
-					const fp = new Flightplan(
-						aircraftFileContents,
-						filePaths.aircraft.fileName,
-						flightplansFileContents,
-						filePaths.flightplans.fileName
-					);
-				}
-			}
-		}
+	const fileData = await getFlightplanFiles(dirPath, true);
+	if (!fileData.aircraft || !fileData.flightplans) {
+		const name = !fileData.aircraft ? 'Aircraft' : 'Flightplans';
+		showError(`${name}….txt file couldn't be found in directory.`);
+		return;
 	}
+
+	if (!fileData.aircraft.text) {
+		showError(`${fileData.aircraft.fileName} couldn't be read.`);
+		return;
+	}
+	if (!fileData.flightplans.text) {
+		showError(`${fileData.flightplans.fileName} couldn't be read.`);
+		return;
+	}
+
+	const fpRaw = new FlightplanRaw(fileData.flightplans.text);
+
+	// TODO TEMPORARY TESTING
+	/* const fp = new Flightplan(
+		fileData.aircraft.text,
+		fileData.aircraft.fileName,
+		fileData.flightplans.text,
+		fileData.flightplans.fileName
+	); */
 
 	// Create Webview
 	const panel = vscode.window.createWebviewPanel(
@@ -90,14 +83,14 @@ export async function ShowAirlineView(context: vscode.ExtensionContext, filePath
 	);
 
 	// Set HTML content
-	panel.webview.html = await getWebviewContent(panel, context, aifp, airportsByCount);
+	panel.webview.html = await getWebviewContent(panel, context, aifp, fpRaw);
 }
 
 async function getWebviewContent(
 	panel: vscode.WebviewPanel,
 	context: vscode.ExtensionContext,
 	aifp: AifpData,
-	airportsByCount?: TAirportCodeCount[]
+	flightplanRaw?: FlightplanRaw
 ): Promise<string> {
 	const paths = {
 		style: path.join(context.extensionPath, '/src/Webviews/airline-data/style.css'),
@@ -178,13 +171,13 @@ async function getWebviewContent(
 	/**
 	 * AIRPORTS
 	 */
-	if (airportsByCount) {
+	if (flightplanRaw) {
 		content += `<div class="airports-by-count">
 		<h2>Airports</h2>
 		<button class="toggle-button" data-target=".airport-count">Show all</button>
 		<dl class="airport-count hidden">`;
 
-		for (const [index, airport] of airportsByCount.entries()) {
+		for (const [index, airport] of flightplanRaw.airportCodesByCount.entries()) {
 			const elementClass = index > 9 ? 'hideable' : '';
 			content += `<dt class="${elementClass}" data-rank="${index + 1}">${airport.icao}</dt>
 			<dd class="${elementClass}">${airport.count.toLocaleString()}</dd>`;

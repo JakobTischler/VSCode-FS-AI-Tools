@@ -13,6 +13,11 @@ const distanceUnitFactor: TDistanceUnitFactor = {
 // TODO add to config
 const distanceUnit: keyof TDistanceUnitFactor = 'km';
 
+type TCoordinates = {
+	lat: CoordinateComponent;
+	lon: CoordinateComponent;
+};
+
 /**
  * Describes an airport with its ICAO code (`.icao`), its coordinates (`.coordinates`) as well as its altitude (`.altitude`).
  *
@@ -37,8 +42,8 @@ export class Airport {
 
 		this.icao = parts[0];
 		this.coordinates = {
-			lat: new Coordinate(parts[1], line),
-			lon: new Coordinate(parts[2], line),
+			lat: new CoordinateComponent(parts[1], line),
+			lon: new CoordinateComponent(parts[2], line),
 		};
 		this.altitude = Number(parts[3]);
 	}
@@ -76,10 +81,15 @@ export class Airport {
 	}
 }
 
-class Coordinate {
+class CoordinateComponent {
 	degrees: number;
 	minutes: number;
+	/** Either -1 or 1, based on the factor name ("N", "E": 1 / "S", "W": -1). */
 	factor: number;
+	/**
+	 * Latitude: "N" or "S" / Longitude: "E" or "W" — the former indicates a
+	 * positive value, the latter a negative value.
+	 */
 	factorName: string;
 
 	constructor(str: string, airportLine: string) {
@@ -121,11 +131,6 @@ class Coordinate {
 		return `${this.factorName}${deg}* ${min}'`;
 	}
 }
-
-type TCoordinates = {
-	lat: Coordinate;
-	lon: Coordinate;
-};
 
 /**
  * Calculate the distance between two airports
