@@ -25,7 +25,7 @@ export function activate(context: vscode.ExtensionContext) {
 	// Commands
 	context.subscriptions.push(
 		vscode.commands.registerCommand('fsAiTools.airlineView', (uri: vscode.Uri) => {
-			ShowAirlineView(context, uri?.fsPath);
+			ShowAirlineView(context, storageManager, uri?.fsPath);
 		}),
 
 		vscode.commands.registerCommand('fsAiTools.cleanAircraftCfg', () => {

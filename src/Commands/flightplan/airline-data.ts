@@ -16,8 +16,13 @@ import { readAifpCfg } from '../../Tools/read-aifp';
 import { Flightplan, FlightplanRaw } from '../../Classes/Flightplan';
 import { parseAircraftTxt } from '../../Content/Aircraft/parseAircraftTxt';
 import { getWebviewContent } from '../../Webviews/airline-data/get-content';
+import { LocalStorageService } from '../../Tools/LocalStorageService';
 
-export async function ShowAirlineView(context: vscode.ExtensionContext, filePath?: string) {
+export async function ShowAirlineView(
+	context: vscode.ExtensionContext,
+	storageManager: LocalStorageService,
+	filePath?: string
+) {
 	// Get directory
 	if (!filePath) {
 		// No filePath passed as argument → check a possible currently open file
@@ -64,7 +69,9 @@ export async function ShowAirlineView(context: vscode.ExtensionContext, filePath
 	const fpRaw = new FlightplanRaw(fileData.flightplans.text);
 
 	// TODO TEMPORARY TESTING
-	const fp = new Flightplan(fileData.flightplans.text, aircraftData.aircraftTypes, aircraftData.aircraftLiveries);
+	const fp = new Flightplan(fileData.flightplans.text);
+	await fp.parseAirportCodes(storageManager);
+	fp.parse(aircraftData.aircraftTypes, aircraftData.aircraftLiveries);
 
 	// Create Webview
 	const config = vscode.workspace.getConfiguration('fs-ai-tools.airlineView', undefined);

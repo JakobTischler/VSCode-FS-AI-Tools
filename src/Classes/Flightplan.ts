@@ -1,8 +1,10 @@
 import { showError } from '../Tools/helpers';
-import { TAirportCodeCount } from './Airport';
+import { Airport, getMasterAirports, TAirportCodeCount, TAirportCodeToLine } from '../Content/Airport/Airport';
 import { Aircraft } from '../Content/Aircraft/Aircraft';
 import { TAircraftLiveriesByAcNum } from '../Content/Aircraft/AircraftLivery';
 import { TAircraftTypesByTypeCode } from '../Content/Aircraft/AircraftType';
+import { RouteSegment, TRouteSegmentData } from '../Content/Route/RouteSegment';
+import { LocalStorageService } from '../Tools/LocalStorageService';
 
 export class Flightplan {
 	text: string;
@@ -10,21 +12,41 @@ export class Flightplan {
 		all: [],
 		byAcNum: new Map(),
 	};
+	airports: Map<string, Airport> = new Map();
 	segments: { all: RouteSegment[]; byAirportPair: Map<string, RouteSegment> } = {
 		all: [],
 		byAirportPair: new Map(),
 	};
 
-	constructor(
-		flightplanText: string,
-		aircraftTypes: TAircraftTypesByTypeCode,
-		aircraftLiveries: TAircraftLiveriesByAcNum
-	) {
+	constructor(flightplanText: string) {
 		this.text = flightplanText;
 
-		this.parse(aircraftTypes, aircraftLiveries);
+		// this.airports = this.parseAirportCodes(storageManager);
+
+		// this.parse(aircraftTypes, aircraftLiveries);
 
 		// this.createAircraftStats();
+	}
+
+	async parseAirportCodes(storageManager: LocalStorageService) {
+		const airportCodes = collectAirportCodes(this.text);
+
+		// Get master airport data
+		const masterAirports: TAirportCodeToLine | null = await getMasterAirports(storageManager);
+		if (!masterAirports?.size) {
+			return;
+		}
+
+		for (const [icao, data] of airportCodes.entries()) {
+			// Get airport's master data
+			if (!masterAirports.has(icao)) {
+				showError(`Airport "${icao}" couldn't be found in master airports file.`);
+				continue;
+			}
+
+			const airport = new Airport(masterAirports.get(icao)!, data.count);
+			this.airports.set(icao, airport);
+		}
 	}
 
 	parse(aircraftTypes: TAircraftTypesByTypeCode, aircraftLiveries: TAircraftLiveriesByAcNum) {
@@ -70,27 +92,35 @@ export class Flightplan {
 								const g = match.groups;
 								if (!g) continue;
 
-								const data: Partial<TRouteSegmentData> = {
-									depApt: prevMatch.groups?.arrApt,
-									depTime: g.depTime,
-									arrApt: g.arrApt,
-									arrTime: g.arrTime,
+								const depApt = this.airports.get(prevMatch.groups!.arrApt);
+								const arrApt = this.airports.get(g.arrApt);
+
+								if (!depApt) {
+									showError(`Departure airport "${prevMatch.groups!.arrApt}" couldn't be found.`);
+									continue;
+								}
+								if (!arrApt) {
+									showError(`Arrival airport "${g.arrApt}" couldn't be found.`);
+									continue;
+								}
+
+								// Optional data
+								const optionalData: Partial<TRouteSegmentData> = {
 									flightLevel: Number(g.flightLevel),
 									flightNum: Number(g.flightNum),
 								};
+								if (g.depWeek !== undefined) optionalData.depWeek = Number(g.depWeek);
+								if (g.depDay !== undefined) optionalData.depDay = Number(g.depDay);
+								if (g.arrWeek !== undefined) optionalData.arrWeek = Number(g.arrWeek);
+								if (g.arrDay !== undefined) optionalData.arrDay = Number(g.arrDay);
 
-								if (g.depWeek !== undefined) data.depWeek = Number(g.depWeek);
-								if (g.depDay !== undefined) data.depDay = Number(g.depDay);
-								if (g.arrWeek !== undefined) data.arrWeek = Number(g.arrWeek);
-								if (g.arrDay !== undefined) data.arrDay = Number(g.arrDay);
-
-								const segment = new RouteSegment(data);
+								const segment = new RouteSegment(depApt, g.depTime, arrApt, g.arrTime, optionalData);
 
 								// Add to aircraft
 								aircraft.segments.push(segment);
 
 								// Add to flightplan / update
-								this.addRouteSegment(`${data.depApt}-${data.arrApt}`, segment);
+								this.addRouteSegment(`${depApt.icao}-${arrApt.icao}`, segment);
 							}
 						}
 					}
@@ -120,65 +150,6 @@ export class Flightplan {
 	}
 }
 
-type TRouteSegmentData = {
-	depApt: string;
-	depWeek: number;
-	depDay: number;
-	depTime: string;
-	arrApt: string;
-	arrWeek: number;
-	arrDay: number;
-	arrTime: string;
-	flightLevel: number;
-	flightNum: number;
-};
-
-export class RouteSegment {
-	departureAirport: string;
-	departureWeek: number = 1;
-	departureDay: number = 1;
-	departureTime: string; // TODO Time Class
-	arrivalAirport: string;
-	arrivalWeek: number = 1;
-	arrivalDay: number = 1;
-	arrivalTime: string; // TODO Time Class
-	flightLevel: number = 0;
-	flightNumber: number = 0;
-	/** Number of times this route segment exists in the flightplan */
-	count: number = 1;
-
-	constructor(data: Partial<TRouteSegmentData>) {
-		const _data = {
-			...{
-				depApt: '',
-				depWeek: 1,
-				depDay: 1,
-				depTime: '',
-				arrApt: '',
-				arrWeek: 1,
-				arrDay: 1,
-				arrTime: '',
-				flightLevel: 0,
-				flightNum: 0,
-				count: 1,
-			},
-			...data,
-		};
-
-		this.departureAirport = _data.depApt;
-		this.departureWeek = _data.depWeek;
-		this.departureDay = _data.depDay;
-		this.departureTime = _data.depTime;
-		this.arrivalWeek = _data.arrWeek;
-		this.arrivalDay = _data.arrDay;
-		this.arrivalTime = _data.arrTime;
-		this.flightLevel = _data.flightLevel;
-		this.flightNumber = _data.flightNum;
-		this.arrivalAirport = _data.arrApt;
-		this.count = _data.count;
-	}
-}
-
 export class FlightplanRaw {
 	/** The Flightplan.txt file contents */
 	text: string;
@@ -193,39 +164,45 @@ export class FlightplanRaw {
 	constructor(flightplanText: string) {
 		this.text = flightplanText;
 
-		this.airportCodes = this.collectAirportCodes();
+		this.airportCodes = collectAirportCodes(flightplanText);
 		this.airportCodesByCount = [...this.airportCodes.values()].sort(
 			(a: TAirportCodeCount, b: TAirportCodeCount) => b.count - a.count
 		);
 	}
+}
 
-	collectAirportCodes() {
-		const matches = [...this.text.trim().matchAll(/,[FfRr],\d+,([A-Za-z0-9]{3,4})/gm)];
-		if (!matches?.length) {
-			showError('No airports could be found in the flightplan.');
-			return new Map();
-		}
-
-		const data: { [icao: string]: TAirportCodeCount } = {};
-		for (const match of matches) {
-			const icao = match[1];
-
-			if (data[icao]) {
-				data[icao].count = data[icao].count! + 1;
-			} else {
-				data[icao] = { icao, count: 1 };
-			}
-		}
-
-		return new Map(
-			Object.values(data)
-				.sort((a: TAirportCodeCount, b: TAirportCodeCount) => {
-					// Sort ascending
-					if (a.icao < b.icao) return -1;
-					if (a.icao > b.icao) return 1;
-					return 0;
-				})
-				.map((entry) => [entry.icao, entry])
-		);
+/**
+ * Gathers all airport codes from the flightplan text and returns a Map with the
+ * ICAO code as key and `{ icao, count }` as value.
+ * @param flightplanText The flightplans.txt file contents
+ * @returns `Map<string, TAirportCodeCount>`
+ */
+export function collectAirportCodes(flightplanText: string): Map<string, TAirportCodeCount> {
+	const matches = [...flightplanText.trim().matchAll(/,[FfRr],\d+,([A-Za-z0-9]{3,4})/gm)];
+	if (!matches?.length) {
+		showError('No airports could be found in the flightplan.');
+		return new Map();
 	}
+
+	const data: { [icao: string]: TAirportCodeCount } = {};
+	for (const match of matches) {
+		const icao = match[1];
+
+		if (data[icao]) {
+			data[icao].count = data[icao].count! + 1;
+		} else {
+			data[icao] = { icao, count: 1 };
+		}
+	}
+
+	return new Map(
+		Object.values(data)
+			.sort((a: TAirportCodeCount, b: TAirportCodeCount) => {
+				// Sort ascending
+				if (a.icao < b.icao) return -1;
+				if (a.icao > b.icao) return 1;
+				return 0;
+			})
+			.map((entry) => [entry.icao, entry])
+	);
 }

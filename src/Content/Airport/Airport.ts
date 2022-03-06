@@ -1,4 +1,7 @@
-import { degreesToRadians, showError } from '../Tools/helpers';
+import * as vscode from 'vscode';
+import * as fs from 'fs';
+import { degreesToRadians, getFileContents, showError } from '../../Tools/helpers';
+import { LocalStorageService } from '../../Tools/LocalStorageService';
 
 type TDistanceUnitFactor = {
 	km: number;
@@ -29,8 +32,9 @@ export class Airport {
 	icao: string;
 	coordinates: TCoordinates;
 	altitude: number;
+	count: number = 0;
 
-	constructor(line: string) {
+	constructor(line: string, count?: number) {
 		// BGGH,N64* 11.44',W51* 40.68',282
 		// const m = str.match(/^(\w{3,4}),([NS])(\d+)\*\s*(\d+(?:\.\d+))'?,([EW])(\d+)\*\s*(\d+(?:\.\d+))'?,(\d+)$/i)
 		const parts = line.split(',').map((item) => item.trim());
@@ -46,16 +50,20 @@ export class Airport {
 			lon: new CoordinateComponent(parts[2], line),
 		};
 		this.altitude = Number(parts[3]);
+
+		if (count) {
+			this.count = count;
+		}
 	}
 
 	/**
 	 * Calculates the distance between this airport and a `targetAirport`.
 	 *
 	 * @returns Object with the raw distance (`value`) as well as a formatted
-	 * distance string, converted to the set distance unit (kilometers, miles
-	 * or nautical miles), with grouping and unit.
+	 * distance string (`formatted`), converted to the set distance unit
+	 * (kilometers, miles or nautical miles), with grouping and unit.
 	 */
-	distance(targetAirport: Airport) {
+	calculateDistance(targetAirport: Airport) {
 		if (targetAirport === this) {
 			return { value: 0, formatted: `0 ${String(distanceUnit)}` };
 		}
@@ -141,7 +149,6 @@ class CoordinateComponent {
  */
 function distance(from: Airport, to: Airport) {
 	const { sin, cos, atan2, sqrt } = Math;
-	// TODO consider `factor` for "N" vs "S" and "E" vs "W"
 
 	// Convert the latitudes from degrees to radians.
 	const φ1 = degreesToRadians(from.coordinates.lat.factoredValue); // φ, λ in radians
@@ -168,3 +175,72 @@ export type TAirportCodeCount = {
 	icao: string;
 	count: number;
 };
+
+export type TAirportCodeToLine = Map<string, string>;
+
+/**
+ * Parses the file defined in `filePath` to create a master airport data Map.
+ * Saves it to local storage, and retrieves it if used another time. If the
+ * master file has changed (checked via timestamp), it is parsed regardless.
+ * @param filePath Path to the master airports .txt file
+ * @param storageManager The LocalStorageService manager to store and retrieve
+ * the master airport data.
+ * @returns A Map of the master airports (`Map<ICAO, Airports.txt line>`)
+ */
+export async function getMasterAirports(storageManager: LocalStorageService) {
+	const filePath = vscode.workspace
+		.getConfiguration('fs-ai-tools.generateAirports', undefined)
+		.get('masterAirportsFilePath') as string;
+	if (!filePath?.length) {
+		showError('Master airports file path has not been set in settings.');
+		return null;
+	}
+	if (!fs.existsSync(filePath)) {
+		showError(`Master airports file at "${filePath}" couldn't be found`);
+		return null;
+	}
+
+	// -------------------------------------------------------
+
+	// Check for changes since last use
+	const savedModifiedTime = storageManager.getValue('airportMasterModifiedTime');
+	const modifiedTime = fs.statSync(filePath).mtimeMs;
+
+	let loadFromStorage = savedModifiedTime && savedModifiedTime === modifiedTime;
+
+	// Load storage data
+	if (loadFromStorage) {
+		const storedData = storageManager.getValue<TAirportCodeToLine>('airportMasterData');
+
+		if (storedData?.size) {
+			return storedData;
+		}
+		loadFromStorage = false;
+	}
+
+	// Read and parse file, save to storage
+	if (!loadFromStorage) {
+		const fileContents = await getFileContents(filePath);
+		if (!fileContents) return null;
+
+		const airports: TAirportCodeToLine = new Map(
+			fileContents
+				.split('\n')
+				.filter((line) => line.length)
+				.map((line) => {
+					const icao = line.trim().split(',')[0];
+
+					return [icao, line];
+				})
+		);
+
+		// Save to storage
+		storageManager.setValue<Number>('airportMasterModifiedTime', modifiedTime);
+		storageManager.setValue<TAirportCodeToLine>('airportMasterData', airports);
+
+		return airports;
+	}
+
+	showError(`Master airports file couldn't be parsed.`);
+	return null;
+}

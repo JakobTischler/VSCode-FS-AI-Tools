@@ -1,12 +1,9 @@
 import * as vscode from 'vscode';
-import * as fs from 'fs';
 import * as path from 'path';
-import { getFileContents, plural, showError } from '../../Tools/helpers';
+import { plural, showError } from '../../Tools/helpers';
 import { LocalStorageService } from '../../Tools/LocalStorageService';
-import { Airport, TAirportCodeCount } from '../../Classes/Airport';
+import { Airport, getMasterAirports, TAirportCodeToLine } from '../../Content/Airport/Airport';
 import { FlightplanRaw } from '../../Classes/Flightplan';
-
-type TAirports = Map<string, string>;
 
 export async function GenerateAirports(storageManager: LocalStorageService) {
 	console.log('GenerateAirports()');
@@ -19,15 +16,8 @@ export async function GenerateAirports(storageManager: LocalStorageService) {
 	if ('file' !== document.uri.scheme || !filename.startsWith('flightplans')) return;
 
 	// Get master airports data
-	const masterAirportsFilePath: string | undefined = vscode.workspace
-		.getConfiguration('fs-ai-tools.generateAirports', undefined)
-		.get('masterAirportsFilePath');
-	if (!masterAirportsFilePath?.length) {
-		showError('Master airports file path has not been set in settings.');
-		return;
-	}
-	const masterAirports: TAirports | null = await getMasterAirports(masterAirportsFilePath, storageManager);
-	if (!masterAirports || !masterAirports.size) {
+	const masterAirports: TAirportCodeToLine | null = await getMasterAirports(storageManager);
+	if (!masterAirports?.size) {
 		return;
 	}
 
@@ -39,65 +29,7 @@ export async function GenerateAirports(storageManager: LocalStorageService) {
 		return;
 	}
 
-	await writeToAirportsTxtFile(airports, document.uri.path, masterAirportsFilePath);
-}
-
-/**
- * Parses the file defined in `filePath` to create a master airport data Map.
- * Saves it to local storage, and retrieves it if used another time. If the
- * master file has changed (checked via timestamp), it is parsed regardless.
- * @param filePath Path to the master airports .txt file
- * @param storageManager The LocalStorageService manager to store and retrieve
- * the master airport data.
- * @returns A Map of the master airports (`Map<ICAO, Airports.txt line>`)
- */
-async function getMasterAirports(filePath: string, storageManager: LocalStorageService) {
-	if (!fs.existsSync(filePath)) {
-		showError(`Master airports file at _"${filePath}"_ couldn't be found`);
-		return null;
-	}
-
-	// Check for changes since last use
-	const savedModifiedTime = storageManager.getValue('airportMasterModifiedTime');
-	const modifiedTime = fs.statSync(filePath).mtimeMs;
-
-	let loadFromStorage = savedModifiedTime && savedModifiedTime === modifiedTime;
-
-	// Load storage data
-	if (loadFromStorage) {
-		const storedData = storageManager.getValue<TAirports>('airportMasterData');
-
-		if (storedData?.size) {
-			return storedData;
-		}
-		loadFromStorage = false;
-	}
-
-	// Read and parse file, save to storage
-	if (!loadFromStorage) {
-		const fileContents = await getFileContents(filePath);
-		if (!fileContents) return null;
-
-		const airports: TAirports = new Map(
-			fileContents
-				.split('\n')
-				.filter((line) => line.length)
-				.map((line) => {
-					const icao = line.trim().split(',')[0];
-
-					return [icao, line];
-				})
-		);
-
-		// Save to storage
-		storageManager.setValue<Number>('airportMasterModifiedTime', modifiedTime);
-		storageManager.setValue<TAirports>('airportMasterData', airports);
-
-		return airports;
-	}
-
-	showError(`Master airports file couldn't be parsed.`);
-	return null;
+	await writeToAirportsTxtFile(airports, document.uri.path);
 }
 
 /**
@@ -105,7 +37,7 @@ async function getMasterAirports(filePath: string, storageManager: LocalStorageS
  * @param {string} flightplanText -
  * @returns A set of airport codes, with duplicates removed, sorted alphabetically.
  */
-async function collectFlightplanAirports(flightplanText: string, masterAirports: TAirports) {
+async function collectFlightplanAirports(flightplanText: string, masterAirports: TAirportCodeToLine) {
 	const flightplan = new FlightplanRaw(flightplanText);
 
 	if (!flightplan.airportCodes.size) {
@@ -136,11 +68,11 @@ async function collectFlightplanAirports(flightplanText: string, masterAirports:
  * @param airports - Airports list as `Set<Airport>`
  * @param {string} flightplansTxtPath - The path to the flightplans.txt file.
  */
-async function writeToAirportsTxtFile(
-	airports: { found: Airport[]; missing: string[] },
-	flightplansTxtPath: string,
-	masterAirportsFilePath: string
-) {
+async function writeToAirportsTxtFile(airports: { found: Airport[]; missing: string[] }, flightplansTxtPath: string) {
+	const masterAirportsFilePath = vscode.workspace
+		.getConfiguration('fs-ai-tools.generateAirports', undefined)
+		.get('masterAirportsFilePath') as string;
+
 	let continueWriting = true;
 
 	// Missing airports → Tell user and wait for deciscion to open the master file, cancel, or continue

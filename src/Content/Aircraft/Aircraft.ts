@@ -1,6 +1,6 @@
 import { AircraftLivery } from './AircraftLivery';
-import { AircraftType } from './AircraftType';
-import { Flightplan, RouteSegment } from '../../Classes/Flightplan';
+import { Flightplan } from '../../Classes/Flightplan';
+import { RouteSegment } from '../Route/RouteSegment';
 
 export class Aircraft {
 	acNum: number;
