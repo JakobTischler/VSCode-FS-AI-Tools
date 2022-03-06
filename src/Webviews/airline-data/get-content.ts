@@ -3,13 +3,13 @@ import * as fs from 'fs';
 import * as path from 'path';
 import { AifpData } from '../../Tools/read-aifp';
 import { Flightplan, FlightplanRaw } from '../../Classes/Flightplan';
-import { TAirportCodeCount } from '../../Classes/Airport';
 import { TAircraftTypesByTypeCode } from '../../Content/Aircraft/AircraftType';
 import { TAircraftLiveriesByAcNum } from '../../Content/Aircraft/AircraftLivery';
 
 export async function getWebviewContent(
 	panel: vscode.WebviewPanel,
 	context: vscode.ExtensionContext,
+	flightplanDirPath: string,
 	aifp: AifpData,
 	aircraftData: {
 		aircraftLiveries: TAircraftLiveriesByAcNum;
@@ -48,7 +48,7 @@ export async function getWebviewContent(
 	 * HEADER
 	 */
 
-	const logoPath = await getLogoPath(aifp);
+	const logoPath = await getLogoPath(aifp, flightplanDirPath);
 	if (logoPath) {
 		const logoDiskPath = vscode.Uri.file(logoPath);
 		const logoSrc = panel.webview.asWebviewUri(logoDiskPath);
@@ -155,18 +155,39 @@ export async function getWebviewContent(
 	return content;
 }
 
-async function getLogoPath(aifp: AifpData) {
-	const logoDirectoryPath = vscode.workspace
-		.getConfiguration('fs-ai-tools.airlineView', undefined)
-		.get('logoDirectoryPath') as string;
-	if (logoDirectoryPath?.length && aifp.callsign) {
-		const logoPath = path.join(logoDirectoryPath, aifp.callsign);
+async function getLogoPath(aifp: AifpData, flightplanDirPath: string) {
+	// Path 1: "{flightplan directory}/logo.png / .jpg"
+	let logoPath = path.join(flightplanDirPath, 'logo');
+	if (fs.existsSync(`${logoPath}.png`)) {
+		return `${logoPath}.png`;
+	}
+	if (fs.existsSync(`${logoPath}.jpg`)) {
+		return `${logoPath}.jpg`;
+	}
 
+	if (aifp.callsign) {
+		// Path 2: "{flightplan directory}/{callsign}.jpg / .png"
+		logoPath = path.join(flightplanDirPath, aifp.callsign);
 		if (fs.existsSync(`${logoPath}.png`)) {
 			return `${logoPath}.png`;
 		}
 		if (fs.existsSync(`${logoPath}.jpg`)) {
 			return `${logoPath}.jpg`;
+		}
+
+		// Path 3: "{logo directory}/{callsign}.jpg / .png"
+		const logoDirectoryPath = vscode.workspace
+			.getConfiguration('fs-ai-tools.airlineView', undefined)
+			.get('logoDirectoryPath') as string;
+
+		if (logoDirectoryPath?.length) {
+			logoPath = path.join(logoDirectoryPath, aifp.callsign);
+			if (fs.existsSync(`${logoPath}.png`)) {
+				return `${logoPath}.png`;
+			}
+			if (fs.existsSync(`${logoPath}.jpg`)) {
+				return `${logoPath}.jpg`;
+			}
 		}
 	}
 

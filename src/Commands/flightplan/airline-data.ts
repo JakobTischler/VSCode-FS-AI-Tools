@@ -1,6 +1,6 @@
 /*
  * [x] Show title, icao, callsign
- * [ ] Logo
+ * [x] Logo
  	1. {folder}/logo.[png,jpg]
 	2. {folder}/callsign.[png,jpg]
 	3. {logoFolder}/callsign.[png,jpg]
@@ -91,5 +91,5 @@ export async function ShowAirlineView(context: vscode.ExtensionContext, filePath
 	);
 
 	// Set HTML content
-	panel.webview.html = await getWebviewContent(panel, context, aifp, aircraftData, fpRaw);
+	panel.webview.html = await getWebviewContent(panel, context, dirPath, aifp, aircraftData, fpRaw);
 }
