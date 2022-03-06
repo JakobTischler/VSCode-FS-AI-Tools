@@ -13,6 +13,15 @@ A Visual Studio Code extension for managing, cleaning and improving FS/Prepar3D 
 
 ## Features
 
+### Airline View
+* Displays a custom view that shows airline data such as the logo, ICAO code, callsign, author, season, visited airports as well as used aircraft types.
+* Requires an `aifp.cfg` file in the flightplan directory, containing the airline metadata.
+* Logo will be searched in flightplan directory ("logo.png/jpg" or "[callsign].png/jpg") or a custom logo directory ("directory/[callsign].png/jpg")
+* Custom logo directory path can be set with the `fs-ai-tools.airlineView.logoDirectoryPath` setting.
+<br>
+<br>
+<br>
+
 ### Clean Aircraft.cfg
 *All changes are configurable.*
 
