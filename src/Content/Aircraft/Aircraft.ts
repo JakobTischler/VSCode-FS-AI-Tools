@@ -1,15 +1,17 @@
 import { AircraftLivery } from './AircraftLivery';
-import { RouteSegment } from '../../Classes/Flightplan';
+import { AircraftType } from './AircraftType';
+import { Flightplan, RouteSegment } from '../../Classes/Flightplan';
 
 export class Aircraft {
 	acNum: number;
-	acType: string = '';
 	registration: string;
 	percentage: number;
 	period: string;
 	flightRule: string;
 	segments: RouteSegment[] = [];
-	title?: AircraftLivery;
+
+	flightplan: Flightplan;
+	aircraftLivery?: AircraftLivery;
 
 	constructor(
 		acNum: number,
@@ -17,13 +19,32 @@ export class Aircraft {
 		percentage: number,
 		period: string,
 		flightRule: string,
-		segments?: RouteSegment[]
+		flightplan: Flightplan,
+		aircraftLivery?: AircraftLivery
 	) {
 		this.acNum = acNum;
 		this.registration = registration;
 		this.percentage = percentage;
 		this.period = period;
 		this.flightRule = flightRule;
-		this.segments = segments || [];
+
+		// Flightplan
+		this.flightplan = flightplan;
+		this.flightplan.aircraft.all.push(this);
+		if (this.flightplan.aircraft.byAcNum.has(acNum)) {
+			const array = this.flightplan.aircraft.byAcNum.get(acNum)!;
+			array.push(this);
+			this.flightplan.aircraft.byAcNum.set(acNum, array);
+		} else {
+			this.flightplan.aircraft.byAcNum.set(acNum, [this]);
+		}
+
+		// Aircraft livery
+		this.aircraftLivery = aircraftLivery;
+		aircraftLivery?.aircraft.push(this);
+	}
+
+	get aircraftType() {
+		return this.aircraftLivery?.aircraftType;
 	}
 }

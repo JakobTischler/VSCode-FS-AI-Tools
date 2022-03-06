@@ -13,7 +13,7 @@ import * as vscode from 'vscode';
 import * as path from 'path';
 import { getFlightplanFiles, showError } from '../../Tools/helpers';
 import { readAifpCfg } from '../../Tools/read-aifp';
-import { FlightplanRaw } from '../../Classes/Flightplan';
+import { Flightplan, FlightplanRaw } from '../../Classes/Flightplan';
 import { parseAircraftTxt } from '../../Content/Aircraft/parseAircraftTxt';
 import { getWebviewContent } from '../../Webviews/airline-data/get-content';
 
@@ -64,12 +64,7 @@ export async function ShowAirlineView(context: vscode.ExtensionContext, filePath
 	const fpRaw = new FlightplanRaw(fileData.flightplans.text);
 
 	// TODO TEMPORARY TESTING
-	/* const fp = new Flightplan(
-		fileData.aircraft.text,
-		fileData.aircraft.fileName,
-		fileData.flightplans.text,
-		fileData.flightplans.fileName
-	); */
+	const fp = new Flightplan(fileData.flightplans.text, aircraftData.aircraftTypes, aircraftData.aircraftLiveries);
 
 	// Create Webview
 	const config = vscode.workspace.getConfiguration('fs-ai-tools.airlineView', undefined);

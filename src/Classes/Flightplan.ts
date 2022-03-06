@@ -1,60 +1,36 @@
 import { showError } from '../Tools/helpers';
-import { parseAircraftTxt } from '../Content/Aircraft/parseAircraftTxt';
 import { TAirportCodeCount } from './Airport';
 import { Aircraft } from '../Content/Aircraft/Aircraft';
-import { AircraftLivery } from '../Content/Aircraft/AircraftLivery';
+import { TAircraftLiveriesByAcNum } from '../Content/Aircraft/AircraftLivery';
+import { TAircraftTypesByTypeCode } from '../Content/Aircraft/AircraftType';
 
 export class Flightplan {
 	text: string;
-	aircraft: { all: Aircraft[]; byAcNum: Map<number, Aircraft[]> };
-	aircraftLiveries: AircraftLivery[] = [];
+	aircraft: { all: Aircraft[]; byAcNum: Map<number, Aircraft[]> } = {
+		all: [],
+		byAcNum: new Map(),
+	};
+	segments: { all: RouteSegment[]; byAirportPair: Map<string, RouteSegment> } = {
+		all: [],
+		byAirportPair: new Map(),
+	};
 
 	constructor(
-		aircraftText: string,
-		aircraftTxtFilename: string,
 		flightplanText: string,
-		flightplansTxtFilename: string
+		aircraftTypes: TAircraftTypesByTypeCode,
+		aircraftLiveries: TAircraftLiveriesByAcNum
 	) {
 		this.text = flightplanText;
-		this.aircraft = { all: [], byAcNum: new Map() };
 
-		// TODO async ?
-		this.parseAircraft(aircraftText, aircraftTxtFilename, flightplanText, flightplansTxtFilename);
+		this.parse(aircraftTypes, aircraftLiveries);
 
-		this.parseFlightplan();
-
-		this.createAircraftStats();
+		// this.createAircraftStats();
 	}
 
-	addAicraftToByAcNum(acNum: number, aircraft: Aircraft) {
-		if (this.aircraft.byAcNum.has(acNum)) {
-			this.aircraft.byAcNum.get(acNum)!.push(aircraft);
-		} else {
-			this.aircraft.byAcNum.set(acNum, [aircraft]);
-		}
-	}
-
-	async parseAircraft(
-		aircraftText: string,
-		aircraftTxtFilename: string,
-		flightplanText: string,
-		flightplansTxtFilename: string
-	) {
-		// TODO temp filePath prop
-		const ret = await parseAircraftTxt({
-			aircraft: { fileName: aircraftTxtFilename, filePath: '', text: aircraftText },
-			airports: { fileName: '', filePath: '' },
-			flightplans: { fileName: flightplansTxtFilename, filePath: '', text: flightplanText },
-		});
-		if (ret) {
-			const { aircraftTypes, totalAircraftCount, nonMatches } = ret;
-		}
-	}
-
-	parseFlightplan() {
+	parse(aircraftTypes: TAircraftTypesByTypeCode, aircraftLiveries: TAircraftLiveriesByAcNum) {
 		// https://regex101.com/r/bquXX3/2
 
-		// GO THROUGH FLIGHTPLAN
+		// GO THROUGH FLIGHTPLAN, CREATE AIRCRAFT AND THEIR ROUTES
 		// --------------------------------------------------------------
 
 		const metaRegex = /^AC#(?<acNum>\d+),(?<reg>.*?),(?<pct>\d+)%,(?<period>.*?),(?<flightRule>(?:IFR|VFR))/i;
@@ -67,12 +43,17 @@ export class Flightplan {
 				// Meta
 				const metaMatches = line.match(metaRegex);
 				if (metaMatches?.groups && [...metaMatches].length === 6) {
+					const acNum = Number(metaMatches.groups.acNum);
+					const aircraftLivery = aircraftLiveries.get(acNum);
+
 					const aircraft = new Aircraft(
-						Number(metaMatches.groups.acNum),
+						acNum,
 						metaMatches.groups.reg,
 						Number(metaMatches.groups.pct),
 						metaMatches.groups.period,
-						metaMatches.groups.flightRule
+						metaMatches.groups.flightRule,
+						this,
+						aircraftLivery
 					);
 
 					// Segments
@@ -81,7 +62,10 @@ export class Flightplan {
 						const segmentsArray = [...segmentMatches];
 						for (const [index, match] of segmentsArray.entries()) {
 							// Length can be 1+7, or 1+9 if the flightplan is multi-week
-							const prevMatch = segmentsArray.at(index - 1);
+
+							// const prevMatch = segmentsArray.at(index - 1);
+							const prevMatch = segmentsArray[index === 0 ? segmentsArray.length - 1 : index - 1];
+
 							if (match.length >= 8 && prevMatch) {
 								const g = match.groups;
 								if (!g) continue;
@@ -100,33 +84,32 @@ export class Flightplan {
 								if (g.arrWeek !== undefined) data.arrWeek = Number(g.arrWeek);
 								if (g.arrDay !== undefined) data.arrDay = Number(g.arrDay);
 
-								aircraft.segments.push(new RouteSegment(data));
+								const segment = new RouteSegment(data);
+
+								// Add to aircraft
+								aircraft.segments.push(segment);
+
+								// Add to flightplan / update
+								this.addRouteSegment(`${data.depApt}-${data.arrApt}`, segment);
 							}
 						}
 					}
-
-					this.aircraft.all.push(aircraft);
-					this.addAicraftToByAcNum(aircraft.acNum, aircraft);
 				}
 			}
 		}
 	}
 
-	/*
-	acType (A380, B752, ...) → acLivery list
-		acLivery (Regular, OC, Special1, ...) - has acNum & title → acList, toAcType
-			ac → toAcLivery
-			ac
-			ac
-		acLivery
-			ac
-		acLivery
-			ac
-			ac
-	acType
-	...
+	addRouteSegment(id: string, segment: RouteSegment) {
+		this.segments.all.push(segment);
 
-	*/
+		if (this.segments.byAirportPair.has(id)) {
+			const data = this.segments.byAirportPair.get(id)!;
+			data.count = data.count + 1;
+			this.segments.byAirportPair.set(id, data);
+		} else {
+			this.segments.byAirportPair.set(id, segment);
+		}
+	}
 
 	createAircraftStats() {
 		// TODO read aircraft.txt to get titles
@@ -161,6 +144,8 @@ export class RouteSegment {
 	arrivalTime: string; // TODO Time Class
 	flightLevel: number = 0;
 	flightNumber: number = 0;
+	/** Number of times this route segment exists in the flightplan */
+	count: number = 1;
 
 	constructor(data: Partial<TRouteSegmentData>) {
 		const _data = {
@@ -175,6 +160,7 @@ export class RouteSegment {
 				arrTime: '',
 				flightLevel: 0,
 				flightNum: 0,
+				count: 1,
 			},
 			...data,
 		};
@@ -189,6 +175,7 @@ export class RouteSegment {
 		this.flightLevel = _data.flightLevel;
 		this.flightNumber = _data.flightNum;
 		this.arrivalAirport = _data.arrApt;
+		this.count = _data.count;
 	}
 }
 
