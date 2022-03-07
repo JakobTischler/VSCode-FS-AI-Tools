@@ -150,11 +150,12 @@ section.grid {
 	display: flex;
 	flex-wrap: wrap;
 	align-items: stretch;
+	justify-content: space-between;
 	gap: 3em;
 }
 section.grid > div.grid-item {
 	align-self: stretch;
-	flex: 1;
+	/* flex: 1; */
 	min-width: 350px;
 }
 section.grid > div.grid-item:first-child {
@@ -220,6 +221,66 @@ section.grid div.grid-item > h2 {
 	position: sticky;
 	top: 0;
 	z-index: 1;
+}
+
+/* Table */
+table {
+	background: transparent;
+	padding: 1rem;
+	border: 1px solid var(--color-tertiary);
+	width: 100%;
+}
+table th {
+	padding: 0.5em 1em;
+	text-align: left;
+}
+table.sortable th {
+	cursor: pointer;
+	position: relative;
+}
+table.sortable th:after {
+	content: '';
+	padding-left: 0.5em;
+	position: absolute;
+}
+table.sortable th.no-sort {
+	cursor: default;
+	pointer-events: none;
+}
+table.sortable th.dir-u:after {
+	content: '▴';
+}
+table.sortable th.dir-d:after {
+	content: '▾';
+}
+
+table tr td {
+	transform: scaleY(1);
+	height: auto;
+	margin: 0;
+	padding: 0.5em 1em;
+}
+table tr td:first-child {
+	padding-right: 3em;
+}
+table td:not(:first-child) div {
+	color: var(--color-secondary);
+	display: flex;
+	align-items: center;
+	gap: 1em;
+}
+table td .secondary {
+	font-family: var(--font-sans-serif-secondary);
+	font-size: 0.8em;
+	opacity: 0.8;
+}
+table tr:nth-of-type(even) td {
+	background: var(--vscode-tree-tableOddRowsBackground);
+}
+/* table tr:not(:nth-child(-n + 10)) {
+} */
+table.hidden tr:not(:nth-child(-n + 10)) {
+	display: none;
 }
 
 /* Definition List */

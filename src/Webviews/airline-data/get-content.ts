@@ -110,20 +110,26 @@ export async function getWebviewContent(
 			content += `<div class="grid-item">
 		<h2>${aircraftData.totalAircraftCount} Aircraft</h2>
 
-		<dl class="table aircraft-types">`;
+		<table class="table aircraft-types sortable" cellspacing="0">
+			<thead><tr>
+				<th class="dir-u">Type</th>
+				<th>Count</th>
+			</tr></thead>
+			<tbody>`;
 
 			for (const aircraftType of aircraftData.aircraftTypes.values()) {
 				if (aircraftType.aircraftCount === 0) continue;
 
-				content += `<dt>${aircraftType.name}</dt>
-							<dd><span>${aircraftType.aircraftCount}</span>`;
+				content += `<tr>
+					<td>${aircraftType.name}</td>
+					<td data-sort="${aircraftType.aircraftCount}"><div><span>${aircraftType.aircraftCount}</span>`;
 				if (aircraftType.liveries.size > 1) {
 					content += `<span class="secondary">(${aircraftType.liveries.size} variations)</span>`;
 				}
-				content += `</dd>`;
+				content += `</div></td></tr>`;
 			}
 
-			content += `</dl></div>`;
+			content += `</tbody></table></div>`;
 		}
 
 		// AIRPORTS
@@ -136,17 +142,23 @@ export async function getWebviewContent(
 			}
 			content += `</h2>
 
-		<dl class="table airports hidden">`;
+			<table class="table airports sortable hidden" cellspacing="0">
+				<thead><tr>
+				<th>Airport</th>
+				<th class="dir-d">Count</th>
+			</tr></thead>
+			<tbody>`;
+
 			const byCount = [...flightplan.airports.values()].sort((a, b) => b.count - a.count);
 
-			for (const [index, airport] of byCount.entries()) {
-				const elementClass = index > 9 ? 'hideable' : '';
-				content += `<dt class="${elementClass}" data-rank="${index + 1}">${airport.icao}</dt>`;
-				content += `<dd class="${elementClass}">${airport.count.toLocaleString()}</dd>`;
+			for (const airport of byCount) {
+				content += `<tr>
+					<td>${airport.icao}</td>
+					<td data-sort="${airport.count}"><div>${airport.count.toLocaleString()}</div></td>
+				</tr>`;
 			}
 
-			content += `</dl>`;
-			content += `</div>`;
+			content += `</tbody></table></div>`;
 		}
 
 		// ROUTES
@@ -163,25 +175,27 @@ export async function getWebviewContent(
 				content += `<button class="toggle-button" data-target=".route-segments">Show all</button>`;
 			}
 			content += `</h2>
-			<dl class="table route-segments hidden">`;
 
-			let index = 0;
+			<table class="table route-segments sortable hidden" cellspacing="0">
+				<thead><tr>
+				<th>Route</th>
+				<th class="dir-d">Count</th>
+				<th>Distance</th>
+			</tr></thead>
+			<tbody>`;
+
 			for (const [airportPair, segment] of [...segments.entries()].sort((a, b) => {
 				if (a[1].count < b[1].count) return 1;
 				if (a[1].count > b[1].count) return -1;
 				return 0;
 			})) {
-				const elementClass = index > 9 ? 'hideable' : '';
-				content += `<dt class="${elementClass}" data-rank="${index + 1}">${airportPair}</dt>`;
-				content += `<dd class="${elementClass}">
-								<span>${segment.count}×</span>
-								<span class="secondary">${segment.distanceFormatted}</span>
-							</dd>`;
-
-				index++;
+				content += `<tr>
+					<td>${airportPair}</td>
+					<td data-sort="${segment.count}"><div>${segment.count}×</div></td>
+					<td data-sort="${segment.distance}"><div class="secondary">${segment.distanceFormatted}</div></td>`;
 			}
 
-			content += `</dl></div>`;
+			content += `</tbody></table></div>`;
 		}
 
 		content += `</section>`;
