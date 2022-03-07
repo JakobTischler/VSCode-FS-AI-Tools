@@ -1,13 +1,17 @@
 :root {
 	--color-light: #f0f0f0;
-	--color-light-secondary: #d2ecff;
+	--color-light-secondary: rgb(210, 236, 255);
+	--color-light-tertiary: rgba(210, 236, 255, 0.25);
+
 	--color-dark: hsl(189, 12%, 33%);
 	--color-dark-secondary: hsl(190, 11%, 50%);
+	--color-dark-tertiary: hsla(190, 11%, 50%, 0.25);
 
-	--font-sans-serif: 'Fredoka', sans-serif;
+	--font-sans-serif: 'Fredoka', var(--vscode-font-family), sans-serif;
+	--font-sans-serif-secondary: 'Montserrat', var(--vscode-font-family), sans-serif;
 	--font-serif: 'Noto Serif Display', serif;
 
-	--anim-length: 0.1s;
+	--anim-length: 0.2s;
 }
 
 body {
@@ -19,12 +23,14 @@ body {
 body.vscode-light {
 	--color-main: var(--color-dark);
 	--color-secondary: var(--color-dark-secondary);
+	--color-tertiary: var(--color-dark-tertiary);
 
 	--color-logo-shadow: rgba(74, 91, 94, 0.5);
 }
 body.vscode-dark {
 	--color-main: var(--color-light);
 	--color-secondary: var(--color-light-secondary);
+	--color-tertiary: var(--color-light-tertiary);
 
 	--color-logo-shadow: rgba(255, 255, 255, 0.5);
 }
@@ -142,34 +148,64 @@ i.icon.user-edit {
 /* Grid */
 section.grid {
 	display: flex;
-}
-section.grid.col-2 {
-	display: flex;
 	flex-wrap: wrap;
 	align-items: stretch;
 	gap: 3em;
+}
+section.grid > div.grid-item {
+	align-self: stretch;
+	flex: 1;
+	min-width: 350px;
 }
 section.grid > div.grid-item:first-child {
 	order: 1;
 }
 
-section.grid.col-2 > div.grid-item {
-	flex: 1;
-}
-section.grid.col-2 > div.grid-item:last-child {
-	order: 3;
+section.grid:before,
+section.grid:after {
+	content: '';
+	border-left: 1px solid var(--color-secondary);
+	align-self: stretch;
+	display: none;
 }
 
-section.grid.col-2:before {
-	content: '';
-	border: 0.5px solid var(--color-secondary);
+section.grid.col-2 > div.grid-item:nth-child(2),
+section.grid.col-3 > div.grid-item:nth-child(2) {
+	order: 3;
+}
+section.grid.col-2:before,
+section.grid.col-3:before {
+	display: block;
 	order: 2;
+}
+section.grid.col-3 > div.grid-item:nth-child(3) {
+	order: 5;
+}
+section.grid.col-3:after {
+	display: block;
+	order: 4;
 }
 
 @media (max-width: 700px) {
-	.grid {
+	.grid.col-2 {
 		align-items: center;
 		flex-direction: column;
+	}
+	.grid.col-2:before,
+	.grid.col-2:after {
+		border-left: none;
+		border-top: 1px solid var(--color-secondary);
+	}
+}
+@media (max-width: 1050px) {
+	.grid.col-3 {
+		align-items: center;
+		flex-direction: column;
+	}
+	.grid.col-3:before,
+	.grid.col-3:after {
+		border-left: none;
+		border-top: 1px solid var(--color-secondary);
 	}
 }
 
@@ -177,8 +213,15 @@ section.grid div.grid-item > h2 {
 	display: flex;
 	align-items: center;
 	gap: 1em;
-	height: 1.5em;
+	/* height: 1.5em; */
+	padding: 0 0 0.5em 0;
+
+	background-color: var(--vscode-editor-background);
+	position: sticky;
+	top: 0;
+	z-index: 1;
 }
+
 /* Definition List */
 dl.table {
 	display: grid;
@@ -187,7 +230,7 @@ dl.table {
 
 	background: transparent;
 	padding: 1rem;
-	border: 1px solid var(--color-secondary);
+	border: 1px solid var(--color-tertiary);
 }
 dl.table dt,
 dl.table dd {
@@ -198,6 +241,14 @@ dl.table dd {
 }
 dl.table dd {
 	color: var(--color-secondary);
+	display: flex;
+	align-items: center;
+	gap: 1em;
+}
+dl.table dd .secondary {
+	font-family: var(--font-sans-serif-secondary);
+	font-size: 0.8em;
+	opacity: 0.8;
 }
 dl.table dt:nth-of-type(even),
 dl.table dd:nth-of-type(even) {
@@ -231,12 +282,12 @@ button {
 	letter-spacing: 2px;
 }
 button:hover {
-	background: var(--vscode-button-hoverBackground);
+	background-color: var(--vscode-button-hoverBackground);
 }
 button.secondary {
-	background: var(--vscode-button-secondaryBackground);
+	background-color: var(--vscode-button-secondaryBackground);
 	color: var(--vscode-button-secondaryForeground);
 }
 button.secondary:hover {
-	background: var(--vscode-button-secondaryHoverBackground);
+	background-color: var(--vscode-button-secondaryHoverBackground);
 }

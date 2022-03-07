@@ -16,11 +16,6 @@ const distanceUnitFactor: TDistanceUnitFactor = {
 // TODO add to config
 const distanceUnit: keyof TDistanceUnitFactor = 'km';
 
-type TCoordinates = {
-	lat: CoordinateComponent;
-	lon: CoordinateComponent;
-};
-
 /**
  * Describes an airport with its ICAO code (`.icao`), its coordinates
  * (`.coordinates`) as well as its altitude (`.altitude`).
@@ -30,9 +25,18 @@ type TCoordinates = {
  * Can return the data in an `airports.txt` line format (`.line`).
  */
 export class Airport {
+	/** The airport's ICAO code */
 	icao: string;
-	coordinates: TCoordinates;
+	/** The airport's coordinates (latitude and longitude components) */
+	coordinates: {
+		/** The airport's latitude component */
+		lat: CoordinateComponent;
+		/** The airport's longitude component */
+		lon: CoordinateComponent;
+	};
+	/** The airport's altitude in feet */
 	altitude: number;
+	/** Number of occurences (flights to this airport) in the flightplan */
 	count: number = 0;
 
 	constructor(line: string, count?: number) {
@@ -84,7 +88,8 @@ export class Airport {
 		};
 	}
 
-	/** The airport data in an `airports.txt` line format ("`ICAO,latitude,longitude,altitude`"). */
+	/** The airport data in an `airports.txt` line format
+	 * ("`ICAO,latitude,longitude,altitude`"). */
 	get line() {
 		// return `${this.icao},${this.coordinates.lat.str},${this.coordinates.lon.str},${this.altitude}`;
 		return [this.icao, this.coordinates.lat.str, this.coordinates.lon.str, this.altitude].join(',');
@@ -93,6 +98,7 @@ export class Airport {
 
 class CoordinateComponent {
 	degrees: number;
+	/** Coordinate minutes. Includes seconds as fraction. */
 	minutes: number;
 	/** Either -1 or 1, based on the factor name ("N", "E": 1 / "S", "W": -1). */
 	factor: number;
