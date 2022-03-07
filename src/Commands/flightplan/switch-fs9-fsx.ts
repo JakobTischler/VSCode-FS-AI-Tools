@@ -30,7 +30,8 @@ export async function SwitchFS9FSX() {
 	}
 	const toFS9 = dirStr === 'FSX → FS9';
 
-	// Go through each line, check the max number of days based on repeating period, then match days and loop number
+	// Go through each line, check the max number of days based on repeating
+	// period, then match days and loop number
 	const periods = new Map();
 	periods.set('WEEK', 1 * 7 - 1);
 	periods.set('2WEEKS', 2 * 7 - 1);

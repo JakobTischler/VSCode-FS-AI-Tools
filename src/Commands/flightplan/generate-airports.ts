@@ -22,7 +22,8 @@ export async function GenerateAirports(storageManager: LocalStorageService) {
 	}
 
 	/**
-	 * Airports existing in flightplan, with duplicates removed, sorted alphabetically.
+	 * Airports existing in flightplan, with duplicates removed, sorted
+	 * alphabetically.
 	 */
 	const airports = await collectFlightplanAirports(document.getText(), masterAirports);
 	if (!airports) {
@@ -35,7 +36,8 @@ export async function GenerateAirports(storageManager: LocalStorageService) {
 /**
  * TODO move into Flightplan / FlightplanRaw class
  * @param {string} flightplanText -
- * @returns A set of airport codes, with duplicates removed, sorted alphabetically.
+ * @returns A set of airport codes, with duplicates removed, sorted
+ * alphabetically.
  */
 async function collectFlightplanAirports(flightplanText: string, masterAirports: TAirportCodeToLine) {
 	const flightplan = new FlightplanRaw(flightplanText);
@@ -64,7 +66,8 @@ async function collectFlightplanAirports(flightplanText: string, masterAirports:
 }
 
 /**
- * Writes the airports to the airports.txt file in the current directory. Creates file if it doesn't exist.
+ * Writes the airports to the airports.txt file in the current directory.
+ * Creates file if it doesn't exist.
  * @param airports - Airports list as `Set<Airport>`
  * @param {string} flightplansTxtPath - The path to the flightplans.txt file.
  */
@@ -75,7 +78,8 @@ async function writeToAirportsTxtFile(airports: { found: Airport[]; missing: str
 
 	let continueWriting = true;
 
-	// Missing airports → Tell user and wait for deciscion to open the master file, cancel, or continue
+	// Missing airports → Tell user and wait for deciscion to open the master
+	// file, cancel, or continue
 	if (airports.missing.length) {
 		const title = `${plural('airport', airports.missing.length)} not found in the master file`;
 		const msg = airports.missing

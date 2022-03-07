@@ -73,7 +73,8 @@ export async function RenameFiles(filePath?: string) {
 			// Check for optional post-characters
 			let optional = item.split('?');
 
-			// Add to replacers: value[0] is the actual value, value[1] is a suffix, which should be skipped if it's undefined
+			// Add to replacers: value[0] is the actual value, value[1] is a
+			// suffix, which should be skipped if it's undefined
 			replacers.set(optional[0], [undefined, optional[1]]);
 		}
 	}

@@ -22,7 +22,8 @@ type TCoordinates = {
 };
 
 /**
- * Describes an airport with its ICAO code (`.icao`), its coordinates (`.coordinates`) as well as its altitude (`.altitude`).
+ * Describes an airport with its ICAO code (`.icao`), its coordinates
+ * (`.coordinates`) as well as its altitude (`.altitude`).
  *
  * Can calculate the great circle distance to another airport (`.distance()`).
  *
@@ -77,7 +78,8 @@ export class Airport {
 		return {
 			/** Distance in meters */
 			value,
-			/** Distance formatted to either kilometers, miles or nautical miles (depending on extension setting), with grouping and unit */
+			/** Distance formatted to either kilometers, miles or nautical miles
+			 * (depending on extension setting), with grouping and unit */
 			formatted,
 		};
 	}

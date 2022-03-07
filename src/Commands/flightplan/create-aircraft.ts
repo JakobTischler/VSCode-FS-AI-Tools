@@ -190,7 +190,9 @@ export async function CreateAircraft() {
 }
 
 /**
- * For a list of `regs`, copy the template and replace placeholders with reg/operator/icao/callsign/author data.
+ * For a list of `regs`, copy the template and replace placeholders with
+ * reg/operator/icao/callsign/author data.
+ *
  * @param regs The list of all registrations
  * @param template The content of the template file
  * @param operator The user input "Operator" data

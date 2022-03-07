@@ -66,12 +66,13 @@ export async function ShowAirlineView(
 		return;
 	}
 
+	// TODO remove once Flightplan is completed
 	const fpRaw = new FlightplanRaw(fileData.flightplans.text);
 
 	// TODO TEMPORARY TESTING
-	const fp = new Flightplan(fileData.flightplans.text);
-	await fp.parseAirportCodes(storageManager);
-	fp.parse(aircraftData.aircraftTypes, aircraftData.aircraftLiveries);
+	const flightplan = new Flightplan(fileData.flightplans.text);
+	await flightplan.parseAirportCodes(storageManager);
+	flightplan.parse(aircraftData.aircraftTypes, aircraftData.aircraftLiveries);
 
 	// Create Webview
 	const config = vscode.workspace.getConfiguration('fs-ai-tools.airlineView', undefined);
@@ -93,5 +94,5 @@ export async function ShowAirlineView(
 	);
 
 	// Set HTML content
-	panel.webview.html = await getWebviewContent(panel, context, dirPath, aifp, aircraftData, fpRaw);
+	panel.webview.html = await getWebviewContent(panel, context, dirPath, aifp, aircraftData, fpRaw, flightplan);
 }

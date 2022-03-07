@@ -1,12 +1,7 @@
 import { env, window, Uri } from 'vscode';
 import * as Fs from 'fs';
 import * as Path from 'path';
-
-export function replacePartAtPos(str: string, position: number, length: number, newText: string): string {
-	const before = str.substr(0, position);
-	const after = str.substr(position + length, str.length);
-	return before + newText + after;
-}
+import { IFileMetaData, TFlightplanFilesMetaData } from '../Types/FlightplanFilesMetaData';
 
 /**
  * Returns a random integer between (and including) `min` and `max`.
@@ -193,31 +188,34 @@ export const getDefinedProps = (obj: any) => {
  * @param dirPath The directory's absolute path
  * @returns A set of objects containing - for each found file - its respective file name, file path, and `vscode.Uri` representation
  */
-export async function getFlightplanFiles(dirPath: string) {
-	const files = await Fs.promises.readdir(dirPath);
+export async function getFlightplanFiles(dirPath: string, readFiles: boolean = false) {
+	const fileNames = await Fs.promises.readdir(dirPath);
 	const fileRegex = /^(aircraft|airports|flightplans).*\.txt$/i;
 
-	const ret: {
-		[type: string]: {
-			fileName: string;
-			path: string;
-			file: Uri;
-		};
-	} = {};
+	const ret: Partial<TFlightplanFilesMetaData> = {};
 
-	for (const file of files) {
-		const matches = file.match(fileRegex);
+	for (const fileName of fileNames) {
+		const matches = fileName.match(fileRegex);
 
 		if (!matches?.[1]) {
 			continue;
 		}
 
-		ret[matches[1].toLowerCase()] = {
-			fileName: file,
-			path: Path.join(dirPath, file),
-			file: Uri.file(Path.join(dirPath, file)),
+		const data: IFileMetaData = {
+			fileName: fileName,
+			filePath: Path.join(dirPath, fileName),
 		};
+
+		if (readFiles) {
+			const contents = await getFileContents(data.filePath);
+			if (contents) {
+				data.text = contents;
+			}
+		}
+
+		const key = matches[1].toLowerCase() as keyof TFlightplanFilesMetaData;
+		ret[key] = data;
 	}
 
-	return ret;
+	return <TFlightplanFilesMetaData>ret;
 }

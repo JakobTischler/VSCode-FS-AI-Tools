@@ -10,7 +10,8 @@ export async function ShowAircraftList() {
 	/*
 	1. Get aircraft list from current dir's aircraft file (map(acNum, acTitle))
 	2. Count each acNum in current dir's flightplan file
-	3. For each AC in map, try to get ICAO code (create new dictionary, sum up counts for matching ACs)
+	3. For each AC in map, try to get ICAO code (create new dictionary, sum up
+	   counts for matching ACs)
 	4. Based on pre-defined excel sheet AC list, display tsv data
 	*/
 
@@ -65,10 +66,11 @@ export async function ShowAircraftList() {
 
 /**
  * Generates a string representing the count cells for all possible aircraft
- * types. If the count for an aircraft type is 0, the cell is left blank.
- * The cells are joined with a tab (`\t`).
+ * types. If the count for an aircraft type is 0, the cell is left blank. The
+ * cells are joined with a tab (`\t`).
  *
- * Note: uses the order and values of the `list` array in `aircraft-naming.json`.
+ * Note: uses the order and values of the `list` array in
+ * `aircraft-naming.json`.
  * @param data The `aircraft-naming` reference object
  * @param aircraftTypes The list of matched aircraft types
  * @returns The genereated cell output for Google Sheets

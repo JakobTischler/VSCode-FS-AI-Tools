@@ -17,7 +17,8 @@ export async function getWebviewContent(
 		totalAircraftCount: number;
 		nonMatches: string[];
 	},
-	flightplanRaw: FlightplanRaw
+	flightplanRaw: FlightplanRaw,
+	flightplan: Flightplan
 ): Promise<string> {
 	const paths = {
 		style: path.join(context.extensionPath, '/src/Webviews/airline-data/style.css'),
@@ -99,7 +100,7 @@ export async function getWebviewContent(
 		const numCols = aircraftData && flightplanRaw ? 2 : 1;
 		content += `<section class="grid col-${numCols}">`;
 
-		/**
+		/*
 		 * AIRCRAFT
 		 */
 		if (aircraftData) {
@@ -120,13 +121,13 @@ export async function getWebviewContent(
 			content += `</dl></div>`;
 		}
 
-		/**
+		/*
 		 * AIRPORTS
 		 */
-		if (flightplanRaw) {
+		if (flightplanRaw && flightplan) {
 			content += `<div class="grid-item airports-by-count">
 		<h2>
-			<span>${flightplanRaw.airportCodesByCount.length} Airports</span>
+			<span>${flightplan.airports.size} Airports</span>
 			<button class="toggle-button" data-target=".airport-count">Show all</button>
 		</h2>
 
@@ -140,6 +141,31 @@ export async function getWebviewContent(
 
 			content += `</dl>`;
 			content += `</div>`;
+		}
+		content += `</section>`;
+
+		/*
+		 * ROUTES
+		 */
+		if (flightplan) {
+			const flights = flightplan.segments.all;
+			const segments = flightplan.segments.byAirportPair;
+
+			content += `<section class="grid col-1">
+			<div class="grid-item route-segements">
+			<h2>${segments.size.toLocaleString()} segments (${flights.length.toLocaleString()} legs)</h2>
+			<dl class="table">`;
+
+			for (const [airportPair, segment] of [...segments.entries()].sort((a, b) => {
+				if (a[1].count < b[1].count) return 1;
+				if (a[1].count > b[1].count) return -1;
+				return 0;
+			})) {
+				content += `<dt>${airportPair}</dt>`;
+				content += `<dd>${segment.count}×  •  ${segment.distanceFormatted}</dd>`;
+			}
+
+			content += `</dl></div></section>`;
 		}
 
 		content += `</section>`;

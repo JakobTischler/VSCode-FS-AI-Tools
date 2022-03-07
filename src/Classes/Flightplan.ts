@@ -13,8 +13,13 @@ export class Flightplan {
 		byAcNum: new Map(),
 	};
 	airports: Map<string, Airport> = new Map();
-	segments: { all: RouteSegment[]; byAirportPair: Map<string, RouteSegment> } = {
+	segments: {
+		all: RouteSegment[];
+		byLeg: Map<string, RouteSegment>;
+		byAirportPair: Map<string, RouteSegment>;
+	} = {
 		all: [],
+		byLeg: new Map(),
 		byAirportPair: new Map(),
 	};
 
@@ -120,7 +125,7 @@ export class Flightplan {
 								aircraft.segments.push(segment);
 
 								// Add to flightplan / update
-								this.addRouteSegment(`${depApt.icao}-${arrApt.icao}`, segment);
+								this.addRouteSegment(segment);
 							}
 						}
 					}
@@ -129,15 +134,43 @@ export class Flightplan {
 		}
 	}
 
-	addRouteSegment(id: string, segment: RouteSegment) {
-		this.segments.all.push(segment);
+	addRouteSegment(segment: RouteSegment) {
+		// All
+		{
+			this.segments.all.push(segment);
+		}
 
-		if (this.segments.byAirportPair.has(id)) {
-			const data = this.segments.byAirportPair.get(id)!;
-			data.count = data.count + 1;
-			this.segments.byAirportPair.set(id, data);
-		} else {
-			this.segments.byAirportPair.set(id, segment);
+		// Leg
+		{
+			const id = `${segment.departureAirport.icao}→${segment.arrivalAirport.icao}`;
+			if (this.segments.byLeg.has(id)) {
+				const data = this.segments.byLeg.get(id)!;
+				data.count++;
+				this.segments.byLeg.set(id, data);
+			} else {
+				this.segments.byLeg.set(id, segment);
+			}
+		}
+
+		// Airport pair
+		{
+			const segmentClone = Object.assign(Object.create(Object.getPrototypeOf(segment)), segment);
+			if (segmentClone.arrivalAirport.count > segmentClone.departureAirport.count) {
+				const arrApt = segmentClone.arrivalAirport;
+				const depApt = segmentClone.departureAirport;
+
+				segmentClone.arrivalAirport = depApt;
+				segmentClone.departureAirport = arrApt;
+			}
+
+			const id = `${segmentClone.departureAirport.icao}↔${segmentClone.arrivalAirport.icao}`;
+			if (this.segments.byAirportPair.has(id)) {
+				const data = this.segments.byAirportPair.get(id)!;
+				data.count++;
+				this.segments.byAirportPair.set(id, data);
+			} else {
+				this.segments.byAirportPair.set(id, segmentClone);
+			}
 		}
 	}
 
@@ -155,10 +188,7 @@ export class FlightplanRaw {
 	text: string;
 	/** Map that holds airport entries which contain the ICAO code and the count */
 	airportCodes: Map<string, TAirportCodeCount>;
-	/**
-	 * Array that holds airport entries which contain the ICAO code and the
-	 * count, sorted descending by count
-	 */
+	/** Array that holds airport entries which contain the ICAO code and the count, sorted descending by count */
 	airportCodesByCount: TAirportCodeCount[];
 
 	constructor(flightplanText: string) {
@@ -172,8 +202,8 @@ export class FlightplanRaw {
 }
 
 /**
- * Gathers all airport codes from the flightplan text and returns a Map with the
- * ICAO code as key and `{ icao, count }` as value.
+ * Gathers all airport codes from the flightplan text and returns a Map with the ICAO code as key and `{ icao, count }`
+ * as value.
  * @param flightplanText The flightplans.txt file contents
  * @returns `Map<string, TAirportCodeCount>`
  */
