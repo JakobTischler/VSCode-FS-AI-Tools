@@ -241,6 +241,21 @@
 						"markdownDescription": "Adds the \"Airline View\" command to the context menu when an `Aircraft.txt` or `Flightplans.txt` file is open.",
 						"scope": "window"
 					},
+					"fs-ai-tools.airlineView.distanceUnit": {
+						"type": "string",
+						"default": "nm",
+						"enum": [
+							"km",
+							"mi",
+							"nm"
+						],
+						"enumDescriptions": [
+							"Display the route distance in kilometers",
+							"Display the route distance in miles",
+							"Display the route distance in nautical miles"
+						],
+						"scope": "window"
+					},
 					"fs-ai-tools.airlineView.logoDirectoryPath": {
 						"type": "string",
 						"default": "",

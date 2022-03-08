@@ -3,18 +3,21 @@ import * as fs from 'fs';
 import { degreesToRadians, getFileContents, showError } from '../../Tools/helpers';
 import { LocalStorageService } from '../../Tools/LocalStorageService';
 
+const config = vscode.workspace.getConfiguration('fs-ai-tools.airlineView', undefined);
+
 type TDistanceUnitFactor = {
+	/** Kilometers */
 	km: number;
+	/** Miles */
 	mi: number;
+	/** Nautical miles */
 	nm: number;
 };
-const distanceUnitFactor: TDistanceUnitFactor = {
+const distanceUnitFactors: TDistanceUnitFactor = {
 	km: 0.001,
 	mi: 0.00062137141841645,
 	nm: 0.000539957,
 };
-// TODO add to config
-const distanceUnit: keyof TDistanceUnitFactor = 'km';
 
 /**
  * Describes an airport with its ICAO code (`.icao`), its coordinates
@@ -69,15 +72,17 @@ export class Airport {
 	 * (kilometers, miles or nautical miles), with grouping and unit.
 	 */
 	calculateDistance(targetAirport: Airport) {
+		const distanceUnit = config.get('distanceUnit') as keyof TDistanceUnitFactor & string;
+		const distanceFactor = distanceUnitFactors[distanceUnit];
+
 		if (targetAirport === this) {
-			return { value: 0, formatted: `0 ${String(distanceUnit)}` };
+			return { value: 0, formatted: `0 ${distanceUnit}` };
 		}
 
 		const value = distance(this, targetAirport);
-		const formatted =
-			(value * distanceUnitFactor[distanceUnit]).toLocaleString(undefined, {
-				maximumFractionDigits: 0,
-			}) + ` ${String(distanceUnit)}`;
+		const formatted = `${(value * distanceFactor).toLocaleString(undefined, {
+			maximumFractionDigits: 0,
+		})} ${distanceUnit}`;
 
 		return {
 			/** Distance in meters */
