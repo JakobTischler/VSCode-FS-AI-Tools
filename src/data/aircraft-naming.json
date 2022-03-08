@@ -163,47 +163,81 @@
 		"YK40",
 		"YK42"
 	],
+	"series": {
+		"Airbus": ["A220", "A300", "A32X", "A32NX", "A330", "A340", "A350", "A380"],
+		"Antonov": ["An-Prop", "An-Jet"],
+		"ATR": ["ATR"],
+		"BAe": ["146", "Jetstream"],
+		"Beechcraft": ["B1900", "King Air", "Beechjet"],
+		"Boeing": ["707", "717", "727", "737 Classic", "737NG", "737 MAX", "747", "757", "767", "777", "787"],
+		"Bombardier": ["Challenger", "Global", "CRJ", "Dash 8"],
+		"Britten-Norman": ["BN-2"],
+		"Cessna": ["Single Prop", "Twin Prop", "CitationJet", "Citation"],
+		"Comac": ["ARJ21"],
+		"Dassault": ["Falcon"],
+		"de Havilland": ["DHC"],
+		"Dornier": ["Do"],
+		"Douglas": ["DC8", "DC9"],
+		"Embraer": ["EMB-Prop", "ERJ", "EMB", "Phenom"],
+		"Fokker": ["F-Prop", "F-Jet"],
+		"Gulfstream": ["Gulfstream"],
+		"Hawker Beechcraft": ["125"],
+		"Ilyushin": ["Il-Prop", "Il-Jet"],
+		"Learjet": ["Learjet"],
+		"Lockheed": ["Hercules"],
+		"McDonnell Douglas": ["DC-10", "MD-80"],
+		"Pilatus": ["PC"],
+		"Piper": ["Single Engine", "Twin Engine"],
+		"Saab": ["S-Prop"],
+		"Shorts": ["SD"],
+		"Sukhoi": ["SU10"],
+		"Swaeringen": ["Metro"],
+		"Tupolev": ["Tu-Jet"],
+		"Yakolev": ["Yak-Jet"]
+	},
 	"types": {
 		"Airbus": {
 			"search": ["Airbus"],
 			"types": {
-				"A221": { "name": "A220-100", "search": ["A220-100", "A221", "BCS1"] },
-				"A223": { "name": "A220-300", "search": ["A220-300", "A223", "BCS3"] },
-				"A300": { "name": "A300", "search": ["A300"] },
-				"A310": { "name": "A310", "search": ["A310"] },
-				"A318": { "name": "A318", "search": ["A318-"] },
-				"A319": { "name": "A319", "search": ["A319-"] },
-				"A320": { "name": "A320", "search": ["A320-"] },
-				"A321": { "name": "A321", "search": ["A321-"] },
-				"A19N": { "name": "A319neo", "search": ["/A19-[12]\\d{2}\\s*NX?/", "A319neo"] },
-				"A20N": { "name": "A320neo", "search": ["/A320-[12]\\d{2}\\s*NX?/", "A320neo"] },
-				"A21N": { "name": "A321neo", "search": ["/A321-[12]\\d{2}\\s*NX?/", "A321neo"] },
-				"A332": { "name": "A330-200", "search": ["A330-2"] },
-				"A333": { "name": "A330-300", "search": ["A330-3"] },
-				"A338": { "name": "A330-800", "search": ["A330-8"] },
-				"A339": { "name": "A330-900neo", "search": ["A330-9"] },
-				"A342": { "name": "A340-200", "search": ["A340-2"] },
-				"A343": { "name": "A340-300", "search": ["A340-3"] },
-				"A345": { "name": "A340-500", "search": ["A340-5"] },
-				"A346": { "name": "A340-600", "search": ["A340-6"] },
-				"A359": { "name": "A350-900", "search": ["A350-9"] },
-				"A35X": { "name": "A350-1000", "search": ["A350-1"] },
-				"A380": { "name": "A380", "search": ["A380"] }
+				"A221": { "name": "A220-100", "search": ["A220-100", "A221", "BCS1"], "series": "A220" },
+				"A223": { "name": "A220-300", "search": ["A220-300", "A223", "BCS3"], "series": "A220" },
+				"A300": { "name": "A300", "search": ["A300"], "series": "A300" },
+				"A310": { "name": "A310", "search": ["A310"], "series": "A300" },
+				"A318": { "name": "A318", "search": ["A318-"], "series": "A32X" },
+				"A319": { "name": "A319", "search": ["A319-"], "series": "A32X" },
+				"A320": { "name": "A320", "search": ["A320-"], "series": "A32X" },
+				"A321": { "name": "A321", "search": ["A321-"], "series": "A32X" },
+				"A19N": { "name": "A319neo", "search": ["/A19-[12]\\d{2}\\s*NX?/", "A319neo"], "series": "A32NX" },
+				"A20N": { "name": "A320neo", "search": ["/A320-[12]\\d{2}\\s*NX?/", "A320neo"], "series": "A32NX" },
+				"A21N": { "name": "A321neo", "search": ["/A321-[12]\\d{2}\\s*NX?/", "A321neo"], "series": "A32NX" },
+				"A332": { "name": "A330-200", "search": ["A330-2"], "series": "A330" },
+				"A333": { "name": "A330-300", "search": ["A330-3"], "series": "A330" },
+				"A338": { "name": "A330-800", "search": ["A330-8"], "series": "A330" },
+				"A339": { "name": "A330-900neo", "search": ["A330-9"], "series": "A330" },
+				"A342": { "name": "A340-200", "search": ["A340-2"], "series": "A340" },
+				"A343": { "name": "A340-300", "search": ["A340-3"], "series": "A340" },
+				"A345": { "name": "A340-500", "search": ["A340-5"], "series": "A340" },
+				"A346": { "name": "A340-600", "search": ["A340-6"], "series": "A340" },
+				"A359": { "name": "A350-900", "search": ["A350-9"], "series": "A350" },
+				"A35X": { "name": "A350-1000", "search": ["A350-1"], "series": "A350" },
+				"A380": { "name": "A380", "search": ["A380"], "series": "A380" }
 			}
 		},
 		"Antonov": {
 			"search": ["Antonov"],
 			"types": {
-				"AN12": { "name": "An-12", "search": ["/An[- ]12[bp ]/"] },
+				"AN12": { "name": "An-12", "search": ["/An[- ]12[bp ]/"], "series": "An-Prop" },
 				"AN24": {
 					"name": "An-22/24/26/28/30/32",
-					"search": ["/(?:An[- ]?(?:22|24|26|28|30|32)[-ar ]|Xian)/"]
+					"search": ["/(?:An[- ]?(?:22|24|26|28|30|32)[-ar ]|Xian)/"],
+					"series": "An-Prop"
 				},
 				"AN74": {
 					"name": "An-70/72/74/140/148/158/178",
-					"search": ["/An[- ]?(?:70|72|74|140|148|158|178)[-ab ]/"]
+					"search": ["/An[- ]?(?:70|72|74|140|148|158|178)[-ab ]/"],
+					"series": "An-Jet"
 				},
-				"A124": { "name": "An-124/225", "search": ["/An[- ]?(?:124|225)/"] }
+				"A124": { "name": "An-124/225", "search": ["/An[- ]?(?:124|225)/"], "series": "An-Jet" }
 			}
 		},
 		"ATR": {
@@ -217,8 +251,8 @@
 			"search": ["BAe", "British Aerospace", "Jetstream"],
 			"types": {
 				"BA46": { "name": "146-100/200/300 / RJ-70/85/100", "search": ["146-", "/RJ[- ]?(?:70|85|100)/"] },
-				"JS31": { "name": "JS-31/32", "search": ["JS3", "JS-3"] },
-				"JS41": { "name": "JS-41/42", "search": ["JS4", "JS-4"] }
+				"JS31": { "name": "JS-31/32", "search": ["JS3", "JS-3"], "series": "Jetstream" },
+				"JS41": { "name": "JS-41/42", "search": ["JS4", "JS-4"], "series": "Jetstream" }
 			}
 		},
 		"Beechcraft": {
@@ -227,11 +261,13 @@
 				"B190": { "name": "1900C/D", "search": ["B1900", "1900C", "1900D"] },
 				"BE20": {
 					"name": "King Air 200/C90/A100 / Bonanza 36",
-					"search": ["/King Air B?2[05]0/", "Beech 200", "Beech B200", "C90 ", "C99 ", "A100 ", "Bonanza 36"]
+					"search": ["/King Air B?2[05]0/", "Beech 200", "Beech B200", "C90 ", "C99 ", "A100 ", "Bonanza 36"],
+					"series": "King Air"
 				},
 				"B350": {
 					"name": "King Air 350 / Baron 58",
-					"search": ["/(?:King Air|Beech) B?350/", "Baron 58"]
+					"search": ["/(?:King Air|Beech) B?350/", "Baron 58"],
+					"series": "King Air"
 				},
 				"BE40": {
 					"name": "Beechjet 400/Hawker 400/Nextant 400",
@@ -242,59 +278,61 @@
 		"Boeing": {
 			"search": ["Boeing"],
 			"types": {
-				"B707": { "name": "707", "search": ["707-"] },
-				"B717": { "name": "717", "search": ["717-"] },
-				"B727": { "name": "727", "search": ["727-"] },
-				"B732": { "name": "737-200", "search": ["737-2"] },
-				"B733": { "name": "737-300", "search": ["737-3"] },
-				"B734": { "name": "737-400", "search": ["737-4"] },
-				"B735": { "name": "737-500", "search": ["737-5"] },
-				"B736": { "name": "737-600", "search": ["737-6"] },
-				"B737": { "name": "737-700", "search": ["737-7"] },
-				"B738": { "name": "737-800", "search": ["737-8"] },
-				"B739": { "name": "737-900", "search": ["737-9"] },
-				"B37M": { "name": "737 MAX 7", "search": ["737 MAX 7"] },
-				"B38M": { "name": "737 MAX 8", "search": ["737 MAX 8"] },
-				"B39M": { "name": "737 MAX 9", "search": ["737 MAX 9"] },
-				"B741-2": { "name": "747-100/200/SP", "search": ["747-1", "747-2", "747SP"] },
-				"B743": { "name": "747-300", "search": ["747-3"] },
-				"B744": { "name": "747-400", "search": ["747-4"] },
-				"B748": { "name": "747-8", "search": ["747-8"] },
-				"B752": { "name": "757-200", "search": ["757-2"] },
-				"B753": { "name": "757-300", "search": ["757-3"] },
-				"B762": { "name": "767-200", "search": ["767-2"] },
-				"B763": { "name": "767-300", "search": ["767-3"] },
-				"B764": { "name": "767-400", "search": ["767-4"] },
-				"B772": { "name": "777-200/F/LR", "search": ["777-2", "777F", "777L"] },
-				"B773": { "name": "777-300/300ER", "search": ["777-3", "77W"] },
-				"B788": { "name": "787-8", "search": ["787-8"] },
-				"B789": { "name": "787-9", "search": ["787-9"] },
-				"B78X": { "name": "787-10", "search": ["787-10"] }
+				"B707": { "name": "707", "search": ["707-"], "series": "707" },
+				"B717": { "name": "717", "search": ["717-"], "series": "717" },
+				"B727": { "name": "727", "search": ["727-"], "series": "727" },
+				"B732": { "name": "737-200", "search": ["737-2"], "series": "737 Classic" },
+				"B733": { "name": "737-300", "search": ["737-3"], "series": "737 Classic" },
+				"B734": { "name": "737-400", "search": ["737-4"], "series": "737 Classic" },
+				"B735": { "name": "737-500", "search": ["737-5"], "series": "737 Classic" },
+				"B736": { "name": "737-600", "search": ["737-6"], "series": "737NG" },
+				"B737": { "name": "737-700", "search": ["737-7"], "series": "737NG" },
+				"B738": { "name": "737-800", "search": ["737-8"], "series": "737NG" },
+				"B739": { "name": "737-900", "search": ["737-9"], "series": "737NG" },
+				"B37M": { "name": "737 MAX 7", "search": ["737 MAX 7"], "series": "737 MAX" },
+				"B38M": { "name": "737 MAX 8", "search": ["737 MAX 8"], "series": "737 MAX" },
+				"B39M": { "name": "737 MAX 9", "search": ["737 MAX 9"], "series": "737 MAX" },
+				"B741-2": { "name": "747-100/200/SP", "search": ["747-1", "747-2", "747SP"], "series": "747" },
+				"B743": { "name": "747-300", "search": ["747-3"], "series": "747" },
+				"B744": { "name": "747-400", "search": ["747-4"], "series": "747" },
+				"B748": { "name": "747-8", "search": ["747-8"], "series": "747" },
+				"B752": { "name": "757-200", "search": ["757-2"], "series": "757" },
+				"B753": { "name": "757-300", "search": ["757-3"], "series": "757" },
+				"B762": { "name": "767-200", "search": ["767-2"], "series": "767" },
+				"B763": { "name": "767-300", "search": ["767-3"], "series": "767" },
+				"B764": { "name": "767-400", "search": ["767-4"], "series": "767" },
+				"B772": { "name": "777-200/F/LR", "search": ["777-2", "777F", "777L"], "series": "777" },
+				"B773": { "name": "777-300/300ER", "search": ["777-3", "77W"], "series": "777" },
+				"B788": { "name": "787-8", "search": ["787-8"], "series": "787" },
+				"B789": { "name": "787-9", "search": ["787-9"], "series": "787" },
+				"B78X": { "name": "787-10", "search": ["787-10"], "series": "787" }
 			}
 		},
 		"Bombardier": {
 			"search": ["Bombardier", "Dash", "Mitsubishi", "Challenger"],
 			"types": {
-				"CL30": { "name": "Challenger 300", "search": ["Challenger 300", "CL-300"] },
-				"CL35": { "name": "Challenger 350", "search": ["Challenger 350", "CL-350"] },
-				"CL60": { "name": "Challenger 600", "search": ["Challenger 600", "CL-6"] },
+				"CL30": { "name": "Challenger 300", "search": ["Challenger 300", "CL-300"], "series": "Challenger" },
+				"CL35": { "name": "Challenger 350", "search": ["Challenger 350", "CL-350"], "series": "Challenger" },
+				"CL60": { "name": "Challenger 600", "search": ["Challenger 600", "CL-6"], "series": "Challenger" },
 				"GLEX": {
 					"name": "Global Express/5000/6000",
 					"search": ["Global Express", "Global 5000", "Global 6000"]
 				},
 				"CRJ2": {
 					"name": "CRJ-100/200 / Legcy 800/850",
-					"search": ["/CRJ-100[A-Z\\s]/", "CRJ-2", "Legacy 800", "Legacy 850"]
+					"search": ["/CRJ-100[A-Z\\s]/", "CRJ-2", "Legacy 800", "Legacy 850"],
+					"series": "CRJ"
 				},
-				"CRJ7": { "name": "CRJ-700", "search": ["CRJ-7"] },
-				"CRJ9": { "name": "CRJ-900", "search": ["CRJ-9"] },
-				"CRJX": { "name": "CRJ-1000", "search": ["CRJ-1000"] },
+				"CRJ7": { "name": "CRJ-700", "search": ["CRJ-7"], "series": "CRJ" },
+				"CRJ9": { "name": "CRJ-900", "search": ["CRJ-9"], "series": "CRJ" },
+				"CRJX": { "name": "CRJ-1000", "search": ["CRJ-1000"], "series": "CRJ" },
 				"DH8A/B": {
 					"name": "Dash 8-100/200",
-					"search": ["/Dash 8[-/]Q?[12]00/"]
+					"search": ["/Dash 8[-/]Q?[12]00/"],
+					"series": "Dash 8"
 				},
-				"DH8C": { "name": "Dash 8-300", "search": ["/Dash 8[-/]Q?300/"] },
-				"DH8D": { "name": "Dash 8-Q400", "search": ["/Dash 8[-/]Q?400/"] }
+				"DH8C": { "name": "Dash 8-300", "search": ["/Dash 8[-/]Q?300/"], "series": "Dash 8" },
+				"DH8D": { "name": "Dash 8-Q400", "search": ["/Dash 8[-/]Q?400/"], "series": "Dash 8" }
 			}
 		},
 		"Britten-Norman": {
@@ -306,83 +344,102 @@
 			"types": {
 				"C152": {
 					"name": "150/152",
-					"search": ["/Cessna C?15[02]/"]
+					"search": ["/Cessna C?15[02]/"],
+					"series": "Single Prop"
 				},
 				"C172": {
 					"name": "170/172/175",
-					"search": ["/Cessna C?17[025]/"]
+					"search": ["/Cessna C?17[025]/"],
+					"series": "Single Prop"
 				},
 				"C182": {
 					"name": "180/182",
-					"search": ["/Cessna C?18[025]/"]
+					"search": ["/Cessna C?18[025]/"],
+					"series": "Single Prop"
 				},
 				"C208": {
 					"name": "206/207/208/210",
-					"search": ["/Cessna C?2(?:06|07|08|10)/"]
+					"search": ["/Cessna C?2(?:06|07|08|10)/"],
+					"series": "Single Prop"
 				},
 				"C402": {
 					"name": "402/404",
-					"search": ["/Cessna C?40[24]/"]
+					"search": ["/Cessna C?40[24]/"],
+					"series": "Twin Prop"
 				},
 				"C421": {
 					"name": "414/421/441",
-					"search": ["/Cessna C?4(?:14|21|41)/"]
+					"search": ["/Cessna C?4(?:14|21|41)/"],
+					"series": "Twin Prop"
 				},
 				"C525": {
 					"name": "525",
-					"search": ["/Cessna C?525 /", "/CitationJet (?:CJ)?1/"]
+					"search": ["/Cessna C?525 /", "/CitationJet (?:CJ)?1/"],
+					"series": "CitationJet"
 				},
 				"C25A": {
 					"name": "525A",
-					"search": ["/Cessna C?525A/", "/CitationJet (?:CJ)?2/"]
+					"search": ["/Cessna C?525A/", "/CitationJet (?:CJ)?2/"],
+					"series": "CitationJet"
 				},
 				"C25B": {
 					"name": "525B",
-					"search": ["/Cessna C?525B/", "/CitationJet (?:CJ)?3/"]
+					"search": ["/Cessna C?525B/", "/CitationJet (?:CJ)?3/"],
+					"series": "CitationJet"
 				},
 				"C25C": {
 					"name": "525C",
-					"search": ["/Cessna C?525C/", "/CitationJet (?:CJ)?4/"]
+					"search": ["/Cessna C?525C/", "/CitationJet (?:CJ)?4/"],
+					"series": "CitationJet"
 				},
-				"C500": { "name": "500 Citation I", "search": ["/Cessna C?500/", "Citation I "] },
+				"C500": { "name": "500 Citation I", "search": ["/Cessna C?500/", "Citation I "], "series": "Citation" },
 				"C510": {
 					"name": "510 Citation Mustang",
-					"search": ["/Cessna C?510/", "Citation Mustang"]
+					"search": ["/Cessna C?510/", "Citation Mustang"],
+					"series": "Citation"
 				},
-				"C550": { "name": "550 Citation II", "search": ["/Cessna C?550/", "Citation II"] },
-				"C560": { "name": "560 Citation V", "search": ["/Cessna C?560 /", "Citation V"] },
+				"C550": {
+					"name": "550 Citation II",
+					"search": ["/Cessna C?550/", "Citation II"],
+					"series": "Citation"
+				},
+				"C560": { "name": "560 Citation V", "search": ["/Cessna C?560 /", "Citation V"], "series": "Citation" },
 				"C56X": {
 					"name": "560XL Citation XLS",
-					"search": ["/Cessna C?560XL/", "Citation XLS"]
+					"search": ["/Cessna C?560XL/", "Citation XLS"],
+					"series": "Citation"
 				},
 				"C680": {
 					"name": "680 Citation Sovereign",
-					"search": ["/Cessna C?680 /", "Citation Sovereign"]
+					"search": ["/Cessna C?680 /", "Citation Sovereign"],
+					"series": "Citation"
 				},
 				"C68A": {
 					"name": "680A Citation Latitude",
-					"search": ["/Cessna C?680A/", "Citation Latitude"]
+					"search": ["/Cessna C?680A/", "Citation Latitude"],
+					"series": "Citation"
 				},
 				"C750": {
 					"name": "750 Citation X",
-					"search": ["/Cessna C?750/", "Cessna Citation X "]
+					"search": ["/Cessna C?750/", "Cessna Citation X "],
+					"series": "Citation"
 				}
 			}
 		},
 		"Comac": {
 			"search": ["Comac"],
 			"types": {
-				"AJ27": { "name": "ARJ 21-700", "search": ["ARJ 21-7", "ARJ21-7"] },
-				"AJ29": { "name": "ARJ 21-900", "search": ["ARJ 21-9", "ARJ21-9"] }
+				"AJ27": { "name": "ARJ 21-700", "search": ["ARJ 21-7", "ARJ21-7"], "series": "ARJ21" },
+				"AJ29": { "name": "ARJ 21-900", "search": ["ARJ 21-9", "ARJ21-9"], "series": "ARJ21" }
 			}
 		},
 		"Dassault": {
 			"search": ["Dassault"],
 			"types": {
-				"F2TH": { "name": "Falcon 2000", "search": ["Falcon 2000"] },
-				"FA7X": { "name": "Falcon 7X", "search": ["Falcon 7X"] },
-				"FA8X": { "name": "Falcon 8X", "search": ["Falcon 8X"] },
-				"F900": { "name": "Falcon 900", "search": ["Falcon 900"] }
+				"F2TH": { "name": "Falcon 2000", "search": ["Falcon 2000"], "series": "Falcon" },
+				"FA7X": { "name": "Falcon 7X", "search": ["Falcon 7X"], "series": "Falcon" },
+				"FA8X": { "name": "Falcon 8X", "search": ["Falcon 8X"], "series": "Falcon" },
+				"F900": { "name": "Falcon 900", "search": ["Falcon 900"], "series": "Falcon" }
 			}
 		},
 		"de Havilland": {
@@ -403,36 +460,37 @@
 			"search": ["Douglas"],
 			"types": {
 				"DC8": { "name": "DC-8", "search": ["DC8", "DC-8"] },
-				"DC91": { "name": "DC-9-10", "search": ["/DC[- ]?9-1/"] },
-				"DC93": { "name": "DC-9-30", "search": ["/DC[- ]?9-3/"] },
-				"DC94": { "name": "DC-9-40", "search": ["/DC[- ]?9-4/"] },
-				"DC95": { "name": "DC-9-50", "search": ["/DC[- ]?9-5/"] }
+				"DC91": { "name": "DC-9-10", "search": ["/DC[- ]?9-1/"], "series": "DC9" },
+				"DC93": { "name": "DC-9-30", "search": ["/DC[- ]?9-3/"], "series": "DC9" },
+				"DC94": { "name": "DC-9-40", "search": ["/DC[- ]?9-4/"], "series": "DC9" },
+				"DC95": { "name": "DC-9-50", "search": ["/DC[- ]?9-5/"], "series": "DC9" }
 			}
 		},
 		"Embraer": {
 			"search": ["Embraer"],
 			"types": {
 				"E120": { "name": "EMB-120", "search": ["EMB-120", "EMB120", "Embraer 120"] },
-				"E135": { "name": "ERJ-135 / Legacy 600", "search": ["/(?:ERJ|EMB)[- ]?135/"] },
-				"E140": { "name": "ERJ-140", "search": ["/(?:ERJ|EMB)[- ]?140/"] },
-				"E145": { "name": "ERJ-145 / Legacy 650", "search": ["/(?:ERJ|EMB)[- ]?145/"] },
-				"E170": { "name": "E170", "search": ["/(?:ERJ|EMB)[- ]?170/"] },
-				"E175": { "name": "E175", "search": ["/(?:ERJ|EMB)[- ]?175/"] },
+				"E135": { "name": "ERJ-135 / Legacy 600", "search": ["/(?:ERJ|EMB)[- ]?135/"], "series": "ERJ" },
+				"E140": { "name": "ERJ-140", "search": ["/(?:ERJ|EMB)[- ]?140/"], "series": "ERJ" },
+				"E145": { "name": "ERJ-145 / Legacy 650", "search": ["/(?:ERJ|EMB)[- ]?145/"], "series": "ERJ" },
+				"E170": { "name": "E170", "search": ["/(?:ERJ|EMB)[- ]?170/"], "series": "EMB" },
+				"E175": { "name": "E175", "search": ["/(?:ERJ|EMB)[- ]?175/"], "series": "EMB" },
 				"E190": {
 					"name": "E190 / Lineage 1000",
-					"search": ["/(?:ERJ|EMB)[- ]?190/", "Lineage 1000"]
+					"search": ["/(?:ERJ|EMB)[- ]?190/", "Lineage 1000"],
+					"series": "EMB"
 				},
-				"E195": { "name": "E195", "search": ["/(?:ERJ|EMB)[- ]?195/"] },
-				"E50P": { "name": "Phenom 100", "search": ["Phenom 100"] },
-				"E55P": { "name": "Phenom 300", "search": ["Phenom 300"] }
+				"E195": { "name": "E195", "search": ["/(?:ERJ|EMB)[- ]?195/"], "series": "EMB" },
+				"E50P": { "name": "Phenom 100", "search": ["Phenom 100"], "series": "Phenom" },
+				"E55P": { "name": "Phenom 300", "search": ["Phenom 300"], "series": "Phenom" }
 			}
 		},
 		"Fokker": {
 			"search": ["Fokker"],
 			"types": {
 				"F50": { "name": "50", "search": ["Fokker 50", "F50"] },
-				"F70": { "name": "70", "search": ["Fokker 70", "F70"] },
-				"F100": { "name": "100", "search": ["Fokker 100", "F100"] }
+				"F70": { "name": "70", "search": ["Fokker 70", "F70"], "series": "F-Jet" },
+				"F100": { "name": "100", "search": ["Fokker 100", "F100"], "series": "F-Jet" }
 			}
 		},
 		"Gulfstream": {
@@ -446,11 +504,19 @@
 						"Gulfstream II ",
 						"Gulfstream 200",
 						"Gulfstream 280"
-					]
+					],
+					"series": "Gulfstream"
 				},
 				"GLF3": {
 					"name": "III",
-					"search": ["Gulfstream G-III", "Gulfstream GIII", "Gulfstream III", "Gulfstream G3", "Gulfstream 3"]
+					"search": [
+						"Gulfstream G-III",
+						"Gulfstream GIII",
+						"Gulfstream III",
+						"Gulfstream G3",
+						"Gulfstream 3"
+					],
+					"series": "Gulfstream"
 				},
 				"GLF4": {
 					"name": "IV/IV-SP/400/450",
@@ -463,7 +529,8 @@
 						"Gulfstream 400",
 						"Gulfstream G450",
 						"Gulfstream 450"
-					]
+					],
+					"series": "Gulfstream"
 				},
 				"GLF5": {
 					"name": "V/500/550",
@@ -475,7 +542,8 @@
 						"Gulfstream 500",
 						"Gulfstream G550",
 						"Gulfstream 550"
-					]
+					],
+					"series": "Gulfstream"
 				},
 				"GLF6": {
 					"name": "600/650",
@@ -487,7 +555,8 @@
 						"Gulfstream 600",
 						"Gulfstream G650",
 						"Gulfstream 650"
-					]
+					],
+					"series": "Gulfstream"
 				}
 			}
 		},
@@ -513,10 +582,10 @@
 		"Ilyushin": {
 			"search": ["Ilyushin"],
 			"types": {
-				"IL62": { "name": "IL-62", "search": ["IL62", "IL-62"] },
-				"IL76": { "name": "IL-76", "search": ["IL76", "IL-76"] },
-				"IL86": { "name": "IL-86", "search": ["IL86", "IL-86"] },
-				"IL96": { "name": "IL-96", "search": ["IL96", "IL-96"] }
+				"IL62": { "name": "IL-62", "search": ["IL62", "IL-62"], "series": "Il-Prop" },
+				"IL76": { "name": "IL-76", "search": ["IL76", "IL-76"], "series": "Il-Jet" },
+				"IL86": { "name": "IL-86", "search": ["IL86", "IL-86"], "series": "Il-Jet" },
+				"IL96": { "name": "IL-96", "search": ["IL96", "IL-96"], "series": "Il-Jet" }
 			}
 		},
 		"Learjet": {
@@ -542,14 +611,15 @@
 		"McDonnell Douglas": {
 			"search": ["McDonnell Douglas", "McDonnell-Douglas"],
 			"types": {
-				"DC10": { "name": "DC-10", "search": ["DC10", "DC-10", "MD10", "MD-10"] },
-				"MD11": { "name": "MD-11", "search": ["MD11", "MD-11"] },
+				"DC10": { "name": "DC-10", "search": ["DC10", "DC-10", "MD10", "MD-10"], "series": "DC-10" },
+				"MD11": { "name": "MD-11", "search": ["MD11", "MD-11"], "series": "DC-10" },
 				"MD80": {
 					"name": "MD-80/81/82/83/88",
-					"search": ["/MD[- ]?(?:80|81|82|83|88)/"]
+					"search": ["/MD[- ]?(?:80|81|82|83|88)/"],
+					"series": "MD-80"
 				},
-				"MD87": { "name": "MD-87", "search": ["MD87", "MD-87"] },
-				"MD90": { "name": "MD-90", "search": ["MD90", "MD-90"] }
+				"MD87": { "name": "MD-87", "search": ["MD87", "MD-87"], "series": "MD-80" },
+				"MD90": { "name": "MD-90", "search": ["MD90", "MD-90"], "series": "MD-80" }
 			}
 		},
 		"Pilatus": {
@@ -561,12 +631,12 @@
 		"Piper": {
 			"search": ["Piper"],
 			"types": {
-				"PA28": { "name": "PA-28", "search": ["PA28", "PA-28", "Piper 28"] },
-				"PA46": { "name": "PA-46", "search": ["PA46", "PA-46", "Piper 46"] },
-				"PA23": { "name": "PA-23", "search": ["PA23", "PA-23", "Piper 23"] },
-				"PA31": { "name": "PA-31", "search": ["PA31", "PA-31", "Piper 31"] },
-				"PA34": { "name": "PA-34", "search": ["PA34", "PA-34", "Piper 34"] },
-				"PA44": { "name": "PA-44", "search": ["PA44", "PA-44", "Piper 44"] }
+				"PA28": { "name": "PA-28", "search": ["PA28", "PA-28", "Piper 28"], "series": "Single Engine" },
+				"PA46": { "name": "PA-46", "search": ["PA46", "PA-46", "Piper 46"], "series": "Single Engine" },
+				"PA23": { "name": "PA-23", "search": ["PA23", "PA-23", "Piper 23"], "series": "Twin Engine" },
+				"PA31": { "name": "PA-31", "search": ["PA31", "PA-31", "Piper 31"], "series": "Twin Engine" },
+				"PA34": { "name": "PA-34", "search": ["PA34", "PA-34", "Piper 34"], "series": "Twin Engine" },
+				"PA44": { "name": "PA-44", "search": ["PA44", "PA-44", "Piper 44"], "series": "Twin Engine" }
 			}
 		},
 		"Saab": {
