@@ -1,7 +1,8 @@
 import * as vscode from 'vscode';
 import { merge } from 'lodash';
 import { getFileContents, showError } from '../../Tools/helpers';
-import * as aircraftNaming from '../../data/aircraft-naming.json';
+import * as _aircraftNaming from '../../data/aircraft-naming.json';
+const aircraftNaming = _aircraftNaming as AircraftNaming;
 import { TFlightplanFilesMetaData } from '../../Types/FlightplanFilesMetaData';
 import { AircraftLivery, TAircraftLiveriesByAcNum } from './AircraftLivery';
 import { AircraftType, TAircraftTypesByTypeCode } from './AircraftType';
@@ -159,7 +160,8 @@ export function matchTitleToType(data: typeof aircraftNaming, aircraftLiveries: 
 		typeCode: string,
 		aircraftLivery: AircraftLivery,
 		manufacturerName?: string,
-		typeName?: string
+		typeName?: string,
+		seriesName?: string
 	) => {
 		if (aircraftTypes.has(typeCode)) {
 			// Already exists → add to that
@@ -175,6 +177,9 @@ export function matchTitleToType(data: typeof aircraftNaming, aircraftLiveries: 
 			}
 			if (typeName) {
 				aircraftType.typeName = typeName;
+			}
+			if (seriesName) {
+				aircraftType.series = seriesName;
 			}
 
 			// Add livery to aircraftType
@@ -224,7 +229,13 @@ export function matchTitleToType(data: typeof aircraftNaming, aircraftLiveries: 
 
 							if (add) {
 								// Add data to aircraftTypes: create new or update existing
-								addOrUpdateAircraftData(type, livery, manufacturer, typeData.name || type);
+								addOrUpdateAircraftData(
+									type,
+									livery,
+									manufacturer,
+									typeData.name || type,
+									typeData.series
+								);
 
 								// Add to successful matches
 								if (!matches.has(matchTerm)) {

@@ -18,6 +18,8 @@ export class AircraftType {
 	manufacturer?: string;
 	/** The type's name */
 	typeName?: string;
+	/** The type's optional series */
+	series?: string;
 
 	constructor(title: string) {
 		this.typeCode = title;
