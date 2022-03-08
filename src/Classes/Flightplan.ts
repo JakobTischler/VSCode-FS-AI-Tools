@@ -132,6 +132,8 @@ export class Flightplan {
 				}
 			}
 		}
+
+		this.createAirportPairsList();
 	}
 
 	addRouteSegment(segment: RouteSegment) {
@@ -151,33 +153,44 @@ export class Flightplan {
 				this.segments.byLeg.set(id, segment);
 			}
 		}
-
-		// Airport pair
-		{
-			const segmentClone = Object.assign(Object.create(Object.getPrototypeOf(segment)), segment);
-			if (segmentClone.arrivalAirport.count > segmentClone.departureAirport.count) {
-				const arrApt = segmentClone.arrivalAirport;
-				const depApt = segmentClone.departureAirport;
-
-				segmentClone.arrivalAirport = depApt;
-				segmentClone.departureAirport = arrApt;
-			}
-
-			const id = `${segmentClone.departureAirport.icao}↔${segmentClone.arrivalAirport.icao}`;
-			if (this.segments.byAirportPair.has(id)) {
-				const data = this.segments.byAirportPair.get(id)!;
-				data.count++;
-				this.segments.byAirportPair.set(id, data);
-			} else {
-				this.segments.byAirportPair.set(id, segmentClone);
-			}
-		}
 	}
 
-	createAircraftStats() {
-		// TODO read aircraft.txt to get titles
-		for (const aircraft of this.aircraft.all) {
-			if (!this.aircraft.byAcNum.has(aircraft.acNum)) {
+	createAirportPairsList() {
+		const complete: string[] = [];
+
+		for (const [id, segment] of this.segments.byLeg.entries()) {
+			if (complete.includes(id)) {
+				continue;
+			}
+
+			const returnId = `${segment.arrivalAirport.icao}→${segment.departureAirport.icao}`;
+			const returnSegment = this.segments.byLeg.get(returnId);
+
+			// Merge
+			if (returnSegment) {
+				// Create clone
+				const segmentClone = Object.assign(Object.create(Object.getPrototypeOf(segment)), segment);
+
+				// Sum up counts
+				segmentClone.count += returnSegment.count;
+
+				// Airport order
+				if (segmentClone.arrivalAirport.count > segmentClone.departureAirport.count) {
+					const arrApt = segmentClone.arrivalAirport;
+					const depApt = segmentClone.departureAirport;
+
+					segmentClone.arrivalAirport = depApt;
+					segmentClone.departureAirport = arrApt;
+				}
+
+				// Add to pairs list
+				this.segments.byAirportPair.set(
+					`${segmentClone.departureAirport.icao}↔${segmentClone.arrivalAirport.icao}`,
+					segmentClone
+				);
+
+				// Add to complete list
+				complete.push(id, returnId);
 			}
 		}
 	}
