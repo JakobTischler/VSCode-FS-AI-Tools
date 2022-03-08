@@ -31,69 +31,12 @@ export async function getWebviewContent(
 	};
 
 	let content = `<!DOCTYPE html>
-<html lang="en">
-<head>
-	<meta charset="UTF-8">
-	<meta name="viewport" content="width=device-width, initial-scale=1.0">
-	<title>Airline Data</title>
+<html lang="en">`;
+	content += getHeadContent(src.style);
 
-	<link rel="preconnect" href="https://fonts.googleapis.com">
-	<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-	<link href="https://fonts.googleapis.com/css2?family=Fredoka:wght@300;500&family=Montserrat:wght@300;500&family=Noto+Serif+Display:wght@300;600&display=swap" rel="stylesheet">
+	content += `<body>`;
 
-	<link rel="stylesheet" type="text/css" href="${src.style}" />
-</head>
-<body>
-	<header>`;
-
-	/**
-	 * HEADER
-	 */
-
-	const logoPath = await getLogoPath(aifp, flightplanDirPath);
-	if (logoPath) {
-		const logoDiskPath = vscode.Uri.file(logoPath);
-		const logoSrc = panel.webview.asWebviewUri(logoDiskPath);
-
-		// console.log({ logoDiskPath, logoSrc });
-
-		content += `<h1 class="has-logo">
-			<div class="logo">
-				<img src="${logoSrc}" />
-			</div>
-		</h1>`;
-	} else {
-		content += `<h1><div>${aifp.airline}</div></h1>`;
-	}
-
-	content += `<div class="subHeader">
-			<div class="icao">
-				<i class="icon brackets-curly"></i>
-				<span class="value">${aifp.icao || '———'}</span>
-			</div>
-
-			<div class="separator">•</div>
-
-			<div class="callsign">
-				<i class="icon microphone"></i>
-				<span class="value">${aifp.callsign || '———'}</span>
-			</div>
-		</div>
-
-		<div class="subHeader">
-			<div class="author">
-				<i class="icon user-edit"></i>
-				<span class="value">${aifp.author || '———'}</span>
-			</div>
-
-			<div class="separator">•</div>
-
-			<div class="season">
-				<i class="icon calendar-alt"></i>
-				<span class="value">${aifp.season || '———'}</span>
-			</div>
-		</div>
-	</header>`;
+	content += await getHeaderContent(panel, aifp, flightplanDirPath);
 
 	/**
 	 * MAIN
@@ -107,95 +50,15 @@ export async function getWebviewContent(
 
 		// AIRCRAFT
 		if (aircraftData) {
-			content += `<div class="grid-item">
-		<h2>${aircraftData.totalAircraftCount} Aircraft</h2>
-
-		<table class="table aircraft-types sortable" cellspacing="0">
-			<thead><tr>
-				<th class="dir-u">Type</th>
-				<th>Count</th>
-			</tr></thead>
-			<tbody>`;
-
-			for (const aircraftType of aircraftData.aircraftTypes.values()) {
-				if (aircraftType.aircraftCount === 0) continue;
-
-				content += `<tr>
-					<td>${aircraftType.name}</td>
-					<td data-sort="${aircraftType.aircraftCount}"><div><span>${aircraftType.aircraftCount}</span>`;
-				if (aircraftType.liveries.size > 1) {
-					content += `<span class="secondary">(${aircraftType.liveries.size} variations)</span>`;
-				}
-				content += `</div></td></tr>`;
-			}
-
-			content += `</tbody></table></div>`;
+			content += getAircraftContent(aircraftData.aircraftTypes, aircraftData.totalAircraftCount);
 		}
 
-		// AIRPORTS
 		if (flightplan) {
-			content += `<div class="grid-item">
-		<h2>
-			<span>${flightplan.airports.size} Airports</span>`;
-			if (flightplan.airports.size > 10) {
-				content += `<button class="toggle-button" data-target=".airports">Show all</button>`;
-			}
-			content += `</h2>
+			// AIRPORTS
+			content += getAirportsContent(flightplan);
 
-			<table class="table airports sortable hidden" cellspacing="0">
-				<thead><tr>
-				<th>Airport</th>
-				<th class="dir-d">Count</th>
-			</tr></thead>
-			<tbody>`;
-
-			const byCount = [...flightplan.airports.values()].sort((a, b) => b.count - a.count);
-
-			for (const airport of byCount) {
-				content += `<tr>
-					<td>${airport.icao}</td>
-					<td data-sort="${airport.count}"><div>${airport.count.toLocaleString()}</div></td>
-				</tr>`;
-			}
-
-			content += `</tbody></table></div>`;
-		}
-
-		// ROUTES
-		if (flightplan) {
-			const flights = flightplan.segments.all;
-			const segments = flightplan.segments.byAirportPair;
-
-			content += `<div class="grid-item">
-			<h2>
-				<span>${segments.size.toLocaleString()} ${plural('segment', segments.size, {
-				includeNumber: false,
-			})} (${flights.length.toLocaleString()} legs)</span>`;
-			if (segments.size > 10) {
-				content += `<button class="toggle-button" data-target=".route-segments">Show all</button>`;
-			}
-			content += `</h2>
-
-			<table class="table route-segments sortable hidden" cellspacing="0">
-				<thead><tr>
-				<th>Route</th>
-				<th class="dir-d">Count</th>
-				<th>Distance</th>
-			</tr></thead>
-			<tbody>`;
-
-			for (const [airportPair, segment] of [...segments.entries()].sort((a, b) => {
-				if (a[1].count < b[1].count) return 1;
-				if (a[1].count > b[1].count) return -1;
-				return 0;
-			})) {
-				content += `<tr>
-					<td>${airportPair}</td>
-					<td data-sort="${segment.count}"><div>${segment.count}×</div></td>
-					<td data-sort="${segment.distance}"><div class="secondary">${segment.distanceFormatted}</div></td>`;
-			}
-
-			content += `</tbody></table></div>`;
+			// ROUTES
+			content += getRoutesContent(flightplan);
 		}
 
 		content += `</section>`;
@@ -203,13 +66,21 @@ export async function getWebviewContent(
 
 	content += '</main>';
 
-	content += `<script src="https://tofsjonas.github.io/sortable/sortable.js"></script>
-				<script src="${src.js}"></script>`;
+	content += getScriptsContent(src.js);
 
 	content += `</body>
 			</html>`;
 
 	return content;
+}
+
+function getScriptsContent(customScriptUri: vscode.Uri) {
+	return [
+		`<script src="https://tofsjonas.github.io/sortable/sortable.js"></script>`,
+		`<!-- Async script executes immediately and must be after any DOM elements used in callback. -->`,
+		`<script src="https://maps.googleapis.com/maps/api/js?key=AIzaSyB41DRUbKWJHPxaFjMAwdrzWzbVKartNGg&callback=initMap&libraries=&v=weekly&channel=2" async></script>`,
+		`<script src="${customScriptUri}"></script>`,
+	].join('\n');
 }
 
 async function getLogoPath(aifp: AifpData, flightplanDirPath: string) {
@@ -249,4 +120,161 @@ async function getLogoPath(aifp: AifpData, flightplanDirPath: string) {
 	}
 
 	return null;
+}
+function getHeadContent(customCssUri: vscode.Uri) {
+	return `<head>
+	<meta charset="UTF-8">
+	<meta name="viewport" content="width=device-width, initial-scale=1.0">
+	<title>Airline Data</title>
+
+	<link rel="preconnect" href="https://fonts.googleapis.com">
+	<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+	<link href="https://fonts.googleapis.com/css2?family=Fredoka:wght@300;500&family=Montserrat:wght@300;500&family=Noto+Serif+Display:wght@300;600&display=swap" rel="stylesheet">
+
+	<link rel="stylesheet" type="text/css" href="${customCssUri}" />
+</head>`;
+}
+
+async function getHeaderContent(panel: vscode.WebviewPanel, aifp: AifpData, flightplanDirPath: string) {
+	let content = `<header>`;
+
+	const logoPath = await getLogoPath(aifp, flightplanDirPath);
+	if (logoPath) {
+		const logoDiskPath = vscode.Uri.file(logoPath);
+		const logoSrc = panel.webview.asWebviewUri(logoDiskPath);
+
+		content += `<h1 class="has-logo">
+						<div class="logo">
+							<img src="${logoSrc}" />
+						</div>
+					</h1>`;
+	} else {
+		content += `<h1><div>${aifp.airline}</div></h1>`;
+	}
+
+	content += `<div class="subHeader">
+					<div class="icao">
+						<i class="icon brackets-curly"></i>
+						<span class="value">${aifp.icao || '———'}</span>
+					</div>
+
+					<div class="separator">•</div>
+
+					<div class="callsign">
+						<i class="icon microphone"></i>
+						<span class="value">${aifp.callsign || '———'}</span>
+					</div>
+
+					<!-- New row -->
+					<div class="author">
+						<i class="icon user-edit"></i>
+						<span class="value">${aifp.author || '———'}</span>
+					</div>
+
+					<div class="separator">•</div>
+
+					<div class="season">
+						<i class="icon calendar-alt"></i>
+						<span class="value">${aifp.season || '———'}</span>
+					</div>
+				</div>
+			</header>`;
+
+	return content;
+}
+
+function getAircraftContent(aircraftTypes: TAircraftTypesByTypeCode, totalAircraftCount: number) {
+	let content = `<div class="grid-item">
+	<h2>${totalAircraftCount} Aircraft</h2>
+
+	<table id="aircraft-types" class="table card sortable" cellspacing="0">
+		<thead><tr>
+			<th class="dir-u">Type</th>
+			<th>Count</th>
+		</tr></thead>
+		<tbody>`;
+
+	for (const aircraftType of aircraftTypes.values()) {
+		if (aircraftType.aircraftCount === 0) continue;
+
+		content += `<tr>
+				<td>${aircraftType.name}</td>
+				<td data-sort="${aircraftType.aircraftCount}"><div><span>${aircraftType.aircraftCount}</span>`;
+		if (aircraftType.liveries.size > 1) {
+			content += `<span class="secondary">(${aircraftType.liveries.size} variations)</span>`;
+		}
+		content += `</div></td></tr>`;
+	}
+
+	content += `</tbody></table></div>`;
+
+	return content;
+}
+
+function getAirportsContent(flightplan: Flightplan) {
+	let content = `<div class="grid-item">
+						<h2>
+							<span>${flightplan.airports.size} Airports</span>`;
+	if (flightplan.airports.size > 10) {
+		content += `<button class="toggle-button" data-target="#airports">Show all</button>`;
+	}
+	content += `</h2>
+
+				<table id="airports" class="table card sortable hidden" cellspacing="0">
+					<thead><tr>
+					<th>Airport</th>
+					<th class="dir-d">Count</th>
+				</tr></thead>
+				<tbody>`;
+
+	const byCount = [...flightplan.airports.values()].sort((a, b) => b.count - a.count);
+
+	for (const airport of byCount) {
+		content += `<tr>
+						<td>${airport.icao}</td>
+						<td data-sort="${airport.count}"><div>${airport.count.toLocaleString()}</div></td>
+					</tr>`;
+	}
+
+	content += `</tbody></table></div>`;
+
+	return content;
+}
+
+function getRoutesContent(flightplan: Flightplan) {
+	const flights = flightplan.segments.all;
+	const segments = flightplan.segments.byAirportPair;
+
+	let content = `<div class="grid-item">
+	<h2>
+		<span>${segments.size.toLocaleString()} ${plural('segment', segments.size, {
+		includeNumber: false,
+	})} (${flights.length.toLocaleString()} legs)</span>`;
+	if (segments.size > 10) {
+		content += `<button class="toggle-button" data-target="#route-segments">Show all</button>`;
+	}
+	content += `</h2>
+
+	<table id="route-segments" class="table card sortable hidden" cellspacing="0">
+		<thead><tr>
+		<th>Route</th>
+		<th class="dir-d">Count</th>
+		<th>Distance</th>
+	</tr></thead>
+	<tbody>`;
+
+	for (const [airportPair, segment] of [...segments.entries()].sort((a, b) => {
+		if (a[1].count < b[1].count) return 1;
+		if (a[1].count > b[1].count) return -1;
+		return 0;
+	})) {
+		content += `<tr>
+			<td>${airportPair}</td>
+			<td data-sort="${segment.count}"><div>${segment.count}×</div></td>
+			<td data-sort="${segment.distance}"><div class="secondary">${segment.distanceFormatted}</div></td>`;
+	}
+
+	content += `</tbody></table></div>`;
+
+	return content;
 }
