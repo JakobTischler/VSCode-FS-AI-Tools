@@ -1,18 +1,5 @@
 import { Airport } from '../Airport/Airport';
 
-type TDistanceUnitFactor = {
-	km: number;
-	mi: number;
-	nm: number;
-};
-const distanceUnitFactor: TDistanceUnitFactor = {
-	km: 0.001,
-	mi: 0.00062137141841645,
-	nm: 0.000539957,
-};
-// TODO add to config
-const distanceUnit: keyof TDistanceUnitFactor = 'km';
-
 export type TRouteSegmentData = {
 	depApt: Airport;
 	depWeek: number;
@@ -85,7 +72,7 @@ export class RouteSegment {
 	}
 
 	updateDistance() {
-		const distance = this.departureAirport.calculateDistance(this.arrivalAirport);
+		const distance = this.departureAirport.distanceToAirport(this.arrivalAirport);
 
 		this.distance = distance.value;
 		this.distanceFormatted = distance.formatted;

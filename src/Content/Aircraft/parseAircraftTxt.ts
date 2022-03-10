@@ -45,7 +45,6 @@ export async function parseAircraftTxt(data: TFlightplanFilesMetaData, doAircraf
 		showError(`No aircraft found in "${data.aircraft.fileName}"`);
 		return;
 	}
-	console.log({ aircraftDataRaw: liveries });
 
 	// 2. Count aircraft in flightplans.txt file
 	if (doAircraftCount) {

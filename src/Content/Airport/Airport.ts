@@ -1,23 +1,9 @@
-import * as vscode from 'vscode';
 import * as fs from 'fs';
-import { degreesToRadians, getFileContents, showError } from '../../Tools/helpers';
+import * as vscode from 'vscode';
+import { getFileContents, showError } from '../../Tools/helpers';
 import { LocalStorageService } from '../../Tools/LocalStorageService';
-
-const config = vscode.workspace.getConfiguration('fs-ai-tools.airlineView', undefined);
-
-type TDistanceUnitFactor = {
-	/** Kilometers */
-	km: number;
-	/** Miles */
-	mi: number;
-	/** Nautical miles */
-	nm: number;
-};
-const distanceUnitFactors: TDistanceUnitFactor = {
-	km: 0.001,
-	mi: 0.00062137141841645,
-	nm: 0.000539957,
-};
+import { CoordinateComponent } from './Coordinates';
+import { Distance } from './Distance';
 
 /**
  * Describes an airport with its ICAO code (`.icao`), its coordinates
@@ -71,26 +57,8 @@ export class Airport {
 	 * distance string (`formatted`), converted to the set distance unit
 	 * (kilometers, miles or nautical miles), with grouping and unit.
 	 */
-	calculateDistance(targetAirport: Airport) {
-		const distanceUnit = config.get('distanceUnit') as keyof TDistanceUnitFactor & string;
-		const distanceFactor = distanceUnitFactors[distanceUnit];
-
-		if (targetAirport === this) {
-			return { value: 0, formatted: `0 ${distanceUnit}` };
-		}
-
-		const value = distance(this, targetAirport);
-		const formatted = `${(value * distanceFactor).toLocaleString(undefined, {
-			maximumFractionDigits: 0,
-		})} ${distanceUnit}`;
-
-		return {
-			/** Distance in meters */
-			value,
-			/** Distance formatted to either kilometers, miles or nautical miles
-			 * (depending on extension setting), with grouping and unit */
-			formatted,
-		};
+	distanceToAirport(targetAirport: Airport) {
+		return new Distance(this.coordinates, targetAirport.coordinates);
 	}
 
 	/** The airport data in an `airports.txt` line format
@@ -99,89 +67,6 @@ export class Airport {
 		// return `${this.icao},${this.coordinates.lat.str},${this.coordinates.lon.str},${this.altitude}`;
 		return [this.icao, this.coordinates.lat.str, this.coordinates.lon.str, this.altitude].join(',');
 	}
-}
-
-class CoordinateComponent {
-	degrees: number;
-	/** Coordinate minutes. Includes seconds as fraction. */
-	minutes: number;
-	/** Either -1 or 1, based on the factor name ("N", "E": 1 / "S", "W": -1). */
-	factor: number;
-	/**
-	 * Latitude: "N" or "S" / Longitude: "E" or "W" — the former indicates a
-	 * positive value, the latter a negative value.
-	 */
-	factorName: string;
-
-	constructor(str: string, airportLine: string) {
-		const m = str.match(/([NESW])(\d+)\*\s*(\d+(?:\.\d+)?)'?/i);
-		if (!m) {
-			const msg = `Coordinates string "${str}" in line "${airportLine}" couldn't be parsed. Check its formatting.`;
-			showError(msg);
-			throw new Error(msg);
-		}
-
-		this.factorName = m[1];
-		this.factor = m[1] === 'N' || m[1] === 'E' ? 1 : -1;
-		this.degrees = Number(m[2]);
-		this.minutes = Number(m[3]);
-	}
-
-	/** The full, absolute number value (`degrees + minutes/60`) */
-	get value() {
-		return this.degrees + this.minutes / 60;
-	}
-
-	/** The full number value (`degrees + minutes/60`). Negative if "W" or "S". */
-	get factoredValue() {
-		return this.value * this.factor;
-	}
-
-	/** The airports.txt format representation of the coordinate (e.g. `N64* 11.4400'`) */
-	get str() {
-		const deg = this.degrees.toLocaleString(undefined, {
-			minimumIntegerDigits: 2,
-			useGrouping: false,
-		});
-
-		const min = this.minutes.toLocaleString(undefined, {
-			minimumFractionDigits: 4,
-			minimumIntegerDigits: 2,
-			useGrouping: false,
-		});
-		return `${this.factorName}${deg}* ${min}'`;
-	}
-}
-
-/**
- * Calculate the distance between two airports
- * @param {Airport} from - Departure airport
- * @param {Airport} to - Destination airport.
- * @returns The distance between the two airports in meters.
- * @source https://www.movable-type.co.uk/scripts/latlong.html
- */
-function distance(from: Airport, to: Airport) {
-	const { sin, cos, atan2, sqrt } = Math;
-
-	// Convert the latitudes from degrees to radians.
-	const φ1 = degreesToRadians(from.coordinates.lat.factoredValue); // φ, λ in radians
-	const φ2 = degreesToRadians(to.coordinates.lat.factoredValue);
-
-	// Converting the difference in latitude to radians.
-	const Δφ = degreesToRadians(to.coordinates.lat.factoredValue - from.coordinates.lat.factoredValue);
-	const Δλ = degreesToRadians(to.coordinates.lon.factoredValue - from.coordinates.lon.factoredValue);
-
-	// Haversine formula for calculating the distance between two points on a sphere.
-	const a = sin(Δφ / 2) * sin(Δφ / 2) + cos(φ1) * cos(φ2) * sin(Δλ / 2) * sin(Δλ / 2);
-	const c = 2 * atan2(sqrt(a), sqrt(1 - a));
-
-	/** Earth radius in meters */
-	const R = 6371e3;
-
-	/** Distance in meters */
-	const distance = R * c;
-
-	return distance;
 }
 
 export type TAirportCodeCount = {

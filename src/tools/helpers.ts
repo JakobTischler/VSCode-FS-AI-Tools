@@ -219,3 +219,17 @@ export async function getFlightplanFiles(dirPath: string, readFiles: boolean = f
 
 	return <TFlightplanFilesMetaData>ret;
 }
+
+/**
+ * Create a random string of characters of a given length
+ * @param {number} [length=32] - The length of the nonce to generate. _Default: 32_
+ * @returns A random string of characters.
+ */
+export function createNonce(length: number = 32) {
+	let text = '';
+	const characters = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ=!$?%_-abcdefghijklmnopqrstuvwxyz0123456789';
+	for (let i = 0; i < length; i++) {
+		text += characters.charAt(Math.floor(Math.random() * characters.length));
+	}
+	return text;
+}

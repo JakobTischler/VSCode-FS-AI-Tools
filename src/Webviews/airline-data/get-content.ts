@@ -187,7 +187,7 @@ function getAircraftContent(aircraftTypes: TAircraftTypesByTypeCode, totalAircra
 	let content = `<div class="grid-item">
 	<h2>${totalAircraftCount} Aircraft</h2>
 
-	<table id="aircraft-types" class="table card sortable" cellspacing="0">
+	<table id="aircraft-types" class="table card ${aircraftTypes.size > 1 ? 'sortable' : ''}" cellspacing="0">
 		<thead><tr>
 			<th class="dir-u">Type</th>
 			<th>Count</th>
@@ -255,7 +255,7 @@ function getRoutesContent(flightplan: Flightplan) {
 	}
 	content += `</h2>
 
-	<table id="route-segments" class="table card sortable hidden" cellspacing="0">
+	<table id="route-segments" class="table card ${segments.size > 1 ? 'sortable' : ''} hidden" cellspacing="0">
 		<thead><tr>
 		<th>Route</th>
 		<th class="dir-d">Count</th>
