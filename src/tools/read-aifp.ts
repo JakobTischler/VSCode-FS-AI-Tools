@@ -15,12 +15,11 @@ export interface AifpData {
  * @param path The full path of the `aifp.cfg` file
  * @returns The contents of the `aifp.cfg` file, pased into an object
  */
-export async function readAifpCfg(path: string): Promise<AifpData> {
+export async function readAifpCfg(path: string, showExistError: boolean = true): Promise<AifpData> {
 	console.log('readAifpCfg()', path);
 
-	while (path.startsWith('\\')) {
-		path = path.substring(1);
-	}
+	// Remove start backslashes at path
+	path = path.replace(/^\\+/, '');
 
 	/*
 	1. If aifp.cfg exists in same directory as current flightplan file
@@ -38,7 +37,7 @@ export async function readAifpCfg(path: string): Promise<AifpData> {
 		found: false,
 	};
 
-	const contents = await getFileContents(path);
+	const contents = await getFileContents(path, showExistError);
 	if (!contents) {
 		// showError(`No file contents found in "${path}".`);
 		return data;

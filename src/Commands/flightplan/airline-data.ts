@@ -11,7 +11,7 @@
 
 import * as vscode from 'vscode';
 import * as path from 'path';
-import { getFlightplanFiles, showError } from '../../Tools/helpers';
+import { getFlightplanFiles, showErrorModal, showError } from '../../Tools/helpers';
 import { readAifpCfg } from '../../Tools/read-aifp';
 import { Flightplan, FlightplanRaw } from '../../Classes/Flightplan';
 import { parseAircraftTxt } from '../../Content/Aircraft/parseAircraftTxt';
@@ -31,16 +31,22 @@ export async function ShowAirlineView(
 		// Neither argument nor editor has file → cancel
 		if (!filePath) {
 			showError('No valid file path provided');
-			return false;
+			return;
 		}
 	}
+
+	/** The flightplan directory */
 	const dirPath = path.dirname(filePath).replace(/^\/+/, '');
 
 	// Get AIFP data
-	const aifp = await readAifpCfg(path.join(dirPath, 'aifp.cfg'));
+	const aifpPath = path.join(dirPath, 'aifp.cfg');
+	const aifp = await readAifpCfg(aifpPath, false);
 	if (!aifp.found) {
-		showError('No valid aifp.cfg file found in flightplan directory.');
-		return false;
+		showErrorModal(
+			'AIFP file not found',
+			`No valid "aifp.cfg" file found in flightplan directory. Please create the file at "${aifpPath}".`
+		);
+		return;
 	}
 
 	// Flightplans.txt content

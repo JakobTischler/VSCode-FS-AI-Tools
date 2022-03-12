@@ -105,9 +105,11 @@ export function loopNumber(num: number, min: number, max: number, dir: 1 | -1 = 
  * @param encoding The file encoding, defaults to "utf8"
  * @returns The file contents as string
  */
-export async function getFileContents(path: string) {
+export async function getFileContents(path: string, showExistError: boolean = true) {
 	if (!Fs.existsSync(path)) {
-		showError(`File at "${path}" couldn't be found`);
+		if (showExistError) {
+			showError(`File at "${path}" couldn't be found`);
+		}
 		return null;
 	}
 
@@ -122,11 +124,18 @@ export async function getFileContents(path: string) {
 	return String(data);
 }
 
-export function showError(message: string, showPopup: boolean = true) {
+export function showError(message: string, showToast: boolean = true) {
 	console.error(message);
-	if (showPopup) {
+	if (showToast) {
 		window.showErrorMessage(message);
 	}
+}
+
+export function showErrorModal(title: string, message: string) {
+	window.showErrorMessage(title, {
+		detail: message,
+		modal: true,
+	});
 }
 
 type TPluralOptions = {
