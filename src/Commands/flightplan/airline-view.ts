@@ -13,7 +13,7 @@ import * as vscode from 'vscode';
 import * as path from 'path';
 import { getFlightplanFiles, showErrorModal, showError } from '../../Tools/helpers';
 import { readAifpCfg } from '../../Tools/read-aifp';
-import { Flightplan, FlightplanRaw } from '../../Classes/Flightplan';
+import { Flightplan, FlightplanRaw } from '../../Content/Flightplan/Flightplan';
 import { parseAircraftTxt } from '../../Content/Aircraft/parseAircraftTxt';
 import { getWebviewContent } from '../../Webviews/airline-view/get-content';
 import { LocalStorageService } from '../../Tools/LocalStorageService';
@@ -51,14 +51,20 @@ export async function ShowAirlineView(
 
 	// Flightplans.txt content
 	const fileData = await getFlightplanFiles(dirPath, true);
-	if (!fileData.aircraft || !fileData.flightplans) {
-		const name = !fileData.aircraft ? 'Aircraft' : 'Flightplans';
+	if (!fileData.aircraft || !fileData.airports || !fileData.flightplans) {
+		let name = 'Aircraft';
+		if (!fileData.airports) name = 'Airports';
+		if (!fileData.flightplans) name = 'Flightplans';
 		showError(`${name}….txt file couldn't be found in directory.`);
 		return;
 	}
 
 	if (!fileData.aircraft.text) {
 		showError(`${fileData.aircraft.fileName} couldn't be read.`);
+		return;
+	}
+	if (!fileData.airports.text) {
+		showError(`${fileData.airports.fileName} couldn't be read.`);
 		return;
 	}
 	if (!fileData.flightplans.text) {
@@ -73,7 +79,7 @@ export async function ShowAirlineView(
 	}
 
 	const flightplan = new Flightplan(fileData.flightplans.text);
-	await flightplan.parseAirportCodes(storageManager);
+	await flightplan.parseAirportCodes(storageManager, fileData.airports.text);
 	flightplan.parse(aircraftData.aircraftTypes, aircraftData.aircraftLiveries);
 
 	// Create Webview

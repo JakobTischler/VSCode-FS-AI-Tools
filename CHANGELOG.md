@@ -1,5 +1,8 @@
 # Change Log
 
+### 1.4.1
+- `Show Airline View`: now first checks the `Airports….txt` file in the flightplan directory before reading the master airports file.
+
 ### 1.4.0
 - New function `Show Airline View`: a custom view that shows airline data such as the logo, ICAO code, callsign, author, season, visited airports, used aircraft types as well as routes with distances.
   - Requires an `aifp.cfg` file in the flightplan directory, containing the airline metadata.

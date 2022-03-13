@@ -1,4 +1,4 @@
-import { Flightplan } from '../../Classes/Flightplan';
+import { Flightplan } from '../Flightplan/Flightplan';
 
 export class Routemap {
 	flightplan: Flightplan;

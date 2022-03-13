@@ -3,7 +3,7 @@ import * as path from 'path';
 import { plural, showError } from '../../Tools/helpers';
 import { LocalStorageService } from '../../Tools/LocalStorageService';
 import { Airport, getMasterAirports, TAirportCodeToLine } from '../../Content/Airport/Airport';
-import { FlightplanRaw } from '../../Classes/Flightplan';
+import { FlightplanRaw } from '../../Content/Flightplan/Flightplan';
 
 export async function GenerateAirports(storageManager: LocalStorageService) {
 	console.log('GenerateAirports()');

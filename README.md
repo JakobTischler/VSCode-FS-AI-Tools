@@ -18,8 +18,11 @@ A Visual Studio Code extension for managing, cleaning and improving FS/Prepar3D 
 * Requires an `aifp.cfg` file in the flightplan directory, containing the airline metadata.
 * Logo will be searched in flightplan directory ("logo.png/jpg" or "[callsign].png/jpg") or a custom logo directory ("directory/[callsign].png/jpg")
 * Custom logo directory path can be set with the `fs-ai-tools.airlineView.logoDirectoryPath` setting.
+* Can use master airports file (`fs-ai-tools.generateAirports.masterAirportsFilePath`) if an airport is not found in flightplan's Airports.txt file.
 <br>
 <br>
+
+---
 <br>
 
 ### Clean Aircraft.cfg
@@ -36,6 +39,8 @@ A Visual Studio Code extension for managing, cleaning and improving FS/Prepar3D 
 * Sort entry property lines (configurable)
 <br>
 <br>
+
+---
 <br>
 
 ### Clean Flightplan
@@ -51,6 +56,8 @@ A Visual Studio Code extension for managing, cleaning and improving FS/Prepar3D 
 * Add or remove spaces after `//`
 <br>
 <br>
+
+---
 <br>
 
 ### Change AC# Number
@@ -80,6 +87,8 @@ Changes the AC# of the selected `Aircraft_….txt` or `Flightplans_….txt` line
   ```
 <br>
 <br>
+
+---
 <br>
 
 ### Count Aircraft
@@ -110,12 +119,16 @@ Counts the aircraft in each "block" in a flightplans.txt file and appends that c
   ```
 <br>
 <br>
+
+---
 <br>
 
 ### Create aifp.cfg
 Uses the flightplans.txt [Flightplan Header](#create-flightplan-header) data and creates an aifp.cfg file with that data. If the file already exists, all content will be overwritten.
 <br>
 <br>
+
+---
 <br>
 
 ### Create Aircraft
@@ -171,9 +184,10 @@ From a list of registrations, use a fltsim entry template file to create entries
   * Don't create folders → Folders will never be created
   * Ask everytime → You will be asked everytime you run the "Create Aircraft" function
 * If there is a `texture.cfg` file on the same hierarchical level as the `aircraft.cfg`/template file, it can optionally be copied to the newly created folders. This can be toggled in the settings.
+<br>
+<br>
 
-<br>
-<br>
+---
 <br>
 
 ### Create Flightplan Header
@@ -185,20 +199,28 @@ Preview:
 //DC Aviation | DCS | "TWIN STAR"
 //Morten Blindheim, Su19
 ```
+
 <br>
 <br>
+
+---
 <br>
 
 ### Create Flightplan Header from aifp.cfg
 Reads the data from an `aifp.cfg` file in the same directory (if present), and uses that data to create the header for the current flightplan file. See [Create Flightplan Header](#create-flightplan-header) for example.
 <br>
 <br>
+
+---
 <br>
 
 ### Generate Airports
+
 Extracts the airports from a `Flightplans.txt` file, and uses an airports master file (containing every possible airport entry) to create this flightplan's `Airports.txt` file. The file path to the master file must be provided in the `fs-ai-tools.generateAirports.masterAirportsFilePath` setting.
 <br>
 <br>
+
+---
 <br>
 
 ### Rebase AC#s
@@ -236,8 +258,11 @@ Sets up a new AC# sequence for the selected aircraft, based on a large and a sma
 
   AC#1020,450,"Aircraft 9"
   ```
+
 <br>
 <br>
+
+---
 <br>
 
 ### Rename Files
@@ -261,18 +286,24 @@ Renames the flightplan files ("Aircraft…", "Airports…", "Flightplans…") in
   * "Wi2021" → "Wi2021"
 <br>
 <br>
+
+---
 <br>
 
 ### Renumber add-ons.cfg
 Renumbers the `[Package.x]` entries sequentially.
 <br>
 <br>
+
+---
 <br>
 
 ### Renumber scenery.cfg
 Renumbers the `[Area.xxx]` entries sequentially and sets the `Layer=x` properties to the same number.
 <br>
 <br>
+
+---
 <br>
 
 ### Show aircraft list
@@ -291,6 +322,8 @@ Preview:
 ```
 <br>
 <br>
+
+---
 <br>
 
 ### Switch FS9 ⟷ FSX

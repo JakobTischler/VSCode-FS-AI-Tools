@@ -1,10 +1,16 @@
-import { showError } from '../Tools/helpers';
-import { Airport, getMasterAirports, TAirportCodeCount, TAirportCodeToLine } from '../Content/Airport/Airport';
-import { Aircraft } from '../Content/Aircraft/Aircraft';
-import { TAircraftLiveriesByAcNum } from '../Content/Aircraft/AircraftLivery';
-import { TAircraftTypesByTypeCode } from '../Content/Aircraft/AircraftType';
-import { RouteSegment, TRouteSegmentData } from '../Content/Route/RouteSegment';
-import { LocalStorageService } from '../Tools/LocalStorageService';
+import { showError } from '../../Tools/helpers';
+import {
+	Airport,
+	getMasterAirports,
+	parseAirportsTxt,
+	TAirportCodeCount,
+	TAirportCodeToLine,
+} from '../Airport/Airport';
+import { Aircraft } from '../Aircraft/Aircraft';
+import { TAircraftLiveriesByAcNum } from '../Aircraft/AircraftLivery';
+import { TAircraftTypesByTypeCode } from '../Aircraft/AircraftType';
+import { RouteSegment, TRouteSegmentData } from '../Route/RouteSegment';
+import { LocalStorageService } from '../../Tools/LocalStorageService';
 
 export class Flightplan {
 	text: string;
@@ -25,32 +31,42 @@ export class Flightplan {
 
 	constructor(flightplanText: string) {
 		this.text = flightplanText;
-
-		// this.airports = this.parseAirportCodes(storageManager);
-
-		// this.parse(aircraftTypes, aircraftLiveries);
-
-		// this.createAircraftStats();
 	}
 
-	async parseAirportCodes(storageManager: LocalStorageService) {
+	async parseAirportCodes(storageManager: LocalStorageService, airportsTxtText: string) {
 		const airportCodes = collectAirportCodes(this.text);
+		const missing: TAirportCodeCount[] = [];
 
-		// Get master airport data
-		const masterAirports: TAirportCodeToLine | null = await getMasterAirports(storageManager);
-		if (!masterAirports?.size) {
-			return;
-		}
+		const airportsTxtAirports: TAirportCodeToLine = parseAirportsTxt(airportsTxtText);
 
+		// Check flightplan's airports.txt
 		for (const [icao, data] of airportCodes.entries()) {
-			// Get airport's master data
-			if (!masterAirports.has(icao)) {
-				showError(`Airport "${icao}" couldn't be found in master airports file.`);
+			if (!airportsTxtAirports.has(icao)) {
+				missing.push(data);
 				continue;
 			}
 
-			const airport = new Airport(masterAirports.get(icao)!, data.count);
+			const airport = new Airport(airportsTxtAirports.get(icao)!, data.count);
 			this.airports.set(icao, airport);
+		}
+
+		if (missing.length) {
+			// Get master airport data
+			const masterAirports: TAirportCodeToLine | null = await getMasterAirports(storageManager);
+			if (!masterAirports?.size) {
+				return;
+			}
+
+			for (const data of missing) {
+				// Get airport's master data
+				if (!masterAirports.has(data.icao)) {
+					showError(`Airport "${data.icao}" couldn't be found in master airports file.`);
+					continue;
+				}
+
+				const airport = new Airport(masterAirports.get(data.icao)!, data.count);
+				this.airports.set(data.icao, airport);
+			}
 		}
 	}
 

@@ -2,7 +2,7 @@ import * as vscode from 'vscode';
 import * as fs from 'fs';
 import * as path from 'path';
 import { AifpData } from '../../Tools/read-aifp';
-import { Flightplan } from '../../Classes/Flightplan';
+import { Flightplan } from '../../Content/Flightplan/Flightplan';
 import { TAircraftTypesByTypeCode } from '../../Content/Aircraft/AircraftType';
 import { TAircraftLiveriesByAcNum } from '../../Content/Aircraft/AircraftLivery';
 import { createNonce, plural } from '../../Tools/helpers';
@@ -227,7 +227,6 @@ function getAircraftContent(aircraftTypes: TAircraftTypesByTypeCode, totalAircra
 			content += `<li>${livery.count}×</li>`;
 		}
 		content += `</ul>
-					<div></div>
 				</div>
 			</td>
 		</tr>`;

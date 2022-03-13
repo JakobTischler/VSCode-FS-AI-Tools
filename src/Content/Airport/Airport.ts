@@ -121,16 +121,7 @@ export async function getMasterAirports(storageManager: LocalStorageService) {
 		const fileContents = await getFileContents(filePath);
 		if (!fileContents) return null;
 
-		const airports: TAirportCodeToLine = new Map(
-			fileContents
-				.split('\n')
-				.filter((line) => line.length)
-				.map((line) => {
-					const icao = line.trim().split(',')[0];
-
-					return [icao, line];
-				})
-		);
+		const airports: TAirportCodeToLine = parseAirportsTxt(fileContents);
 
 		// Save to storage
 		storageManager.setValue<Number>('airportMasterModifiedTime', modifiedTime);
@@ -141,4 +132,17 @@ export async function getMasterAirports(storageManager: LocalStorageService) {
 
 	showError(`Master airports file couldn't be parsed.`);
 	return null;
+}
+
+export function parseAirportsTxt(fileContents: string): TAirportCodeToLine {
+	return new Map(
+		fileContents
+			.split('\n')
+			.filter((line) => line.length)
+			.map((line) => {
+				const icao = line.trim().split(',')[0];
+
+				return [icao, line];
+			})
+	);
 }

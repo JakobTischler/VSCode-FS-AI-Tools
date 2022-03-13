@@ -1,5 +1,5 @@
 import { AircraftLivery } from './AircraftLivery';
-import { Flightplan } from '../../Classes/Flightplan';
+import { Flightplan } from '../Flightplan/Flightplan';
 import { RouteSegment } from '../Route/RouteSegment';
 
 export class Aircraft {
