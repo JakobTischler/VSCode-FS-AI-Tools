@@ -2,10 +2,10 @@ import * as vscode from 'vscode';
 import * as fs from 'fs';
 import * as path from 'path';
 import { AifpData } from '../../Tools/read-aifp';
-import { Flightplan, FlightplanRaw } from '../../Classes/Flightplan';
+import { Flightplan } from '../../Classes/Flightplan';
 import { TAircraftTypesByTypeCode } from '../../Content/Aircraft/AircraftType';
 import { TAircraftLiveriesByAcNum } from '../../Content/Aircraft/AircraftLivery';
-import { plural } from '../../Tools/helpers';
+import { createNonce, plural } from '../../Tools/helpers';
 
 export async function getWebviewContent(
 	panel: vscode.WebviewPanel,
@@ -18,21 +18,20 @@ export async function getWebviewContent(
 		totalAircraftCount: number;
 		nonMatches: string[];
 	},
-	flightplanRaw: FlightplanRaw,
 	flightplan: Flightplan
 ): Promise<string> {
-	const paths = {
-		style: path.join(context.extensionPath, '/src/Webviews/airline-data/style.css'),
-		js: path.join(context.extensionPath, '/src/Webviews/airline-data/index.js'),
-	};
-	const src = {
-		style: vscode.Uri.file(paths.style).with({ scheme: 'vscode-resource' }),
-		js: vscode.Uri.file(paths.js).with({ scheme: 'vscode-resource' }),
+	const uris = {
+		css: panel.webview.asWebviewUri(
+			vscode.Uri.file(path.join(context.extensionPath, 'res', 'Webviews', 'airline-view', 'style.css'))
+		),
+		js: panel.webview.asWebviewUri(
+			vscode.Uri.file(path.join(context.extensionPath, 'res', 'Webviews', 'airline-view', 'index.js'))
+		),
 	};
 
 	let content = `<!DOCTYPE html>
 <html lang="en">`;
-	content += getHeadContent(src.style);
+	content += getHeadContent(uris.css);
 
 	content += `<body>`;
 
@@ -62,11 +61,18 @@ export async function getWebviewContent(
 		}
 
 		content += `</section>`;
+
+		if (flightplan) {
+			content += `<section id="routemap">
+							<h2>Routemap</h2>
+							<div id="map"></div>
+						</section>`;
+		}
 	}
 
 	content += '</main>';
 
-	content += getScriptsContent(src.js);
+	content += getScriptsContent(uris.js);
 
 	content += `</body>
 			</html>`;
@@ -77,9 +83,11 @@ export async function getWebviewContent(
 function getScriptsContent(customScriptUri: vscode.Uri) {
 	return [
 		`<script src="https://tofsjonas.github.io/sortable/sortable.js"></script>`,
-		`<!-- Async script executes immediately and must be after any DOM elements used in callback. -->`,
-		`<script src="https://maps.googleapis.com/maps/api/js?key=AIzaSyB41DRUbKWJHPxaFjMAwdrzWzbVKartNGg&callback=initMap&libraries=&v=weekly&channel=2" async></script>`,
-		`<script src="${customScriptUri}"></script>`,
+		// `<!-- Async script executes immediately and must be after any DOM elements used in callback. -->`,
+		// `<script src="https://maps.googleapis.com/maps/api/js?key=AIzaSyB41DRUbKWJHPxaFjMAwdrzWzbVKartNGg&callback=initMap&libraries=&v=weekly&channel=2" async></script>`,
+		"<script src='https://api.mapbox.com/mapbox-gl-js/v2.3.1/mapbox-gl.js'></script>",
+		"<link href='https://api.mapbox.com/mapbox-gl-js/v2.3.1/mapbox-gl.css' rel='stylesheet' />",
+		`<script src="${customScriptUri}" nonce="${createNonce()}"></script>`,
 	].join('\n');
 }
 

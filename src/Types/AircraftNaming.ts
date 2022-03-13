@@ -1,4 +1,4 @@
-interface AircraftNaming {
+export interface AircraftNaming {
 	list: string[];
 	series: { [manufacturer: string]: string[] };
 	types: {

@@ -2,7 +2,7 @@ import * as vscode from 'vscode';
 import * as Path from 'path';
 import { getFlightplanFiles, showError, writeTextToClipboard } from '../../Tools/helpers';
 import '../../Extenders/string';
-import * as aircraftNaming from '../../data/aircraft-naming.json';
+import * as aircraftNaming from '../../Data/aircraft-naming.json';
 import { parseAircraftTxt } from '../../Content/Aircraft/parseAircraftTxt';
 import { TAircraftTypesByTypeCode } from '../../Content/Aircraft/AircraftType';
 

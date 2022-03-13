@@ -4,4 +4,4 @@ node_modules
 vsc-extension-quickstart*
 src/test
 
-src/data/airports.json
+src/Data/airports.json

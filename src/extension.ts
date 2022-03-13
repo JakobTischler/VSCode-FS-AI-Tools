@@ -1,6 +1,6 @@
 import * as vscode from 'vscode';
 
-import { ShowAirlineView } from './Commands/flightplan/airline-data';
+import { ShowAirlineView } from './Commands/flightplan/airline-view';
 import { CleanAircraftCfg } from './Commands/aircraft-cfg/clean-v2';
 import { CleanFlightplan } from './Commands/flightplan/clean';
 import { ChangeAircraftNumber } from './Commands/flightplan/change-ac-number';

@@ -1,7 +1,8 @@
 import * as vscode from 'vscode';
 import { merge } from 'lodash';
 import { getFileContents, showError } from '../../Tools/helpers';
-import * as _aircraftNaming from '../../data/aircraft-naming.json';
+import * as _aircraftNaming from '../../Data/aircraft-naming.json';
+import { AircraftNaming } from '../../Types/AircraftNaming';
 const aircraftNaming = _aircraftNaming as AircraftNaming;
 import { TFlightplanFilesMetaData } from '../../Types/FlightplanFilesMetaData';
 import { AircraftLivery, TAircraftLiveriesByAcNum } from './AircraftLivery';

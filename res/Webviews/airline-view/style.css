@@ -386,3 +386,9 @@ button.secondary:hover {
 	border-radius: var(--border-radius);
 	box-shadow: 0 0 1.5em var(--color-card-shadow);
 }
+
+/* ROUTEMAP */
+#routemap #map {
+	width: 100%;
+	height: 500px;
+}
