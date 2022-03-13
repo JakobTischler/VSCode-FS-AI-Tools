@@ -29,7 +29,7 @@ body.vscode-light {
 	--color-secondary: var(--color-dark-secondary);
 	--color-tertiary: var(--color-dark-tertiary);
 
-	--color-logo-shadow: rgba(74, 91, 94, 0.065);
+	--color-logo-shadow: rgba(74, 91, 94, 0.2);
 	--color-card-shadow: rgba(25, 30, 31, 0.1);
 }
 body.vscode-dark {
@@ -88,10 +88,9 @@ header h1.has-logo {
 } */
 
 .subHeader {
-	display: grid;
-	/* grid-template-columns: 1fr min-content 1fr; */
-	grid-template-columns: max-content min-content max-content;
-	gap: 0.2em 1.5em;
+	--hGap: 1.5em;
+	display: flex;
+	gap: 0.2em var(--hGap);
 	align-items: center;
 	justify-content: center;
 
@@ -102,17 +101,13 @@ header h1.has-logo {
 }
 .subHeader > div {
 	display: flex;
-	gap: 0.75em;
+	gap: calc(var(--hGap) * 0.5);
 	align-items: center;
 }
-.subHeader > div:nth-child(3n + 1) {
-	justify-self: end;
+.subHeader > div:not(:last-child):after {
+	content: '•';
+	padding-left: calc(var(--hGap) * 0.5);
 }
-
-/* .subHeader .icao,
-.subHeader .callsign {
-	font-family: var(--vscode-editor-font-family);
-} */
 
 /* ICONS */
 i.icon {

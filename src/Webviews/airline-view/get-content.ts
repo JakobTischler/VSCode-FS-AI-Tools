@@ -166,20 +166,17 @@ async function getHeaderContent(panel: vscode.WebviewPanel, aifp: AifpData, flig
 						<span class="value">${aifp.icao || '———'}</span>
 					</div>
 
-					<div class="separator">•</div>
-
 					<div class="callsign">
 						<i class="icon microphone"></i>
 						<span class="value">${aifp.callsign || '———'}</span>
 					</div>
+				</div>
 
-					<!-- New row -->
+				<div class="subHeader">
 					<div class="author">
 						<i class="icon user-edit"></i>
 						<span class="value">${aifp.author || '———'}</span>
 					</div>
-
-					<div class="separator">•</div>
 
 					<div class="season">
 						<i class="icon calendar-alt"></i>
@@ -207,7 +204,7 @@ function getAircraftContent(aircraftTypes: TAircraftTypesByTypeCode, totalAircra
 
 		content += `<tr>
 				<td>${aircraftType.name}</td>
-				<td data-sort="${aircraftType.aircraftCount}"><div><span>${aircraftType.aircraftCount}</span>`;
+				<td data-sort="${aircraftType.aircraftCount}"><div><span>${aircraftType.aircraftCount.toLocaleString()}×</span>`;
 		if (aircraftType.liveries.size > 1) {
 			content += `<span class="secondary">(${aircraftType.liveries.size} variations)</span>`;
 		}
@@ -240,7 +237,7 @@ function getAirportsContent(flightplan: Flightplan) {
 	for (const airport of byCount) {
 		content += `<tr>
 						<td>${airport.icao}</td>
-						<td data-sort="${airport.count}"><div>${airport.count.toLocaleString()}</div></td>
+						<td data-sort="${airport.count}"><div>${airport.count.toLocaleString()}×</div></td>
 					</tr>`;
 	}
 
