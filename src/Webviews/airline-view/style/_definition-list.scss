@@ -1,0 +1,56 @@
+@use '_anim';
+@use '_fonts';
+
+/* DEFINITION LIST */
+dl.table {
+	display: grid;
+	grid-template-columns: auto 1fr;
+	gap: 0;
+	background: transparent;
+	padding: 1rem;
+	border: 1px solid var(--color-tertiary);
+
+	dt {
+		margin: 0;
+		padding: 0.5em 1em;
+		transform: scaleY(1);
+		height: auto;
+	}
+
+	dd {
+		margin: 0;
+		padding: 0.5em 1em;
+		transform: scaleY(1);
+		height: auto;
+		color: var(--color-secondary);
+		display: flex;
+		align-items: center;
+		gap: 1em;
+
+		.secondary {
+			font-family: fonts.$sans-serif-secondary;
+			font-size: 0.8em;
+			opacity: 0.8;
+		}
+	}
+
+	dt:nth-of-type(even),
+	dd:nth-of-type(even) {
+		background: var(--vscode-tree-tableOddRowsBackground);
+	}
+}
+
+dt.hideable,
+dd.hideable {
+	transition: transform anim.$length, height anim.$length, padding-top anim.$length, padding-bottom anim.$length;
+}
+
+dl.hidden {
+	dt.hideable,
+	dd.hideable {
+		transform: scaleY(0);
+		height: 0;
+		padding-top: 0;
+		padding-bottom: 0;
+	}
+}

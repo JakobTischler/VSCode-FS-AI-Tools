@@ -1,0 +1,111 @@
+@use '_fonts';
+
+/* TABLE */
+table {
+	background: transparent;
+	padding: 1rem;
+	border: 1px solid var(--color-tertiary);
+	width: 100%;
+	$cell-padding: 0.5rem 1rem;
+
+	th {
+		padding: $cell-padding;
+		font-family: fonts.$sans-serif-secondary;
+		font-size: 0.7em;
+		font-weight: 500;
+		letter-spacing: 3px;
+		opacity: 0.7;
+		text-align: left;
+		text-transform: uppercase;
+	}
+
+	&.sortable th {
+		cursor: pointer;
+		position: relative;
+
+		&:after {
+			content: '';
+			padding-left: 0.5em;
+			position: absolute;
+		}
+
+		&.no-sort {
+			cursor: default;
+			pointer-events: none;
+		}
+
+		&.dir-u:after {
+			content: '▴';
+		}
+
+		&.dir-d:after {
+			content: '▾';
+		}
+	}
+
+	tr {
+		&:nth-of-type(even) td {
+			background: var(--vscode-tree-tableOddRowsBackground);
+		}
+
+		td {
+			transform: scaleY(1);
+			height: auto;
+			margin: 0;
+			padding: $cell-padding;
+
+			&:first-child {
+				border-radius: var(--border-radius) 0 0 var(--border-radius);
+				padding-right: 3em;
+			}
+
+			&:last-child {
+				border-radius: 0 var(--border-radius) var(--border-radius) 0;
+			}
+
+			&:not(:first-child) > div {
+				color: var(--color-secondary);
+				display: grid;
+				grid-template-columns: max-content max-content;
+				align-items: center;
+				gap: 0 1em;
+
+				*:nth-child(2n + 1) {
+					text-align: right;
+				}
+			}
+
+			.secondary {
+				color: var(--color-secondary);
+				font-family: fonts.$sans-serif-secondary;
+				font-size: 0.8em;
+				opacity: 0.8;
+			}
+
+			ul.secondary {
+				list-style: none;
+				margin: 0;
+				padding-inline: 0;
+
+				&.livery-titles {
+					margin: 0.25em 0;
+					padding-inline: 1em;
+				}
+			}
+		}
+	}
+	&.hidden tr:not(:nth-child(-n + 10)) {
+		display: none;
+	}
+
+	ul.livery-titles,
+	ul.livery-count {
+		display: none;
+	}
+	&.show-titles {
+		ul.livery-titles,
+		ul.livery-count {
+			display: block;
+		}
+	}
+}

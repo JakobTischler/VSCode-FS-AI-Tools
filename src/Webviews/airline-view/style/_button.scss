@@ -1,0 +1,30 @@
+@use '_anim';
+@use '_fonts';
+
+/* BUTTON */
+button {
+	background: var(--vscode-button-background);
+	color: var(--vscode-button-foreground);
+	transition: background-color anim.$length;
+	outline: none;
+	border: none;
+	padding: 0.75em 2em;
+	border-radius: var(--border-radius);
+	border: 1px solid var(--vscode-button-border);
+	cursor: pointer;
+	font-family: fonts.$sans-serif;
+	letter-spacing: 2px;
+
+	&:hover {
+		background-color: var(--vscode-button-hoverBackground);
+	}
+
+	&.secondary {
+		background-color: var(--vscode-button-secondaryBackground);
+		color: var(--vscode-button-secondaryForeground);
+
+		&:hover {
+			background-color: var(--vscode-button-secondaryHoverBackground);
+		}
+	}
+}

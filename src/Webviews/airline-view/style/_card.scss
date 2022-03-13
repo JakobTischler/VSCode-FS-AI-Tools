@@ -1,0 +1,8 @@
+@use '_colors';
+
+/* CARD */
+.card {
+	background-color: colors.$card-background;
+	border-radius: var(--border-radius);
+	box-shadow: 0 0 var(--card-shadow-blur) var(--color-card-shadow);
+}

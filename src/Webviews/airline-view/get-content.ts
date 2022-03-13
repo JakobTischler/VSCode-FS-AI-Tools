@@ -190,7 +190,10 @@ async function getHeaderContent(panel: vscode.WebviewPanel, aifp: AifpData, flig
 
 function getAircraftContent(aircraftTypes: TAircraftTypesByTypeCode, totalAircraftCount: number) {
 	let content = `<div class="grid-item">
-	<h2>${totalAircraftCount} Aircraft</h2>
+	<h2>
+		<span>${totalAircraftCount} Aircraft</span>
+		<button class="toggle-button" data-target="#aircraft-types" data-toggle-class="show-titles" data-button-text-on="Hide titles" data-button-text-off="Show titles">Show titles</button>
+	</h2>
 
 	<table id="aircraft-types" class="table card ${aircraftTypes.size > 1 ? 'sortable' : ''}" cellspacing="0">
 		<thead><tr>
@@ -201,14 +204,33 @@ function getAircraftContent(aircraftTypes: TAircraftTypesByTypeCode, totalAircra
 
 	for (const aircraftType of aircraftTypes.values()) {
 		if (aircraftType.aircraftCount === 0) continue;
+		const liveries = [...aircraftType.liveries.values()].filter((livery) => livery.count > 0);
 
 		content += `<tr>
-				<td>${aircraftType.name}</td>
-				<td data-sort="${aircraftType.aircraftCount}"><div><span>${aircraftType.aircraftCount.toLocaleString()}×</span>`;
-		if (aircraftType.liveries.size > 1) {
-			content += `<span class="secondary">(${aircraftType.liveries.size} variations)</span>`;
+						<td data-sort="${aircraftType.name}">${aircraftType.name}
+							<ul class="secondary livery-titles">`;
+		for (const livery of liveries) {
+			content += `<li>${livery.title}</li>`;
 		}
-		content += `</div></td></tr>`;
+		content += `</ul>
+				</td>
+				<td data-sort="${aircraftType.aircraftCount}">
+					<div>
+						<div>${aircraftType.aircraftCount.toLocaleString()}×</div>`;
+
+		content += `<div class="secondary">`;
+		content += liveries.length > 1 ? `${liveries.length} variations)` : '';
+		content += `</div>`;
+
+		content += `<ul class="secondary livery-count">`;
+		for (const livery of liveries) {
+			content += `<li>${livery.count}×</li>`;
+		}
+		content += `</ul>
+					<div></div>
+				</div>
+			</td>
+		</tr>`;
 	}
 
 	content += `</tbody></table></div>`;

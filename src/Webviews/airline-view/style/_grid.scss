@@ -1,0 +1,108 @@
+/* GRID */
+section.grid {
+	display: flex;
+	flex-wrap: wrap;
+	align-items: stretch;
+	justify-content: space-between;
+	gap: 3em;
+
+	> div.grid-item {
+		align-self: stretch;
+
+		/* flex: 1; */
+		min-width: 350px;
+
+		&:first-child {
+			order: 1;
+		}
+	}
+
+	&:before,
+	&:after {
+		content: '';
+		border-left: 1px solid var(--color-secondary);
+		align-self: stretch;
+		display: none;
+	}
+
+	&.col-2 > div.grid-item:nth-child(2),
+	&.col-3 > div.grid-item:nth-child(2) {
+		order: 3;
+	}
+
+	&.col-2:before {
+		display: block;
+		order: 2;
+	}
+
+	&.col-3 {
+		&:before {
+			display: block;
+			order: 2;
+		}
+
+		> div.grid-item:nth-child(3) {
+			order: 5;
+		}
+
+		&:after {
+			display: block;
+			order: 4;
+		}
+	}
+
+	div.grid-item > h2 {
+		display: flex;
+		align-items: center;
+		justify-content: space-between;
+		gap: 1em;
+		padding: 0.5em 0;
+		margin-block-start: 0;
+		background-color: var(--vscode-editor-background);
+		position: sticky;
+		top: 0;
+		z-index: 1;
+
+		> * {
+			z-index: 1;
+		}
+
+		// Hide any background
+		&:before {
+			content: '';
+			background-color: var(--vscode-editor-background);
+			box-shadow: 0 5px 5px var(--vscode-editor-background); // soft fade
+			position: absolute;
+			width: calc(100% + 2 * var(--card-shadow-blur));
+			left: calc(var(--card-shadow-blur) * -1);
+			height: 100%;
+			z-index: 0;
+		}
+	}
+}
+
+@media (max-width: 700px) {
+	.grid.col-2 {
+		align-items: center;
+		flex-direction: column;
+
+		&:before,
+		&:after {
+			border-left: none;
+			border-top: 1px solid var(--color-secondary);
+		}
+	}
+}
+
+@media (max-width: 1050px) {
+	.grid.col-3 {
+		align-items: center;
+		flex-direction: column;
+
+		&:before,
+		&:after {
+			border-left: none;
+			border-top: 1px solid var(--color-secondary);
+		}
+	}
+}

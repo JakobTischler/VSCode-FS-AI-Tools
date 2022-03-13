@@ -9,13 +9,18 @@
 			console.error(`Toggle button target "${button.dataset.target}" couldn't be found.`);
 			continue;
 		}
-		let hidden = target.classList.contains('hidden');
+		const className = button.dataset.toggleClass || 'hidden';
+		const buttonTextOn = button.dataset.buttonTextOn || 'Show all';
+		const buttonTextOff = button.dataset.buttonTextOff || 'Show less';
+
+		let state = target.classList.contains(className);
 
 		button.addEventListener('click', (event) => {
-			target.classList.toggle('hidden');
+			target.classList.toggle(className);
 
-			hidden = !hidden;
-			button.innerHTML = hidden ? 'Show all' : 'Show less';
+			state = !state;
+
+			button.innerHTML = state ? buttonTextOn : buttonTextOff;
 		});
 	}
 }

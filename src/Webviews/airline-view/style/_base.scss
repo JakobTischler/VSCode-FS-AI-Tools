@@ -1,0 +1,56 @@
+@use '_colors';
+@use '_fonts';
+
+:root {
+	--border-radius: 0.25em;
+	--card-shadow-blur: 1.5em;
+}
+
+h1,
+h2,
+h3 {
+	font-family: fonts.$serif;
+}
+
+code {
+	color: var(--vscode-editor-foreground);
+}
+
+body {
+	color: var(--color-main);
+	font-family: fonts.$sans-serif;
+	font-size: var(--vscode-editor-font-size);
+
+	--body-padding: 1em;
+	padding: 0 var(--body-padding);
+
+	&.vscode-light {
+		--color-main: #{colors.$dark};
+		--color-secondary: #{colors.$dark-secondary};
+		--color-tertiary: #{colors.$dark-tertiary};
+		--color-logo-shadow: rgba(74, 91, 94, 0.2);
+		--color-card-shadow: rgba(25, 30, 31, 0.1);
+	}
+
+	&.vscode-dark {
+		--color-main: #{colors.$light};
+		--color-secondary: #{colors.$light-secondary};
+		--color-tertiary: #{colors.$light-tertiary};
+		--color-logo-shadow: rgba(255, 255, 255, 0.065);
+		--color-card-shadow: rgba(25, 30, 31, 0.4);
+	}
+
+	&.vscode-high-contrast {
+		color: red;
+	}
+}
+
+.text-align-left {
+	text-align: left;
+}
+.text-align-center {
+	text-align: center;
+}
+.text-align-right {
+	text-align: right;
+}

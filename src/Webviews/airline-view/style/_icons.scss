@@ -1,0 +1,22 @@
+/* ICONS */
+i.icon {
+	display: block;
+	height: 1em;
+	width: 1em;
+	background-color: var(--color-secondary);
+	-webkit-mask-position: center center;
+	mask-position: center center;
+	-webkit-mask-repeat: no-repeat;
+	mask-repeat: no-repeat;
+	-webkit-mask-size: contain;
+	mask-size: contain;
+
+	$icons: 'brackets-curly', 'calendar-alt', 'fingerprint', 'microphone', 'plane-arrival', 'plane-departure',
+		'user-edit';
+	@each $icon in $icons {
+		&.#{$icon} {
+			-webkit-mask-image: url(./icons/#{$icon}.svg);
+			mask-image: url(./icons/#{$icon}.svg);
+		}
+	}
+}
