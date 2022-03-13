@@ -1,10 +1,11 @@
 # Change Log
 
 ### 1.4.0
-- New function `Show Airline View`: a custom view that shows airline data such as the logo, ICAO code, callsign, author, season, visited airports as well as used aircraft types.
+- New function `Show Airline View`: a custom view that shows airline data such as the logo, ICAO code, callsign, author, season, visited airports, used aircraft types as well as routes with distances.
   - Requires an `aifp.cfg` file in the flightplan directory, containing the airline metadata.
-  - Logo will be searched in flightplan directory ("logo.png/jpg" or "[callsign].png/jpg") or a custom logo directory ("directory/[callsign].png/jpg")
+  - Logo will be searched in flightplan directory (`logo.png/jpg` or `[callsign].png/jpg`) or a custom logo directory (`directory/[callsign].png/jpg`)
   - Custom logo directory path can be set with the `fs-ai-tools.airlineView.logoDirectoryPath` setting.
+  - All data can be sorted.
 
 ### 1.3.1
 - Rebase AC#s: new settings to define the minimum number of empty lines needed to start a new number group. See `fs-ai-tools.rebaseAircraftNumbers.groupSeparationAircraftTxt` and `fs-ai-tools.rebaseAircraftNumbers.groupSeparationFlightplansTxt`.

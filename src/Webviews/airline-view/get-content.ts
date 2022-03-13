@@ -62,12 +62,12 @@ export async function getWebviewContent(
 
 		content += `</section>`;
 
-		if (flightplan) {
+		/* if (flightplan) {
 			content += `<section id="routemap">
 							<h2>Routemap</h2>
 							<div id="map"></div>
 						</section>`;
-		}
+		} */
 	}
 
 	content += '</main>';
