@@ -30,17 +30,13 @@ section.grid {
 		order: 3;
 	}
 
-	&.col-2:before {
+	&.col-2:before,
+	&.col-3:before {
 		display: block;
 		order: 2;
 	}
 
 	&.col-3 {
-		&:before {
-			display: block;
-			order: 2;
-		}
-
 		> div.grid-item:nth-child(3) {
 			order: 5;
 		}
@@ -62,6 +58,11 @@ section.grid {
 		position: sticky;
 		top: 0;
 		z-index: 1;
+
+		> span.secondary {
+			font-style: italic;
+			font-weight: 300;
+		}
 
 		> * {
 			z-index: 1;

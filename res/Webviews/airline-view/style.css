@@ -161,11 +161,7 @@ section.grid:before, section.grid:after {
 section.grid.col-2 > div.grid-item:nth-child(2), section.grid.col-3 > div.grid-item:nth-child(2) {
 	order: 3;
 }
-section.grid.col-2:before {
-	display: block;
-	order: 2;
-}
-section.grid.col-3:before {
+section.grid.col-2:before, section.grid.col-3:before {
 	display: block;
 	order: 2;
 }
@@ -187,6 +183,10 @@ section.grid div.grid-item > h2 {
 	position: sticky;
 	top: 0;
 	z-index: 1;
+}
+section.grid div.grid-item > h2 > span.secondary {
+	font-style: italic;
+	font-weight: 300;
 }
 section.grid div.grid-item > h2 > * {
 	z-index: 1;
@@ -373,7 +373,7 @@ button {
 	font-family: "Fredoka", var(--vscode-font-family), sans-serif;
 	letter-spacing: 2px;
 }
-button:hover {
+button:hover, button:focus {
 	background-color: var(--vscode-button-hoverBackground);
 }
 button.secondary {

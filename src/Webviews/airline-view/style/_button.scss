@@ -15,7 +15,8 @@ button {
 	font-family: fonts.$sans-serif;
 	letter-spacing: 2px;
 
-	&:hover {
+	&:hover,
+	&:focus {
 		background-color: var(--vscode-button-hoverBackground);
 	}
 

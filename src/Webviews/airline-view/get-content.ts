@@ -137,7 +137,7 @@ function getHeadContent(customCssUri: vscode.Uri) {
 
 	<link rel="preconnect" href="https://fonts.googleapis.com">
 	<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-	<link href="https://fonts.googleapis.com/css2?family=Fredoka:wght@300;500&family=Montserrat:wght@300;500&family=Noto+Serif+Display:wght@300;600&display=swap" rel="stylesheet">
+	<link href="https://fonts.googleapis.com/css2?family=Fredoka:wght@300;500&family=Montserrat:wght@300;500&family=Noto+Serif+Display:ital,wght@0,300;0,600;1,300&display=swap" rel="stylesheet">
 
 	<link rel="stylesheet" type="text/css" href="${customCssUri}" />
 </head>`;
@@ -192,7 +192,7 @@ function getAircraftContent(aircraftTypes: TAircraftTypesByTypeCode, totalAircra
 	let content = `<div class="grid-item">
 	<h2>
 		<span>${totalAircraftCount} Aircraft</span>
-		<button class="toggle-button" data-target="#aircraft-types" data-toggle-class="show-titles" data-button-text-on="Hide titles" data-button-text-off="Show titles">Show titles</button>
+		<button class="toggle-button" role="button" data-target="#aircraft-types" data-toggle-class="show-titles" data-button-text-on="Hide titles" data-button-text-off="Show titles">Show titles</button>
 	</h2>
 
 	<table id="aircraft-types" class="table card ${aircraftTypes.size > 1 ? 'sortable' : ''}" cellspacing="0">
@@ -243,7 +243,7 @@ function getAirportsContent(flightplan: Flightplan) {
 						<h2>
 							<span>${flightplan.airports.size} Airports</span>`;
 	if (flightplan.airports.size > 10) {
-		content += `<button class="toggle-button" data-target="#airports">Show all</button>`;
+		content += `<button class="toggle-button" role="button" data-target="#airports">Show all</button>`;
 	}
 	content += `</h2>
 
@@ -276,9 +276,9 @@ function getRoutesContent(flightplan: Flightplan) {
 	<h2>
 		<span>${segments.size.toLocaleString()} ${plural('segment', segments.size, {
 		includeNumber: false,
-	})} (${flights.length.toLocaleString()} legs)</span>`;
+	})}</span> <span class="secondary">(${flights.length.toLocaleString()} legs)</span>`;
 	if (segments.size > 10) {
-		content += `<button class="toggle-button" data-target="#route-segments">Show all</button>`;
+		content += `<button class="toggle-button" role="button" data-target="#route-segments">Show all</button>`;
 	}
 	content += `</h2>
 
