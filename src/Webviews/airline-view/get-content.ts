@@ -6,6 +6,7 @@ import { Flightplan } from '../../Content/Flightplan/Flightplan';
 import { TAircraftTypesByTypeCode } from '../../Content/Aircraft/AircraftType';
 import { TAircraftLiveriesByAcNum } from '../../Content/Aircraft/AircraftLivery';
 import { createNonce, plural } from '../../Tools/helpers';
+import Axios from 'axios';
 
 export async function getWebviewContent(
 	panel: vscode.WebviewPanel,
@@ -92,43 +93,71 @@ function getScriptsContent(customScriptUri: vscode.Uri) {
 }
 
 async function getLogoPath(aifp: AifpData, flightplanDirPath: string) {
-	// Path 1: "{flightplan directory}/logo.png / .jpg"
-	let logoPath = path.join(flightplanDirPath, 'logo');
-	if (fs.existsSync(`${logoPath}.png`)) {
-		return `${logoPath}.png`;
-	}
-	if (fs.existsSync(`${logoPath}.jpg`)) {
-		return `${logoPath}.jpg`;
-	}
+	/** Local files */
+	{
+		// Collect possible paths
+		const filePaths: string[] = [];
+		const addPaths = (dir: string, fileName?: string, addLowerCase = false) => {
+			if (!fileName) return;
+			for (const ext of ['png', 'jpg']) {
+				filePaths.push(path.join(dir, `${fileName}.${ext}`));
+				if (addLowerCase) {
+					filePaths.push(path.join(dir, `${fileName.toLowerCase()}.${ext}`));
+				}
+			}
+		};
 
-	if (aifp.callsign) {
-		// Path 2: "{flightplan directory}/{callsign}.jpg / .png"
-		logoPath = path.join(flightplanDirPath, aifp.callsign);
-		if (fs.existsSync(`${logoPath}.png`)) {
-			return `${logoPath}.png`;
-		}
-		if (fs.existsSync(`${logoPath}.jpg`)) {
-			return `${logoPath}.jpg`;
-		}
+		//     Flightplan directory
+		addPaths(flightplanDirPath, 'logo');
+		addPaths(flightplanDirPath, aifp.callsign, true);
+		addPaths(flightplanDirPath, aifp.icao, true);
 
-		// Path 3: "{logo directory}/{callsign}.jpg / .png"
+		//     Custom logo directory
 		const logoDirectoryPath = vscode.workspace
 			.getConfiguration('fs-ai-tools.airlineView', undefined)
 			.get('logoDirectoryPath') as string;
-
 		if (logoDirectoryPath?.length) {
-			logoPath = path.join(logoDirectoryPath, aifp.callsign);
-			if (fs.existsSync(`${logoPath}.png`)) {
-				return `${logoPath}.png`;
+			addPaths(logoDirectoryPath, aifp.callsign, true);
+			addPaths(logoDirectoryPath, aifp.icao, true);
+		}
+
+		// Go through paths and check if file exists
+		let logoPath;
+		for (const filePath of filePaths) {
+			if (fs.existsSync(filePath)) {
+				logoPath = filePath;
+				break;
 			}
-			if (fs.existsSync(`${logoPath}.jpg`)) {
-				return `${logoPath}.jpg`;
-			}
+		}
+		if (logoPath) {
+			return logoPath;
 		}
 	}
 
+	/** Online logo host (GitLab) */
+	/*
+	if (aifp.callsign) {
+		// Logo git repository → "{callsign}.jpg / .png"
+		// https://gitlab.com/JakobTischler/fs-airline-logos/-/raw/master/logos/AALX.png
+		const baseUri = 'https://gitlab.com/JakobTischler/fs-airline-logos/-/raw/master/logos';
+		const uris = [
+			`${baseUri}/${aifp.callsign}.png`,
+			`${baseUri}/${aifp.callsign.toLowerCase()}.png`,
+			`${baseUri}/${aifp.callsign}.jpg`,
+			`${baseUri}/${aifp.callsign.toLowerCase()}.jpg`,
+		];
+		for (const uri of uris) {
+			const img = await Axios.get(uri).catch((error) => {
+				console.error(error);
+			});
+			console.log({ img });
+		}
+	}
+	*/
+
 	return null;
 }
+
 function getHeadContent(customCssUri: vscode.Uri) {
 	return `<head>
 	<meta charset="UTF-8">
@@ -208,7 +237,7 @@ function getAircraftContent(aircraftTypes: TAircraftTypesByTypeCode, totalAircra
 
 		content += `<tr>
 						<td data-sort="${aircraftType.name}">${aircraftType.name}
-							<ul class="secondary livery-titles">`;
+							<ul class="secondary livery-titles inset">`;
 		for (const livery of liveries) {
 			content += `<li>${livery.title}</li>`;
 		}
@@ -219,7 +248,7 @@ function getAircraftContent(aircraftTypes: TAircraftTypesByTypeCode, totalAircra
 						<div>${aircraftType.aircraftCount.toLocaleString()}×</div>`;
 
 		content += `<div class="secondary">`;
-		content += liveries.length > 1 ? `${liveries.length} variations)` : '';
+		content += liveries.length > 1 ? `(${liveries.length} variations)` : '';
 		content += `</div>`;
 
 		content += `<ul class="secondary livery-count">`;
@@ -276,6 +305,8 @@ function getRoutesContent(flightplan: Flightplan) {
 		<span>${segments.size.toLocaleString()} ${plural('segment', segments.size, {
 		includeNumber: false,
 	})}</span> <span class="secondary">(${flights.length.toLocaleString()} legs)</span>`;
+
+	content += `<button class="toggle-button secondary" role="button" data-target="#route-segments" data-toggle-class="show-aircraft-types" data-button-text-on="Hide aircraft types" data-button-text-off="Show aircraft types">Show Aircraft Types</button>`;
 	if (segments.size > 10) {
 		content += `<button class="toggle-button" role="button" data-target="#route-segments">Show all</button>`;
 	}
@@ -289,15 +320,24 @@ function getRoutesContent(flightplan: Flightplan) {
 	</tr></thead>
 	<tbody>`;
 
-	for (const [airportPair, segment] of [...segments.entries()].sort((a, b) => {
-		if (a[1].count < b[1].count) return 1;
-		if (a[1].count > b[1].count) return -1;
-		return 0;
-	})) {
+	const sorted = [...segments.entries()].sort((a, b) => b[1].segment.count - a[1].segment.count);
+
+	for (const [airportPair, data] of sorted) {
 		content += `<tr>
-			<td>${airportPair}</td>
-			<td data-sort="${segment.count}"><div>${segment.count}×</div></td>
-			<td data-sort="${segment.distance}"><div class="secondary">${segment.distanceFormatted}</div></td>`;
+			<td data-sort="${airportPair}">
+				<div>${airportPair}</div>
+				<ul class="secondary aircraft-types inset">`;
+		for (const acType of data.aircraftTypes.values()) {
+			if (!acType) {
+				console.error(`${airportPair}: aircraftType is ${String(acType)}`);
+				continue;
+			}
+			content += `<li>${acType.typeCode}</li>`;
+		}
+		content += `</ul>
+			</td>
+			<td data-sort="${data.segment.count}"><div>${data.segment.count}×</div></td>
+			<td data-sort="${data.segment.distance}"><div class="secondary">${data.segment.distanceFormatted}</div></td>`;
 	}
 
 	content += `</tbody></table></div>`;

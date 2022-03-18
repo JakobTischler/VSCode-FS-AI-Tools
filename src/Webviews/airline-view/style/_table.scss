@@ -87,7 +87,7 @@ table {
 				margin: 0;
 				padding-inline: 0;
 
-				&.livery-titles {
+				&.inset {
 					margin: 0.25em 0;
 					padding-inline: 1em;
 				}
@@ -99,12 +99,18 @@ table {
 	}
 
 	ul.livery-titles,
-	ul.livery-count {
+	ul.livery-count,
+	ul.aircraft-types {
 		display: none;
 	}
 	&.show-titles {
 		ul.livery-titles,
 		ul.livery-count {
+			display: block;
+		}
+	}
+	&.show-aircraft-types {
+		ul.aircraft-types {
 			display: block;
 		}
 	}

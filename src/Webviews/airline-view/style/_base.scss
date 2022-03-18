@@ -1,6 +1,15 @@
 @use '_colors';
 @use '_fonts';
 
+// border-box
+*,
+*::before,
+*::after {
+	// margin: 0;
+	// padding: 0;
+	box-sizing: border-box;
+}
+
 :root {
 	--border-radius: 0.25em;
 	--card-shadow-blur: 1.5em;

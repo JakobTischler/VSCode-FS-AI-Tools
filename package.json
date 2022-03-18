@@ -765,6 +765,7 @@
 		"vsce": "^2.7.0"
 	},
 	"dependencies": {
+		"axios": "^0.26.1",
 		"fs": "~0.0.1-security",
 		"lodash": "^4.17.21",
 		"mocha": "^9.2.2",

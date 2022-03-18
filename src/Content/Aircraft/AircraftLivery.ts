@@ -35,7 +35,7 @@ export class AircraftLivery {
 	/**
 	 * Returns the aircraft count, using either the length of the `aircraft`
 	 * array, or the `manualCount` value as fallback.
-	 * */
+	 */
 	get count() {
 		return this.manualCount || this.aircraft.length;
 	}

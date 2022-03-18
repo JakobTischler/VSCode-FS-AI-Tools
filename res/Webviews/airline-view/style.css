@@ -1,4 +1,10 @@
 @charset "UTF-8";
+*,
+*::before,
+*::after {
+	box-sizing: border-box;
+}
+
 :root {
 	--border-radius: 0.25em;
 	--card-shadow-blur: 1.5em;
@@ -295,7 +301,7 @@ table tr td ul.secondary {
 	margin: 0;
 	padding-inline: 0;
 }
-table tr td ul.secondary.livery-titles {
+table tr td ul.secondary.inset {
 	margin: 0.25em 0;
 	padding-inline: 1em;
 }
@@ -303,11 +309,15 @@ table.hidden tr:not(:nth-child(-n+10)) {
 	display: none;
 }
 table ul.livery-titles,
-table ul.livery-count {
+table ul.livery-count,
+table ul.aircraft-types {
 	display: none;
 }
 table.show-titles ul.livery-titles,
 table.show-titles ul.livery-count {
+	display: block;
+}
+table.show-aircraft-types ul.aircraft-types {
 	display: block;
 }
 

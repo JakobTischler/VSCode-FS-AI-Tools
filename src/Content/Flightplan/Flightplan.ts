@@ -1,4 +1,4 @@
-import { showError } from '../../Tools/helpers';
+import { clone, showError } from '../../Tools/helpers';
 import {
 	Airport,
 	getMasterAirports,
@@ -8,7 +8,7 @@ import {
 } from '../Airport/Airport';
 import { Aircraft } from '../Aircraft/Aircraft';
 import { TAircraftLiveriesByAcNum } from '../Aircraft/AircraftLivery';
-import { TAircraftTypesByTypeCode } from '../Aircraft/AircraftType';
+import { AircraftType, TAircraftTypesByTypeCode } from '../Aircraft/AircraftType';
 import { RouteSegment, TRouteSegmentData } from '../Route/RouteSegment';
 import { LocalStorageService } from '../../Tools/LocalStorageService';
 
@@ -21,8 +21,8 @@ export class Flightplan {
 	airports: Map<string, Airport> = new Map();
 	segments: {
 		all: RouteSegment[];
-		byLeg: Map<string, RouteSegment>;
-		byAirportPair: Map<string, RouteSegment>;
+		byLeg: Map<string, { aircraftTypes: Set<AircraftType>; segment: RouteSegment }>;
+		byAirportPair: Map<string, { aircraftTypes: Set<AircraftType>; segment: RouteSegment }>;
 	} = {
 		all: [],
 		byLeg: new Map(),
@@ -141,7 +141,7 @@ export class Flightplan {
 								aircraft.segments.push(segment);
 
 								// Add to flightplan / update
-								this.addRouteSegment(segment);
+								this.addRouteSegment(segment, aircraft);
 							}
 						}
 					}
@@ -152,7 +152,7 @@ export class Flightplan {
 		this.createAirportPairsList();
 	}
 
-	addRouteSegment(segment: RouteSegment) {
+	addRouteSegment(segment: RouteSegment, aircraft: Aircraft) {
 		// All
 		{
 			this.segments.all.push(segment);
@@ -161,12 +161,20 @@ export class Flightplan {
 		// Leg
 		{
 			const id = `${segment.departureAirport.icao}→${segment.arrivalAirport.icao}`;
+
 			if (this.segments.byLeg.has(id)) {
 				const data = this.segments.byLeg.get(id)!;
-				data.count++;
+
+				// Add aircraftType
+				data.aircraftTypes.add(aircraft.aircraftType!);
+
+				// Increase count
+				data.segment.count++;
+
+				// Save
 				this.segments.byLeg.set(id, data);
 			} else {
-				this.segments.byLeg.set(id, segment);
+				this.segments.byLeg.set(id, { aircraftTypes: new Set([aircraft.aircraftType!]), segment });
 			}
 		}
 	}
@@ -174,40 +182,54 @@ export class Flightplan {
 	createAirportPairsList() {
 		const complete: string[] = [];
 
-		for (const [id, segment] of this.segments.byLeg.entries()) {
+		for (const [id, legData] of this.segments.byLeg.entries()) {
 			if (complete.includes(id)) {
 				continue;
 			}
 
-			const returnId = `${segment.arrivalAirport.icao}→${segment.departureAirport.icao}`;
-			const returnSegment = this.segments.byLeg.get(returnId);
+			// Create RouteSegment clone
+			const segmentClone = clone(legData.segment) as RouteSegment;
 
-			// Merge
-			if (returnSegment) {
-				// Create clone
-				const segmentClone = Object.assign(Object.create(Object.getPrototypeOf(segment)), segment);
+			// AicraftTypes
+			const aircraftTypesAr = [...legData.aircraftTypes];
 
+			// Get return leg
+			const returnId = `${legData.segment.arrivalAirport.icao}→${legData.segment.departureAirport.icao}`;
+			const returnLegData = this.segments.byLeg.get(returnId);
+
+			// Merge with return leg
+			if (returnLegData) {
 				// Sum up counts
-				segmentClone.count += returnSegment.count;
+				segmentClone.count += returnLegData.segment.count;
 
-				// Airport order
-				if (segmentClone.arrivalAirport.count > segmentClone.departureAirport.count) {
-					const arrApt = segmentClone.arrivalAirport;
-					const depApt = segmentClone.departureAirport;
-
-					segmentClone.arrivalAirport = depApt;
-					segmentClone.departureAirport = arrApt;
-				}
-
-				// Add to pairs list
-				this.segments.byAirportPair.set(
-					`${segmentClone.departureAirport.icao}↔${segmentClone.arrivalAirport.icao}`,
-					segmentClone
-				);
-
-				// Add to complete list
-				complete.push(id, returnId);
+				// Merge aircraftTypes of this leg and return leg
+				aircraftTypesAr.push(...returnLegData.aircraftTypes);
 			}
+
+			// Filter out undefined
+			const aircraftTypes = new Set(aircraftTypesAr.filter((acType) => acType));
+
+			// Switch departure and arrival airports to have the most visited
+			// airport as departure point.
+			if (segmentClone.arrivalAirport.count > segmentClone.departureAirport.count) {
+				const arrApt = segmentClone.arrivalAirport;
+				const depApt = segmentClone.departureAirport;
+
+				segmentClone.arrivalAirport = depApt;
+				segmentClone.departureAirport = arrApt;
+			}
+
+			// Add to pairs list
+			this.segments.byAirportPair.set(
+				`${segmentClone.departureAirport.icao}↔${segmentClone.arrivalAirport.icao}`,
+				{
+					aircraftTypes,
+					segment: segmentClone,
+				}
+			);
+
+			// Add to complete list
+			complete.push(id, returnId);
 		}
 	}
 }

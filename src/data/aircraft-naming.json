@@ -323,7 +323,7 @@
 					"search": ["/CRJ-100[A-Z\\s]/", "CRJ-2", "Legacy 800", "Legacy 850"],
 					"series": "CRJ"
 				},
-				"CRJ7": { "name": "CRJ-700", "search": ["CRJ-7"], "series": "CRJ" },
+				"CRJ7": { "name": "CRJ-550/700", "search": ["CRJ-7", "CRJ-550"] },
 				"CRJ9": { "name": "CRJ-900", "search": ["CRJ-9"], "series": "CRJ" },
 				"CRJX": { "name": "CRJ-1000", "search": ["CRJ-1000"], "series": "CRJ" },
 				"DH8A/B": {
@@ -655,7 +655,7 @@
 		"Sukhoi": {
 			"search": ["Sukhoi"],
 			"types": {
-				"SU95": { "name": "Su-195", "search": ["Su195", "Su-195"] }
+				"SU95": { "name": "Su-195", "search": ["/SSJ-?100/", "Su195", "Su-195"] }
 			}
 		},
 		"Swaeringen": {

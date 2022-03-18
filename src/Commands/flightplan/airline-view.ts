@@ -11,7 +11,7 @@
 
 import * as vscode from 'vscode';
 import * as path from 'path';
-import { getFlightplanFiles, showErrorModal, showError } from '../../Tools/helpers';
+import { getFlightplanFiles, showErrorModal, showError, plural } from '../../Tools/helpers';
 import { readAifpCfg } from '../../Tools/read-aifp';
 import { Flightplan, FlightplanRaw } from '../../Content/Flightplan/Flightplan';
 import { parseAircraftTxt } from '../../Content/Aircraft/parseAircraftTxt';
@@ -76,6 +76,11 @@ export async function ShowAirlineView(
 	const aircraftData = await parseAircraftTxt(fileData, true);
 	if (!aircraftData) {
 		return;
+	}
+	if (aircraftData.nonMatches.length) {
+		const title = `${aircraftData.nonMatches.length} aircraft couldn't be matched`;
+		const msg = aircraftData.nonMatches.map((title) => `• ${title}`).join('\n');
+		showErrorModal(title, msg);
 	}
 
 	const flightplan = new Flightplan(fileData.flightplans.text);
