@@ -2,7 +2,7 @@
 @use '_colors';
 @use '_fonts';
 
-.checkboxes {
+nav.checkboxes {
 	$gap: 0.75em;
 	$vPadding: 0.5em;
 
@@ -10,6 +10,15 @@
 	gap: $gap;
 	align-items: center;
 	justify-content: start;
+	margin-bottom: 1em;
+
+	.checkbox-container {
+		display: flex;
+		flex-wrap: wrap;
+		gap: $gap * 2 $gap;
+		align-items: center;
+		justify-content: start;
+	}
 
 	.checkbox-pill {
 		&.all {
@@ -43,6 +52,7 @@
 
 			&:hover {
 				filter: brightness(1.05);
+				padding: $vPadding 1em;
 			}
 		}
 

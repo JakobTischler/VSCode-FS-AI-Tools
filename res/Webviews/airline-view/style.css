@@ -25,8 +25,7 @@ body {
 	color: var(--color-main);
 	font-family: "Fredoka", var(--vscode-font-family), sans-serif;
 	font-size: var(--vscode-editor-font-size);
-	--body-padding: 1em;
-	padding: 0 var(--body-padding);
+	padding: 1em;
 	--color-light: #f0f0f0;
 	--color-dark: #4a5b5e;
 	--color-pill-active-background: var(--vscode-activityBarBadge-background);
@@ -149,6 +148,19 @@ i.icon.plane-departure {
 i.icon.user-edit {
 	-webkit-mask-image: url(./icons/user-edit.svg);
 	mask-image: url(./icons/user-edit.svg);
+}
+
+main {
+	display: flex;
+	flex-direction: column;
+	gap: 3em;
+}
+main section.separator-before:not(:first-of-type)::before, main section.separator-after:not(:last-of-type)::after {
+	content: "";
+	border-top: 1px solid var(--color-secondary);
+	align-self: stretch;
+	margin: 0 0 3em;
+	display: block;
 }
 
 /* GRID */
@@ -410,21 +422,29 @@ button.secondary:hover {
 	box-shadow: 0 0 var(--card-shadow-blur) var(--color-card-shadow);
 }
 
-.checkboxes {
+nav.checkboxes {
 	display: flex;
 	gap: 0.75em;
 	align-items: center;
 	justify-content: start;
+	margin-bottom: 1em;
 }
-.checkboxes .checkbox-pill {
+nav.checkboxes .checkbox-container {
+	display: flex;
+	flex-wrap: wrap;
+	gap: 1.5em 0.75em;
+	align-items: center;
+	justify-content: start;
+}
+nav.checkboxes .checkbox-pill {
 	font-size: 0.8em;
 }
-.checkboxes .checkbox-pill.all {
+nav.checkboxes .checkbox-pill.all {
 	display: flex;
 	align-items: center;
 	--routemap-color: var(--color-pill-active-background);
 }
-.checkboxes .checkbox-pill.all:after {
+nav.checkboxes .checkbox-pill.all:after {
 	content: "";
 	width: 1px;
 	height: 4em;
@@ -433,7 +453,7 @@ button.secondary:hover {
 	display: inline-flex;
 	align-self: center;
 }
-.checkboxes .checkbox-pill label {
+nav.checkboxes .checkbox-pill label {
 	background: var(--color-pill-background);
 	border-radius: 2em;
 	color: var(--color-pill-foreground);
@@ -443,13 +463,14 @@ button.secondary:hover {
 	padding: 0.25em 1em;
 	transition: all 0.2s;
 }
-.checkboxes .checkbox-pill label:hover {
+nav.checkboxes .checkbox-pill label:hover {
 	filter: brightness(1.05);
+	padding: 0.5em 1em;
 }
-.checkboxes .checkbox-pill input[type=checkbox] {
+nav.checkboxes .checkbox-pill input[type=checkbox] {
 	display: none;
 }
-.checkboxes .checkbox-pill input[type=checkbox]:checked + label {
+nav.checkboxes .checkbox-pill input[type=checkbox]:checked + label {
 	background: var(--color-pill-active-background);
 	color: var(--color-pill-active-foreground);
 	padding: 0.5em 1em;

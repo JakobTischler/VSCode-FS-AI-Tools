@@ -45,8 +45,6 @@ const vscode = acquireVsCodeApi();
 
 	console.log({ checkboxes, checkboxAll });
 
-	let doUpdate = false;
-
 	for (const checkbox of checkboxes) {
 		checkbox.addEventListener('change', (event) => {
 			updateMainCheckbox();
@@ -60,7 +58,7 @@ const vscode = acquireVsCodeApi();
 	});
 
 	// Initial
-	sendSelectionToExtension();
+	sendSelectionToExtension(true);
 
 	/**
 	 * Checks if every single aircraftType checkbox is checked. If `true`, sets
@@ -86,7 +84,7 @@ const vscode = acquireVsCodeApi();
 
 	/** Goes through each active aircraftType and generates the GCM route. Then
 	 * updates the routemap image. */
-	function sendSelectionToExtension() {
+	function sendSelectionToExtension(immediate = false) {
 		// Get checked checkboxes
 		const acTypes = [...checkboxes]
 			.filter((checkbox) => checkbox.checked)
@@ -99,6 +97,7 @@ const vscode = acquireVsCodeApi();
 		vscode.postMessage({
 			command: 'aircraftTypesChange',
 			text: acTypes,
+			immediate: immediate,
 		});
 	}
 

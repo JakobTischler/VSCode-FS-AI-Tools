@@ -1,0 +1,16 @@
+main {
+	display: flex;
+	flex-direction: column;
+	gap: 3em;
+
+	section {
+		&.separator-before:not(:first-of-type)::before,
+		&.separator-after:not(:last-of-type)::after {
+			content: '';
+			border-top: 1px solid var(--color-secondary);
+			align-self: stretch;
+			margin: 0 0 3em;
+			display: block;
+		}
+	}
+}

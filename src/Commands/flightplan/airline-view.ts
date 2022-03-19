@@ -99,7 +99,11 @@ export async function ShowAirlineView(
 		(message) => {
 			switch (message.command) {
 				case 'aircraftTypesChange':
-					routemap.debouncedUpdateImage(message.text);
+					if (message.immediate) {
+						routemap.updateImage(message.text);
+					} else {
+						routemap.debouncedUpdateImage(message.text);
+					}
 					return;
 			}
 		},

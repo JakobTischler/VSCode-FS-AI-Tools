@@ -65,7 +65,7 @@ export async function getWebviewContent(
 		content += `</section>`;
 
 		if (flightplan) {
-			content += `<section id="routemap">
+			content += `<section id="routemap" class="separator-before">
 							${routemap.webviewContent}
 						</section>`;
 		}

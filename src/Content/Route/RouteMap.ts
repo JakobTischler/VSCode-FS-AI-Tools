@@ -19,7 +19,7 @@ export class Routemap {
 
 	private static colors: ColorSet[] = [
 		['#00FF7F', 'dark'],
-		['#FF6347', 'light'],
+		['#FF6347', 'dark'],
 		['#87CEEB', 'dark'],
 		['#D87093', 'light'],
 		['#FFDEAD', 'dark'],
@@ -76,7 +76,8 @@ export class Routemap {
 						<div class="checkbox-pill all">
 							<input type="checkbox" id="all" name="all" value="all" checked />
 							<label for="all">All</label>
-						</div>`;
+						</div>
+						<div class="checkbox-container">`;
 
 		for (const [index, aircraftType] of this.aircraftTypesSorted.entries()) {
 			const color = Routemap.colors[index % Routemap.colors.length];
@@ -87,7 +88,7 @@ export class Routemap {
 						</div>`;
 		}
 
-		content += '</nav>';
+		content += '</div></nav>';
 
 		content += `<div class="routemap-image"><img id="map" src="" /></div>`;
 
@@ -125,19 +126,32 @@ export class Routemap {
 		);
 
 		txt.push(
-			`&MS=bm&MP=rect&MR=240&MX=540x540&PM=b:pentagon10:orange%2b%22%25i%2212i:orange/:black&PC=%23ff00ff&PW=2`
+			`&MS=bm&MP=rect&MR=240&MX=640x640&PM=b:pentagon10:orange%2b%22%25i%2212i:orange/:black&PC=%23ff00ff&PW=2`
 		);
 
 		return txt.join('');
 	}
 
 	getAircraftTypeGcmRouteString(aircraftType: AircraftType) {
-		// TODO group by departure airport → "ASDF-EDDF/EDDT/KJFK/KLAX"
 		const segments = this.routesByAircraftType.get(aircraftType);
 		if (segments) {
-			return segments
-				.map((segment) => {
-					return `${segment.departureAirport.icao}-${segment.arrivalAirport.icao}`;
+			// Group by departure airport → "ASDF-EDDF/EDDT/KJFK/KLAX"
+			const parts: { [id: string]: Set<string> } = {};
+
+			for (const segment of segments) {
+				const d = segment.departureAirport.icao;
+				const a = segment.arrivalAirport.icao;
+
+				if (parts[d]) {
+					parts[d].add(a);
+				} else {
+					parts[d] = new Set([a]);
+				}
+			}
+
+			return Object.entries(parts)
+				.map((data) => {
+					return `${data[0]}-${[...data[1]].join('/')}`;
 				})
 				.join(',');
 		}
