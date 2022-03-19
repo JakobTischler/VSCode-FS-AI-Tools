@@ -5,28 +5,29 @@ import { Flightplan } from '../Flightplan/Flightplan';
 import { RouteSegment } from './RouteSegment';
 
 export class Routemap {
+	panel: vscode.WebviewPanel;
+
 	flightplan: Flightplan;
 	routesByAircraftType: Map<AircraftType, RouteSegment[]>;
 
-	panel: vscode.WebviewPanel;
-
+	acTypesGcmUri: Map<string, string> = new Map();
 	debouncedUpdateImage = _.debounce(this.updateImage, 2000);
 
 	private static colors = [
-		'#00FF7F',
-		'#FF6347',
-		'#87CEEB',
-		'#D87093',
-		'#FFDEAD',
-		'#F5FFFA',
-		'#9932CC',
-		'#32CD32',
-		'#FFD700',
-		'#FF1493',
-		'#FF7F50',
-		'#1E90FF',
-		'#F8F8FF',
-		'#D8BFD8',
+		['#00FF7F', 'dark'],
+		['#FF6347', 'light'],
+		['#87CEEB', 'dark'],
+		['#D87093', 'light'],
+		['#FFDEAD', 'dark'],
+		['#9932CC', 'light'],
+		['#F5FFFA', 'dark'],
+		['#32CD32', 'light'],
+		['#FFD700', 'dark'],
+		['#FF1493', 'light'],
+		['#FF7F50', 'dark'],
+		['#1E90FF', 'light'],
+		['#F8F8FF', 'dark'],
+		['#D8BFD8', 'dark'],
 	];
 
 	constructor(flightplan: Flightplan, panel: vscode.WebviewPanel) {
@@ -61,7 +62,7 @@ export class Routemap {
 
 		// TODO only if more than 1 aircraftType
 		content += `<nav class="checkboxes aircraft-types">
-						<div class="checkbox-pill primary">
+						<div class="checkbox-pill all">
 							<input type="checkbox" id="all" name="all" value="all" checked />
 							<label for="all">All</label>
 						</div>`;
@@ -69,7 +70,7 @@ export class Routemap {
 		for (const [index, aircraftType] of acTypesSorted.entries()) {
 			const color = Routemap.colors[index % Routemap.colors.length];
 
-			content += `<div class="checkbox-pill" style="--routemap-color: ${color}">
+			content += `<div class="checkbox-pill aircraft-type" style="--color-pill-active-background: ${color[0]}; --color-pill-active-foreground: var(--color-${color[1]});">
 							<input type="checkbox" id="${aircraftType.typeCode}" name="${aircraftType.typeCode}" value="${aircraftType.typeCode}" checked />
 							<label for="${aircraftType.typeCode}">${aircraftType.typeCode}</label>
 						</div>`;
@@ -86,15 +87,19 @@ export class Routemap {
 		console.log(`updateImage("${codesStr}")`);
 		// TODO hard index so color stays the same
 
-		const codes = codesStr.split(',');
-		const aircraftTypes = [...this.routesByAircraftType.keys()].filter((aircraftType) =>
-			codes.includes(aircraftType.typeCode)
-		);
+		let uri = this.acTypesGcmUri.get(codesStr);
+		if (!uri) {
+			const codes = codesStr.split(',');
+			const aircraftTypes = [...this.routesByAircraftType.keys()].filter((aircraftType) =>
+				codes.includes(aircraftType.typeCode)
+			);
 
-		// TODO store gcmString for this codesStr and retrieve it later
+			uri = this.getGcmImageUri(aircraftTypes);
 
-		const gcmString = this.getGcmImageUri(aircraftTypes);
-		this.panel.webview.postMessage({ command: 'updateRoutemapImage', uri: gcmString });
+			this.acTypesGcmUri.set(codesStr, uri);
+		}
+
+		this.panel.webview.postMessage({ command: 'updateRoutemapImage', uri: uri });
 	}
 
 	getGcmImageUri(aircraftTypes: AircraftType[]) {
@@ -103,7 +108,7 @@ export class Routemap {
 		txt.push(
 			aircraftTypes
 				.map((aircraftType, index) => {
-					const color = encodeURIComponent(Routemap.colors[index % Routemap.colors.length]);
+					const color = encodeURIComponent(Routemap.colors[index % Routemap.colors.length][0]);
 					return `C:${color},${this.getAircraftTypeGcmRouteString(aircraftType)}`;
 				})
 				.join(',')

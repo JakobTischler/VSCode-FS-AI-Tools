@@ -38,10 +38,10 @@ const vscode = acquireVsCodeApi();
 
 	/** All single aircraft type checkboxes */
 	const checkboxes = document.querySelectorAll(
-		'#routemap .aircraft-types .checkbox-pill:not(.primary) [type=checkbox]'
+		'#routemap .aircraft-types .checkbox-pill.aircraft-type [type=checkbox]'
 	);
 	/** The "All" checkbox */
-	const checkboxAll = document.querySelector('#routemap .aircraft-types .primary [type=checkbox]');
+	const checkboxAll = document.querySelector('#routemap .aircraft-types .checkbox-pill.all [type=checkbox]');
 
 	console.log({ checkboxes, checkboxAll });
 
@@ -108,6 +108,7 @@ const vscode = acquireVsCodeApi();
 		switch (message.command) {
 			case 'updateRoutemapImage':
 				img.src = message.uri;
+				console.log(`Image updated with "${message.uri}"`);
 		}
 	});
 	console.groupEnd();

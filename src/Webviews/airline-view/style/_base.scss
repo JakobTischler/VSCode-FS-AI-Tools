@@ -33,9 +33,10 @@ body {
 	--body-padding: 1em;
 	padding: 0 var(--body-padding);
 
+	--color-light: #{colors.$light};
+	--color-dark: #{colors.$dark};
 	--color-pill-active-background: var(--vscode-activityBarBadge-background);
 	--color-pill-active-foreground: var(--vscode-activityBarBadge-foreground);
-	--color-pill-foreground: #{transparentize(colors.$dark, 0.5)};
 
 	&.vscode-light {
 		--color-main: #{colors.$dark};
@@ -45,6 +46,7 @@ body {
 		--color-card-shadow: rgba(25, 30, 31, 0.1);
 
 		--color-pill-background: #{colors.$light-inactive};
+		--color-pill-foreground: #{transparentize(colors.$dark, 0.5)};
 	}
 
 	&.vscode-dark {
@@ -55,6 +57,7 @@ body {
 		--color-card-shadow: rgba(25, 30, 31, 0.4);
 
 		--color-pill-background: #{colors.$dark-inactive};
+		--color-pill-foreground: #{transparentize(colors.$light, 0.5)};
 	}
 
 	&.vscode-high-contrast {

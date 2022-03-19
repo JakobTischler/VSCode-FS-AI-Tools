@@ -1,4 +1,5 @@
 @use '_anim';
+@use '_colors';
 @use '_fonts';
 
 .checkboxes {
@@ -11,7 +12,7 @@
 	justify-content: start;
 
 	.checkbox-pill {
-		&.primary {
+		&.all {
 			display: flex;
 			align-items: center;
 			--routemap-color: var(--color-pill-active-background);
@@ -27,7 +28,6 @@
 			}
 		}
 
-		// height: 1em;
 		font-size: 0.8em;
 
 		label {
@@ -51,8 +51,7 @@
 
 			&:checked {
 				+ label {
-					// background: var(--color-pill-active-background);
-					background: var(--routemap-color);
+					background: var(--color-pill-active-background);
 					// box-shadow: 0 $vPadding * 0.5 0 $vPadding * 0.2 var(--routemap-color);
 					color: var(--color-pill-active-foreground);
 					padding: $vPadding 1em;

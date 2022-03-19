@@ -27,9 +27,10 @@ body {
 	font-size: var(--vscode-editor-font-size);
 	--body-padding: 1em;
 	padding: 0 var(--body-padding);
+	--color-light: #f0f0f0;
+	--color-dark: #4a5b5e;
 	--color-pill-active-background: var(--vscode-activityBarBadge-background);
 	--color-pill-active-foreground: var(--vscode-activityBarBadge-foreground);
-	--color-pill-foreground: rgba(74, 91, 94, 0.5);
 }
 body.vscode-light {
 	--color-main: #4a5b5e;
@@ -38,6 +39,7 @@ body.vscode-light {
 	--color-logo-shadow: rgba(74, 91, 94, 0.2);
 	--color-card-shadow: rgba(25, 30, 31, 0.1);
 	--color-pill-background: rgba(213, 215, 216, 0.3);
+	--color-pill-foreground: rgba(74, 91, 94, 0.5);
 }
 body.vscode-dark {
 	--color-main: #f0f0f0;
@@ -46,6 +48,7 @@ body.vscode-dark {
 	--color-logo-shadow: rgba(255, 255, 255, 0.065);
 	--color-card-shadow: rgba(25, 30, 31, 0.4);
 	--color-pill-background: rgba(210, 236, 255, 0.25);
+	--color-pill-foreground: rgba(240, 240, 240, 0.5);
 }
 body.vscode-high-contrast {
 	color: red;
@@ -416,12 +419,12 @@ button.secondary:hover {
 .checkboxes .checkbox-pill {
 	font-size: 0.8em;
 }
-.checkboxes .checkbox-pill.primary {
+.checkboxes .checkbox-pill.all {
 	display: flex;
 	align-items: center;
 	--routemap-color: var(--color-pill-active-background);
 }
-.checkboxes .checkbox-pill.primary:after {
+.checkboxes .checkbox-pill.all:after {
 	content: "";
 	width: 1px;
 	height: 4em;
@@ -447,7 +450,7 @@ button.secondary:hover {
 	display: none;
 }
 .checkboxes .checkbox-pill input[type=checkbox]:checked + label {
-	background: var(--routemap-color);
+	background: var(--color-pill-active-background);
 	color: var(--color-pill-active-foreground);
 	padding: 0.5em 1em;
 }/*# sourceMappingURL=style.css.map */

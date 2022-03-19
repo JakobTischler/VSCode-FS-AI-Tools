@@ -14,5 +14,20 @@ $card-background: rgba(255, 255, 255, 0.02);
 
 /* Routemap GCM colors */
 // $gcm: SpringGreen, Tomato, SkyBlue, PaleVioletRed, NavajoWhite, MintCream, DarkOrchid, LimeGreen, Gold, DeepPink, Coral, DodgerBlue, GhostWhite, Thistle;
-$gcm: #00ff7f, #ff6347, #87ceeb, #d87093, #ffdead, #f5fffa, #9932cc, #32cd32, #ffd700, #ff1493, #ff7f50, #1e90ff,
-	#f8f8ff, #d8bfd8;
+// Key is background, value is foreground
+$gcm: (
+	1 '#00ff7f' $dark,
+	2 '#ff6347' $light,
+	3 '#87ceeb' $light,
+	4 '#d87093' $light,
+	5 '#ffdead' $dark,
+	6 '#f5fffa' $dark,
+	7 '#9932cc' $light,
+	8 '#32cd32' $light,
+	9 '#ffd700' $dark,
+	10 '#ff1493' $light,
+	11 '#ff7f50' $dark,
+	12 '#1e90ff' $light,
+	13 '#f8f8ff' $dark,
+	14 '#d8bfd8' $dark
+);
