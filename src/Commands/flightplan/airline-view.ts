@@ -12,11 +12,12 @@
 import * as vscode from 'vscode';
 import * as path from 'path';
 import { getFlightplanFiles, showErrorModal, showError, plural } from '../../Tools/helpers';
-import { readAifpCfg } from '../../Tools/read-aifp';
+import { AifpData, readAifpCfg } from '../../Tools/read-aifp';
 import { Flightplan, FlightplanRaw } from '../../Content/Flightplan/Flightplan';
 import { parseAircraftTxt } from '../../Content/Aircraft/parseAircraftTxt';
 import { getWebviewContent } from '../../Webviews/airline-view/get-content';
 import { LocalStorageService } from '../../Tools/LocalStorageService';
+import { Routemap } from '../../Content/Route/RouteMap';
 
 export async function ShowAirlineView(
 	context: vscode.ExtensionContext,
@@ -88,9 +89,33 @@ export async function ShowAirlineView(
 	flightplan.parse(aircraftData.aircraftTypes, aircraftData.aircraftLiveries);
 
 	// Create Webview
+	const panel = createPanel(context, aifp);
+
+	// Routemap
+	const routemap = new Routemap(flightplan, panel);
+
+	// Handle messages from the webview
+	panel.webview.onDidReceiveMessage(
+		(message) => {
+			switch (message.command) {
+				case 'aircraftTypesChange':
+					routemap.debouncedUpdateImage(message.text);
+					return;
+			}
+		},
+		undefined,
+		context.subscriptions
+	);
+
+	// Set HTML content
+	panel.webview.html = await getWebviewContent(panel, context, dirPath, aifp, aircraftData, flightplan, routemap);
+}
+
+function createPanel(context: vscode.ExtensionContext, aifp: AifpData) {
 	const config = vscode.workspace.getConfiguration('fs-ai-tools.airlineView', undefined);
 	const logoDirectoryPath = config.get('logoDirectoryPath') as string;
 
+	// Define localResourceRoots
 	const localResourceRoots = [vscode.Uri.file(path.join(context.extensionPath, 'res/Webviews/airline-view'))];
 	if (logoDirectoryPath?.length) {
 		localResourceRoots.push(vscode.Uri.file(logoDirectoryPath));
@@ -106,6 +131,5 @@ export async function ShowAirlineView(
 		}
 	);
 
-	// Set HTML content
-	panel.webview.html = await getWebviewContent(panel, context, dirPath, aifp, aircraftData, flightplan);
+	return panel;
 }

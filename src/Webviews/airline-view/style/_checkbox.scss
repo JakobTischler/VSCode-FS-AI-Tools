@@ -1,0 +1,63 @@
+@use '_anim';
+@use '_fonts';
+
+.checkboxes {
+	$gap: 0.75em;
+	$vPadding: 0.5em;
+
+	display: flex;
+	gap: $gap;
+	align-items: center;
+	justify-content: start;
+
+	.checkbox-pill {
+		&.primary {
+			display: flex;
+			align-items: center;
+			--routemap-color: var(--color-pill-active-background);
+
+			&:after {
+				content: '';
+				width: 1px;
+				height: $vPadding * 8;
+				background: var(--color-secondary);
+				margin: 0 $gap 0 $gap * 2;
+				display: inline-flex;
+				align-self: center;
+			}
+		}
+
+		// height: 1em;
+		font-size: 0.8em;
+
+		label {
+			background: var(--color-pill-background);
+			border-radius: 1em + $vPadding * 2; // 1em + 2× padding vertical
+			color: var(--color-pill-foreground);
+			cursor: pointer;
+			font-family: fonts.$sans-serif;
+			letter-spacing: 2px;
+			padding: $vPadding * 0.5 1em;
+
+			transition: all #{anim.$length};
+
+			&:hover {
+				filter: brightness(1.05);
+			}
+		}
+
+		input[type='checkbox'] {
+			display: none;
+
+			&:checked {
+				+ label {
+					// background: var(--color-pill-active-background);
+					background: var(--routemap-color);
+					// box-shadow: 0 $vPadding * 0.5 0 $vPadding * 0.2 var(--routemap-color);
+					color: var(--color-pill-active-foreground);
+					padding: $vPadding 1em;
+				}
+			}
+		}
+	}
+}

@@ -9,9 +9,4 @@
 @use '_definition-list';
 @use '_button';
 @use '_card';
-
-/* ROUTEMAP */
-#routemap #map {
-	width: 100%;
-	height: 500px;
-}
+@use '_checkbox';

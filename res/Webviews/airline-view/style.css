@@ -1,4 +1,5 @@
 @charset "UTF-8";
+/* Routemap GCM colors */
 *,
 *::before,
 *::after {
@@ -26,6 +27,9 @@ body {
 	font-size: var(--vscode-editor-font-size);
 	--body-padding: 1em;
 	padding: 0 var(--body-padding);
+	--color-pill-active-background: var(--vscode-activityBarBadge-background);
+	--color-pill-active-foreground: var(--vscode-activityBarBadge-foreground);
+	--color-pill-foreground: rgba(74, 91, 94, 0.5);
 }
 body.vscode-light {
 	--color-main: #4a5b5e;
@@ -33,6 +37,7 @@ body.vscode-light {
 	--color-tertiary: rgba(113, 137, 142, 0.25);
 	--color-logo-shadow: rgba(74, 91, 94, 0.2);
 	--color-card-shadow: rgba(25, 30, 31, 0.1);
+	--color-pill-background: rgba(213, 215, 216, 0.3);
 }
 body.vscode-dark {
 	--color-main: #f0f0f0;
@@ -40,6 +45,7 @@ body.vscode-dark {
 	--color-tertiary: rgba(210, 236, 255, 0.25);
 	--color-logo-shadow: rgba(255, 255, 255, 0.065);
 	--color-card-shadow: rgba(25, 30, 31, 0.4);
+	--color-pill-background: rgba(210, 236, 255, 0.25);
 }
 body.vscode-high-contrast {
 	color: red;
@@ -401,8 +407,47 @@ button.secondary:hover {
 	box-shadow: 0 0 var(--card-shadow-blur) var(--color-card-shadow);
 }
 
-/* ROUTEMAP */
-#routemap #map {
-	width: 100%;
-	height: 500px;
+.checkboxes {
+	display: flex;
+	gap: 0.75em;
+	align-items: center;
+	justify-content: start;
+}
+.checkboxes .checkbox-pill {
+	font-size: 0.8em;
+}
+.checkboxes .checkbox-pill.primary {
+	display: flex;
+	align-items: center;
+	--routemap-color: var(--color-pill-active-background);
+}
+.checkboxes .checkbox-pill.primary:after {
+	content: "";
+	width: 1px;
+	height: 4em;
+	background: var(--color-secondary);
+	margin: 0 0.75em 0 1.5em;
+	display: inline-flex;
+	align-self: center;
+}
+.checkboxes .checkbox-pill label {
+	background: var(--color-pill-background);
+	border-radius: 2em;
+	color: var(--color-pill-foreground);
+	cursor: pointer;
+	font-family: "Fredoka", var(--vscode-font-family), sans-serif;
+	letter-spacing: 2px;
+	padding: 0.25em 1em;
+	transition: all 0.2s;
+}
+.checkboxes .checkbox-pill label:hover {
+	filter: brightness(1.05);
+}
+.checkboxes .checkbox-pill input[type=checkbox] {
+	display: none;
+}
+.checkboxes .checkbox-pill input[type=checkbox]:checked + label {
+	background: var(--routemap-color);
+	color: var(--color-pill-active-foreground);
+	padding: 0.5em 1em;
 }/*# sourceMappingURL=style.css.map */

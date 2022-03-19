@@ -3,10 +3,10 @@ import * as fs from 'fs';
 import * as path from 'path';
 import { AifpData } from '../../Tools/read-aifp';
 import { Flightplan } from '../../Content/Flightplan/Flightplan';
+import { Routemap } from '../../Content/Route/RouteMap';
 import { TAircraftTypesByTypeCode } from '../../Content/Aircraft/AircraftType';
 import { TAircraftLiveriesByAcNum } from '../../Content/Aircraft/AircraftLivery';
 import { createNonce, plural } from '../../Tools/helpers';
-import Axios from 'axios';
 
 export async function getWebviewContent(
 	panel: vscode.WebviewPanel,
@@ -19,7 +19,8 @@ export async function getWebviewContent(
 		totalAircraftCount: number;
 		nonMatches: string[];
 	},
-	flightplan: Flightplan
+	flightplan: Flightplan,
+	routemap: Routemap
 ): Promise<string> {
 	const uris = {
 		css: panel.webview.asWebviewUri(
@@ -63,12 +64,11 @@ export async function getWebviewContent(
 
 		content += `</section>`;
 
-		/* if (flightplan) {
+		if (flightplan) {
 			content += `<section id="routemap">
-							<h2>Routemap</h2>
-							<div id="map"></div>
+							${routemap.webviewContent}
 						</section>`;
-		} */
+		}
 	}
 
 	content += '</main>';

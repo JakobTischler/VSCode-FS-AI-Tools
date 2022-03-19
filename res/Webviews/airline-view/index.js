@@ -1,3 +1,5 @@
+const vscode = acquireVsCodeApi();
+
 /**
  * Toggle buttons
  */
@@ -29,32 +31,84 @@
  * Routemap
  */
 {
-	function mapboxInit() {
-		mapboxgl.accessToken =
-			'pk.eyJ1IjoiamFrb2J0aSIsImEiOiJjbDBsOWp1YjIwMDlhM2VrZXptaGMwbnNxIn0.KIIriwQIerNWtTAzymqdfA';
+	console.group('ROUTEMAP CHECKBOXES');
 
-		const map = new mapboxgl.Map({
-			container: 'map',
-			style: 'mapbox://styles/mapbox/streets-v11',
+	/** Routemap img node */
+	const img = document.querySelector('#map');
+
+	/** All single aircraft type checkboxes */
+	const checkboxes = document.querySelectorAll(
+		'#routemap .aircraft-types .checkbox-pill:not(.primary) [type=checkbox]'
+	);
+	/** The "All" checkbox */
+	const checkboxAll = document.querySelector('#routemap .aircraft-types .primary [type=checkbox]');
+
+	console.log({ checkboxes, checkboxAll });
+
+	let doUpdate = false;
+
+	for (const checkbox of checkboxes) {
+		checkbox.addEventListener('change', (event) => {
+			updateMainCheckbox();
+			sendSelectionToExtension();
 		});
 	}
-	// mapboxInit();
 
-	/** Google Maps init */
-	function initMap() {
-		// The location of Uluru
-		const uluru = { lat: -25.344, lng: 131.036 };
+	checkboxAll.addEventListener('change', (event) => {
+		updateCheckboxes(checkboxAll.checked);
+		sendSelectionToExtension();
+	});
 
-		// The map, centered at Uluru
-		const map = new google.maps.Map(document.querySelector('#routemap .map'), {
-			zoom: 4,
-			center: uluru,
-		});
+	// Initial
+	sendSelectionToExtension();
 
-		// The marker, positioned at Uluru
-		const marker = new google.maps.Marker({
-			position: uluru,
-			map: map,
+	/**
+	 * Checks if every single aircraftType checkbox is checked. If `true`, sets
+	 * the "All" checkbox to checked, otherwise to unchecked.
+	 */
+	function updateMainCheckbox() {
+		checkboxAll.checked = [...checkboxes].every((checkbox) => checkbox.checked);
+		console.log('updateMainCheckbox(): every=', checkboxAll.checked);
+	}
+
+	/**
+	 * Sets all _non-main_ checkboxes' `checked` attribute the specified
+	 * boolean value. To be called when the _"all"_ checkbox is changed
+	 * manually.
+	 */
+	function updateCheckboxes(checked) {
+		for (const checkbox of checkboxes) {
+			checkbox.checked = checked;
+		}
+
+		console.log(`updateCheckboxes(${checked})`);
+	}
+
+	/** Goes through each active aircraftType and generates the GCM route. Then
+	 * updates the routemap image. */
+	function sendSelectionToExtension() {
+		// Get checked checkboxes
+		const acTypes = [...checkboxes]
+			.filter((checkbox) => checkbox.checked)
+			.map((checkbox) => checkbox.value)
+			.join(',');
+
+		console.log(`sendSelectionToExtension(): ${acTypes}`);
+
+		// Post message to extension
+		vscode.postMessage({
+			command: 'aircraftTypesChange',
+			text: acTypes,
 		});
 	}
+
+	window.addEventListener('message', (event) => {
+		const message = event.data; // The JSON data the extension sent
+
+		switch (message.command) {
+			case 'updateRoutemapImage':
+				img.src = message.uri;
+		}
+	});
+	console.groupEnd();
 }
