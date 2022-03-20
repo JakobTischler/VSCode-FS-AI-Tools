@@ -1,5 +1,8 @@
 # Change Log
 
+### 1.4.2
+- `Show Airline View` now includes a routemap view, using [Great Circle Mapper](http://www.gcmap.com/). Each aircraft type can be toggled.
+
 ### 1.4.1
 - `Show Airline View`: now first checks the `Airports….txt` file in the flightplan directory before reading the master airports file.
 

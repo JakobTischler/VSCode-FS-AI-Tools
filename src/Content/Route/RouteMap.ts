@@ -1,10 +1,9 @@
 import _ = require('lodash');
 import * as vscode from 'vscode';
+import { ColorSet } from '../../Types/Color';
 import { AircraftType } from '../Aircraft/AircraftType';
 import { Flightplan } from '../Flightplan/Flightplan';
 import { RouteSegment } from './RouteSegment';
-
-type ColorSet = [string, string];
 
 export class Routemap {
 	panel: vscode.WebviewPanel;
@@ -46,7 +45,7 @@ export class Routemap {
 		// Set aircraftType colors
 		for (const [index, aircraftType] of this.aircraftTypesSorted.entries()) {
 			const colorSet = Routemap.colors[index % Routemap.colors.length];
-			this.aircraftTypeToColor.set(aircraftType, colorSet);
+			aircraftType.routemapColor = colorSet;
 		}
 	}
 
@@ -110,6 +109,14 @@ export class Routemap {
 			this.acTypesGcmUri.set(codesStr, uri);
 		}
 
+		// TODO receive img with axios, check for error code
+		/*
+		e.g. Air Panama http://www.gcmap.com/map?P=C:%2387CEEB,MPMG-MPDA/SKRG,C:%23D87093,MPMG-MROC/MPBO/MPCH,C:%23FF6347,MPMG-PX06/MPBH/MPJE/MPOA/MPRA/SIC1,MPBH-MPJE,MPRA-SIC1,C:%2300FF7F,MPMG-MP30/MPAC/MPOG/MPMP,MP30-MPAC,MPOG-MPMP&MS=bm&MP=rect&MR=240&MX=640x640&PM=b:pentagon10:orange%2b%22%25i%2212i:orange/:black&PC=%23ff00ff&PW=2
+		Error
+
+		PX06: location error 0 (undefined code)
+		*/
+
 		this.panel.webview.postMessage({ command: 'updateRoutemapImage', uri: uri });
 	}
 
@@ -119,7 +126,7 @@ export class Routemap {
 		txt.push(
 			aircraftTypes
 				.map((aircraftType) => {
-					const color = encodeURIComponent(this.aircraftTypeToColor.get(aircraftType)![0]);
+					const color = encodeURIComponent(aircraftType.routemapColor![0]);
 					return `C:${color},${this.getAircraftTypeGcmRouteString(aircraftType)}`;
 				})
 				.join(',')

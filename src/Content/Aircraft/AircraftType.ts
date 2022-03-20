@@ -8,18 +8,24 @@ import { AircraftLivery } from './AircraftLivery';
 export type TAircraftTypesByTypeCode = Map<string, AircraftType>;
 
 export class AircraftType {
-	/** The type's ICAO code */
+	/** The type's ICAO code, e.g. "A339" */
 	typeCode: string;
 	/** The total number of aircraft of this type. */
 	aircraftCount: number = 0;
 	/** A set of all `AircraftLivery`s that were matched to this aircraft type */
 	liveries: Set<AircraftLivery> = new Set();
-	/** The type's manufacturer name */
+	/** The type's manufacturer name, e.g. "Airbus" */
 	manufacturer?: string;
-	/** The type's name */
+	/** The type's name, e.g. "A330-900" */
 	typeName?: string;
 	/** The type's optional series */
 	series?: string;
+	/**
+	 * A tuple containing the hex color that's used when displaying this
+	 * aircraftType's routes on the routemap, along with its corresponding font
+	 * color
+	 */
+	routemapColor?: [string, string];
 
 	constructor(title: string) {
 		this.typeCode = title;
@@ -38,6 +44,10 @@ export class AircraftType {
 		}, 0);
 	}
 
+	/**
+	 * Concatenates the manufacturer and type name, if defined (e.g. "Airbus
+	 * A330-900"). Returns the type's ICAO code as fallback.
+	 */
 	get name() {
 		if (this.manufacturer && this.typeName) {
 			return `${this.manufacturer} ${this.typeName}`;

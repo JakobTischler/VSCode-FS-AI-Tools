@@ -6,7 +6,7 @@
 	},
 	"displayName": "FS AI Tools",
 	"description": "A bag of tools for AI flightplans and .cfg files",
-	"version": "1.4.1",
+	"version": "1.4.2",
 	"icon": "icon.png",
 	"license": "",
 	"engines": {
@@ -761,14 +761,13 @@
 		"@types/vscode": "^1.64.0",
 		"@vscode/test-electron": "^2.1.3",
 		"eslint": "^8.11.0",
+		"mocha": "^9.2.2",
 		"typescript": "^4.6.2",
 		"vsce": "^2.7.0"
 	},
 	"dependencies": {
-		"axios": "^0.26.1",
 		"fs": "~0.0.1-security",
 		"lodash": "^4.17.21",
-		"mocha": "^9.2.2",
 		"path": "~0.12.7"
 	}
 }

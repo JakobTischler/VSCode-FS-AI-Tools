@@ -19,6 +19,8 @@ A Visual Studio Code extension for managing, cleaning and improving FS/Prepar3D 
 * Logo will be searched in flightplan directory ("logo.png/jpg" or "[callsign].png/jpg") or a custom logo directory ("directory/[callsign].png/jpg")
 * Custom logo directory path can be set with the `fs-ai-tools.airlineView.logoDirectoryPath` setting.
 * Can use master airports file (`fs-ai-tools.generateAirports.masterAirportsFilePath`) if an airport is not found in flightplan's Airports.txt file.
+* Routemap view, using [Great Circle Mapper](http://www.gcmap.com/). Each aircraft type can be toggled.
+
 <br>
 <br>
 

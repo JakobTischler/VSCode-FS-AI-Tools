@@ -486,9 +486,9 @@
 			}
 		},
 		"Fokker": {
-			"search": ["Fokker"],
+			"search": ["Fokker", "Fairchild"],
 			"types": {
-				"F50": { "name": "50", "search": ["Fokker 50", "F50"] },
+				"F50": { "name": "50", "search": ["/(F|Fokker)[-\\s]?50/", "/F-?27\\w?/"] },
 				"F70": { "name": "70", "search": ["Fokker 70", "F70"], "series": "F-Jet" },
 				"F100": { "name": "100", "search": ["Fokker 100", "F100"], "series": "F-Jet" }
 			}
