@@ -92,7 +92,7 @@ export async function ShowAirlineView(
 	const panel = createPanel(context, aifp);
 
 	// Routemap
-	const routemap = new Routemap(flightplan, panel);
+	const routemap = new Routemap(flightplan, panel, storageManager);
 
 	// Handle messages from the webview
 	panel.webview.onDidReceiveMessage(

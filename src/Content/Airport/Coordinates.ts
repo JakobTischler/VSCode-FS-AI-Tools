@@ -55,4 +55,13 @@ export class CoordinateComponent {
 		});
 		return `${this.factorName}${deg}* ${min}'`;
 	}
+
+	get gcmStr() {
+		const num = (this.degrees + this.minutes / 60).toLocaleString(undefined, {
+			minimumFractionDigits: 4,
+			minimumIntegerDigits: 2,
+			useGrouping: false,
+		});
+		return `${this.factorName}${num}`;
+	}
 }

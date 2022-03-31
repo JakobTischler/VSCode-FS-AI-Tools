@@ -1,5 +1,5 @@
-import { Aircraft } from './Aircraft';
 import { AircraftLivery } from './AircraftLivery';
+import { Color } from '../../Classes/Color';
 
 /**
  * A map of `AircraftType` entries, where the key is its respective ICAO code
@@ -25,7 +25,7 @@ export class AircraftType {
 	 * aircraftType's routes on the routemap, along with its corresponding font
 	 * color
 	 */
-	routemapColor?: [string, string];
+	routemapColor?: Color;
 
 	constructor(title: string) {
 		this.typeCode = title;

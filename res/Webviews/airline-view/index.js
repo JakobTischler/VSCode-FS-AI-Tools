@@ -33,6 +33,8 @@ const vscode = acquireVsCodeApi();
 {
 	console.group('ROUTEMAP CHECKBOXES');
 
+	const imgContainer = document.querySelector('.routemap-image');
+
 	/** Routemap img node */
 	const img = document.querySelector('#map');
 
@@ -108,6 +110,14 @@ const vscode = acquireVsCodeApi();
 			case 'updateRoutemapImage':
 				img.src = message.uri;
 				console.log(`Image updated with "${message.uri}"`);
+				break;
+			case 'setRoutemapLoading':
+				if (message.loading) {
+					imgContainer.classList.add('loading');
+				} else {
+					imgContainer.classList.remove('loading');
+				}
+				break;
 		}
 	});
 	console.groupEnd();

@@ -67,6 +67,10 @@ export class Airport {
 		// return `${this.icao},${this.coordinates.lat.str},${this.coordinates.lon.str},${this.altitude}`;
 		return [this.icao, this.coordinates.lat.str, this.coordinates.lon.str, this.altitude].join(',');
 	}
+
+	getGcmData(id: string) {
+		return `${id}=${this.coordinates.lat.gcmStr}${this.coordinates.lon.gcmStr};"${this.icao}"+@${id}`;
+	}
 }
 
 export type TAirportCodeCount = {
@@ -80,7 +84,6 @@ export type TAirportCodeToLine = Map<string, string>;
  * Parses the file defined in `filePath` to create a master airport data Map.
  * Saves it to local storage, and retrieves it if used another time. If the
  * master file has changed (checked via timestamp), it is parsed regardless.
- * @param filePath Path to the master airports .txt file
  * @param storageManager The LocalStorageService manager to store and retrieve
  * the master airport data.
  * @returns A Map of the master airports (`Map<ICAO, Airports.txt line>`)

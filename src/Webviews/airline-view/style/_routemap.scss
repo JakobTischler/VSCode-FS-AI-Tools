@@ -1,0 +1,63 @@
+@use '_anim';
+
+.routemap-image {
+	height: 640px;
+	width: 640px;
+	display: flex;
+	flex-direction: column;
+	justify-content: center;
+	align-items: center;
+	position: relative;
+
+	.loading-indicator {
+		opacity: 0;
+		position: absolute;
+
+		display: flex;
+		justify-content: center;
+		align-items: center;
+
+		filter: drop-shadow(0 0 6px var(--color-dark));
+
+		transition: opacity anim.$length;
+
+		div {
+			$size: 60px;
+			box-sizing: border-box;
+			display: block;
+			position: absolute;
+			width: $size * 0.8;
+			height: $size * 0.8;
+			margin: $size * 0.1;
+			border: $size * 0.1 solid var(--color-light);
+			border-color: var(--color-light) transparent transparent transparent;
+			border-radius: 50%;
+			animation: loading-indicator 1.2s cubic-bezier(0.5, 0, 0.5, 1) infinite;
+
+			&:nth-child(1) {
+				animation-delay: -0.45s;
+			}
+			&:nth-child(2) {
+				animation-delay: -0.3s;
+			}
+			&:nth-child(3) {
+				animation-delay: -0.15s;
+			}
+		}
+	}
+
+	&.loading {
+		.loading-indicator {
+			opacity: 1;
+		}
+	}
+}
+
+@keyframes loading-indicator {
+	0% {
+		transform: rotate(0deg);
+	}
+	100% {
+		transform: rotate(360deg);
+	}
+}

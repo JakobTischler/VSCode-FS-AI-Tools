@@ -474,4 +474,56 @@ nav.checkboxes .checkbox-pill input[type=checkbox]:checked + label {
 	background: var(--color-pill-active-background);
 	color: var(--color-pill-active-foreground);
 	padding: 0.5em 1em;
+}
+
+.routemap-image {
+	height: 640px;
+	width: 640px;
+	display: flex;
+	flex-direction: column;
+	justify-content: center;
+	align-items: center;
+	position: relative;
+}
+.routemap-image .loading-indicator {
+	opacity: 0;
+	position: absolute;
+	display: flex;
+	justify-content: center;
+	align-items: center;
+	filter: drop-shadow(0 0 6px var(--color-dark));
+	transition: opacity 0.2s;
+}
+.routemap-image .loading-indicator div {
+	box-sizing: border-box;
+	display: block;
+	position: absolute;
+	width: 48px;
+	height: 48px;
+	margin: 6px;
+	border: 6px solid var(--color-light);
+	border-color: var(--color-light) transparent transparent transparent;
+	border-radius: 50%;
+	animation: loading-indicator 1.2s cubic-bezier(0.5, 0, 0.5, 1) infinite;
+}
+.routemap-image .loading-indicator div:nth-child(1) {
+	animation-delay: -0.45s;
+}
+.routemap-image .loading-indicator div:nth-child(2) {
+	animation-delay: -0.3s;
+}
+.routemap-image .loading-indicator div:nth-child(3) {
+	animation-delay: -0.15s;
+}
+.routemap-image.loading .loading-indicator {
+	opacity: 1;
+}
+
+@keyframes loading-indicator {
+	0% {
+		transform: rotate(0deg);
+	}
+	100% {
+		transform: rotate(360deg);
+	}
 }/*# sourceMappingURL=style.css.map */
