@@ -27,14 +27,14 @@ body {
 	font-size: var(--vscode-editor-font-size);
 	padding: 1em;
 	--color-light: #f0f0f0;
-	--color-dark: #4a5b5e;
+	--color-dark: hsl(189deg, 12%, 33%);
 	--color-pill-active-background: var(--vscode-activityBarBadge-background);
 	--color-pill-active-foreground: var(--vscode-activityBarBadge-foreground);
 }
 body.vscode-light {
-	--color-main: #4a5b5e;
-	--color-secondary: #71898e;
-	--color-tertiary: rgba(113, 137, 142, 0.25);
+	--color-main: hsl(189deg, 12%, 33%);
+	--color-secondary: hsl(190deg, 11%, 50%);
+	--color-tertiary: hsla(190deg, 11%, 50%, 0.25);
 	--color-logo-shadow: rgba(74, 91, 94, 0.2);
 	--color-card-shadow: rgba(25, 30, 31, 0.1);
 	--color-pill-background: rgba(213, 215, 216, 0.3);
@@ -42,7 +42,7 @@ body.vscode-light {
 }
 body.vscode-dark {
 	--color-main: #f0f0f0;
-	--color-secondary: #d2ecff;
+	--color-secondary: rgb(210, 236, 255);
 	--color-tertiary: rgba(210, 236, 255, 0.25);
 	--color-logo-shadow: rgba(255, 255, 255, 0.065);
 	--color-card-shadow: rgba(25, 30, 31, 0.4);
@@ -519,11 +519,46 @@ nav.checkboxes .checkbox-pill input[type=checkbox]:checked + label {
 	opacity: 1;
 }
 
+#map {
+	--color-card-shadow: rgb(0 0 58 / 50%);
+}
+
+nav.aircraft-types .checkbox-container {
+	height: 3.2em;
+	position: relative;
+}
+
+#update-delay-bar {
+	width: 0;
+	height: 5px;
+	border-radius: 5px;
+	background-color: var(--color-secondary);
+	position: absolute;
+	bottom: 0;
+}
+#update-delay-bar.run {
+	animation: update-delay 2s ease-in;
+}
+
+/**
+ * Routemap loading indicator (spinning circle line)
+ */
 @keyframes loading-indicator {
 	0% {
 		transform: rotate(0deg);
 	}
 	100% {
 		transform: rotate(360deg);
+	}
+}
+/**
+ * Routemap update delay bar (horizontal bar decreasing in width)
+ */
+@keyframes update-delay {
+	from {
+		width: 100%;
+	}
+	to {
+		width: 0;
 	}
 }/*# sourceMappingURL=style.css.map */

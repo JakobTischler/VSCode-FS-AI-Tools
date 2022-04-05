@@ -93,11 +93,13 @@ export class Routemap {
 						</div>`;
 		}
 
+		content += `<div id="update-delay-bar"></div>`;
+
 		content += '</div></nav>';
 
 		content += `<div class="routemap-image">
 			<div class="loading-indicator"><div></div><div></div><div></div><div></div></div>
-			<img id="map" src="" />
+			<img id="map" class="card" src="" />
 		</div>`;
 
 		return content;
@@ -192,6 +194,7 @@ export class Routemap {
 				// Add custom data and replace all ICAO occurrences with new ID
 				uri = replaceAirport(uri, airportCode, id, gcmData);
 			} else {
+				// console.log(axiosImg.data);
 				break;
 			}
 		}

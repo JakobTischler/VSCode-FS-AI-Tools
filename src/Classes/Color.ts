@@ -29,7 +29,7 @@ export class Color {
 			return 'dark';
 		}
 
-		return 'dark';
+		return 'light';
 	}
 
 	/**

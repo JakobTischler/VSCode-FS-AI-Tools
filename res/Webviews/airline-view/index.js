@@ -84,6 +84,14 @@ const vscode = acquireVsCodeApi();
 		console.log(`updateCheckboxes(${checked})`);
 	}
 
+	/** Forces a reflow for the delay indicator */
+	function restartDelayIndicator() {
+		const el = document.querySelector('#update-delay-bar');
+		el.classList.remove('run');
+		void el.offsetWidth; // forces reflow
+		el.classList.add('run');
+	}
+
 	/** Goes through each active aircraftType and generates the GCM route. Then
 	 * updates the routemap image. */
 	function sendSelectionToExtension(immediate = false) {
@@ -94,6 +102,10 @@ const vscode = acquireVsCodeApi();
 			.join(',');
 
 		console.log(`sendSelectionToExtension(): ${acTypes}`);
+
+		if (!immediate) {
+			restartDelayIndicator();
+		}
 
 		// Post message to extension
 		vscode.postMessage({
