@@ -23,9 +23,25 @@ button {
 	&.secondary {
 		background-color: var(--vscode-button-secondaryBackground);
 		color: var(--vscode-button-secondaryForeground);
+		padding: 0.5em 1em;
 
 		&:hover {
 			background-color: var(--vscode-button-secondaryHoverBackground);
+		}
+	}
+
+	.content-off {
+		display: block;
+	}
+	.content-on {
+		display: none;
+	}
+	&.on {
+		.content-off {
+			display: none;
+		}
+		.content-on {
+			display: block;
 		}
 	}
 }

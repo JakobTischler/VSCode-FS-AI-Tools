@@ -12,8 +12,12 @@ const vscode = acquireVsCodeApi();
 			continue;
 		}
 		const className = button.dataset.toggleClass || 'hidden';
+
 		const buttonTextOn = button.dataset.buttonTextOn || 'Show all';
 		const buttonTextOff = button.dataset.buttonTextOff || 'Show less';
+		const contentOn = button.querySelector('.content-on');
+		const contentOff = button.querySelector('.content-off');
+		const contentType = contentOn && contentOff ? 'CONTENT' : 'TEXT';
 
 		let state = target.classList.contains(className);
 
@@ -22,7 +26,11 @@ const vscode = acquireVsCodeApi();
 
 			state = !state;
 
-			button.innerHTML = state ? buttonTextOn : buttonTextOff;
+			if (contentType === 'TEXT') {
+				button.innerHTML = state ? buttonTextOn : buttonTextOff;
+			} else {
+				button.classList.toggle('on', state);
+			}
 		});
 	}
 }

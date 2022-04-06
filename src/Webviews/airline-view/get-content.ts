@@ -306,7 +306,10 @@ function getRoutesContent(flightplan: Flightplan) {
 		includeNumber: false,
 	})}</span> <span class="secondary">(${flights.length.toLocaleString()} legs)</span>`;
 
-	content += `<button class="toggle-button secondary" role="button" data-target="#route-segments" data-toggle-class="show-aircraft-types" data-button-text-on="Hide aircraft types" data-button-text-off="Show aircraft types">Show Aircraft Types</button>`;
+	content += `<button class="toggle-button secondary" role="button" data-target="#route-segments" data-toggle-class="show-aircraft-types">
+		<div class="content-on"><i class="icon aircraft-off"></i></div>
+		<div class="content-off"><i class="icon aircraft"></i></div>
+	</button>`;
 	if (segments.size > 10) {
 		content += `<button class="toggle-button" role="button" data-target="#route-segments">Show all</button>`;
 	}

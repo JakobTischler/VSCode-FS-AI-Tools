@@ -11,8 +11,8 @@ i.icon {
 	-webkit-mask-size: contain;
 	mask-size: contain;
 
-	$icons: 'brackets-curly', 'calendar-alt', 'fingerprint', 'microphone', 'plane-arrival', 'plane-departure',
-		'user-edit';
+	$icons: 'aircraft', 'aircraft-off', 'brackets-curly', 'calendar-alt', 'fingerprint', 'microphone', 'plane-arrival',
+		'plane-departure', 'user-edit';
 	@each $icon in $icons {
 		&.#{$icon} {
 			-webkit-mask-image: url(./icons/#{$icon}.svg);

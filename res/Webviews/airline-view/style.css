@@ -121,6 +121,14 @@ i.icon {
 	-webkit-mask-size: contain;
 	mask-size: contain;
 }
+i.icon.aircraft {
+	-webkit-mask-image: url(./icons/aircraft.svg);
+	mask-image: url(./icons/aircraft.svg);
+}
+i.icon.aircraft-off {
+	-webkit-mask-image: url(./icons/aircraft-off.svg);
+	mask-image: url(./icons/aircraft-off.svg);
+}
 i.icon.brackets-curly {
 	-webkit-mask-image: url(./icons/brackets-curly.svg);
 	mask-image: url(./icons/brackets-curly.svg);
@@ -174,7 +182,7 @@ section.grid {
 section.grid > div.grid-item {
 	align-self: stretch;
 	/* flex: 1; */
-	min-width: 350px;
+	min-width: max-content;
 }
 section.grid > div.grid-item:first-child {
 	order: 1;
@@ -210,6 +218,9 @@ section.grid div.grid-item > h2 {
 	position: sticky;
 	top: 0;
 	z-index: 1;
+}
+section.grid div.grid-item > h2 button:first-of-type {
+	margin-left: auto;
 }
 section.grid div.grid-item > h2 > span.secondary {
 	font-style: italic;
@@ -410,9 +421,22 @@ button:hover, button:focus {
 button.secondary {
 	background-color: var(--vscode-button-secondaryBackground);
 	color: var(--vscode-button-secondaryForeground);
+	padding: 0.5em 1em;
 }
 button.secondary:hover {
 	background-color: var(--vscode-button-secondaryHoverBackground);
+}
+button .content-off {
+	display: block;
+}
+button .content-on {
+	display: none;
+}
+button.on .content-off {
+	display: none;
+}
+button.on .content-on {
+	display: block;
 }
 
 /* CARD */

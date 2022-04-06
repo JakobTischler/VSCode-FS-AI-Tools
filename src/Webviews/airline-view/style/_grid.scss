@@ -10,7 +10,8 @@ section.grid {
 		align-self: stretch;
 
 		/* flex: 1; */
-		min-width: 350px;
+		// min-width: 350px;
+		min-width: max-content;
 
 		&:first-child {
 			order: 1;
@@ -58,6 +59,11 @@ section.grid {
 		position: sticky;
 		top: 0;
 		z-index: 1;
+
+		// Aligns buttons to the right
+		button:first-of-type {
+			margin-left: auto;
+		}
 
 		> span.secondary {
 			font-style: italic;
