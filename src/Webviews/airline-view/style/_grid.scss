@@ -80,8 +80,8 @@ section.grid {
 			background-color: var(--vscode-editor-background);
 			box-shadow: 0 5px 5px var(--vscode-editor-background); // soft fade
 			position: absolute;
-			width: calc(100% + 2 * var(--card-shadow-blur));
-			left: calc(var(--card-shadow-blur) * -1);
+			width: calc(100% + 2 * var(--body-padding));
+			left: calc(var(--body-padding) * -1);
 			height: 100%;
 			z-index: 0;
 		}

@@ -30,7 +30,8 @@ body {
 	font-family: fonts.$sans-serif;
 	font-size: var(--vscode-editor-font-size);
 
-	padding: 1em;
+	--body-padding: 1rem;
+	padding: var(--body-padding);
 
 	--color-light: #{colors.$light};
 	--color-dark: #{colors.$dark};
