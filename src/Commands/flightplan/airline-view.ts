@@ -89,7 +89,7 @@ export async function ShowAirlineView(
 	flightplan.parse(aircraftData.aircraftTypes, aircraftData.aircraftLiveries);
 
 	// Create Webview
-	const panel = createPanel(context, aifp);
+	const panel = createPanel(context, aifp, dirPath);
 
 	// Routemap
 	const routemap = new Routemap(flightplan, panel, storageManager);
@@ -115,12 +115,15 @@ export async function ShowAirlineView(
 	panel.webview.html = await getWebviewContent(panel, context, dirPath, aifp, aircraftData, flightplan, routemap);
 }
 
-function createPanel(context: vscode.ExtensionContext, aifp: AifpData) {
+function createPanel(context: vscode.ExtensionContext, aifp: AifpData, flightplanDir: string) {
 	const config = vscode.workspace.getConfiguration('fs-ai-tools.airlineView', undefined);
 	const logoDirectoryPath = config.get('logoDirectoryPath') as string;
 
 	// Define localResourceRoots
-	const localResourceRoots = [vscode.Uri.file(path.join(context.extensionPath, 'res/Webviews/airline-view'))];
+	const localResourceRoots = [
+		vscode.Uri.file(path.join(context.extensionPath, 'res/Webviews/airline-view')),
+		vscode.Uri.file(flightplanDir),
+	];
 	if (logoDirectoryPath?.length) {
 		localResourceRoots.push(vscode.Uri.file(logoDirectoryPath));
 	}
