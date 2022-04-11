@@ -1,5 +1,8 @@
 # Change Log
 
+### 1.5.0
+- New function `Match AC#s`: Takes a source flightplan's AC#s and matches it to a target flightplan's aircraft, using the corresponding registrations.
+
 ### 1.4.2
 - `Show Airline View` now includes a routemap view, using [Great Circle Mapper](http://www.gcmap.com/). Each aircraft type can be toggled.
 

@@ -6,7 +6,7 @@
 	},
 	"displayName": "FS AI Tools",
 	"description": "A bag of tools for AI flightplans and .cfg files",
-	"version": "1.4.2",
+	"version": "1.5.0",
 	"icon": "icon.png",
 	"license": "",
 	"engines": {
@@ -26,6 +26,7 @@
 		"onCommand:fsAiTools.createFlightplanHeader",
 		"onCommand:fsAiTools.createFlightplanHeaderFromAifp",
 		"onCommand:fsAiTools.generateAirports",
+		"onCommand:fsAiTools.matchAcNumbers",
 		"onCommand:fsAiTools.rebaseAircraftNumbers",
 		"onCommand:fsAiTools.renameFiles",
 		"onCommand:fsAiTools.renumberAddOnsCfg",
@@ -93,6 +94,12 @@
 			{
 				"command": "fsAiTools.generateAirports",
 				"title": "Generate Airports.txt",
+				"category": "FS AI Tools",
+				"when": "resourceFilename =~ /^flightplans.*txt$/i')"
+			},
+			{
+				"command": "fsAiTools.matchAcNumbers",
+				"title": "Match AC#s",
 				"category": "FS AI Tools",
 				"when": "resourceFilename =~ /^flightplans.*txt$/i')"
 			},
@@ -184,6 +191,11 @@
 					"command": "fsAiTools.generateAirports",
 					"group": "FS AI Tools",
 					"when": "config.fs-ai-tools.generateAirports._showInContextMenu && resourceFilename =~ /^flightplans.*txt$/i')"
+				},
+				{
+					"command": "fsAiTools.matchAcNumbers",
+					"group": "FS AI Tools",
+					"when": "config.fs-ai-tools.matchAcNumbers._showInContextMenu && resourceFilename =~ /^flightplans.*txt$/i')"
 				},
 				{
 					"command": "fsAiTools.rebaseAircraftNumbers",
@@ -568,6 +580,19 @@
 						"default": "",
 						"title": "Master Airports File Path",
 						"markdownDescription": "Full path to a master airports file. Will be used to select airport data.",
+						"scope": "window"
+					}
+				}
+			},
+			{
+				"type": "object",
+				"title": "Match AC#s",
+				"properties": {
+					"fs-ai-tools.matchAcNumbers._showInContextMenu": {
+						"type": "boolean",
+						"default": false,
+						"title": "Add to Context Menu",
+						"markdownDescription": "Adds the \"Match AC#s\" command to the context menu when a `Flightplans….txt` file is open.",
 						"scope": "window"
 					}
 				}

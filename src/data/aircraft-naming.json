@@ -204,10 +204,22 @@
 				"A300": { "name": "A300", "search": ["A300"], "series": "A300" },
 				"A310": { "name": "A310", "search": ["A310"], "series": "A300" },
 				"A318": { "name": "A318", "search": ["A318-"], "series": "A32X" },
-				"A319": { "name": "A319", "search": ["A319-"], "series": "A32X" },
-				"A320": { "name": "A320", "search": ["A320-"], "series": "A32X" },
-				"A321": { "name": "A321", "search": ["A321-"], "series": "A32X" },
-				"A19N": { "name": "A319neo", "search": ["/A19-[12]\\d{2}\\s*NX?/", "A319neo"], "series": "A32NX" },
+				"A319": {
+					"name": "A319",
+					"search": ["/A319(-[12]\\d{2})?(SL|WL|$|\\s)(?!NX?|neo)/"],
+					"series": "A32X"
+				},
+				"A320": {
+					"name": "A320",
+					"search": ["/A320(-[12]\\d{2})?(SL|WL|$|\\s)(?!NX?|neo)/"],
+					"series": "A32X"
+				},
+				"A321": {
+					"name": "A321",
+					"search": ["/A321(-[12]\\d{2})?(SL|WL|$|\\s)(?!NX?|neo)/"],
+					"series": "A32X"
+				},
+				"A19N": { "name": "A319neo", "search": ["/A319-[12]\\d{2}\\s*NX?/", "A319neo"], "series": "A32NX" },
 				"A20N": { "name": "A320neo", "search": ["/A320-[12]\\d{2}\\s*NX?/", "A320neo"], "series": "A32NX" },
 				"A21N": { "name": "A321neo", "search": ["/A321-[12]\\d{2}\\s*NX?/", "A321neo"], "series": "A32NX" },
 				"A332": { "name": "A330-200", "search": ["A330-2"], "series": "A330" },
@@ -374,22 +386,22 @@
 				},
 				"C525": {
 					"name": "525",
-					"search": ["/Cessna C?525 /", "/CitationJet (?:CJ)?1/"],
+					"search": ["/(Citation(Jet)*)* (CJ|C)*(1|525\\s)/"],
 					"series": "CitationJet"
 				},
 				"C25A": {
 					"name": "525A",
-					"search": ["/Cessna C?525A/", "/CitationJet (?:CJ)?2/"],
+					"search": ["/(Citation(Jet)*)* (CJ|C)*(2|525A?)/"],
 					"series": "CitationJet"
 				},
 				"C25B": {
 					"name": "525B",
-					"search": ["/Cessna C?525B/", "/CitationJet (?:CJ)?3/"],
+					"search": ["/(Citation(Jet)*)* (CJ|C)*(3|525B?)/"],
 					"series": "CitationJet"
 				},
 				"C25C": {
 					"name": "525C",
-					"search": ["/Cessna C?525C/", "/CitationJet (?:CJ)?4/"],
+					"search": ["/(Citation(Jet)*)* (CJ|C)*(4|525C?)/"],
 					"series": "CitationJet"
 				},
 				"C500": { "name": "500 Citation I", "search": ["/Cessna C?500/", "Citation I "], "series": "Citation" },

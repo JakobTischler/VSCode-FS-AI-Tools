@@ -10,6 +10,7 @@ import { CreateAircraft } from './Commands/flightplan/create-aircraft';
 import { CreateFlightplanHeader } from './Commands/flightplan/create-header';
 import { CreateFlightplanHeaderFromAifp } from './Commands/flightplan/create-header-from-aifp';
 import { GenerateAirports } from './Commands/flightplan/generate-airports';
+import { MatchAcNumbers } from './Commands/flightplan/match-ac-numbers';
 import { RebaseAircraftNumbers } from './Commands/flightplan/rebase-ac-numbers';
 import { RenameFiles } from './Commands/flightplan/rename-files';
 import { RenumberAddOnsCfg } from './Commands/add-ons-cfg/renumber';
@@ -66,6 +67,10 @@ export function activate(context: vscode.ExtensionContext) {
 
 		vscode.commands.registerCommand('fsAiTools.rebaseAircraftNumbers', () => {
 			RebaseAircraftNumbers();
+		}),
+
+		vscode.commands.registerCommand('fsAiTools.matchAcNumbers', () => {
+			MatchAcNumbers();
 		}),
 
 		vscode.commands.registerCommand('fsAiTools.renameFiles', (uri: vscode.Uri) => {
