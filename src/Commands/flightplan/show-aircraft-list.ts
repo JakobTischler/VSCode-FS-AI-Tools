@@ -40,9 +40,7 @@ export async function ShowAircraftList() {
 		parsedData.totalAircraftCount,
 		parsedData.nonMatches
 	);
-	const showGoogleSheetsButton = vscode.workspace
-		.getConfiguration('fs-ai-tools.showAircraftList', undefined)
-		.get('showGoogleSheetsButton');
+	const showGoogleSheetsButton = vscode.workspace.getConfiguration('fs-ai-tools', undefined).get('isDev') as boolean;
 	if (showGoogleSheetsButton) {
 		vscode.window
 			.showInformationMessage(
