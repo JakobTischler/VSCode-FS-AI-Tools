@@ -3,14 +3,17 @@ import * as fs from 'fs';
 import * as path from 'path';
 import { AifpData } from '../../Tools/read-aifp';
 import { Flightplan } from '../../Content/Flightplan/Flightplan';
-import { Routemap } from '../../Content/Route/RouteMap';
+import { Routemap } from '../../Content/Route/RouteMap-BingMaps';
 import { TAircraftTypesByTypeCode } from '../../Content/Aircraft/AircraftType';
 import { TAircraftLiveriesByAcNum } from '../../Content/Aircraft/AircraftLivery';
 import { createNonce, plural } from '../../Tools/helpers';
 
+let panel: vscode.WebviewPanel;
+let context: vscode.ExtensionContext;
+
 export async function getWebviewContent(
-	panel: vscode.WebviewPanel,
-	context: vscode.ExtensionContext,
+	_panel: vscode.WebviewPanel,
+	_context: vscode.ExtensionContext,
 	flightplanDirPath: string,
 	aifp: AifpData,
 	aircraftData: {
@@ -22,13 +25,14 @@ export async function getWebviewContent(
 	flightplan: Flightplan,
 	routemap: Routemap
 ): Promise<string> {
+	panel = _panel;
+	context = _context;
+
 	const uris = {
 		css: panel.webview.asWebviewUri(
 			vscode.Uri.file(path.join(context.extensionPath, 'res', 'Webviews', 'airline-view', 'style.css'))
 		),
-		js: panel.webview.asWebviewUri(
-			vscode.Uri.file(path.join(context.extensionPath, 'res', 'Webviews', 'airline-view', 'index.js'))
-		),
+		js: ['index.js', 'routemap-bing.js'],
 	};
 
 	let content = `<!DOCTYPE html>
@@ -81,14 +85,17 @@ export async function getWebviewContent(
 	return content;
 }
 
-function getScriptsContent(customScriptUri: vscode.Uri) {
+function getScriptsContent(customScripts: string[]) {
 	return [
 		`<script src="https://tofsjonas.github.io/sortable/sortable.js"></script>`,
-		// `<!-- Async script executes immediately and must be after any DOM elements used in callback. -->`,
-		// `<script src="https://maps.googleapis.com/maps/api/js?key=AIzaSyB41DRUbKWJHPxaFjMAwdrzWzbVKartNGg&callback=initMap&libraries=&v=weekly&channel=2" async></script>`,
-		"<script src='https://api.mapbox.com/mapbox-gl-js/v2.3.1/mapbox-gl.js'></script>",
-		"<link href='https://api.mapbox.com/mapbox-gl-js/v2.3.1/mapbox-gl.css' rel='stylesheet' />",
-		`<script src="${customScriptUri}" nonce="${createNonce()}"></script>`,
+		`<script src="https://www.bing.com/api/maps/mapcontrol"></script>`,
+		...customScripts.map((fileName) => {
+			const uri = panel.webview.asWebviewUri(
+				vscode.Uri.file(path.join(context.extensionPath, 'res', 'Webviews', 'airline-view', fileName))
+			);
+
+			return `<script src="${uri}" nonce="${createNonce()}"></script>`;
+		}),
 	].join('\n');
 }
 

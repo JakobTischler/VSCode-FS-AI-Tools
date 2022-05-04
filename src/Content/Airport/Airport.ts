@@ -71,6 +71,10 @@ export class Airport {
 	getGcmData(id: string) {
 		return `${id}=${this.coordinates.lat.gcmStr}${this.coordinates.lon.gcmStr};"${this.icao}"+@${id}`;
 	}
+
+	get coordsValues(): [number, number] {
+		return [this.coordinates.lat.factoredValue, this.coordinates.lon.factoredValue];
+	}
 }
 
 export type TAirportCodeCount = {

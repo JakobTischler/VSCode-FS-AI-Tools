@@ -848,6 +848,7 @@
 	},
 	"dependencies": {
 		"axios": "^0.26.1",
+		"bingmaps": "^2.0.3",
 		"fs": "~0.0.1-security",
 		"lodash": "^4.17.21",
 		"path": "~0.12.7"

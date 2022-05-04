@@ -17,7 +17,7 @@ import { Flightplan, FlightplanRaw } from '../../Content/Flightplan/Flightplan';
 import { parseAircraftTxt } from '../../Content/Aircraft/parseAircraftTxt';
 import { getWebviewContent } from '../../Webviews/airline-view/get-content';
 import { LocalStorageService } from '../../Tools/LocalStorageService';
-import { Routemap } from '../../Content/Route/RouteMap';
+import { Routemap } from '../../Content/Route/RouteMap-BingMaps';
 
 export async function ShowAirlineView(
 	context: vscode.ExtensionContext,
@@ -92,7 +92,8 @@ export async function ShowAirlineView(
 	const panel = createPanel(context, aifp, dirPath);
 
 	// Routemap
-	const routemap = new Routemap(flightplan, panel, storageManager);
+	// const routemap = new Routemap(flightplan, panel, storageManager);
+	const routemap = new Routemap(flightplan, panel);
 
 	// Handle messages from the webview
 	panel.webview.onDidReceiveMessage(
@@ -100,9 +101,11 @@ export async function ShowAirlineView(
 			switch (message.command) {
 				case 'aircraftTypesChange':
 					if (message.immediate) {
-						routemap.updateImage(message.text);
+						// routemap.updateImage(message.text);
+						routemap.getRouteData();
 					} else {
-						routemap.debouncedUpdateImage(message.text);
+						// routemap.debouncedUpdateImage(message.text);
+						routemap.debouncedGetRouteData();
 					}
 					return;
 			}

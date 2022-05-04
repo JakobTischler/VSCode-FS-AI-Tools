@@ -67,6 +67,8 @@ const vscode = acquireVsCodeApi();
 		sendSelectionToExtension();
 	});
 
+	const map = createRoutemap();
+
 	// Initial
 	sendSelectionToExtension(true);
 
@@ -95,9 +97,9 @@ const vscode = acquireVsCodeApi();
 	/** Forces a reflow for the delay indicator */
 	function restartDelayIndicator() {
 		const el = document.querySelector('#update-delay-bar');
-		el.classList.remove('run');
-		void el.offsetWidth; // forces reflow
-		el.classList.add('run');
+		el?.classList.remove('run');
+		void el?.offsetWidth; // forces reflow
+		el?.classList.add('run');
 	}
 
 	/** Goes through each active aircraftType and generates the GCM route. Then
@@ -131,6 +133,11 @@ const vscode = acquireVsCodeApi();
 				img.src = message.uri;
 				console.log(`Image updated with "${message.uri}"`);
 				break;
+			case 'updateRoutemapBing':
+				// TODO
+				console.log(`updateRoutemapBing`);
+				console.log(message.airports);
+				break;
 			case 'setRoutemapLoading':
 				if (message.loading) {
 					imgContainer.classList.add('loading');
@@ -140,5 +147,32 @@ const vscode = acquireVsCodeApi();
 				break;
 		}
 	});
+
+	function createRoutemap() {
+		console.log({ Microsoft });
+		console.log(Microsoft.Maps);
+		console.log(Microsoft.Maps.MapTypeId);
+		// console.log(Microsoft.Maps.MapTypeId.aerial);
+		// console.log(Microsoft.Maps.MapTypeId.mercator);
+		return new Microsoft.Maps.Map('#map', {
+			credentials: 'AjzDTja1EaCk9tNZFGUQgkUkd_mOmf2gCfj7h5j5i0cFyBo3TFMganEDUFYJMN3S',
+			// mapTypeId: Microsoft.Maps.MapTypeId.aerial,
+			// mapTypeId: Microsoft.Maps.MapTypeId.mercator,
+			zoom: 12,
+			showTrafficButton: false,
+			enableClickableLogo: false,
+			showMapTypeSelector: false,
+			disableMapTypeSelectorMouseOver: true,
+			disableStreetside: true,
+			disableStreetsideAutoCoverage: true,
+			showDashboard: false,
+			showLocateMeButton: false,
+			showScalebar: false,
+			showTermsLink: false,
+			allowHidingLabelsOfRoad: true,
+			// labelOverlay: Microsoft.Maps.LabelOverlay.hidden,
+		});
+	}
+
 	console.groupEnd();
 }
