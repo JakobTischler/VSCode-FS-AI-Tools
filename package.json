@@ -28,6 +28,7 @@
 		"onCommand:fsAiTools.flightplanMetadata",
 		"onCommand:fsAiTools.generateAirports",
 		"onCommand:fsAiTools.matchAcNumbers",
+		"onCommand:fsAiTools.openMasterAirportsFile",
 		"onCommand:fsAiTools.rebaseAircraftNumbers",
 		"onCommand:fsAiTools.renameFiles",
 		"onCommand:fsAiTools.renumberAddOnsCfg",
@@ -96,6 +97,11 @@
 			{
 				"command": "fsAiTools.matchAcNumbers",
 				"title": "Match AC#s",
+				"category": "FS AI Tools"
+			},
+			{
+				"command": "fsAiTools.openMasterAirportsFile",
+				"title": "Open Master Airports File",
 				"category": "FS AI Tools"
 			},
 			{
@@ -178,6 +184,9 @@
 				{
 					"command": "fsAiTools.matchAcNumbers",
 					"when": "resourceFilename =~ /^flightplans.*txt$/i"
+				},
+				{
+					"command": "fsAiTools.openMasterAirportsFile"
 				},
 				{
 					"command": "fsAiTools.rebaseAircraftNumbers",

@@ -4,6 +4,7 @@ import { plural, showError } from '../../Tools/helpers';
 import { LocalStorageService } from '../../Tools/LocalStorageService';
 import { Airport, getMasterAirports, TAirportCodeToLine } from '../../Content/Airport/Airport';
 import { FlightplanRaw } from '../../Content/Flightplan/Flightplan';
+import { OpenMasterAirportsFile } from '../open-master-airports-file';
 
 export async function GenerateAirports(storageManager: LocalStorageService) {
 	console.log('GenerateAirports()');
@@ -72,10 +73,6 @@ async function collectFlightplanAirports(flightplanText: string, masterAirports:
  * @param {string} flightplansTxtPath - The path to the flightplans.txt file.
  */
 async function writeToAirportsTxtFile(airports: { found: Airport[]; missing: string[] }, flightplansTxtPath: string) {
-	const masterAirportsFilePath = vscode.workspace
-		.getConfiguration('fs-ai-tools.generateAirports', undefined)
-		.get('masterAirportsFilePath') as string;
-
 	let continueWriting = true;
 
 	// Missing airports → Tell user and wait for deciscion to open the master
@@ -98,19 +95,13 @@ async function writeToAirportsTxtFile(airports: { found: Airport[]; missing: str
 				} else if (buttonText === 'Open Master File') {
 					continueWriting = false;
 
-					const uri = vscode.Uri.file(masterAirportsFilePath);
-					vscode.workspace.openTextDocument(uri).then((doc) => {
-						vscode.window.showTextDocument(doc).then((editor) => {
-							// Jump to last line
-							const pos = new vscode.Position(doc.lineCount + 1, 0);
-
-							// Selection with same position twice → cursor jumps there
-							editor.selections = [new vscode.Selection(pos, pos)];
-							editor.revealRange(new vscode.Range(pos, pos));
-						});
-					});
+					OpenMasterAirportsFile();
 				}
 			});
+	}
+
+	if (!continueWriting) {
+		return;
 	}
 
 	const dirPath = path.dirname(flightplansTxtPath).replace(/^\/+/, '');

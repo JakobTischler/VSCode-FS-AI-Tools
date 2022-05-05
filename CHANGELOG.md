@@ -2,6 +2,8 @@
 
 ### 1.5.1
 - `Create aifp.cfg`: handle malformed season (value will be "---")
+- New command `Open Master Airports File`: simply opens the master airports file as defined in the `fs-ai-tools.generateAirports.masterAirportsFilePath` setting. Only available from the command palette.
+- `Generate Airports` no longer continues to write the airports file if the "Open master airports file" button is used if airports are missing.
 
 ### 1.5.0
 - New function `Match AC#s`: Takes a source flightplan's AC#s and matches it to a target flightplan's aircraft, using the corresponding registrations.
