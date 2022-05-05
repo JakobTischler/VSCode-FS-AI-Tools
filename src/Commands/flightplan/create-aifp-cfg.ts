@@ -31,7 +31,12 @@ export async function CreateAifpCfg() {
 			// Remove double slashes
 			lines = lines.map((line: string) => line.replace(/^\/*/, '').trim());
 
-			const data: { [key: string]: string } = {
+			const data = {
+				fsVersion: 'FS9',
+				name: '',
+				icao: '',
+				author: '',
+				season: '---',
 				callsign: '',
 			};
 
@@ -39,7 +44,7 @@ export async function CreateAifpCfg() {
 			data.fsVersion = lines[0].split('=')[1] === 'TRUE' ? 'FSX' : 'FS9';
 
 			// Line 2
-			let airlineData = trimArrayItems(lines[1].split('|'));
+			const airlineData = trimArrayItems(lines[1].split('|'));
 			data.name = airlineData[0] || '';
 			data.icao = airlineData[1] || '';
 			if (airlineData[2]) {
@@ -48,14 +53,16 @@ export async function CreateAifpCfg() {
 
 			// Line 3
 			if (lines[2]) {
-				let metaData = trimArrayItems(lines[2].split(','));
+				const metaData = trimArrayItems(lines[2].split(','));
 				data.author = metaData[0] || '';
 
-				if (metaData[1]) {
-					let season = metaData[1].match(/(\w\w)(\d\d)(\d\d)?/);
-					data.season = `${season[1] === 'Wi' ? 'Winter' : 'Summer'} 20${season[2]}`;
-					if (season[3]) {
-						data.season += `-20${season[3]}`;
+				if (metaData[1]?.length) {
+					const season = metaData[1].match(/(\w\w)(\d\d)(\d\d)?/);
+					if (season) {
+						data.season = `${season[1] === 'Wi' ? 'Winter' : 'Summer'} 20${season[2]}`;
+						if (season[3]) {
+							data.season += `-20${season[3]}`;
+						}
 					}
 				}
 			}
@@ -77,7 +84,7 @@ FS_Version=${data.fsVersion}
 			const aifpPath = path.join(path.dirname(document.uri.path), 'aifp.cfg');
 			const filePath = vscode.Uri.file(aifpPath);
 
-			let edit = new vscode.WorkspaceEdit();
+			const edit = new vscode.WorkspaceEdit();
 			edit.createFile(filePath, { ignoreIfExists: true });
 			edit.delete(filePath, new vscode.Range(new vscode.Position(0, 0), new vscode.Position(9999, 9999)));
 			edit.insert(filePath, new vscode.Position(0, 0), output);
@@ -91,14 +98,8 @@ FS_Version=${data.fsVersion}
 	}
 }
 
+/**
+ * Trims all whitespace from a string array's items.
+ * @param {string[]} array - The array to trim
+ */
 const trimArrayItems = (array: string[]) => array.map((item: any) => item.trim());
-
-const validateEachLine = (array: string[], callback: (arg0: string) => boolean) => {
-	for (const line of array) {
-		let valid = callback(line);
-		if (!valid) {
-			return false;
-		}
-	}
-	return true;
-};

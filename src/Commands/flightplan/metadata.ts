@@ -36,6 +36,7 @@ export async function FlightplanMetadata() {
 			type: '',
 			season: aifpData.season || '',
 			acNum: '',
+			acNumTo: '',
 		};
 
 		// Get flightplan type
@@ -44,21 +45,26 @@ export async function FlightplanMetadata() {
 			outputData.type = getInitials(typeMatch[1]);
 		}
 
-		// Get lowest AC#
+		// Get lowest and highest AC#s
 		if ('file' === document.uri.scheme) {
 			const text = document.getText();
 
-			const acNums = text.matchAll(/AC#(\d+)+/gim);
-			const acNumsAr = [...acNums];
-			if (acNumsAr?.length) {
-				const numbers = acNumsAr.map((match) => Number(match[1]));
+			const acNums = [...text.matchAll(/AC#(\d+)+/gim)] || [];
+			if (acNums?.length) {
+				const numbers = acNums.map((match) => Number(match[1]));
 
 				let lowest = Math.min(...numbers);
+				let highest = Math.max(...numbers);
 
 				// Round down to nearest 100
 				lowest = Math.floor(lowest / 100) * 100;
+				highest = Math.floor(highest / 100) * 100;
 
 				outputData.acNum = String(lowest);
+
+				if (highest > lowest) {
+					outputData.acNumTo = String(highest);
+				}
 			}
 		}
 
@@ -72,6 +78,7 @@ export async function FlightplanMetadata() {
 			outputData.type,
 			outputData.season,
 			outputData.acNum,
+			outputData.acNumTo,
 		].join(`\t`);
 
 		vscode.window
@@ -83,11 +90,15 @@ export async function FlightplanMetadata() {
 			});
 	}
 }
+/**
+ * Finds all the words in a string and returns the first letter of each word.
+ * @param {string} text The text to get the initials from.
+ * @returns The initials of all words.
+ */
 function getInitials(text: string) {
 	const regex = /(\p{L}{1})\p{L}+/gu;
 
 	const initials = [...text.matchAll(regex)] || [];
-	console.log({ initials });
 
 	const i = initials.map((data) => data[1]).join('');
 

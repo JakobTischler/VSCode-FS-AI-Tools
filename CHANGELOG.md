@@ -1,5 +1,8 @@
 # Change Log
 
+### 1.5.1
+- `Create aifp.cfg`: handle malformed season (value will be "---")
+
 ### 1.5.0
 - New function `Match AC#s`: Takes a source flightplan's AC#s and matches it to a target flightplan's aircraft, using the corresponding registrations.
 
