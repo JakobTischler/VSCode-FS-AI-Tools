@@ -739,6 +739,13 @@
 						"title": "Add to Context Menu",
 						"markdownDescription": "Adds the \"Count Aircraft\" command to the context menu when a `Flightplan….txt` file is open and text has been selected.",
 						"scope": "window"
+					},
+					"fs-ai-tools.countAircraft.emptyLinesBetweenGroups": {
+						"type": "integer",
+						"default": 1,
+						"minimum": 1,
+						"description": "A new group is recognized in the `Flightplans….txt` file after this number of empty lines. The count will then be written to the previous group and reset to 0 to count the new group's aircraft.",
+						"scope": "window"
 					}
 				}
 			},

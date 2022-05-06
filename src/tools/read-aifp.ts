@@ -1,4 +1,4 @@
-import { getFileContents, showError } from './helpers';
+import { getFileContents } from './helpers';
 
 export interface AifpData {
 	found: boolean;
@@ -18,7 +18,7 @@ export interface AifpData {
 export async function readAifpCfg(path: string, showExistError: boolean = true): Promise<AifpData> {
 	console.log('readAifpCfg()', path);
 
-	// Remove start backslashes at path
+	// Remove start backslashes at start
 	path = path.replace(/^\\+/, '');
 
 	/*
@@ -70,12 +70,12 @@ export async function readAifpCfg(path: string, showExistError: boolean = true):
 					// ['Summer 2021', 'Summer', '2021', undefined, undefined, index: 0, input: 'Summer 2021', groups: undefined]
 					// ['Winter 2021/2022', 'Winter', '2021', '/2022', '2022', index: 0, input: 'Winter 2021/2022', groups: undefined]
 					if (match) {
-						data.season = match[1].substr(0, 2);
-						let year = match[2].length === 4 ? match[2].substr(2, 2) : match[2];
+						data.season = match[1].substring(0, 2);
+						let year = match[2].length === 4 ? match[2].substring(2, 4) : match[2];
 						// Two years
 						if (match[4]) {
 							if (match[4].length === 4) {
-								year += match[4].substr(2, 2);
+								year += match[4].substring(2, 4);
 							} else {
 								year += match[4];
 							}

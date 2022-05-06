@@ -1,67 +1,91 @@
-import { window } from 'vscode';
-import { getFilenameFromPath } from '../../Tools/helpers';
+import { window, workspace } from 'vscode';
 
 export async function CountAircraft() {
 	const editor = window.activeTextEditor;
 	if (editor) {
 		const document = editor.document;
-		const filename = getFilenameFromPath(document.uri.path).toLocaleLowerCase();
-		if ('file' === document.uri.scheme && filename.startsWith('flightplans')) {
-			const selection = editor.selection;
-
-			if (!selection) {
-				return false;
-			}
-
-			let text = document.getText(selection);
-			let total = 0;
-			let numTypes = 0;
-			let groupCount: number = 0;
-			let currentGroupLineIndex = null;
-
-			let lines = text.split('\n');
-			for (let index = 0; index < lines.length; index++) {
-				const isLastLine = index === lines.length - 1;
-				let line = lines[index];
-
-				if (!isLastLine && line.length === 0) {
-					continue;
-				}
-
-				// New group or end of file
-				if (line.startsWith('//') || isLastLine) {
-					// Current group complete → append count text to header line
-					if (currentGroupLineIndex !== null && groupCount > 0) {
-						total += groupCount;
-
-						let text = lines[currentGroupLineIndex].trim();
-						let existingCount = text.match(/^\/\/.*(\[.+\])/);
-						if (existingCount && existingCount[1]) {
-							text = text.substr(0, text.length - existingCount[1].length);
-						}
-
-						text = `${text.trim()} [${groupCount}]`;
-						lines[currentGroupLineIndex] = text;
-
-						numTypes++;
-					}
-
-					if (!isLastLine) {
-						currentGroupLineIndex = index;
-						groupCount = 0;
-					}
-
-					// Count aircraft
-				} else if (line.startsWith('AC#')) {
-					groupCount++;
-				}
-			}
-
-			text = lines.join('\n');
-			editor.edit((editBuilder) => {
-				editBuilder.replace(selection, text);
-			});
-			window.showInformationMessage(`Aircraft counted (${total} total, with ${numTypes} different types)`);
+		const selection = editor.selection;
+		if (!selection) {
+			return false;
 		}
+
+		let total = 0;
+		let numTypes = 0;
+		let currentGroupCount = 0;
+		let currentGroupLineIndex = null;
+		let newGroup = true;
+		let emptyLineCounter = 0;
+		const minEmptyLinesForNewGroup = Number(
+			workspace.getConfiguration('fs-ai-tools.countAircraft', undefined).get('emptyLinesBetweenGroups') || 1
+		);
+
+		const lines = document.getText(selection).split('\n');
+		for (const [index, line] of lines.entries()) {
+			const isLastLine = index === lines.length - 1;
+
+			/*
+			 * Empty Line
+			 */
+			if (!line.trim().length) {
+				emptyLineCounter++;
+
+				if (emptyLineCounter >= minEmptyLinesForNewGroup) {
+					emptyLineCounter = 0;
+					newGroup = true;
+				}
+
+				if (!isLastLine) continue;
+			} else {
+				emptyLineCounter = 0;
+			}
+
+			/*
+			 * New group
+			 */
+			if (line.startsWith('//') || isLastLine) {
+				if (newGroup || isLastLine) {
+					/*
+					 * Close current group
+					 */
+					if (currentGroupLineIndex !== null && currentGroupCount > 0) {
+						writeCountToHeaderLine(lines, currentGroupLineIndex, currentGroupCount);
+
+						total += currentGroupCount;
+						numTypes++;
+
+						if (!isLastLine) {
+							currentGroupLineIndex = index;
+							currentGroupCount = 0;
+						}
+					}
+
+					currentGroupLineIndex = index;
+					newGroup = false;
+				}
+				// Count aircraft
+			} else if (line.startsWith('AC#')) {
+				currentGroupCount++;
+			}
+		}
+
+		const text = lines.join('\n');
+		editor.edit((editBuilder) => {
+			editBuilder.replace(selection, text);
+		});
+		window.showInformationMessage(`Aircraft counted (${total} total, with ${numTypes} different types)`);
 	}
+}
+
+function writeCountToHeaderLine(lines: string[], headerLineIndex: number, count: number) {
+	let text = lines[headerLineIndex].trim();
+
+	// Remove existing count
+	const existingCount = text.match(/^\/\/.*(\[.+\])/);
+	if (existingCount?.[1]) {
+		text = text.substring(0, text.length - existingCount[1].length);
+	}
+
+	text = `${text.trim()} [${count}]`;
+
+	lines[headerLineIndex] = text;
 }
