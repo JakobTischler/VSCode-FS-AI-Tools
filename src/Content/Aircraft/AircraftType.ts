@@ -11,7 +11,7 @@ export class AircraftType {
 	/** The type's ICAO code, e.g. "A339" */
 	typeCode: string;
 	/** The total number of aircraft of this type. */
-	aircraftCount: number = 0;
+	aircraftCount = 0;
 	/** A set of all `AircraftLivery`s that were matched to this aircraft type */
 	liveries: Set<AircraftLivery> = new Set();
 	/** The type's manufacturer name, e.g. "Airbus" */

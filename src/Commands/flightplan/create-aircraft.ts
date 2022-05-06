@@ -62,18 +62,18 @@ export async function CreateAircraft() {
 
 	// -----------------------------------------------------
 	// GET TEMPLATE PATH AND CONTENT
-	let templatePaths = config.get('templates') as string[];
+	const templatePaths = config.get('templates') as string[];
 	if (templatePaths?.length === 0) {
 		showError('No templates defined');
 		return false;
 	}
 
-	let templatePathStr = await getDropdownSelection('Select template', templatePaths.sort());
+	const templatePathStr = await getDropdownSelection('Select template', templatePaths.sort());
 	if (!templatePathStr) {
 		return false;
 	}
 
-	let templatePath = Path.parse(templatePathStr);
+	const templatePath = Path.parse(templatePathStr);
 	const __WORKDIR__ = templatePath.dir;
 	let template = (await getFileContents(templatePathStr)) as string;
 
@@ -95,9 +95,9 @@ export async function CreateAircraft() {
 	let startIndex = 0;
 	if (fltsimXMatches) {
 		// console.log(fltsimXMatches, fltsimXMatches[fltsimXMatches.length - 1]);
-		let last = fltsimXMatches[fltsimXMatches.length - 1];
-		let match = last.match(/\[fltsim\.(\d+)\]/i);
-		if (match && match[1]) {
+		const last = fltsimXMatches[fltsimXMatches.length - 1];
+		const match = last.match(/\[fltsim\.(\d+)\]/i);
+		if (match?.[1]) {
 			startIndex = Number(match[1]) + 1;
 		}
 		console.log({ last, match, startIndex });
@@ -206,8 +206,8 @@ async function createFltsimEntries(
 	regs: string[],
 	template: string,
 	aifpCfgData: AifpData,
-	startIndex: number = 0,
-	createFolders: boolean = true
+	startIndex = 0,
+	createFolders = true
 ) {
 	const entries: FltsimEntry[] = [];
 
@@ -237,14 +237,14 @@ async function createFltsimEntries(
 	}
 
 	let index = startIndex;
-	for (let reg of regs) {
+	for (const reg of regs) {
 		let text = template
 			.replace(/\[fltsim\..*?\]/g, `[fltsim.${index}]`)
-			.replace(/{reg(?:\??)(.*?)}/g, reg + '$1')
-			.replace(/{operator(?:\??)(.*?)}/g, operator?.length > 0 ? operator + '$1' : '')
-			.replace(/{icao(?:\??)(.*?)}/g, icao?.length > 0 ? icao + '$1' : '')
-			.replace(/{callsign(?:\??)(.*?)}/g, callsign?.length > 0 ? callsign + '$1' : '')
-			.replace(/{author(?:\??)(.*?)}/g, author?.length > 0 ? author + '$1' : '');
+			.replace(/{reg(?:\??)(.*?)}/g, `${reg}$1`)
+			.replace(/{operator(?:\??)(.*?)}/g, operator?.length > 0 ? `${operator}$1` : '')
+			.replace(/{icao(?:\??)(.*?)}/g, icao?.length > 0 ? `${icao}$1` : '')
+			.replace(/{callsign(?:\??)(.*?)}/g, callsign?.length > 0 ? `${callsign}$1` : '')
+			.replace(/{author(?:\??)(.*?)}/g, author?.length > 0 ? `${author}$1` : '');
 
 		// Trim each line
 		text = text
@@ -255,7 +255,7 @@ async function createFltsimEntries(
 		let texture;
 		if (createFolders) {
 			const textureMatch = text.match(/texture=(.*)(?:\n|\r)/i);
-			if (textureMatch && textureMatch[1]) {
+			if (textureMatch?.[1]) {
 				texture = textureMatch[1].trim();
 			}
 			// TODO what if there's no texture match? Skip folder creation?
@@ -263,7 +263,7 @@ async function createFltsimEntries(
 
 		let title = '';
 		const titleMatch = text.match(/title=(.*)(?:\n|\r)/i);
-		if (titleMatch && titleMatch[1]) {
+		if (titleMatch?.[1]) {
 			title = titleMatch[1];
 		}
 

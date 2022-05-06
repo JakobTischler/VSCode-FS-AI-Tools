@@ -51,11 +51,11 @@ export async function RenameFiles(filePath?: string) {
 	const config = vscode.workspace.getConfiguration('fs-ai-tools.renameFiles', undefined);
 
 	// Get template and parse
-	let template = config.get('filenameTemplate') as string;
+	const template = config.get('filenameTemplate') as string;
 	let upperCaseBase = false;
 
-	let replacers = new Map();
-	let placeholderMatches = template.match(/(\{.*?\})/g);
+	const replacers = new Map();
+	const placeholderMatches = template.match(/(\{.*?\})/g);
 
 	if (placeholderMatches) {
 		for (let item of placeholderMatches) {
@@ -71,7 +71,7 @@ export async function RenameFiles(filePath?: string) {
 			}
 
 			// Check for optional post-characters
-			let optional = item.split('?');
+			const optional = item.split('?');
 
 			// Add to replacers: value[0] is the actual value, value[1] is a
 			// suffix, which should be skipped if it's undefined
@@ -117,8 +117,8 @@ export async function RenameFiles(filePath?: string) {
 		// https://regex101.com/r/7iMw7H/1/
 		if (replaceValue?.length && item[0] === 'season') {
 			let seasonShort = undefined;
-			let matches = replaceValue.match(/^(\w{2})((?:\w+ )?(?:\d\d)?)?(\d{2})(?:(?:[-\/])?(?:\d\d)?(\d{2}))?/);
-			if (matches && matches.length === 5) {
+			const matches = replaceValue.match(/^(\w{2})((?:\w+ )?(?:\d\d)?)?(\d{2})(?:(?:[-\/])?(?:\d\d)?(\d{2}))?/);
+			if (matches?.length === 5) {
 				if (matches[4]) {
 					seasonShort = matches[1] + matches[3] + matches[4];
 				} else if (matches[2].length === 2) {

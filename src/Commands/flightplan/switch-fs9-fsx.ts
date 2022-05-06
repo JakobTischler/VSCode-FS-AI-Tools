@@ -21,7 +21,7 @@ export async function SwitchFS9FSX() {
 	let flightplansChanged = 0;
 
 	const selection = editor.selection;
-	let text = document.getText(selection);
+	const text = document.getText(selection);
 
 	// Get direction
 	const dirStr = await getDropdownSelection('Select switch direction', ['FS9 → FSX', 'FSX → FS9']);
@@ -38,8 +38,8 @@ export async function SwitchFS9FSX() {
 	periods.set('5WEEKS', 5 * 7 - 1);
 	periods.set('8WEEKS', 8 * 7 - 1);
 
-	let lines = text.split('\n');
-	for (let [index, line] of lines.entries()) {
+	const lines = text.split('\n');
+	for (const [index, line] of lines.entries()) {
 		if (!line.startsWith('AC#')) {
 			continue;
 		}

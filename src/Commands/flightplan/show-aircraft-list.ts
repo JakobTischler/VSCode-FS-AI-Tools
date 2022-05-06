@@ -88,7 +88,7 @@ function getFormattedAircraftList(aircraftTypes: TAircraftTypesByTypeCode, total
 
 	const lines: string[] = [];
 
-	aircraftTypes.forEach((data, key) => {
+	aircraftTypes.forEach((data) => {
 		let text = `• ${data.name}: ${data.aircraftCount}×`;
 		if (data.liveries.size > 1) {
 			text += ` (${'variation'.plural(data.liveries.size)})`;

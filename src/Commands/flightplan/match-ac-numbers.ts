@@ -48,7 +48,7 @@ export async function MatchAcNumbers() {
 		return false;
 	}
 
-	const success = await match(otherFile[0], MatchType[matchType as keyof typeof MatchType]);
+	await match(otherFile[0], MatchType[matchType as keyof typeof MatchType]);
 }
 
 async function match(otherFileUri: vscode.Uri, matchType: MatchType) {
@@ -115,8 +115,8 @@ async function match(otherFileUri: vscode.Uri, matchType: MatchType) {
 	}
 	let updateCount = 0;
 
-	targetAircraftAr.forEach((matchAr, index: number) => {
-		const [fullMatch, acNum, reg] = matchAr;
+	targetAircraftAr.forEach((matchAr) => {
+		const [fullMatch, , reg] = matchAr;
 
 		if (sourceRegs.has(reg)) {
 			fileContents.target = fileContents.target.replace(fullMatch, `AC#${sourceRegs.get(reg)},${reg},`);

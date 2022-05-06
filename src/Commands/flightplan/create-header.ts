@@ -9,10 +9,11 @@ export async function CreateFlightplanHeader() {
 		const document = editor.document;
 		const filename = getFilenameFromPath(document.uri.path);
 		if ('file' === document.uri.scheme && filename.toLocaleLowerCase().startsWith('flightplans')) {
-			let filenameTest = filename.split('_');
+			const filenameTest = filename.split('_');
 			let proposedIcao = 'ICAO';
 			let proposedName = 'Airline Name';
 			console.log('filenameTest', filenameTest);
+
 			if (filenameTest.length > 1) {
 				if (filenameTest.length === 3 && filenameTest[1].length <= 4) {
 					proposedIcao = filenameTest[1];
@@ -67,17 +68,13 @@ export async function CreateFlightplanHeader() {
  * @source [VSCode Extension Samples](https://github.com/Microsoft/vscode-extension-samples/blob/master/quickinput-sample/src/basicInput.ts)
  */
 async function getFsVersion() {
-	// let i = 0;
-	const result = await window.showQuickPick(['FS9', 'FSX'], {
+	return await window.showQuickPick(['FS9', 'FSX'], {
 		placeHolder: 'FS9 or FSX',
-		// onDidSelectItem: item => window.showInformationMessage(`Focus ${++i}: ${item}`)
 	});
-	// window.showInformationMessage(`Got: ${result}`);
-	return result;
 }
 
 async function getName(proposedName: string) {
-	const result = await window.showInputBox({
+	return await window.showInputBox({
 		value: proposedName,
 		valueSelection: undefined,
 		placeHolder: "The airline's name",
@@ -88,11 +85,10 @@ async function getName(proposedName: string) {
 			return null;
 		},
 	});
-	return result;
 }
 
 async function getIcao(proposedIcao: string) {
-	const result = await window.showInputBox({
+	return await window.showInputBox({
 		value: proposedIcao,
 		valueSelection: undefined,
 		placeHolder: "The airline's ICAO code",
@@ -103,19 +99,17 @@ async function getIcao(proposedIcao: string) {
 			return null;
 		},
 	});
-	return result;
 }
 
 async function getCallsign() {
-	const result = await window.showInputBox({
+	return await window.showInputBox({
 		value: 'Callsign',
 		valueSelection: undefined,
 		placeHolder: "The airline's callsign",
 	});
-	return result;
 }
 async function getAuthor() {
-	const result = await window.showInputBox({
+	return await window.showInputBox({
 		value: 'Author Name',
 		valueSelection: undefined,
 		placeHolder: "The flightplan's author",
@@ -126,7 +120,6 @@ async function getAuthor() {
 			return null;
 		},
 	});
-	return result;
 }
 
 async function getSeason() {

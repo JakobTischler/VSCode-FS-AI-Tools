@@ -13,13 +13,13 @@ export function CleanFlightplan() {
 			let text = document.getText();
 
 			// Change airports
-			let airportList = config.changeAirports;
+			const airportList = config.changeAirports;
 			if (airportList && airportList !== null && airportList.length > 0) {
 				for (let set of airportList) {
 					set = set.split(':').map((icao: string) => icao.trim().toUpperCase());
 
 					if (set[0].length > 2 && set[1].length > 2) {
-						let old = new RegExp(`,${set[0]}`, 'gi');
+						const old = new RegExp(`,${set[0]}`, 'gi');
 						text = text.replace(old, `,${set[1]}`);
 					}
 				}
@@ -94,12 +94,12 @@ function formatTimes(text: string, removeSeconds: boolean, addAtToDepTimes: bool
 /**
  * Randomizes the flightplan percentage between the provided min and max values (default `min=10` and `max=99`). Returns the complete string.
  */
-function randomizePercentage(text: string, min: number = 10, max: number = 99): string {
+function randomizePercentage(text: string, min = 10, max = 99): string {
 	const regex = /(\d+%)/g;
 	if (min === max) {
 		return text.replace(regex, `${min}%`);
 	}
-	return text.replace(regex, (v) => {
+	return text.replace(regex, () => {
 		return `${getRandomInt(min, max)}%`;
 	});
 }
@@ -134,7 +134,7 @@ function padFlightLevels(text: string): string {
  * @1 space: https://regex101.com/r/kmRPUa/1
  * @0 spaces: https://regex101.com/r/iKJTud/1/
  */
-function changeComments(text: string, numSpaces: number = 1): string {
+function changeComments(text: string, numSpaces = 1): string {
 	if (numSpaces > 0) {
 		text = text
 			.replace(/^(\s*?)\/\/(\s*?)(\S)/, (fullMatch, g1, g2, g3) => {
@@ -142,8 +142,8 @@ function changeComments(text: string, numSpaces: number = 1): string {
 			})
 			.replace('// FSXDAYS', '//FSXDAYS');
 	} else {
-		text = text.replace(/^(\s*?)\/\/(\s+)/, (fullMatch, g1, g2) => {
-			return g1 + '//';
+		text = text.replace(/^(\s*?)\/\/(\s+)/, (fullMatch, g1) => {
+			return `${g1}//`;
 		});
 	}
 	return text;

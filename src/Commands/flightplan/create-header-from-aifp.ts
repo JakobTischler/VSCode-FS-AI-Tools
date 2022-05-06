@@ -19,8 +19,8 @@ export async function CreateFlightplanHeaderFromAifp() {
 	}
 
 	// Get aifp.cfg parsed data
-	let aifpPath = Path.join(Path.dirname(editor.document.uri.path), 'aifp.cfg');
-	let data = await readAifpCfg(aifpPath);
+	const aifpPath = Path.join(Path.dirname(editor.document.uri.path), 'aifp.cfg');
+	const data = await readAifpCfg(aifpPath);
 	if (!data || !data.found) {
 		showError(`"aifp.cfg" couldn't be found.`);
 		return;

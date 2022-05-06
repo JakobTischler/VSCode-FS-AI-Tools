@@ -4,14 +4,10 @@ export async function RenumberAddOnsCfg() {
 	const editor = vscode.window.activeTextEditor;
 	if (editor) {
 		const document = editor.document;
-		if (
-			'file' === document.uri.scheme &&
-			document.uri.path.toLocaleLowerCase().endsWith('add-ons.cfg')
-		) {
+		if ('file' === document.uri.scheme && document.uri.path.toLocaleLowerCase().endsWith('add-ons.cfg')) {
 			let text = document.getText();
 			const splitText = text.split('\n');
-			const textLineLength = splitText.length;
-			let cleanTextArray: string[] = [];
+			const cleanTextArray: string[] = [];
 
 			let packageIndex = 0;
 
@@ -31,7 +27,7 @@ export async function RenumberAddOnsCfg() {
 			text = cleanTextArray.join('\n');
 
 			// Apply changes to document
-			editor.edit(editBuilder => {
+			editor.edit((editBuilder) => {
 				editBuilder.replace(new vscode.Range(0, 0, document.lineCount, 500), text);
 			});
 			vscode.window.showInformationMessage('add-ons.cfg renumbered');

@@ -14,7 +14,7 @@ export async function CreateAifpCfg() {
 			lines.length = 3;
 
 			// Validation
-			for (let [index, line] of lines.entries()) {
+			for (const [index, line] of lines.entries()) {
 				if (!line.length || !line.startsWith('//')) {
 					showError(`Line ${index + 1} doesn't start with "//".`);
 					return false;
@@ -48,7 +48,7 @@ export async function CreateAifpCfg() {
 			data.name = airlineData[0] || '';
 			data.icao = airlineData[1] || '';
 			if (airlineData[2]) {
-				data.callsign = airlineData[2].match(/"(.+?)"/i)[1] || '';
+				data.callsign = airlineData[2].match(/"(.+?)"/i)?.[1] || '';
 			}
 
 			// Line 3
@@ -102,4 +102,4 @@ FS_Version=${data.fsVersion}
  * Trims all whitespace from a string array's items.
  * @param {string[]} array - The array to trim
  */
-const trimArrayItems = (array: string[]) => array.map((item: any) => item.trim());
+const trimArrayItems = (array: string[]) => array.map((item: string) => item.trim());

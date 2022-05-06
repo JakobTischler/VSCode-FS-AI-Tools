@@ -30,7 +30,7 @@ import { AircraftType, TAircraftTypesByTypeCode } from './AircraftType';
  * entry
  *
  */
-export async function parseAircraftTxt(data: TFlightplanFilesMetaData, doAircraftCount: boolean = false) {
+export async function parseAircraftTxt(data: TFlightplanFilesMetaData, doAircraftCount = false) {
 	if (!data.aircraft.text) {
 		showError(`parseAircraftTxt(): aircraft.txt contents must included in data argument.`);
 		throw new Error(`parseAircraftTxt(): aircraft.txt contents must included in data argument.`);

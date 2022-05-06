@@ -44,11 +44,11 @@ export async function CleanAircraftCfg() {
 	);
 
 	// Split lines and iterate through
-	for (let [i, line] of splitText.entries()) {
-		line = line.trim();
+	for (const i of splitText.keys()) {
+		const line = splitText[i].trim();
 
 		if (line.length > 0) {
-			let isSectionStart = line.startsWith('[') && line.endsWith(']');
+			const isSectionStart = line.startsWith('[') && line.endsWith(']');
 			// New section start
 			if (isSectionStart) {
 				// Close old section and push to list
@@ -60,7 +60,7 @@ export async function CleanAircraftCfg() {
 				isFltsimSection = currentSection.startsWith('[fltsim.');
 				if (isFltsimSection) {
 					currentFltsimEntry = createEmptyEntry();
-					currentFltsimEntry['_header'] = line;
+					currentFltsimEntry._header = line;
 				}
 			}
 
@@ -70,12 +70,12 @@ export async function CleanAircraftCfg() {
 					let add = true;
 
 					const prop = line.split('=');
-					let key = prop[0].toLowerCase();
+					const key = prop[0].toLowerCase();
 					let value = prop[1];
 
 					// Remove unused lines
 					if (config.cleanAircraftCfg.removeUnusedLines && removeProperties.has(key)) {
-						let removeValue = removeProperties.get(key);
+						const removeValue = removeProperties.get(key);
 						if (removeValue === undefined) {
 							add = false;
 						} else if (removeValue === '*' && value) {

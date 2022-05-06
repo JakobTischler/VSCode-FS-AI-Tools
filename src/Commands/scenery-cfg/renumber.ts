@@ -9,7 +9,7 @@ export async function RenumberSceneryCfg() {
 			let text = document.getText();
 			const splitText = text.split('\n');
 			// const textLineLength = splitText.length;
-			let cleanTextArray: string[] = [];
+			const cleanTextArray: string[] = [];
 
 			let entryIndex = 1;
 

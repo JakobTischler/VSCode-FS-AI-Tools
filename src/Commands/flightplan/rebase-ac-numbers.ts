@@ -109,7 +109,7 @@ export async function RebaseAircraftNumbers() {
 	}
 }
 
-async function getNumberInput(value: string = '1', placeholderText: string) {
+async function getNumberInput(value = '1', placeholderText: string) {
 	const result = await window.showInputBox({
 		value: value,
 		valueSelection: undefined,

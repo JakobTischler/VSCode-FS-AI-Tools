@@ -11,9 +11,9 @@
 
 import * as vscode from 'vscode';
 import * as path from 'path';
-import { getFlightplanFiles, showErrorModal, showError, plural } from '../../Tools/helpers';
+import { getFlightplanFiles, showErrorModal, showError } from '../../Tools/helpers';
 import { AifpData, readAifpCfg } from '../../Tools/read-aifp';
-import { Flightplan, FlightplanRaw } from '../../Content/Flightplan/Flightplan';
+import { Flightplan } from '../../Content/Flightplan/Flightplan';
 import { parseAircraftTxt } from '../../Content/Aircraft/parseAircraftTxt';
 import { getWebviewContent } from '../../Webviews/airline-view/get-content';
 import { LocalStorageService } from '../../Tools/LocalStorageService';

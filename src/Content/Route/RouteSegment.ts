@@ -15,21 +15,21 @@ export type TRouteSegmentData = {
 
 export class RouteSegment {
 	departureAirport: Airport;
-	departureWeek: number = 1;
-	departureDay: number = 1;
+	departureWeek = 1;
+	departureDay = 1;
 	departureTime: string; // TODO Time Class
 	arrivalAirport: Airport;
-	arrivalWeek: number = 1;
-	arrivalDay: number = 1;
+	arrivalWeek = 1;
+	arrivalDay = 1;
 	arrivalTime: string; // TODO Time Class
-	flightLevel: number = 0;
-	flightNumber: number = 0;
+	flightLevel = 0;
+	flightNumber = 0;
 	/** Number of times this route segment exists in the flightplan */
-	count: number = 1;
+	count = 1;
 
 	// Distance
-	distance: number = -1;
-	distanceFormatted: string = '-1';
+	distance = -1;
+	distanceFormatted = '-1';
 
 	// Aircraft
 	// TODO segment to AircraftType[]

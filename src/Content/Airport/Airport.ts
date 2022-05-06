@@ -26,7 +26,7 @@ export class Airport {
 	/** The airport's altitude in feet */
 	altitude: number;
 	/** Number of occurences (flights to this airport) in the flightplan */
-	count: number = 0;
+	count = 0;
 
 	constructor(line: string, count?: number) {
 		// BGGH,N64* 11.44',W51* 40.68',282
@@ -127,7 +127,7 @@ export async function getMasterAirports(storageManager: LocalStorageService) {
 		const airports: TAirportCodeToLine = parseAirportsTxt(fileContents);
 
 		// Save to storage
-		storageManager.setValue<Number>('airportMasterModifiedTime', modifiedTime);
+		storageManager.setValue<number>('airportMasterModifiedTime', modifiedTime);
 		storageManager.setValue<TAirportCodeToLine>('airportMasterData', airports);
 
 		return airports;
