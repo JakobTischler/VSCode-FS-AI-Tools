@@ -1,14 +1,8 @@
-import { window, workspace } from 'vscode';
+import { Range, window, workspace } from 'vscode';
 
 export async function CountAircraft() {
 	const editor = window.activeTextEditor;
 	if (editor) {
-		const document = editor.document;
-		const selection = editor.selection;
-		if (!selection) {
-			return false;
-		}
-
 		let total = 0;
 		let numTypes = 0;
 		let currentGroupCount = 0;
@@ -19,7 +13,14 @@ export async function CountAircraft() {
 			workspace.getConfiguration('fs-ai-tools.countAircraft', undefined).get('emptyLinesBetweenGroups') || 1
 		);
 
-		const lines = document.getText(selection).split('\n');
+		const document = editor.document;
+		const selection = editor.selection;
+		const text = document.getText(!selection.isEmpty ? selection : undefined);
+		const lines = text.split('\n');
+
+		/*
+		 * Go through each line
+		 */
 		for (const [index, line] of lines.entries()) {
 			const isLastLine = index === lines.length - 1;
 
@@ -68,10 +69,17 @@ export async function CountAircraft() {
 			}
 		}
 
-		const text = lines.join('\n');
+		/*
+		 * Write new text to document
+		 */
+		const range = !selection.isEmpty
+			? selection
+			: new Range(document.lineAt(0).range.start, document.lineAt(document.lineCount - 1).range.end);
+
 		editor.edit((editBuilder) => {
-			editBuilder.replace(selection, text);
+			editBuilder.replace(range, lines.join('\n'));
 		});
+
 		window.showInformationMessage(`Aircraft counted (${total} total, with ${numTypes} different types)`);
 	}
 }

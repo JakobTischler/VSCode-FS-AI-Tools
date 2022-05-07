@@ -26,7 +26,7 @@ export function getFilenameFromPath(path: string): string {
  * @param text The string to be capitalized.
  * @param all If true, _all_ words in the string will be capitalized.
  */
-export function capitalize(text: string, all: boolean = false): string {
+export function capitalize(text: string, all = false): string {
 	if (all) {
 		return text.replace(/\w\S*/g, (word) => capitalize(word));
 	}
@@ -66,7 +66,7 @@ export function arrayMove(array: any[], from: number, to: number): any[] {
  * @param {number} [nearest=10] - The multiple to round up to.
  * @returns The rounded up number.
  */
-export function roundUpToNearest(num: number, nearest: number = 10): number {
+export function roundUpToNearest(num: number, nearest = 10): number {
 	return Math.ceil((num + 1) / nearest) * nearest;
 }
 
@@ -109,7 +109,7 @@ export function loopNumber(num: number, min: number, max: number, dir: 1 | -1 = 
  * @param encoding The file encoding, defaults to "utf8"
  * @returns The file contents as string
  */
-export async function getFileContents(path: string, showExistError: boolean = true) {
+export async function getFileContents(path: string, showExistError = true) {
 	if (!Fs.existsSync(path)) {
 		if (showExistError) {
 			showError(`File at "${path}" couldn't be found`);
@@ -128,7 +128,7 @@ export async function getFileContents(path: string, showExistError: boolean = tr
 	return String(data);
 }
 
-export function showError(message: string, showToast: boolean = true) {
+export function showError(message: string, showToast = true) {
 	console.error(message);
 	if (showToast) {
 		window.showErrorMessage(message);
@@ -164,7 +164,7 @@ type TPluralOptions = {
  * Otherwise `word` + s will be used
  * @returns The pluralized word (if `num !== 1`), otherwise the singular word
  */
-export const plural = (word: string, num: number = 1, userOptions: Partial<TPluralOptions> = {}) => {
+export const plural = (word: string, num = 1, userOptions: Partial<TPluralOptions> = {}) => {
 	const options: TPluralOptions = {
 		...{
 			includeNumber: true,
@@ -199,7 +199,7 @@ export function degreesToRadians(degrees: number) {
  * @source https://stackoverflow.com/a/56650790/677970
  */
 export const getDefinedProps = (obj: any) => {
-	return Object.fromEntries(Object.entries(obj).filter(([k, v]) => v !== undefined));
+	return Object.fromEntries(Object.entries(obj).filter(([, v]) => v !== undefined));
 };
 
 /**
@@ -209,7 +209,7 @@ export const getDefinedProps = (obj: any) => {
  * @returns A set of objects containing - for each found file - its respective
  * file name, file path, and `vscode.Uri` representation
  */
-export async function getFlightplanFiles(dirPath: string, readFiles: boolean = false) {
+export async function getFlightplanFiles(dirPath: string, readFiles = false) {
 	const fileNames = await Fs.promises.readdir(dirPath);
 	const fileRegex = /^(aircraft|airports|flightplans).*\.txt$/i;
 
@@ -247,7 +247,7 @@ export async function getFlightplanFiles(dirPath: string, readFiles: boolean = f
  * 32_
  * @returns A random string of characters.
  */
-export function createNonce(length: number = 32) {
+export function createNonce(length = 32) {
 	let text = '';
 	const characters = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ=!$?%_-abcdefghijklmnopqrstuvwxyz0123456789';
 	for (let i = 0; i < length; i++) {

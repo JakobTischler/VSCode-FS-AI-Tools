@@ -33,8 +33,12 @@ export async function showInputBox() {
  * @param ignoreFocusOut If `true`, the dropdown stays open when clicking somewhere else. Default: `true`
  * @returns The value selected by the user as string, or `undefined` if cancelled by user.
  */
-export async function getDropdownSelection(title: string, items: string[], canPickMany: boolean = false, ignoreFocusOut: boolean = true) {
-	return await window.showQuickPick(items, { title: title, canPickMany: canPickMany, ignoreFocusOut: ignoreFocusOut });
+export async function getDropdownSelection(title: string, items: string[], canPickMany = false, ignoreFocusOut = true) {
+	return await window.showQuickPick(items, {
+		title: title,
+		canPickMany: canPickMany,
+		ignoreFocusOut: ignoreFocusOut,
+	});
 }
 
 /**
@@ -43,7 +47,7 @@ export async function getDropdownSelection(title: string, items: string[], canPi
  * @param prompt The hint text under the box
  * @returns The entered value
  */
-export async function getTextInput(placeholderText: string, prompt?: string, value: string = '') {
+export async function getTextInput(placeholderText: string, prompt?: string, value = '') {
 	return await window.showInputBox({
 		value: value,
 		valueSelection: undefined,

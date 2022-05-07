@@ -237,7 +237,7 @@
 				{
 					"command": "fsAiTools.countAircraft",
 					"group": "FS AI Tools",
-					"when": "config.fs-ai-tools.countAircraft.showInContextMenu && editorHasSelection && resourceFilename =~ /^flightplans.*txt$/i"
+					"when": "config.fs-ai-tools.countAircraft.showInContextMenu && resourceFilename =~ /^flightplans.*txt$/i"
 				},
 				{
 					"command": "fsAiTools.createAifpCfg",

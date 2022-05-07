@@ -15,7 +15,7 @@ export interface AifpData {
  * @param path The full path of the `aifp.cfg` file
  * @returns The contents of the `aifp.cfg` file, pased into an object
  */
-export async function readAifpCfg(path: string, showExistError: boolean = true): Promise<AifpData> {
+export async function readAifpCfg(path: string, showExistError = true): Promise<AifpData> {
 	console.log('readAifpCfg()', path);
 
 	// Remove start backslashes at start
@@ -51,7 +51,7 @@ export async function readAifpCfg(path: string, showExistError: boolean = true):
 	for (const line of contents.split('\n')) {
 		const lineSplit = line.trim().split('=');
 		if (lineSplit.length === 2) {
-			let [k, v] = lineSplit;
+			const [k, v] = lineSplit;
 			switch (k.toLowerCase()) {
 				case 'airline':
 					data.airline = v;
