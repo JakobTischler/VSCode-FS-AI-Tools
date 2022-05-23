@@ -49,7 +49,7 @@ export class CoordinateComponent {
 		});
 
 		const min = this.minutes.toLocaleString(undefined, {
-			minimumFractionDigits: 4,
+			minimumFractionDigits: 2,
 			minimumIntegerDigits: 2,
 			useGrouping: false,
 		});

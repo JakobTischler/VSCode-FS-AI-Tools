@@ -209,22 +209,34 @@
 				"A318": { "name": "A318", "search": ["A318-"], "series": "A32X" },
 				"A319": {
 					"name": "A319",
-					"search": ["/A319(-[12]\\d{2})?(SL|WL|$|\\s)(?!NX?|neo)/"],
+					"search": ["/A319(-[12]\\d{2})?\\s?(SL|WL|P[2C]F|$|\\s)(?!(NX?|neo)\\s)/"],
 					"series": "A32X"
 				},
 				"A320": {
 					"name": "A320",
-					"search": ["/A320(-[12]\\d{2})?(SL|WL|$|\\s)(?!NX?|neo)/"],
+					"search": ["/A320(-[12]\\d{2})?\\s?(SL|WL|P[2C]F|$|\\s)(?!(NX?|neo)\\s)/"],
 					"series": "A32X"
 				},
 				"A321": {
 					"name": "A321",
-					"search": ["/A321(-[12]\\d{2})?(SL|WL|$|\\s)(?!NX?|neo)/"],
+					"search": ["/A321(-[12]\\d{2})?\\s?(SL|WL|P[2C]F|$|\\s)(?!(NX?|neo)\\s)/"],
 					"series": "A32X"
 				},
-				"A19N": { "name": "A319neo", "search": ["/A319-[12]\\d{2}\\s*NX?/", "A319neo"], "series": "A32NX" },
-				"A20N": { "name": "A320neo", "search": ["/A320-[12]\\d{2}\\s*NX?/", "A320neo"], "series": "A32NX" },
-				"A21N": { "name": "A321neo", "search": ["/A321-[12]\\d{2}\\s*NX?/", "A321neo"], "series": "A32NX" },
+				"A19N": {
+					"name": "A319neo",
+					"search": ["/A319-?([12]\\d{2})?\\s*(NX?|neo)(\\s|$)/"],
+					"series": "A32NX"
+				},
+				"A20N": {
+					"name": "A320neo",
+					"search": ["/A320-?([12]\\d{2})?\\s*(NX?|neo)(\\s|$)/"],
+					"series": "A32NX"
+				},
+				"A21N": {
+					"name": "A321neo",
+					"search": ["/A321-?([12]\\d{2})?\\s*(NX?|neo)(\\s|$)/"],
+					"series": "A32NX"
+				},
 				"A332": { "name": "A330-200", "search": ["A330-2"], "series": "A330" },
 				"A333": { "name": "A330-300", "search": ["A330-3"], "series": "A330" },
 				"A338": { "name": "A330-800", "search": ["A330-8"], "series": "A330" },
@@ -316,7 +328,7 @@
 				"B762": { "name": "767-200", "search": ["767-2"], "series": "767" },
 				"B763": { "name": "767-300", "search": ["767-3"], "series": "767" },
 				"B764": { "name": "767-400", "search": ["767-4"], "series": "767" },
-				"B772": { "name": "777-200/F/LR", "search": ["777-2", "777F", "777L"], "series": "777" },
+				"B772": { "name": "777-200/F/LR", "search": ["/777(-[2L]|-?F)/"], "series": "777" },
 				"B773": { "name": "777-300/300ER", "search": ["777-3", "77W"], "series": "777" },
 				"B788": { "name": "787-8", "search": ["787-8"], "series": "787" },
 				"B789": { "name": "787-9", "search": ["787-9"], "series": "787" },
@@ -498,17 +510,17 @@
 				"E195": { "name": "E195", "search": ["/(?:ERJ|EMB)[- ]?195/"], "series": "EMB" },
 				"E275": {
 					"name": "E175-E2",
-					"search": ["E275", "E175-E2", "/(?:ERJ|EMB)[- ]?190-500/"],
+					"search": ["/E(mbraer|MB|RJ)?[-\\s]?(175(-?E2)|275|190-500)/"],
 					"series": "E2"
 				},
 				"E290": {
 					"name": "E190-E2",
-					"search": ["E290", "E190-E2", "/(?:ERJ|EMB)[- ]?190-300/"],
+					"search": ["/E(mbraer|MB|RJ)?[-\\s]?(190(-?(E2|300))|290)/"],
 					"series": "E2"
 				},
 				"E295": {
 					"name": "E195-E2",
-					"search": ["E295", "E195-E2", "/(?:ERJ|EMB)[- ]?190-400/"],
+					"search": ["/E(mbraer|MB|RJ)?[-\\s]?(195(-?E2)|295|190-400)/"],
 					"series": "E2"
 				},
 				"E50P": { "name": "Phenom 100", "search": ["Phenom 100"], "series": "Phenom" },

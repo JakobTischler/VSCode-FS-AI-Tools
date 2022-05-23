@@ -13,8 +13,7 @@ export async function CountAircraft() {
 			workspace.getConfiguration('fs-ai-tools.countAircraft', undefined).get('emptyLinesBetweenGroups') || 1
 		);
 
-		const document = editor.document;
-		const selection = editor.selection;
+		const { document, selection } = editor;
 		const text = document.getText(!selection.isEmpty ? selection : undefined);
 		const lines = text.split('\n');
 
@@ -44,6 +43,12 @@ export async function CountAircraft() {
 			 * New group
 			 */
 			if (line.startsWith('//') || isLastLine) {
+				// There were no aircraft since the currentGroupLineIndex, so
+				// this header line is the new groupLineIndex
+				if (!newGroup && currentGroupLineIndex !== null && currentGroupCount === 0) {
+					currentGroupLineIndex = index;
+				}
+
 				if (newGroup || isLastLine) {
 					/*
 					 * Close current group

@@ -3,7 +3,9 @@
 ### 1.5.1
 - `Create aifp.cfg`: handle malformed season (value will be "---")
 - New command `Open Master Airports File`: simply opens the master airports file as defined in the `fs-ai-tools.generateAirports.masterAirportsFilePath` setting. Only available from the command palette.
-- `Generate Airports` no longer continues to write the airports file if the "Open master airports file" button is used if airports are missing.
+- `Generate Airports` :
+  - no longer continues to write the airports file if the "Open master airports file" button is used if airports are missing.
+  - The minutes value output in the airports.txt file now uses 2 decimals instead of 4 (before: *`N20* 40.7900'`* → now: *`N20* 40.79'`* ).
 - `Count Aircraft`: required number of empty lines between groups (where the counter is resetted) is now configurable in `fs-ai-tools.countAircraft.emptyLinesBetweenGroups`.
 
 ### 1.5.0
