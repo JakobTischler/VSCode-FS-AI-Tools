@@ -59,7 +59,7 @@ export async function RenameFiles(filePath?: string) {
 
 	if (placeholderMatches) {
 		for (let item of placeholderMatches) {
-			// Remaove braces
+			// Remove braces
 			item = item.substr(1, item.length - 2);
 
 			// Define base

@@ -155,7 +155,7 @@ export async function CleanAircraftCfg() {
 	editor.edit((editBuilder) => {
 		editBuilder.replace(new vscode.Range(0, 0, document.lineCount, 500), cleanTextArray.join('\n'));
 	});
-	vscode.window.showInformationMessage('Aicraft.cfg cleaned');
+	vscode.window.showInformationMessage('Aircraft.cfg cleaned');
 }
 
 function createEmptyEntry() {

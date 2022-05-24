@@ -111,7 +111,7 @@ export async function CreateAircraft() {
 	// -----------------------------------------------------
 	// CREATE FLTSIM ENTRIES
 	let createFolders = config.get('createFolders') === 'Create';
-	if (config.get('createFolders') === 'Ask everytime') {
+	if (config.get('createFolders') === 'Ask every time') {
 		const userPick = await getDropdownSelection('Create Texture Folders?', [
 			'Create folders',
 			"Don't create folders",
@@ -128,7 +128,7 @@ export async function CreateAircraft() {
 	// -----------------------------------------------------
 	// APPEND ENTRIES TO AIRCRAFT.CFG
 	const fltsimEntriesText = '\n\n' + [...fltsimEntries.map((entry) => entry.fltsim)].join('\n\n') + '\n';
-	fs.appendFile(aircraftCfgPath, fltsimEntriesText, 'utf8', (err: any) => {
+	fs.appendFile(aircraftCfgPath, fltsimEntriesText, 'utf8', (err) => {
 		if (err) {
 			throw err;
 		}
@@ -156,22 +156,18 @@ export async function CreateAircraft() {
 				const dir = Path.join(__WORKDIR__, dirName);
 
 				if (!fs.existsSync(dir)) {
-					await fs.mkdir(dir, { recursive: true }, (err: any) => {
+					await fs.mkdir(dir, { recursive: true }, (err) => {
 						if (err) {
 							throw err;
 						}
 					});
 
 					if (config.get('copyTextureCfgToTextureFolder') && textureCfgExists) {
-						await fs.copyFile(
-							textureCfgPath,
-							Path.join(__WORKDIR__, dirName, 'texture.cfg'),
-							(err: any) => {
-								if (err) {
-									throw err;
-								}
+						await fs.copyFile(textureCfgPath, Path.join(__WORKDIR__, dirName, 'texture.cfg'), (err) => {
+							if (err) {
+								throw err;
 							}
-						);
+						});
 					}
 				}
 			} else {

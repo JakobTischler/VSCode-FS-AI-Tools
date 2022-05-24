@@ -39,7 +39,7 @@ export function capitalize(text: string, all = false): string {
  * @param {number} from - The index of the item to move.
  * @param {number} to - The index of the item to move.
  */
-const arrayMoveMutate = (array: any[], from: number, to: number) => {
+const arrayMoveMutate = <T>(array: T[], from: number, to: number) => {
 	const startIndex = to < 0 ? array.length + to : to;
 	const item = array.splice(from, 1)[0];
 	array.splice(startIndex, 0, item);
@@ -54,7 +54,7 @@ const arrayMoveMutate = (array: any[], from: number, to: number) => {
  * many elements from the end.
  * @source [[npm] array-move](https://www.npmjs.com/package/array-move)
  */
-export function arrayMove(array: any[], from: number, to: number): any[] {
+export function arrayMove<T>(array: T[], from: number, to: number): T[] {
 	array = array.slice();
 	arrayMoveMutate(array, from, to);
 	return array;
@@ -117,7 +117,7 @@ export async function getFileContents(path: string, showExistError = true) {
 		return null;
 	}
 
-	const data = await Fs.promises.readFile(path).catch((err: any) => {
+	const data = await Fs.promises.readFile(path).catch((err) => {
 		showError(`Failed to read file at "${path}"`, err);
 		return null;
 	});
@@ -194,11 +194,11 @@ export function degreesToRadians(degrees: number) {
 }
 
 /**
- * It returns a new object with only the defined properties of the object.
+ * Returns a new object with only the defined properties of the object.
  * @param {any} obj - The initial object
  * @source https://stackoverflow.com/a/56650790/677970
  */
-export const getDefinedProps = (obj: any) => {
+export const getDefinedProps = <T>(obj: T) => {
 	return Object.fromEntries(Object.entries(obj).filter(([, v]) => v !== undefined));
 };
 
@@ -247,9 +247,11 @@ export async function getFlightplanFiles(dirPath: string, readFiles = false) {
  * 32_
  * @returns A random string of characters.
  */
-export function createNonce(length = 32) {
+export function createNonce(length = 32, specialChars = true) {
 	let text = '';
-	const characters = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ=!$?%_-abcdefghijklmnopqrstuvwxyz0123456789';
+	const characters = specialChars
+		? 'ABCDEFGHIJKLMNOPQRSTUVWXYZ=!$?%_-abcdefghijklmnopqrstuvwxyz0123456789'
+		: 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789';
 	for (let i = 0; i < length; i++) {
 		text += characters.charAt(Math.floor(Math.random() * characters.length));
 	}

@@ -25,7 +25,7 @@ export class Airport {
 	};
 	/** The airport's altitude in feet */
 	altitude: number;
-	/** Number of occurences (flights to this airport) in the flightplan */
+	/** Number of occurrences (flights to this airport) in the flightplan */
 	count = 0;
 
 	constructor(line: string, count?: number) {

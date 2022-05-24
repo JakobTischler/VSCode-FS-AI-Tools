@@ -1,9 +1,6 @@
 import { showError } from '../../Tools/helpers';
 
-export type Coordinates = {
-	lat: CoordinateComponent;
-	lon: CoordinateComponent;
-};
+export type Coordinates = Record<'lat' | 'lon', CoordinateComponent>;
 
 export class CoordinateComponent {
 	degrees: number;
@@ -41,7 +38,7 @@ export class CoordinateComponent {
 		return this.value * this.factor;
 	}
 
-	/** The airports.txt format representation of the coordinate (e.g. `N64* 11.4400'`) */
+	/** The airports.txt format representation of the coordinate (e.g. `N64* 11.44'`) */
 	get str() {
 		const deg = this.degrees.toLocaleString(undefined, {
 			minimumIntegerDigits: 2,
