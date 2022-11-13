@@ -206,7 +206,7 @@ export const getDefinedProps = <T>(obj: T) => {
  * Finds the `Aircraft.txt`, `Airports.txt` and `Flightplans.txt` files in the
  * given directory and returns their file data.
  * @param dirPath The directory's absolute path
- * @returns A set of objects containing - for each found file - its respective
+ * @returns {TFlightplanFilesMetaData} A set of objects containing - for each found file - its respective
  * file name, file path, and `vscode.Uri` representation
  */
 export async function getFlightplanFiles(dirPath: string, readFiles = false) {

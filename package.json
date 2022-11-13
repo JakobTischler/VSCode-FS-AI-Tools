@@ -34,11 +34,54 @@
 		"onCommand:fsAiTools.renumberAddOnsCfg",
 		"onCommand:fsAiTools.renumberSceneryCfg",
 		"onCommand:fsAiTools.showAircraftList",
-		"onCommand:fsAiTools.switchFS9FSX"
+		"onCommand:fsAiTools.switchFS9FSX",
+		"onView:fsAiTools.aircraftCfgCommandsView",
+		"onView:fsAiTools.flightplansCommandsView",
+		"onView:fsAiTools.flightplansAircraftView"
 	],
 	"main": "./out/extension.js",
 	"contributes": {
+		"viewsContainers": {
+			"activitybar": [
+				{
+					"id": "fs-ai-tools",
+					"title": "FS AI Tools",
+					"icon": "res/view-container-icon.svg"
+				}
+			]
+		},
+		"views": {
+			"fs-ai-tools": [
+				{
+					"id": "fsAiTools.flightplansCommandsView",
+					"name": "Flightplans",
+					"type": "webview",
+					"contextualTitle": "FS AI Tools"
+				},
+				{
+					"id": "fsAiTools.flightplansAircraftView",
+					"name": "Aircraft",
+					"contextualTitle": "FS AI Tools"
+				}
+			]
+		},
 		"commands": [
+			{
+				"command": "fsAiTools.addColor",
+				"category": "Calico Colors",
+				"title": "Add Color"
+			},
+			{
+				"command": "fsAiTools.clearColors",
+				"category": "Calico Colors",
+				"title": "Clear Colors",
+				"icon": "$(clear-all)"
+			},
+			{
+				"command": "fsAiTools.refreshFlightplansAircraftView",
+				"title": "Refresh Flightplans Aircraft View",
+				"category": "FS AI Tools"
+			},
 			{
 				"command": "fsAiTools.airlineView",
 				"title": "Show Airline View",

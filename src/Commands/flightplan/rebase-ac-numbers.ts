@@ -1,5 +1,5 @@
 import { window, workspace, Range } from 'vscode';
-import { getFilenameFromPath, roundUpToNearest } from '../../Tools/helpers';
+import { getFilenameFromPath, roundUpToNearest, showError } from '../../Tools/helpers';
 
 export async function RebaseAircraftNumbers() {
 	const editor = window.activeTextEditor;
@@ -16,6 +16,11 @@ export async function RebaseAircraftNumbers() {
 		const text = document.getText(!selection.isEmpty ? selection : undefined);
 
 		const existingStartNumber = text.match(/AC#(\d+)/i)?.[1];
+		if (!existingStartNumber) {
+			showError('No existing AC# found.', true);
+			return false;
+		}
+
 		const start = await getNumberInput(existingStartNumber || '1000', 'The new starting AC#. Must be > 0.');
 		const bigStep = await getNumberInput(
 			'10',

@@ -20,6 +20,8 @@ import { RenumberSceneryCfg } from './Commands/scenery-cfg/renumber';
 import { ShowAircraftList } from './Commands/flightplan/show-aircraft-list';
 import { SwitchFS9FSX } from './Commands/flightplan/switch-fs9-fsx';
 import { LocalStorageService } from './Tools/LocalStorageService';
+import { FlightplansCommandsViewProvider } from './Webviews/sidebar-view/flightplans-commands-provider';
+import { FlightplansAircraftProvider } from './Webviews/flightplans-aircraft-tree-view/flightplans-aircraft-provider';
 
 export function activate(context: vscode.ExtensionContext) {
 	// Storage Manager
@@ -101,6 +103,36 @@ export function activate(context: vscode.ExtensionContext) {
 
 		vscode.commands.registerCommand('fsAiTools.switchFS9FSX', () => {
 			SwitchFS9FSX();
+		})
+	);
+
+	/*
+	 * SIDEBAR VIEWS
+	 */
+	const rootPath = vscode.workspace.workspaceFolders?.[0]?.uri.fsPath;
+
+	// Flightplans Aircraft View
+	const provider = new FlightplansAircraftProvider(rootPath);
+	vscode.window.createTreeView('fsAiTools.flightplansAircraftView', {
+		treeDataProvider: provider,
+	});
+	vscode.commands.registerCommand('fsAiTools.refreshFlightplansAircraftView', () => provider.refresh());
+
+	const flightplansCommandsProvider = new FlightplansCommandsViewProvider(context.extensionUri);
+	context.subscriptions.push(
+		vscode.window.registerWebviewViewProvider(FlightplansCommandsViewProvider.viewType, flightplansCommandsProvider)
+	);
+
+	// flightplansCommandsProvider.show();
+
+	context.subscriptions.push(
+		vscode.commands.registerCommand('fsAiTools.addColor', () => {
+			flightplansCommandsProvider.addColor();
+		})
+	);
+	context.subscriptions.push(
+		vscode.commands.registerCommand('fsAiTools.clearColors', () => {
+			flightplansCommandsProvider.clearColors();
 		})
 	);
 }
