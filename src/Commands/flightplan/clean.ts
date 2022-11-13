@@ -79,15 +79,29 @@ export function CleanFlightplan() {
  * @test https://regex101.com/r/zTB7O2/8
  */
 function formatTimes(text: string, removeSeconds: boolean, addAtToDepTimes: boolean): string {
-	const regex = /((?:\d+\/)?\d+:\d+)(:\d+)?,((?:@|TNG)?(?:\d+\/)?\d+:\d+)(:\d+)?/gi;
-	let subst;
-	if (removeSeconds && !addAtToDepTimes) {
-		subst = '$1,$4';
-	} else if (!removeSeconds && addAtToDepTimes) {
-		subst = '$1$2,@$3$4';
-	} else {
-		subst = '$1,@$3';
+	const regex = /((?:\d+\/)?\d+:\d+)(:\d+)?,(@)?((?:TNG)?(?:\d+\/)?\d+:\d+)(:\d+)?/gi;
+
+	/*
+			0/00:00:00,@TNG0/00:00:00
+		$1  ———————
+		$2         ———
+		$3             —
+		$4              ——————————
+		$5                        ———
+	*/
+	let subst = '$1';
+	if (!removeSeconds) {
+		subst += '$2';
 	}
+	subst += ',';
+	if (addAtToDepTimes) {
+		subst += '@';
+	}
+	subst += '$4';
+	if (!removeSeconds) {
+		subst += '$5';
+	}
+
 	return text.replace(regex, subst);
 }
 

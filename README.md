@@ -343,7 +343,6 @@ Changes the selected flightplans' days from FS9 to FSX or vice versa. Change dir
 
 ## Known Issues
 
-* Clean Flightplan: [seconds aren't removed from TNG times](https://github.com/JakobTischler/VSCode-FS-AI-Tools/projects/3#card-63691307)
 * Switch FS9 ⟷ FSX: [Multi-week flightplans with specific week values aren't supported yet](https://github.com/JakobTischler/VSCode-FS-AI-Tools/projects/4#card-64459468)
 
 ---

@@ -3,6 +3,7 @@
 ### 1.6.0
 - `Airline View`: Displays an overview of the flightplans airline with aircraft, airport and routing stats, along with a routemap.
 - `Convert to weekly flightplan`: Converts flightplans with repeating periods of 24hr and below (12hr, 8hr, ...) to weekly flightplans ("WEEK").
+- `Clean flightplan` now removes seconds from TNG legs
 
 ### 1.5.1
 - `Create aifp.cfg`: handle malformed season (value will be "---")

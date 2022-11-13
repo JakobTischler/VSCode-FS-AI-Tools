@@ -198,7 +198,7 @@ export function degreesToRadians(degrees: number) {
  * @param {any} obj - The initial object
  * @source https://stackoverflow.com/a/56650790/677970
  */
-export const getDefinedProps = <T>(obj: T) => {
+export const getDefinedProps = <T extends object>(obj: T) => {
 	return Object.fromEntries(Object.entries(obj).filter(([, v]) => v !== undefined));
 };
 
