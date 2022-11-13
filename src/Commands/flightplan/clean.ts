@@ -79,7 +79,7 @@ export function CleanFlightplan() {
  * @test https://regex101.com/r/zTB7O2/8
  */
 function formatTimes(text: string, removeSeconds: boolean, addAtToDepTimes: boolean): string {
-	const regex = /((?:\d{1}\/)?\d{2}:\d{2})(:\d{2})?,@?((?:\d{1}\/)?\d{2}:\d{2})(:\d{2})?/gi;
+	const regex = /((?:\d+\/)?\d+:\d+)(:\d+)?,((?:@|TNG)?(?:\d+\/)?\d+:\d+)(:\d+)?/gi;
 	let subst;
 	if (removeSeconds && !addAtToDepTimes) {
 		subst = '$1,$4';
