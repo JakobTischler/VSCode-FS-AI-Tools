@@ -1,5 +1,9 @@
 # Change Log
 
+### 1.6.0
+- `Airline View`: Displays an overview of the flightplans airline with aircraft, airport and routing stats, along with a routemap.
+- `Convert to weekly flightplan`: Converts flightplans with repeating periods of 24hr and below (12hr, 8hr, ...) to weekly flightplans ("WEEK").
+
 ### 1.5.1
 - `Create aifp.cfg`: handle malformed season (value will be "---")
 - New command `Open Master Airports File`: simply opens the master airports file as defined in the `fs-ai-tools.generateAirports.masterAirportsFilePath` setting. Only available from the command palette.

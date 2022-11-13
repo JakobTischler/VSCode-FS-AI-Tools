@@ -125,6 +125,14 @@ Counts the aircraft in each "block" in a flightplans.txt file and appends that c
 ---
 <br>
 
+### Convert to weekly flightplan
+Converts flightplans with repeating periods of 24hr and below (12hr, 8hr, ...) to weekly flightplans ("WEEK").
+<br>
+<br>
+
+---
+<br>
+
 ### Create aifp.cfg
 Uses the flightplans.txt [Flightplan Header](#create-flightplan-header) data and creates an aifp.cfg file with that data. If the file already exists, all content will be overwritten.
 <br>

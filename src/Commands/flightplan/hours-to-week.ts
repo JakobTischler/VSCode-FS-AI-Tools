@@ -1,6 +1,6 @@
-import { window } from 'vscode';
+import { Range, window } from 'vscode';
 import * as path from 'path';
-import { showError } from '../../Tools/helpers';
+import { plural, showError } from '../../Tools/helpers';
 
 type TPeriod = '1HR' | '2HR' | '4HR' | '8HR' | '12HR' | '24HR';
 const periods = new Map(<[TPeriod, number][]>[
@@ -27,6 +27,8 @@ export async function HoursToWeek() {
 
 	const lines = text.trim().split('\n');
 
+	let numConversions = 0;
+
 	for (const [index, line] of lines.entries()) {
 		if (line.toLowerCase().startsWith('ac#') || line.startsWith('//#')) {
 			const split = line.split(',');
@@ -47,13 +49,25 @@ export async function HoursToWeek() {
 			const data = parseFlightplanLine(line, period as TPeriod);
 			if (data) {
 				lines[index] = data.join(',');
+				numConversions++;
+				continue;
 			}
-		} else {
-			lines[index] = line;
 		}
-	}
 
-	console.log({ lines });
+		lines[index] = line;
+	}
+	// console.log({ lines });
+
+	const newText = lines.join('\n');
+
+	editor.edit((editBuilder) => {
+		const range = !selection.isEmpty
+			? selection
+			: new Range(document.lineAt(0).range.start, document.lineAt(document.lineCount - 1).range.end);
+		editBuilder.replace(range, newText);
+	});
+
+	window.showInformationMessage(`${plural('flightplan line', numConversions)} converted`);
 }
 
 function parseFlightplanLine(line: string, period: TPeriod) {
@@ -128,7 +142,7 @@ function parseFlightplanLine(line: string, period: TPeriod) {
 			ret.push(newInput);
 		}
 	}
-	console.log({ allLegs, ret });
+	// console.log({ allLegs, ret });
 
 	return ret;
 }
