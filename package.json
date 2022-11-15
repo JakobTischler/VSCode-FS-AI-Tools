@@ -6,7 +6,7 @@
 	},
 	"displayName": "FS AI Tools",
 	"description": "A bag of tools for AI flightplans and .cfg files",
-	"version": "1.6.0",
+	"version": "1.6.1",
 	"icon": "icon.png",
 	"license": "",
 	"engines": {
@@ -34,6 +34,7 @@
 		"onCommand:fsAiTools.renameFiles",
 		"onCommand:fsAiTools.renumberAddOnsCfg",
 		"onCommand:fsAiTools.renumberSceneryCfg",
+		"onCommand:fsAiTools.replaceAircraft",
 		"onCommand:fsAiTools.showAircraftList",
 		"onCommand:fsAiTools.switchFS9FSX",
 		"onView:fsAiTools.aircraftCfgCommandsView",
@@ -174,6 +175,11 @@
 				"category": "FS AI Tools"
 			},
 			{
+				"command": "fsAiTools.replaceAircraft",
+				"title": "Replace aircraft in other flightplan",
+				"category": "FS AI Tools"
+			},
+			{
 				"command": "fsAiTools.showAircraftList",
 				"title": "Show Aircraft List",
 				"category": "FS AI Tools"
@@ -256,6 +262,10 @@
 				{
 					"command": "fsAiTools.renumberSceneryCfg",
 					"when": "resourceFilename =~ /^scenery.cfg/i"
+				},
+				{
+					"command": "fsAiTools.replaceAircraft",
+					"when": "resourceFilename =~ /^flightplans.*txt$/i"
 				},
 				{
 					"command": "fsAiTools.showAircraftList",

@@ -18,6 +18,7 @@ import { RebaseAircraftNumbers } from './Commands/flightplan/rebase-ac-numbers';
 import { RenameFiles } from './Commands/flightplan/rename-files';
 import { RenumberAddOnsCfg } from './Commands/add-ons-cfg/renumber';
 import { RenumberSceneryCfg } from './Commands/scenery-cfg/renumber';
+import { ReplaceAircraftInTargetFp } from './Commands/flightplan/replace-acs';
 import { ShowAircraftList } from './Commands/flightplan/show-aircraft-list';
 import { SwitchFS9FSX } from './Commands/flightplan/switch-fs9-fsx';
 import { LocalStorageService } from './Tools/LocalStorageService';
@@ -100,6 +101,10 @@ export function activate(context: vscode.ExtensionContext) {
 
 		vscode.commands.registerCommand('fsAiTools.renumberSceneryCfg', () => {
 			RenumberSceneryCfg();
+		}),
+
+		vscode.commands.registerCommand('fsAiTools.replaceAircraft', () => {
+			ReplaceAircraftInTargetFp();
 		}),
 
 		vscode.commands.registerCommand('fsAiTools.showAircraftList', () => {

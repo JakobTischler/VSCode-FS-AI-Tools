@@ -313,6 +313,15 @@ Renumbers the `[Area.xxx]` entries sequentially and sets the `Layer=x` propertie
 <br>
 <br>
 
+
+---
+<br>
+
+### Replace aircraft in other flightplan
+Replaces aircraft with the same registration in a different flightplan and with the ones from current flightplan file. Ignores aircraft whose registrations don't match.
+<br>
+<br>
+
 ---
 <br>
 
