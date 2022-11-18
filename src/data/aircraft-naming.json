@@ -358,7 +358,7 @@
 					"search": ["/Dash 8[-/]Q?[12]00/"],
 					"series": "Dash 8"
 				},
-				"DH8C": { "name": "Dash 8-300", "search": ["/Dash 8[-/]Q?300/"], "series": "Dash 8" },
+				"DH8C": { "name": "Dash 8-300", "search": ["/Dash 8[-/]Q?3\\d\\d/"], "series": "Dash 8" },
 				"DH8D": { "name": "Dash 8-Q400", "search": ["/Dash 8[-/]Q?400/"], "series": "Dash 8" }
 			}
 		},
@@ -691,7 +691,7 @@
 		"Shorts": {
 			"search": ["Shorts"],
 			"types": {
-				"SD36": { "name": "SD-360", "search": ["SD360", "SD-360"] }
+				"SD36": { "name": "SD-360", "search": ["/SD-?3-?[36]0/"] }
 			}
 		},
 		"Sukhoi": {
