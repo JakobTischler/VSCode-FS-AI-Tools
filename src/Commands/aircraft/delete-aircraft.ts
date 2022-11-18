@@ -53,11 +53,6 @@ export async function DeleteAircraft() {
 	 * 2. Find aircraft.cfg that contains title
 	 */
 	const aircraftCfgFilePaths = await getAircraftCfgFilePaths();
-	/* // TODO TEMPORARY for faster testing
-	const aircraftCfgFilePaths = [
-		'K:\\Prepar3D\\_AI Aircraft\\AIA\\AIA B732\\aircraft.cfg',
-		'K:\\Prepar3D\\_AI Aircraft\\FAIB\\FAIB Boeing 737-800WL\\aircraft.cfg',
-	]; */
 	if (!aircraftCfgFilePaths) return false;
 
 	const { fltsimEntriesByAircraftCfg, fltsimEntriesByTitle } = readAircraftCfgs(aircraftCfgFilePaths, titlesToDelete);
@@ -65,9 +60,24 @@ export async function DeleteAircraft() {
 	// ----- ----- ----- ----- -----
 
 	/*
-	 * 3. Delete entry and folder
+	 * 3. Delete entries and texture folders
 	 */
-	const success = deleteAndSave(titlesToDelete, fltsimEntriesByTitle);
+	const result = await deleteAndSave(titlesToDelete, fltsimEntriesByTitle);
+
+	// ----- ----- ----- ----- -----
+
+	/*
+	 * 4. Info
+	 */
+	if (result.entries === 0) {
+		window.showInformationMessage(`No aircraft deleted`);
+	} else if (result.files === 1) {
+		window.showInformationMessage(
+			`${result.entries} aircraft deleted from "${[...fltsimEntriesByTitle.values()][0].cfgPath}"`
+		);
+	} else {
+		window.showInformationMessage(`${result.entries} aircraft deleted from ${result.files} files`);
+	}
 }
 
 /**
@@ -234,6 +244,13 @@ Dialog buttons: "Skip all", "Skip file/entry", "Skip entry", "Delete"
  */
 
 async function deleteAndSave(titles: Set<string>, fltsimEntriesByTitle: Map<string, FltsimEntry>) {
+	const result = {
+		entries: 0,
+		files: 0,
+	};
+
+	// -------------------------------------
+
 	// Switch mapping direction so multiple aircraft in one .cfg can be deleted
 	// together
 	const cfgToFltsimEntries = new Map<string, FltsimEntry[]>();
@@ -272,6 +289,7 @@ async function deleteAndSave(titles: Set<string>, fltsimEntriesByTitle: Map<stri
 			for (const dataEntry of fltsimEntries) {
 				fileContents = fileContents.replace(dataEntry.content, '');
 			}
+			result.entries += fltsimEntries.length;
 
 			/*
 			 * 3. Renumber [fltsim.x]
@@ -286,6 +304,7 @@ async function deleteAndSave(titles: Set<string>, fltsimEntriesByTitle: Map<stri
 			 * 4. Save fileContents to filePath
 			 */
 			await saveFile(cfgPath, fileContents);
+			result.files++;
 
 			/*
 			 * 5. Extract texture path and delete
@@ -309,4 +328,6 @@ async function deleteAndSave(titles: Set<string>, fltsimEntriesByTitle: Map<stri
 			console.error(cfgPath, error);
 		}
 	}
+
+	return result;
 }
