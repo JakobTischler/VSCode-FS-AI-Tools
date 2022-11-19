@@ -731,6 +731,23 @@
 						"title": "Aircraft directory",
 						"markdownDescription": "Full path to the folder containing all AI aircraft folders. àircraft.cfg´ files within that directory as well as its subdirectories will be checked.",
 						"scope": "window"
+					},
+					"fs-ai-tools.deleteAircraft.confirmDeletion": {
+						"type": "string",
+						"default": "Each aircraft",
+						"enum": [
+							"Each aircraft",
+							"Each aircraft.cfg file",
+							"Once",
+							"None"
+						],
+						"enumDescriptions": [
+							"Asks you to confirm the deletion of each aircraft in the queue",
+							"Asks you to confirm the deletion for the entries of each aircraft.cfg file in the queue",
+							"Asks you to once confirm the deletion for all aircraft in the queue",
+							"You won't be asked for any confirmation"
+						],
+						"scope": "window"
 					}
 				}
 			},

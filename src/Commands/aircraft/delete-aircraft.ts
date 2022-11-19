@@ -24,7 +24,7 @@ import * as fs from 'fs';
 import glob = require('tiny-glob');
 import * as path from 'path';
 import { Selection, TextDocument, window, workspace } from 'vscode';
-import { showError } from '../../Tools/helpers';
+import { plural, showError } from '../../Tools/helpers';
 import saveFile from '../../Utils/save-file';
 
 export async function DeleteAircraft() {
@@ -55,7 +55,7 @@ export async function DeleteAircraft() {
 	const aircraftCfgFilePaths = await getAircraftCfgFilePaths();
 	if (!aircraftCfgFilePaths) return false;
 
-	const { fltsimEntriesByAircraftCfg, fltsimEntriesByTitle } = readAircraftCfgs(aircraftCfgFilePaths, titlesToDelete);
+	const fltsimEntriesByTitle = readAircraftCfgs(aircraftCfgFilePaths, titlesToDelete);
 
 	// ----- ----- ----- ----- -----
 
@@ -69,15 +69,11 @@ export async function DeleteAircraft() {
 	/*
 	 * 4. Info
 	 */
-	if (result.entries === 0) {
-		window.showInformationMessage(`No aircraft deleted`);
-	} else if (result.files === 1) {
-		window.showInformationMessage(
-			`${result.entries} aircraft deleted from "${[...fltsimEntriesByTitle.values()][0].cfgPath}"`
-		);
-	} else {
-		window.showInformationMessage(`${result.entries} aircraft deleted from ${result.files} files`);
+	let message = result.entries === 0 ? 'No' : result.entries + ` aircraft deleted`;
+	if (result.files > 1) {
+		message += ` from ${result.files} files`;
 	}
+	window.showInformationMessage(message);
 }
 
 /**
@@ -105,8 +101,9 @@ function getAircraftTitles(document: TextDocument, selections: readonly Selectio
 	}
 
 	console.log(`Found titles:`, ret);
+	window.showInformationMessage(plural('title', ret.length) + ' found');
 
-	return new Set(ret.flat());
+	return new Set(ret);
 }
 
 /**
@@ -129,7 +126,7 @@ async function getAircraftCfgFilePaths() {
 	}
 
 	console.log(`Searching for aircraft.cfg files in "${dir}"`);
-	window.showInformationMessage('Searching for aircraft.cfg files');
+	window.showInformationMessage('🔍 Searching for aircraft.cfg files');
 
 	// Search for all "aircraft.cfg" files
 	const globPath = path.join(dir, '**/[Aa][Ii][Rr][Cc][Rr][Aa][Ff][Tt].cfg').replace(/\\+/g, '/');
@@ -162,14 +159,11 @@ async function getAircraftCfgFilePaths() {
  * * `title` {string} The aicraft title as key, and an array containing the
  *   corresponding aircraft.cfg file(s) as value.
  */
-function readAircraftCfgs(
-	filePaths: string[],
-	toDeleteTitles: Set<string>
-): {
+function readAircraftCfgs(filePaths: string[], toDeleteTitles: Set<string>): Map<string, FltsimEntry> {
+	/* {
 	fltsimEntriesByAircraftCfg: Map<string, Set<FltsimEntry>>;
 	fltsimEntriesByTitle: Map<string, FltsimEntry>;
-} {
-	// TODO
+} */ // TODO
 	/*
 	1. Store file hash or date etc. in map (see MasterAirports data)
 	2. If file hash has changed, read and update fltsimEntriesByAircraftCfg map
@@ -230,24 +224,53 @@ function readAircraftCfgs(
 		if (stop) break;
 	}
 
-	return { fltsimEntriesByAircraftCfg, fltsimEntriesByTitle };
+	// return { fltsimEntriesByAircraftCfg, fltsimEntriesByTitle };
+	return fltsimEntriesByTitle;
 }
 
-// TODO
-/*
-Setting: Confirm deletion dialog for
-(a) each fltsim entry
-(b) all entries in a single aircraft.cfg file
-(c) none
-
-Dialog buttons: "Skip all", "Skip file/entry", "Skip entry", "Delete"
- */
+enum EConfirmation {
+	AIRCRAFT = 'Each aircraft',
+	FILE = 'Each aircraft.cfg file',
+	ALL = 'Once',
+	NONE = 'None',
+}
 
 async function deleteAndSave(titles: Set<string>, fltsimEntriesByTitle: Map<string, FltsimEntry>) {
 	const result = {
 		entries: 0,
 		files: 0,
 	};
+
+	const config = workspace.getConfiguration('fs-ai-tools.deleteAircraft', undefined);
+	const confirmation = config?.get('confirmDeletion');
+
+	let continueDeletion = true;
+
+	/*
+	 * CONFIRM ALL
+	 */
+	if (confirmation === EConfirmation.ALL) {
+		const entryText = plural('fltsim entry and its texture folder', titles.size, {
+			pluralWord: 'fltsim entries and their texture folders',
+		});
+		const msg = `Are you sure you want to delete ${entryText}?`;
+		const button = titles.size > 1 ? `Delete ${titles.size} aircraft` : `Delete aircraft`;
+
+		await window.showWarningMessage(`Confirm deletion`, { modal: true, detail: msg }, button).then((buttonText) => {
+			if (!buttonText) {
+				continueDeletion = false;
+				showError('❌ Deletion for all aircraft has been canceled.');
+				return;
+			} else {
+				let msg = `✔️ Deletion confirmed for 1 aircraft`;
+				if (titles.size > 1) {
+					msg = `✔️ Deletion confirmed for all ${titles.size} aircraft`;
+				}
+				console.log(msg);
+			}
+		});
+	}
+	if (!continueDeletion) return result;
 
 	// -------------------------------------
 
@@ -271,7 +294,31 @@ async function deleteAndSave(titles: Set<string>, fltsimEntriesByTitle: Map<stri
 		cfgToFltsimEntries.set(entryData.cfgPath, [...(cfgToFltsimEntries.get(entryData.cfgPath) || []), entryData]);
 	}
 
-	for (const [cfgPath, fltsimEntries] of cfgToFltsimEntries.entries()) {
+	cfgFileLoop: for (const [cfgPath, fltsimEntries] of cfgToFltsimEntries.entries()) {
+		let fileDirty = false;
+		continueDeletion = true;
+
+		/*
+		 * CONFIRM DELETION OF ALL FROM FILE
+		 */
+		if (confirmation === EConfirmation.FILE) {
+			const entryText = plural('fltsim entry and its texture folder', fltsimEntries.length, {
+				pluralWord: 'fltsim entries and their texture folders',
+			});
+			const msg = `Are you sure you want to delete ${entryText} from "${cfgPath}"?`;
+			const button = fltsimEntries.length > 1 ? `Delete ${fltsimEntries.length} aircraft` : `Delete aircraft`;
+
+			await window
+				.showWarningMessage(`Confirm deletion`, { modal: true, detail: msg }, button)
+				.then((buttonText) => {
+					if (!buttonText) {
+						continueDeletion = false;
+						showError(`❌ Deletion skipped: "${cfgPath}"`);
+					}
+				});
+		}
+		if (!continueDeletion) continue cfgFileLoop;
+
 		try {
 			/*
 			 * 1. Get path and read file
@@ -286,10 +333,41 @@ async function deleteAndSave(titles: Set<string>, fltsimEntriesByTitle: Map<stri
 			/*
 			 * 2. Delete entry from file contents
 			 */
-			for (const dataEntry of fltsimEntries) {
+			const skipEntries = new Set<string>();
+			removeEntriesFromCfgLoop: for (const dataEntry of fltsimEntries) {
+				continueDeletion = true;
+
+				/*
+				 * CONFIRM DELETION OF EACH ENTRY
+				 */
+				if (confirmation === EConfirmation.AIRCRAFT) {
+					const msg = `Are you sure you want to delete "${dataEntry.title}" from "${cfgPath}"?`;
+					const button = `Delete aircraft`;
+
+					await window
+						.showWarningMessage(`Confirm deletion`, { modal: true, detail: msg }, button)
+						.then((buttonText) => {
+							if (!buttonText) {
+								continueDeletion = false;
+								showError(`❌ Deletion skipped: "${dataEntry.title}" in "${cfgPath}"`);
+
+								skipEntries.add(dataEntry.title);
+							}
+						});
+				}
+				if (!continueDeletion) {
+					continue removeEntriesFromCfgLoop;
+				} else {
+					console.log(`✔️ Deletion confirmed: "${dataEntry.title}" in "${cfgPath}"`);
+				}
+
 				fileContents = fileContents.replace(dataEntry.content, '');
+
+				result.entries++;
+				fileDirty = true;
 			}
-			result.entries += fltsimEntries.length;
+
+			if (!fileDirty) continue cfgFileLoop;
 
 			/*
 			 * 3. Renumber [fltsim.x]
@@ -303,13 +381,15 @@ async function deleteAndSave(titles: Set<string>, fltsimEntriesByTitle: Map<stri
 			/*
 			 * 4. Save fileContents to filePath
 			 */
-			await saveFile(cfgPath, fileContents);
+			await saveFile(cfgPath, fileContents, `💾 ${cfgPath} saved`);
 			result.files++;
 
 			/*
 			 * 5. Extract texture path and delete
 			 */
-			for (const dataEntry of fltsimEntries) {
+			removeTextureFoldersLoop: for (const dataEntry of fltsimEntries) {
+				if (skipEntries.has(dataEntry.title)) continue;
+
 				const match = dataEntry.content.match(/texture\s*=\s*(.*)$/im);
 				if (match) {
 					let textureDir = path.resolve(cfgPath, '..', `texture`);
@@ -320,7 +400,7 @@ async function deleteAndSave(titles: Set<string>, fltsimEntriesByTitle: Map<stri
 
 					if (fs.existsSync(textureDir)) {
 						await fs.promises.rm(textureDir, { recursive: true, force: true });
-						console.log(`Directory "${textureDir}" removed`);
+						console.log(`🗑 Directory "${textureDir}" removed`);
 					}
 				}
 			}
@@ -328,6 +408,9 @@ async function deleteAndSave(titles: Set<string>, fltsimEntriesByTitle: Map<stri
 			console.error(cfgPath, error);
 		}
 	}
+
+	console.log(`-----------------------------
+### Deletion process complete`);
 
 	return result;
 }

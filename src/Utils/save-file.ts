@@ -4,11 +4,11 @@ import { writeFile } from 'node:fs/promises';
  * @param {string} filePath The absolute path of the target file
  * @param {string} fileContents The file's content
  */
-async function saveFile(filePath: string, fileContents: string) {
+async function saveFile(filePath: string, fileContents: string, successLogMsg?: string) {
 	try {
 		await writeFile(filePath, fileContents, { encoding: 'utf-8' });
 
-		console.log(`File saved to to "${filePath}"`);
+		console.log(successLogMsg || `File saved to "${filePath}"`);
 	} catch (error) {
 		if (error) throw new Error(String(error));
 	}
