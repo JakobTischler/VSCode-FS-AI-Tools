@@ -496,7 +496,7 @@
 		"Embraer": {
 			"search": ["Embraer"],
 			"types": {
-				"E120": { "name": "EMB-120", "search": ["EMB-120", "EMB120", "Embraer 120"] },
+				"E120": { "name": "EMB-120", "search": ["/(?:Embraer|EMB)[- ]?1[12]0/"] },
 				"E135": { "name": "ERJ-135 / Legacy 600", "search": ["/(?:ERJ|EMB)[- ]?135/"], "series": "ERJ" },
 				"E140": { "name": "ERJ-140", "search": ["/(?:ERJ|EMB)[- ]?140/"], "series": "ERJ" },
 				"E145": { "name": "ERJ-145 / Legacy 650", "search": ["/(?:ERJ|EMB)[- ]?145/"], "series": "ERJ" },
