@@ -224,6 +224,27 @@ Reads the data from an `aifp.cfg` file in the same directory (if present), and u
 ---
 <br>
 
+### Delete Aircraft
+For any aircraft title found in `aircraft.txt` file (or selection), find corresponding `fltsim.x` entries in `aircraft.cfg` files and deletes them as well as the corresponding texture folders.
+
+#### **Notes**
+* In order to find existing `aircraft.cfg` files, a parent aircraft directory path must be entered in `fs-ai-tools.deleteAircraft.aircraftDirectory`
+* Only fully selected aircraft lines are evaluated (selection must include "AC#" or "//#", as well as the end quotes). Partly selected lines are ignored.
+* There are four deletion confirmation settings (`fs-ai-tools.deleteAircraft.confirmDeletion`)
+  * Each aircraft *[default]*: asks you to confirm the deletion of each aircraft in the queue
+  * Each aircraft.cfg file: asks you to confirm the deletion for the entries of each aircraft.cfg file in the queue
+  * Once: asks you to once confirm the deletion for all aircraft in the queue
+  * None: you won't be asked for any confirmation
+* aircraft.cfg files are renumbered sequentially after fltsim entries have been removed.
+
+#### **Warning**
+* The folders deleted will not be moved to the recycle bin, but rather are deleted permanently. Proceed with caution (or use version control).
+<br>
+<br>
+
+---
+<br>
+
 ### Generate Airports
 
 Extracts the airports from a `Flightplans.txt` file, and uses an airports master file (containing every possible airport entry) to create this flightplan's `Airports.txt` file. The file path to the master file must be provided in the `fs-ai-tools.generateAirports.masterAirportsFilePath` setting.

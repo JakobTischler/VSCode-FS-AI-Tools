@@ -1,5 +1,8 @@
 # Change Log
 
+### 1.6.2
+- `Delete Aircraft`: from user-selected aircraft titles in the `aircraft.txt` file, finds aircraft entries in aircraft.cfg files and removes them as well as their corresponding texture folders.
+
 ### 1.6.0
 - `Airline View`: Displays an overview of the flightplans airline with aircraft, airport and routing stats, along with a routemap.
 - `Convert to weekly flightplan`: Converts flightplans with repeating periods of 24hr and below (12hr, 8hr, ...) to weekly flightplans ("WEEK").
