@@ -171,7 +171,7 @@ export async function CreateAircraft() {
 					}
 				}
 			} else {
-				// TODO WTF do I do now?
+				// FIXME WTF do I do now?
 			}
 		}
 	}

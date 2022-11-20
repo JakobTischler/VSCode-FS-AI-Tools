@@ -69,7 +69,7 @@ export async function DeleteAircraft() {
 	/*
 	 * 4. Info
 	 */
-	let message = result.entries === 0 ? 'No' : result.entries + ` aircraft deleted`;
+	let message = result.entries === 0 ? 'No' : `${result.entries} aircraft deleted`;
 	if (result.files > 1) {
 		message += ` from ${result.files} files`;
 	}
@@ -88,8 +88,7 @@ function getAircraftTitles(document: TextDocument, selections: readonly Selectio
 	const ret: string[] = [];
 
 	// TODO right now the whole line, including "AC#123,456," has to be selected. Should also accept directly selected titles?
-
-	const regexp = /(?:AC|\/\/)#\d+,\d+,\"(.*?)\"/gim;
+	const regexp = /(?:AC|\/\/)#\w+,\d+,\"(.*?)\"/gim;
 
 	for (const selection of [...selections]) {
 		const text = document.getText(selection);
@@ -101,7 +100,7 @@ function getAircraftTitles(document: TextDocument, selections: readonly Selectio
 	}
 
 	console.log(`Found titles:`, ret);
-	window.showInformationMessage(plural('title', ret.length) + ' found');
+	window.showInformationMessage(`${plural('title', ret.length)} found`);
 
 	return new Set(ret);
 }
@@ -179,7 +178,7 @@ function readAircraftCfgs(filePaths: string[], toDeleteTitles: Set<string>): Map
 	// line breaks (this is due to "|\s$" to fix getting the last fltsim.x
 	// section at end of file → compromise) v2: https://regex101.com/r/NX44lx/2
 	// TODO title might not directly follow initial [fltsim.x] line
-	const regexp = /\[fltsim\.(\d+)\]\s*title\s*=\s*(.+?)(?:[\n\r]+\w+\s*=\s*.+)+/gim;
+	const regexp = /\[fltsim\.(\w+)\]\s*title\s*=\s*(.+?)(?:[\n\r]+\w+\s*=\s*.+)+/gim;
 
 	for (const filePath of filePaths) {
 		let stop = false;
@@ -197,8 +196,8 @@ function readAircraftCfgs(filePaths: string[], toDeleteTitles: Set<string>): Map
 					const data: FltsimEntry = {
 						cfgPath: filePath,
 						content: entry,
-						num: num,
-						title: title,
+						num,
+						title,
 					};
 
 					fltsimEntriesByTitle.set(title, data);
@@ -257,17 +256,18 @@ async function deleteAndSave(titles: Set<string>, fltsimEntriesByTitle: Map<stri
 		const button = titles.size > 1 ? `Delete ${titles.size} aircraft` : `Delete aircraft`;
 
 		await window.showWarningMessage(`Confirm deletion`, { modal: true, detail: msg }, button).then((buttonText) => {
-			if (!buttonText) {
-				continueDeletion = false;
-				showError('❌ Deletion for all aircraft has been canceled.');
-				return;
-			} else {
-				let msg = `✔️ Deletion confirmed for 1 aircraft`;
-				if (titles.size > 1) {
-					msg = `✔️ Deletion confirmed for all ${titles.size} aircraft`;
-				}
+			if (buttonText) {
+				const msg =
+					titles.size > 1
+						? `✔️ Deletion confirmed for all ${titles.size} aircraft`
+						: `✔️ Deletion confirmed for 1 aircraft`;
 				console.log(msg);
+				return;
 			}
+
+			continueDeletion = false;
+			showError('❌ Deletion for all aircraft has been canceled.');
+			return;
 		});
 	}
 	if (!continueDeletion) return result;
@@ -355,10 +355,10 @@ async function deleteAndSave(titles: Set<string>, fltsimEntriesByTitle: Map<stri
 							}
 						});
 				}
-				if (!continueDeletion) {
-					continue removeEntriesFromCfgLoop;
-				} else {
+				if (continueDeletion) {
 					console.log(`✔️ Deletion confirmed: "${dataEntry.title}" in "${cfgPath}"`);
+				} else {
+					continue removeEntriesFromCfgLoop;
 				}
 
 				fileContents = fileContents.replace(dataEntry.content, '');
