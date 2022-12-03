@@ -11,7 +11,7 @@
 import * as vscode from 'vscode';
 import * as Fs from 'fs';
 import * as Path from 'path';
-import { capitalize, showError } from '../../Tools/helpers';
+import { showError } from '../../Tools/helpers';
 import { getTextInput } from '../../Tools/input';
 import { readAifpCfg } from '../../Tools/read-aifp';
 
@@ -159,7 +159,7 @@ export async function RenameFiles(filePath?: string) {
 
 		const oldFile = vscode.Uri.file(Path.join(dirPath, file));
 		const newFile = vscode.Uri.file(
-			Path.join(dirPath, (upperCaseBase ? capitalize(matches[1]) : matches[1]) + result)
+			Path.join(dirPath, (upperCaseBase ? matches[1].capitalize() : matches[1]) + result)
 		);
 		// await Fs.promises.rename(oldFile, newFile);
 		edit.renameFile(oldFile, newFile);

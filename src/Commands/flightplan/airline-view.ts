@@ -1,14 +1,3 @@
-/*
- * [x] Show title, icao, callsign
- * [x] Logo
- 	1. {folder}/logo.[png,jpg]
-	2. {folder}/callsign.[png,jpg]
-	3. {logoFolder}/callsign.[png,jpg]
- * [x] List of airports with counts
- * [ ] Routemap
- * [x] List of aircraft types with counts
-*/
-
 import * as vscode from 'vscode';
 import * as path from 'path';
 import { getFlightplanFiles, showErrorModal, showError } from '../../Tools/helpers';

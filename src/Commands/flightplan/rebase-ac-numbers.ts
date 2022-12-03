@@ -1,5 +1,5 @@
 import { window, workspace, Range } from 'vscode';
-import { getFilenameFromPath, roundUpToNearest, showError } from '../../Tools/helpers';
+import { getFilenameFromPath, showError } from '../../Tools/helpers';
 
 export async function RebaseAircraftNumbers() {
 	const editor = window.activeTextEditor;
@@ -68,7 +68,7 @@ export async function RebaseAircraftNumbers() {
 			// Create new group
 			if (newGroup && anyNumberInGroupReplaced) {
 				// currentSingleNum + 10 -> floor
-				currentGroupNum = roundUpToNearest(currentSingleNum, bigStep);
+				currentGroupNum = currentSingleNum.roundUpToNearest(bigStep);
 				currentSingleNum = currentGroupNum;
 				anyNumberInGroupReplaced = false;
 				newGroup = false;

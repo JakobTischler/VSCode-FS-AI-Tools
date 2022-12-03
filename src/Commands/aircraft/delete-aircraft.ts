@@ -1,14 +1,3 @@
-/*
- * [x] 1. Extract title from selection (AC#123,456,"AIRCRAFT TITLE")
- * [x] 2. Find aircraft.cfg that contains title
- * [ ] 3  Open file?
- * [ ] 4. Get full fltsim section
- * [ ] 5. Get texture path and remove folder
- * [ ] 6. Remove fltsim section
- * [ ] 7. Save file
- * [ ] 8. Success/fail feedback
- */
-
 type FltsimEntry = {
 	/** The absolute file path of the `aircraft.cfg` containing this entry */
 	cfgPath: string;

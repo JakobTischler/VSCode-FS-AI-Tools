@@ -1,5 +1,5 @@
 import { window } from 'vscode';
-import { getFilenameFromPath, loopNumber, showError } from '../../Tools/helpers';
+import { getFilenameFromPath, showError } from '../../Tools/helpers';
 import { getDropdownSelection } from '../../Tools/input';
 
 export async function SwitchFS9FSX() {
@@ -64,7 +64,7 @@ export async function SwitchFS9FSX() {
 			// FS9 → FSX = -1
 			// FSX → FS9 = +1
 			let num = Number(number);
-			num = loopNumber(num, 0, maxDays, toFS9 ? 1 : -1);
+			num = num.loop(0, maxDays, toFS9 ? 1 : -1);
 
 			return `${pre}${num}/`;
 		});

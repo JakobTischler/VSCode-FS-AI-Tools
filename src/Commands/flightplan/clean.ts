@@ -1,5 +1,5 @@
 import * as vscode from 'vscode';
-import { getRandomInt, getFilenameFromPath } from '../../Tools/helpers';
+import { getFilenameFromPath } from '../../Tools/helpers';
 import '../../Extenders/number';
 
 export function CleanFlightplan() {
@@ -114,7 +114,7 @@ function randomizePercentage(text: string, min = 10, max = 99): string {
 		return text.replace(regex, `${min}%`);
 	}
 	return text.replace(regex, () => {
-		return `${getRandomInt(min, max)}%`;
+		return `${Math.randomInt(min, max)}%`;
 	});
 }
 

@@ -1,5 +1,5 @@
 import { window, Position } from 'vscode';
-import { capitalize, getFilenameFromPath } from '../../Tools/helpers';
+import { getFilenameFromPath } from '../../Tools/helpers';
 
 export async function CreateFlightplanHeader() {
 	console.log('CreateFlightplanHeader()');
@@ -44,13 +44,13 @@ export async function CreateFlightplanHeader() {
 			});
 			if (fsVersion && name && author && season) {
 				let text = `//FSXDAYS=${fsVersion === 'FS9' ? 'FALSE' : 'TRUE'}\n`;
-				text += `//${capitalize(name)}`;
+				text += `//${name.capitalize()}`;
 				if (icao || callsign) {
 					text += ` | ${icao ? icao.toUpperCase() : ''}`;
 					text += ` | "${callsign ? `${callsign.toUpperCase()}` : ''}"`;
 				}
 				text += '\n';
-				text += `//${capitalize(author, true)}, ${season}\n\n`;
+				text += `//${author.capitalize(true)}, ${season}\n\n`;
 
 				console.log(text);
 

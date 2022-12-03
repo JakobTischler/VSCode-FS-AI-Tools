@@ -178,7 +178,7 @@ export async function CreateAircraft() {
 
 	// -----------------------------------------------------
 	// SUCCESS MESSAGE
-	let msg = `${'entry'.plural(regs.length, 'entries')} created`;
+	let msg = `${'entry'.plural(regs.length, { pluralWord: 'entries' })} created`;
 	if (config.get('copyTitlesToClipboard')) {
 		msg += ` and ${'title'.plural(regs.length)} copied`;
 	}

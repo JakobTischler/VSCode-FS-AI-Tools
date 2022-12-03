@@ -1,5 +1,4 @@
 import * as vscode from 'vscode';
-import { degreesToRadians } from '../../Tools/helpers';
 import { Coordinates } from './Coordinates';
 
 const { sin, cos, atan2, sqrt } = Math;
@@ -16,6 +15,9 @@ enum EDistanceUnitFactors {
 type TDistanceUnit = keyof typeof EDistanceUnitFactors;
 
 export class Distance {
+	/** Earth's radius in meters */
+	private static EarthRadius = 6_371_000;
+
 	/** Distance in meters */
 	value: number;
 
@@ -36,22 +38,19 @@ export class Distance {
 		}
 
 		// Convert the latitudes from degrees to radians.
-		const φ1 = degreesToRadians(from.lat.factoredValue); // φ, λ in radians
-		const φ2 = degreesToRadians(to.lat.factoredValue);
+		const φ1 = Math.degToRad(from.lat.factoredValue); // φ, λ in radians
+		const φ2 = Math.degToRad(to.lat.factoredValue);
 
 		// Converting the difference in latitude to radians.
-		const Δφ = degreesToRadians(to.lat.factoredValue - from.lat.factoredValue);
-		const Δλ = degreesToRadians(to.lon.factoredValue - from.lon.factoredValue);
+		const Δφ = Math.degToRad(to.lat.factoredValue - from.lat.factoredValue);
+		const Δλ = Math.degToRad(to.lon.factoredValue - from.lon.factoredValue);
 
 		// Haversine formula for calculating the distance between two points on a sphere.
 		const a = sin(Δφ / 2) * sin(Δφ / 2) + cos(φ1) * cos(φ2) * sin(Δλ / 2) * sin(Δλ / 2);
 		const c = 2 * atan2(sqrt(a), sqrt(1 - a));
 
-		/** Earth radius in meters */
-		const R = 6_371_000;
-
 		/** Distance in meters */
-		return R * c;
+		return Distance.EarthRadius * c;
 	}
 
 	/** Distance formatted to either kilometers, miles or nautical miles
