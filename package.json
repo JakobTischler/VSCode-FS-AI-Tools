@@ -26,6 +26,7 @@
 		"onCommand:fsAiTools.createFlightplanHeader",
 		"onCommand:fsAiTools.createFlightplanHeaderFromAifp",
 		"onCommand:fsAiTools.deleteAircraft",
+		"onCommand:fsAiTools.deleteAircraftFromAircraftCfg",
 		"onCommand:fsAiTools.flightplanMetadata",
 		"onCommand:fsAiTools.generateAirports",
 		"onCommand:fsAiTools.hoursToWeek",
@@ -128,6 +129,11 @@
 			{
 				"command": "fsAiTools.deleteAircraft",
 				"title": "Delete Aircraft",
+				"category": "FS AI Tools"
+			},
+			{
+				"command": "fsAiTools.deleteAircraftFromAircraftCfg",
+				"title": "Delete Aircraft from aircraft.cfg",
 				"category": "FS AI Tools"
 			},
 			{
@@ -239,6 +245,10 @@
 					"when": "resourceFilename =~ /^aircraft.*txt$/i && editorHasSelection"
 				},
 				{
+					"command": "fsAiTools.deleteAircraftFromAircraftCfg",
+					"when": "resourceFilename =~ /^aircraft.cfg$/i && editorHasSelection"
+				},
+				{
 					"command": "fsAiTools.flightplanMetadata",
 					"when": "config.fs-ai-tools.isDev && resourceFilename =~ /^flightplans.*txt$/i"
 				},
@@ -336,6 +346,11 @@
 					"command": "fsAiTools.deleteAircraft",
 					"group": "FS AI Tools",
 					"when": "resourceFilename =~ /^aircraft.*txt$/i && editorHasSelection"
+				},
+				{
+					"command": "fsAiTools.deleteAircraftFromAircraftCfg",
+					"group": "FS AI Tools",
+					"when": "resourceFilename =~ /^aircraft.cfg$/i && editorHasSelection"
 				},
 				{
 					"command": "fsAiTools.generateAirports",
@@ -967,29 +982,29 @@
 		"esbuild": "npm run esbuild-base -- --sourcemap",
 		"esbuild-watch": "npm run esbuild-base -- --sourcemap --watch",
 		"test-compile": "tsc -p ./",
-		"test_OLD": "npm run ./src/test/runTest",
 		"test": "eslint src --ext ts && tsc --noEmit"
 	},
 	"devDependencies": {
-		"@types/lodash": "^4.14.188",
+		"@types/lodash": "^4.14.190",
 		"@types/mocha": "^10.0.0",
 		"@types/node": "^18.11.9",
-		"@types/vscode": "^1.73.0",
-		"@typescript-eslint/eslint-plugin": "^5.42.1",
+		"@types/vscode": "^1.73.1",
+		"@typescript-eslint/eslint-plugin": "^5.44.0",
 		"@vscode/test-electron": "^2.2.0",
-		"esbuild": "^0.15.13",
-		"eslint": "^8.27.0",
+		"esbuild": "^0.15.15",
+		"eslint": "^8.28.0",
 		"eslint-plugin-header": "^3.1.1",
 		"mocha": "^10.1.0",
 		"rimraf": "^3.0.2",
-		"typescript": "^4.8.4",
+		"typescript": "^4.9.3",
 		"vsce": "^2.14.0"
 	},
 	"dependencies": {
 		"axios": "^1.1.3",
 		"fs": "~0.0.1-security",
-		"tiny-glob": "^0.2.9",
 		"lodash": "^4.17.21",
-		"path": "~0.12.7"
+		"path": "~0.12.7",
+		"tiny-glob": "^0.2.9",
+		"trash": "^8.1.0"
 	}
 }

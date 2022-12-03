@@ -10,6 +10,7 @@ import { CreateAircraft } from './Commands/flightplan/create-aircraft';
 import { CreateFlightplanHeader } from './Commands/flightplan/create-header';
 import { CreateFlightplanHeaderFromAifp } from './Commands/flightplan/create-header-from-aifp';
 import { DeleteAircraft } from './Commands/aircraft/delete-aircraft';
+import { DeleteAircraftFromAircraftCfg } from './Commands/aircraft-cfg/delete-aircraft';
 import { GenerateAirports } from './Commands/flightplan/generate-airports';
 import { HoursToWeek } from './Commands/flightplan/hours-to-week';
 import { MatchAcNumbers } from './Commands/flightplan/match-ac-numbers';
@@ -70,6 +71,11 @@ export function activate(context: vscode.ExtensionContext) {
 
 		vscode.commands.registerCommand('fsAiTools.deleteAircraft', () => {
 			DeleteAircraft();
+		}),
+
+		vscode.commands.registerCommand('fsAiTools.deleteAircraftFromAircraftCfg', () => {
+			console.log("Now calling 'DeleteAircraftFromAircraftCfg()'");
+			DeleteAircraftFromAircraftCfg();
 		}),
 
 		vscode.commands.registerCommand('fsAiTools.flightplanMetadata', () => {
