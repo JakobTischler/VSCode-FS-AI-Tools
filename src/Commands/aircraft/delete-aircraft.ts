@@ -13,7 +13,7 @@ import * as fs from 'fs';
 import glob = require('tiny-glob');
 import * as path from 'path';
 import { Selection, TextDocument, window, workspace } from 'vscode';
-import { plural, showError } from '../../Tools/helpers';
+import { showError } from '../../Tools/helpers';
 import saveFile from '../../Utils/save-file';
 
 export async function DeleteAircraft() {
@@ -89,7 +89,7 @@ function getAircraftTitles(document: TextDocument, selections: readonly Selectio
 	}
 
 	console.log(`Found titles:`, ret);
-	window.showInformationMessage(`${plural('title', ret.length)} found`);
+	window.showInformationMessage(`${'title'.plural(ret.length)} found`);
 
 	return new Set(ret);
 }
@@ -238,7 +238,7 @@ async function deleteAndSave(titles: Set<string>, fltsimEntriesByTitle: Map<stri
 	 * CONFIRM ALL
 	 */
 	if (confirmation === EConfirmation.ALL) {
-		const entryText = plural('fltsim entry and its texture folder', titles.size, {
+		const entryText = 'fltsim entry and its texture folder'.plural(titles.size, {
 			pluralWord: 'fltsim entries and their texture folders',
 		});
 		const msg = `Are you sure you want to delete ${entryText}?`;
@@ -291,7 +291,7 @@ async function deleteAndSave(titles: Set<string>, fltsimEntriesByTitle: Map<stri
 		 * CONFIRM DELETION OF ALL FROM FILE
 		 */
 		if (confirmation === EConfirmation.FILE) {
-			const entryText = plural('fltsim entry and its texture folder', fltsimEntries.length, {
+			const entryText = 'fltsim entry and its texture folder'.plural(fltsimEntries.length, {
 				pluralWord: 'fltsim entries and their texture folders',
 			});
 			const msg = `Are you sure you want to delete ${entryText} from "${cfgPath}"?`;

@@ -1,6 +1,6 @@
 import * as vscode from 'vscode';
 import * as path from 'path';
-import { plural, showError } from '../../Tools/helpers';
+import { showError } from '../../Tools/helpers';
 import { LocalStorageService } from '../../Tools/LocalStorageService';
 import { Airport, getMasterAirports, TAirportCodeToLine } from '../../Content/Airport/Airport';
 import { FlightplanRaw } from '../../Content/Flightplan/Flightplan';
@@ -78,7 +78,7 @@ async function writeToAirportsTxtFile(airports: { found: Airport[]; missing: str
 	// Missing airports → Tell user and wait for deciscion to open the master
 	// file, cancel, or continue
 	if (airports.missing.length) {
-		const title = `${plural('airport', airports.missing.length)} not found in the master file`;
+		const title = `${'airport'.plural(airports.missing.length)} not found in the master file`;
 		const msg = airports.missing
 			.sort()
 			.map((code) => `• ${code}`)
@@ -119,7 +119,7 @@ async function writeToAirportsTxtFile(airports: { found: Airport[]; missing: str
 	vscode.workspace.openTextDocument(filePath).then((doc: vscode.TextDocument) => {
 		doc.save();
 		vscode.window.showInformationMessage(
-			`${plural('airport', airports.found.length)} generated, "${fileName}" file written`
+			`${'airport'.plural(airports.found.length)} generated, "${fileName}" file written`
 		);
 	});
 }

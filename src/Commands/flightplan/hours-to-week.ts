@@ -1,6 +1,6 @@
 import { Range, window } from 'vscode';
 import * as path from 'path';
-import { plural, showError } from '../../Tools/helpers';
+import { showError } from '../../Tools/helpers';
 
 type TPeriod = '1HR' | '2HR' | '4HR' | '8HR' | '12HR' | '24HR';
 const periods = new Map(<[TPeriod, number][]>[
@@ -67,7 +67,7 @@ export async function HoursToWeek() {
 		editBuilder.replace(range, newText);
 	});
 
-	window.showInformationMessage(`${plural('flightplan line', numConversions)} converted`);
+	window.showInformationMessage(`${'flightplan line'.plural(numConversions)} converted`);
 }
 
 function parseFlightplanLine(line: string, period: TPeriod) {
@@ -93,6 +93,7 @@ function parseFlightplanLine(line: string, period: TPeriod) {
 	 */
 	for (let index = 0; index < perDay; index++) {
 		for (const leg of legs) {
+			// eslint-disable-next-line @typescript-eslint/no-unused-vars
 			const [input, dep, depHour, depMin, atOrTng, arr, arrHour, arrMin, rest] = leg;
 
 			const newDepHour = (Number(depHour) + repeatPeriod * index) % 24;
@@ -125,6 +126,7 @@ function parseFlightplanLine(line: string, period: TPeriod) {
 	 */
 	for (let day = 0; day < 7; day++) {
 		for (const leg of dayLegs) {
+			// eslint-disable-next-line @typescript-eslint/no-unused-vars
 			const [input, dep, depHour, depMin, atOrTng, arr, arrHour, arrMin, rest] = leg;
 
 			const depTimeNorm = Number(depHour) + Number(depMin) / 60;

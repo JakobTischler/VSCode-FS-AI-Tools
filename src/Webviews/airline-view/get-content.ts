@@ -6,7 +6,7 @@ import { Flightplan } from '../../Content/Flightplan/Flightplan';
 import { Routemap } from '../../Content/Route/RouteMap';
 import { TAircraftTypesByTypeCode } from '../../Content/Aircraft/AircraftType';
 import { TAircraftLiveriesByAcNum } from '../../Content/Aircraft/AircraftLivery';
-import { createNonce, plural } from '../../Tools/helpers';
+import { createNonce } from '../../Tools/helpers';
 
 export async function getWebviewContent(
 	panel: vscode.WebviewPanel,
@@ -302,7 +302,7 @@ function getRoutesContent(flightplan: Flightplan) {
 
 	let content = `<div class="grid-item">
 	<h2>
-		<span>${segments.size.toLocaleString()} ${plural('segment', segments.size, {
+		<span>${segments.size.toLocaleString()} ${'segment'.plural(segments.size, {
 		includeNumber: false,
 	})}</span> <span class="secondary">(${flights.length.toLocaleString()} legs)</span>`;
 
