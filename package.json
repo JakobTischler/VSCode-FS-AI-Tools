@@ -38,6 +38,7 @@
 		"onCommand:fsAiTools.renumberSceneryCfg",
 		"onCommand:fsAiTools.replaceAircraft",
 		"onCommand:fsAiTools.showAircraftList",
+		"onCommand:fsAiTools.sortByWingspan",
 		"onCommand:fsAiTools.switchFS9FSX",
 		"onView:fsAiTools.aircraftCfgCommandsView",
 		"onView:fsAiTools.flightplansCommandsView",
@@ -197,6 +198,11 @@
 				"category": "FS AI Tools"
 			},
 			{
+				"command": "fsAiTools.sortByWingspan",
+				"title": "Sort by wingspan",
+				"category": "FS AI Tools"
+			},
+			{
 				"command": "fsAiTools.switchFS9FSX",
 				"title": "Switch FS9 ⟷ FSX",
 				"category": "FS AI Tools"
@@ -292,6 +298,10 @@
 					"when": "resourceFilename =~ /^((flightplans)|(aircraft)).*txt$/i"
 				},
 				{
+					"command": "fsAiTools.sortByWingspan",
+					"when": "resourceFilename =~ /^((flightplans)|(aircraft)).*txt$/i"
+				},
+				{
 					"command": "fsAiTools.switchFS9FSX",
 					"when": "editorHasSelection && resourceFilename =~ /^flightplans.*txt$/i"
 				}
@@ -351,6 +361,10 @@
 					"command": "fsAiTools.deleteAircraftFromAircraftCfg",
 					"group": "FS AI Tools",
 					"when": "resourceFilename =~ /^aircraft.cfg$/i && editorHasSelection"
+				},
+				{
+					"command": "fsAiTools.flightplanMetadata",
+					"when": "config.fs-ai-tools.isDev && resourceFilename =~ /^flightplans.*txt$/i"
 				},
 				{
 					"command": "fsAiTools.generateAirports",

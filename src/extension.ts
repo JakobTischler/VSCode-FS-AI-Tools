@@ -22,6 +22,7 @@ import { RenumberAddOnsCfg } from './Commands/add-ons-cfg/renumber';
 import { RenumberSceneryCfg } from './Commands/scenery-cfg/renumber';
 import { ReplaceAircraftInTargetFp } from './Commands/flightplan/replace-acs';
 import { ShowAircraftList } from './Commands/flightplan/show-aircraft-list';
+import { SortByWingspan } from './Commands/flightplan/sort-by-wingspan';
 import { SwitchFS9FSX } from './Commands/flightplan/switch-fs9-fsx';
 import { LocalStorageService } from './Tools/LocalStorageService';
 import { FlightplansCommandsViewProvider } from './Webviews/sidebar-view/flightplans-commands-provider';
@@ -120,6 +121,10 @@ export function activate(context: vscode.ExtensionContext) {
 
 		vscode.commands.registerCommand('fsAiTools.showAircraftList', () => {
 			ShowAircraftList();
+		}),
+
+		vscode.commands.registerCommand('fsAiTools.sortByWingspan', () => {
+			SortByWingspan();
 		}),
 
 		vscode.commands.registerCommand('fsAiTools.switchFS9FSX', () => {

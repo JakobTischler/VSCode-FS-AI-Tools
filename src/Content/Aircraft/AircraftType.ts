@@ -20,6 +20,8 @@ export class AircraftType {
 	typeName?: string;
 	/** The type's optional series */
 	series?: string;
+	/** The type's wingspan in ft */
+	wingspan = 50;
 	/**
 	 * A tuple containing the hex color that's used when displaying this
 	 * aircraftType's routes on the routemap, along with its corresponding font
