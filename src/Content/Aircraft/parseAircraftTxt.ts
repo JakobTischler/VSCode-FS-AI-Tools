@@ -8,6 +8,13 @@ import { TFlightplanFilesMetaData } from '../../Types/FlightplanFilesMetaData';
 import { AircraftLivery, TAircraftLiveriesByAcNum } from './AircraftLivery';
 import { AircraftType, TAircraftTypesByTypeCode } from './AircraftType';
 
+export type TParsedAircraftTxtData = {
+	aircraftLiveries: TAircraftLiveriesByAcNum;
+	aircraftTypes: TAircraftTypesByTypeCode;
+	totalAircraftCount: number;
+	nonMatches: string[];
+};
+
 /**
  * Collects each AC# entry in an aircraft.txt file, and matches it to an
  * aircraft type. Additionally, counts the number of aircraft using this AC# in
@@ -30,7 +37,10 @@ import { AircraftType, TAircraftTypesByTypeCode } from './AircraftType';
  * entry
  *
  */
-export async function parseAircraftTxt(data: TFlightplanFilesMetaData, doAircraftCount = false) {
+export async function parseAircraftTxt(
+	data: TFlightplanFilesMetaData,
+	doAircraftCount = false
+): Promise<TParsedAircraftTxtData | undefined> {
 	if (!data.aircraft.text) {
 		showError(`parseAircraftTxt(): aircraft.txt contents must included in data argument.`);
 		throw new Error(`parseAircraftTxt(): aircraft.txt contents must included in data argument.`);
@@ -192,7 +202,7 @@ export function matchTitleToType(data: typeof aircraftNaming, aircraftLiveries: 
 		totalAircraftCount += aircraftLivery.count;
 	};
 
-	titlesLoop: for (const [acNum, livery] of aircraftLiveries.entries()) {
+	titlesLoop: for (const livery of aircraftLiveries.values()) {
 		const title = livery.title.toLowerCase();
 
 		// First check previous successful search terms to find a quick match

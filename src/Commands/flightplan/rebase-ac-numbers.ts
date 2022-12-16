@@ -1,11 +1,11 @@
 import { window, workspace, Range } from 'vscode';
-import { getFilenameFromPath, showError } from '../../Tools/helpers';
+import { getFilename, showError } from '../../Tools/helpers';
 
 export async function RebaseAircraftNumbers() {
 	const editor = window.activeTextEditor;
 	if (editor) {
 		const document = editor.document;
-		const filename = getFilenameFromPath(document.uri.path).toLocaleLowerCase();
+		const filename = getFilename(document.uri.path).toLocaleLowerCase();
 		const isAircraftTxt = filename.startsWith('aircraft');
 		const isFlightplansTxt = filename.startsWith('flightplans');
 		if (!('file' === document.uri.scheme && (isAircraftTxt || isFlightplansTxt))) {

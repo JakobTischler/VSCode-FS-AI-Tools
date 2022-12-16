@@ -1,11 +1,11 @@
 import { window } from 'vscode';
-import { getFilenameFromPath } from '../../Tools/helpers';
+import { getFilename } from '../../Tools/helpers';
 
 export async function ChangeAircraftNumber() {
 	const editor = window.activeTextEditor;
 	if (editor) {
 		const document = editor.document;
-		const filename = getFilenameFromPath(document.uri.path).toLocaleLowerCase();
+		const filename = getFilename(document.uri.path).toLocaleLowerCase();
 		if ('file' === document.uri.scheme && (filename.startsWith('aircraft') || filename.startsWith('flightplans'))) {
 			const change = await getChangeInput();
 			if (change) {

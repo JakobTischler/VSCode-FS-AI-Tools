@@ -1,5 +1,5 @@
 import { window, Position } from 'vscode';
-import { getFilenameFromPath } from '../../Tools/helpers';
+import { getFilename } from '../../Tools/helpers';
 
 export async function CreateFlightplanHeader() {
 	console.log('CreateFlightplanHeader()');
@@ -7,7 +7,7 @@ export async function CreateFlightplanHeader() {
 	const editor = window.activeTextEditor;
 	if (editor) {
 		const document = editor.document;
-		const filename = getFilenameFromPath(document.uri.path);
+		const filename = getFilename(document.uri.path);
 		if ('file' === document.uri.scheme && filename.toLocaleLowerCase().startsWith('flightplans')) {
 			const filenameTest = filename.split('_');
 			let proposedIcao = 'ICAO';

@@ -1,16 +1,30 @@
-import { env, window } from 'vscode';
+import { env, window, TextEditor, TextDocument, Uri } from 'vscode';
 import * as Fs from 'fs';
 import * as Path from 'path';
 import { IFileMetaData, TFlightplanFilesMetaData } from '../Types/FlightplanFilesMetaData';
 
 /**
  * Get the filename from a path
- * @param {string} path - The path to the file.
- * @returns The filename without the path.
+ * @param {TextEditor | TextDocument | Uri | string} input - The item to check.
+ * Can be a `vscode.TextEditor`, a `vscode.TextDocument`, a `vscode.Uri` or a `string`.
+ * @returns The filename, including the extension, without the path.
  */
-export function getFilenameFromPath(path: string): string {
-	return path.replace(/^.*[\\\/]/, '');
+export function getFilename(input: TextEditor): string;
+export function getFilename(input: TextDocument): string;
+export function getFilename(input: Uri): string;
+export function getFilename(input: string): string;
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
+export function getFilename(input: any): string {
+	// return path.replace(/^.*[\\\/]/, '');
+
+	if (isTextEditor(input)) return Path.basename(input.document.uri.path);
+	if (isTextDocument(input)) return Path.basename(input.uri.path);
+	if (isUri(input)) return Path.basename(input.path);
+	return Path.basename(input);
 }
+const isTextEditor = (test: TextEditor): test is TextEditor => test.document != undefined;
+const isTextDocument = (test: TextDocument): test is TextDocument => test.uri != undefined;
+const isUri = (test: Uri): test is Uri => test.path != undefined;
 
 /**
  * Move an item in an array from one index to another

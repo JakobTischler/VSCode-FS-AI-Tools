@@ -1,5 +1,5 @@
 import { window } from 'vscode';
-import { getFilenameFromPath, showError } from '../../Tools/helpers';
+import { getFilename, showError } from '../../Tools/helpers';
 import { getDropdownSelection } from '../../Tools/input';
 
 export async function SwitchFS9FSX() {
@@ -13,7 +13,7 @@ export async function SwitchFS9FSX() {
 		return;
 	}
 
-	const filename = getFilenameFromPath(document.uri.path).toLocaleLowerCase();
+	const filename = getFilename(document.uri.path).toLocaleLowerCase();
 	if (!filename.startsWith('flightplans')) {
 		return;
 	}

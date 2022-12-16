@@ -12,6 +12,7 @@ import { CreateFlightplanHeaderFromAifp } from './Commands/flightplan/create-hea
 import { DeleteAircraft } from './Commands/aircraft/delete-aircraft';
 import { DeleteAircraftFromAircraftCfg } from './Commands/aircraft-cfg/delete-aircraft';
 import { GenerateAirports } from './Commands/flightplan/generate-airports';
+import { GroupByAircraftType } from './Commands/flightplan/group-by-acType';
 import { HoursToWeek } from './Commands/flightplan/hours-to-week';
 import { MatchAcNumbers } from './Commands/flightplan/match-ac-numbers';
 import { OpenMasterAirportsFile } from './Commands/open-master-airports-file';
@@ -84,6 +85,10 @@ export function activate(context: vscode.ExtensionContext) {
 
 		vscode.commands.registerCommand('fsAiTools.generateAirports', () => {
 			GenerateAirports(storageManager);
+		}),
+
+		vscode.commands.registerCommand('fsAiTools.groupByAircraftType', () => {
+			GroupByAircraftType();
 		}),
 
 		vscode.commands.registerCommand('fsAiTools.hoursToWeek', () => {

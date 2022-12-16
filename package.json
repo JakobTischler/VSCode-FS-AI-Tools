@@ -29,6 +29,7 @@
 		"onCommand:fsAiTools.deleteAircraftFromAircraftCfg",
 		"onCommand:fsAiTools.flightplanMetadata",
 		"onCommand:fsAiTools.generateAirports",
+		"onCommand:fsAiTools.groupByAircraftType",
 		"onCommand:fsAiTools.hoursToWeek",
 		"onCommand:fsAiTools.matchAcNumbers",
 		"onCommand:fsAiTools.openMasterAirportsFile",
@@ -152,6 +153,11 @@
 				"category": "FS AI Tools"
 			},
 			{
+				"command": "fsAiTools.groupByAircraftType",
+				"title": "Group by Aircraft Type",
+				"category": "FS AI Tools"
+			},
+			{
 				"command": "fsAiTools.hoursToWeek",
 				"title": "Convert to weekly flightplan",
 				"category": "FS AI Tools"
@@ -255,6 +261,10 @@
 				{
 					"command": "fsAiTools.generateAirports",
 					"when": "resourceFilename =~ /^flightplans.*txt$/i"
+				},
+				{
+					"command": "fsAiTools.groupByAircraftType",
+					"when": "resourceFilename =~ /^((flightplans)|(aircraft)).*txt$/i"
 				},
 				{
 					"command": "fsAiTools.hoursToWeek",
@@ -989,15 +999,15 @@
 		"@types/mocha": "^10.0.0",
 		"@types/node": "^18.11.9",
 		"@types/vscode": "^1.73.1",
-		"@typescript-eslint/eslint-plugin": "^5.44.0",
+		"@typescript-eslint/eslint-plugin": "^5.46.1",
 		"@vscode/test-electron": "^2.2.0",
-		"esbuild": "^0.15.15",
-		"eslint": "^8.28.0",
+		"esbuild": "^0.16.7",
+		"eslint": "^8.29.0",
 		"eslint-plugin-header": "^3.1.1",
-		"mocha": "^10.1.0",
+		"mocha": "^10.2.0",
 		"rimraf": "^3.0.2",
 		"typescript": "^4.9.3",
-		"vsce": "^2.14.0"
+		"vsce": "^2.15.0"
 	},
 	"dependencies": {
 		"axios": "^1.1.3",
