@@ -1,5 +1,6 @@
 import { window, workspace, Range } from 'vscode';
 import { getFilename, showError } from '../../Tools/helpers';
+import { getNumberInput } from '../../Tools/input';
 
 export async function RebaseAircraftNumbers() {
 	const editor = window.activeTextEditor;
@@ -112,33 +113,4 @@ export async function RebaseAircraftNumbers() {
 		});
 		window.showInformationMessage(`Selected AC#s rebased to ${start}`);
 	}
-}
-
-async function getNumberInput(value = '1', placeholderText: string) {
-	const result = await window.showInputBox({
-		value: value,
-		valueSelection: undefined,
-		placeHolder: placeholderText,
-		prompt: placeholderText,
-		validateInput: (text) => {
-			// window.showInformationMessage(`Validating "${text}"`);
-			if (text.length === 0) {
-				return 'Anything? Anything at all?!';
-			}
-			if (text === '0') {
-				return 'Maybe a little more?';
-			}
-			if (isNaN(Number(text))) {
-				return "This isn't a number";
-			}
-			if (Number(text) <= 0) {
-				return 'Must be greater than zero';
-			}
-			if (text.search(/\./) >= 0) {
-				return 'Number must not have decimals';
-			}
-			return null;
-		},
-	});
-	return Number(result);
 }

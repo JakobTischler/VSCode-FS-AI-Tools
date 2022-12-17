@@ -368,6 +368,11 @@
 					"when": "config.fs-ai-tools.generateAirports._showInContextMenu && resourceFilename =~ /^flightplans.*txt$/i"
 				},
 				{
+					"command": "fsAiTools.groupByAircraftType",
+					"group": "FS AI Tools",
+					"when": "config.fs-ai-tools.groupByAircraftType._ShowInContextMenu && resourceFilename =~ /^((flightplans)|(aircraft)).*txt$/i"
+				},
+				{
 					"command": "fsAiTools.matchAcNumbers",
 					"group": "FS AI Tools",
 					"when": "config.fs-ai-tools.matchAcNumbers._showInContextMenu && resourceFilename =~ /^flightplans.*txt$/i"
@@ -873,7 +878,7 @@
 				"type": "object",
 				"title": "Count Aircraft",
 				"properties": {
-					"fs-ai-tools.countAircraft.showInContextMenu": {
+					"fs-ai-tools.countAircraft._ShowInContextMenu": {
 						"type": "boolean",
 						"default": true,
 						"title": "Add to Context Menu",
@@ -918,6 +923,39 @@
 						"default": true,
 						"title": "Add to Context Menu",
 						"markdownDescription": "Adds the \"Create Flightplan Header from aifp.cfg\" command to the context menu when a `Flightplan….txt` file is open.",
+						"scope": "window"
+					}
+				}
+			},
+			{
+				"type": "object",
+				"title": "Group by Aircraft Type",
+				"properties": {
+					"fs-ai-tools.groupByAircraftType._ShowInContextMenu": {
+						"type": "boolean",
+						"default": true,
+						"title": "Add to Context Menu",
+						"markdownDescription": "Adds the \"Group by Aircraft Type\" command to the context menu when a `Aircraft….txt` or `Flightplan….txt` file is open.",
+						"scope": "window"
+					},
+					"fs-ai-tools.groupByAircraftType.emptyLinesBetweenGroupsAircraftTxt": {
+						"type": "integer",
+						"default": 1,
+						"minimum": 1,
+						"markdownDescription": "Number of empty lines to create between aircraft type groups in the `Aircraft….txt` file.",
+						"scope": "window"
+					},
+					"fs-ai-tools.groupByAircraftType.emptyLinesBetweenGroupsFlightplansTxt": {
+						"type": "integer",
+						"default": 2,
+						"minimum": 1,
+						"markdownDescription": "Number of empty lines to create between aircraft type groups in the `Flightplans….txt` file.",
+						"scope": "window"
+					},
+					"fs-ai-tools.groupByAircraftType.sortByWingspan": {
+						"type": "boolean",
+						"default": true,
+						"markdownDescription": "If active, the aircraft groups are sorted by their respective wingspans in descending order. The wingspan values can be defined in the custom aircraft data JSON file (*`#fs-ai-tools.showAircraftList.customDataFilePath#`*).",
 						"scope": "window"
 					}
 				}

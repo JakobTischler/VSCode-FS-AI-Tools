@@ -56,3 +56,32 @@ export async function getTextInput(placeholderText: string, prompt?: string, val
 		ignoreFocusOut: true,
 	});
 }
+
+export async function getNumberInput(value = '1', placeholderText: string) {
+	const result = await window.showInputBox({
+		value: value,
+		valueSelection: undefined,
+		placeHolder: placeholderText,
+		prompt: placeholderText,
+		validateInput: (text) => {
+			// window.showInformationMessage(`Validating "${text}"`);
+			if (text.length === 0) {
+				return 'Anything? Anything at all?!';
+			}
+			if (text === '0') {
+				return 'Maybe a little more?';
+			}
+			if (isNaN(Number(text))) {
+				return "This isn't a number";
+			}
+			if (Number(text) <= 0) {
+				return 'Must be greater than zero';
+			}
+			if (text.search(/\./) >= 0) {
+				return 'Number must not have decimals';
+			}
+			return null;
+		},
+	});
+	return Number(result);
+}

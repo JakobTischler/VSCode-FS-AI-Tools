@@ -10,6 +10,7 @@ import {
 } from '../../Tools/helpers';
 import { parseAircraftTxt, TParsedAircraftTxtData } from '../../Content/Aircraft/parseAircraftTxt';
 import { AircraftType } from '../../Content/Aircraft/AircraftType';
+import { getNumberInput } from '../../Tools/input';
 
 type TAcTypeGroup = [AircraftType, string[]];
 
@@ -17,9 +18,9 @@ export async function GroupByAircraftType() {
 	/*
 	 * 1. [x] Parse aircraft.txt to get aircraftTypes map
 	 * 2. if file === aircraft.txt:
-	 *    [ ] a. go through each line, check acType with previous line's acType
-	 *    [ ] b. if same: no empty line, else empty line [TODO num empty lines from config]
-	 *    [ ] c. [STRETCH GOAL] optionally sort by radius (create new config setting)
+	 *    [x] a. go through each line, check acType with previous line's acType
+	 *    [x] b. if same: no empty line, else empty line [TODO num empty lines from config]
+	 *    [x] c. [STRETCH GOAL] optionally sort by radius (create new config setting)
 	 * 3. if file === flightplans.txt:
 	 *    [ ] a. create arrays of AC#s (should already be done in (1.)?)
 	 *    [ ] b. for each group, use ac title as header
@@ -41,7 +42,7 @@ export async function GroupByAircraftType() {
 	const fileData = await getFlightplanFiles(dirPath, true);
 	if (!fileData.aircraft || !fileData.flightplans) {
 		const name = fileData.aircraft ? 'Flightplans' : 'Aircraft';
-		showError(`${name}….txt file couldn't be found in current directory.`);
+		showError(`${name}….txt file couldn't be found in current directory.`, true);
 		return;
 	}
 
@@ -55,7 +56,7 @@ export async function GroupByAircraftType() {
 	const filename = getFilename(editor).toLowerCase();
 	let newFileContents = '';
 	if (filename.startsWith('aircraft')) {
-		const { output } = groupAircraftTxt(editor.document.getText(), aircraftData);
+		const { output } = await groupAircraftTxt(editor.document.getText(), aircraftData);
 
 		newFileContents = output;
 	} else {
@@ -70,10 +71,15 @@ export async function GroupByAircraftType() {
 	}
 }
 
-function groupAircraftTxt(
+async function groupAircraftTxt(
 	fileContents: string,
 	aircraftData: TParsedAircraftTxtData
-): { headerLines: string[]; aircraftGroups: TAcTypeGroup[]; aircraftGroupsSorted: TAcTypeGroup[]; output: string } {
+): Promise<{
+	headerLines: string[];
+	aircraftGroups: TAcTypeGroup[];
+	aircraftGroupsSorted: TAcTypeGroup[];
+	output: string;
+}> {
 	const lines = fileContents.split('\n');
 
 	/*
@@ -132,32 +138,35 @@ function groupAircraftTxt(
 	 * TODO only if configured
 	 */
 	const config = vscode.workspace.getConfiguration('fs-ai-tools', undefined);
+	const sort = config.get('groupByAircraftType.sortByWingspan');
 
-	const aircraftGroupsSorted = [...aircraftGroups].sort((a: TAcTypeGroup, b: TAcTypeGroup) =>
-		Math.sign(b[0].wingspan! - a[0].wingspan!)
-	);
+	let groups = [...aircraftGroups];
+	if (sort) {
+		groups = groups.sort((a: TAcTypeGroup, b: TAcTypeGroup) => Math.sign(b[0].wingspan! - a[0].wingspan!));
+	}
 
 	/*
 	 * ————————————————————————————————————————————————————————————
 	 * Create text output
 	 */
 
-	// "fs-ai-tools.rebaseAircraftNumbers.emptyLinesBetweenGroupsAircraftTxt"
-
 	/** Only aircraft lines; empty lines removed */
-	const cleanedGroups = aircraftGroupsSorted
+	const cleanedGroups = groups
 		.map((group) => {
 			return group[1].filter((line) => line.trim().length).join('\n');
 		})
 		.flat(3);
 
-	let output = headerLines.length ? headerLines.join('\n') + '\n' : '';
-	output += cleanedGroups.join(
-		'\n' + '\n'.repeat(config.get('rebaseAircraftNumbers.emptyLinesBetweenGroupsAircraftTxt') || 1)
+	const numEmptyLines = await getNumberInput(
+		config.get('groupByAircraftType.emptyLinesBetweenGroupsAircraftTxt') || '1',
+		'Empty lines between groups'
 	);
-	console.log({ headerLines, aircraftGroups, aircraftGroupsSorted, output });
 
-	return { headerLines, aircraftGroups, aircraftGroupsSorted, output };
+	let output = headerLines.length ? headerLines.join('\n') + '\n' : '';
+	output += cleanedGroups.join('\n' + '\n'.repeat(numEmptyLines));
+	console.log({ headerLines, aircraftGroups, aircraftGroupsSorted: groups, output });
+
+	return { headerLines, aircraftGroups, aircraftGroupsSorted: groups, output };
 }
 
 function getAircraftTypeFromLine(
