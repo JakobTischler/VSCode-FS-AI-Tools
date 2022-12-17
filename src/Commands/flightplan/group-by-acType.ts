@@ -1,9 +1,11 @@
 import * as vscode from 'vscode';
 import * as path from 'path';
 
-import { getFilename, getFlightplanFiles, showError } from '../../Tools/helpers';
-import { parseAircraftTxt, TParsedAircraftTxtData } from '../../Content/Aircraft/parseAircraftTxt';
+import { getAircraftNumFromLine, getFilename, getFlightplanFiles, showError } from '../../Tools/helpers';
+import { getAircraftLiveries, parseAircraftTxt, TParsedAircraftTxtData } from '../../Content/Aircraft/parseAircraftTxt';
 import { AircraftType } from '../../Content/Aircraft/AircraftType';
+
+type TAcTypeGroup = [AircraftType, string[]];
 
 export async function GroupByAircraftType() {
 	/*
@@ -37,7 +39,7 @@ export async function GroupByAircraftType() {
 		return;
 	}
 
-	const aircraftData: TParsedAircraftTxtData | undefined = await parseAircraftTxt(fileData, true);
+	const aircraftData: TParsedAircraftTxtData | undefined = await parseAircraftTxt(fileData, true, true, true);
 	if (!aircraftData) return;
 
 	/*
@@ -45,19 +47,103 @@ export async function GroupByAircraftType() {
 	 */
 
 	const filename = getFilename(editor).toLowerCase();
-	let groupedText: string;
 	if (filename.startsWith('aircraft')) {
-		groupedText = groupAircraftTxt(editor.document.getText(), aircraftData);
+		const { headerLines, aircraftGroups, aircraftGroupsSorted, output } = groupAircraftTxt(
+			editor.document.getText(),
+			aircraftData
+		);
 	} else {
 	}
 }
 
-function groupAircraftTxt(fileContents: string, aircraftData: TParsedAircraftTxtData) {
-	const sortedAcTypes = [...aircraftData.aircraftTypes.values()].sort((a: AircraftType, b: AircraftType) => {
-		return a.wingspan - b.wingspan;
-	});
+function groupAircraftTxt(
+	fileContents: string,
+	aircraftData: TParsedAircraftTxtData
+): { headerLines: string[]; aircraftGroups: TAcTypeGroup[]; aircraftGroupsSorted: TAcTypeGroup[]; output: string } {
+	/* const sortedAcTypes = [...aircraftData.aircraftTypes.values()].sort((a: AircraftType, b: AircraftType) => {
+		return b.wingspan - a.wingspan;
+	}); */
 
-	// TODO
+	const lines = fileContents.split('\n');
 
-	return fileContents;
+	/*
+	 * ————————————————————————————————————————————————————————————
+	 * Create header group and aircraft groups
+	 */
+
+	const headerLines: string[] = [];
+	const aircraftGroups: TAcTypeGroup[] = [];
+	let currentGroupLines: string[] = [];
+	let currentAircraftType: AircraftType | undefined;
+
+	for (const [index, line] of lines.entries()) {
+		const acNum = getAircraftNumFromLine(line);
+		if (acNum) {
+			let acType;
+			if (Number.isInteger(acNum)) {
+				acType = aircraftData.aircraftLiveries.get(<number>acNum)?.aircraftType;
+			} else {
+				acType = getAircraftTypeFromLine(line);
+			}
+
+			if (!acType) {
+				console.error(`No aircraftType could be matched to "${line}"`);
+				continue;
+			}
+
+			// New aircraftType
+			if (acType !== currentAircraftType) {
+				// If we already have a currentAircraftType, store to groups array
+				if (currentAircraftType) {
+					aircraftGroups.push([currentAircraftType, currentGroupLines]);
+					currentGroupLines = [];
+				}
+
+				currentAircraftType = acType;
+			}
+
+			currentGroupLines.push(line);
+		} else if (currentAircraftType) {
+			currentGroupLines.push(line);
+		} else {
+			headerLines.push(line);
+			continue;
+		}
+
+		// Last line: store to groups array
+		if (index === lines.length - 1 && currentAircraftType) {
+			aircraftGroups.push([currentAircraftType, currentGroupLines]);
+		}
+	}
+
+	/*
+	 * ————————————————————————————————————————————————————————————
+	 * Sort groups by wingspan
+	 */
+	const aircraftGroupsSorted = [...aircraftGroups].sort((a: TAcTypeGroup, b: TAcTypeGroup) =>
+		Math.sign(b[0].wingspan! - a[0].wingspan!)
+	);
+
+	/*
+	 * ————————————————————————————————————————————————————————————
+	 * Create text output
+	 */
+	const output = [...headerLines, aircraftGroupsSorted.map((group) => group[1])].flat().join('\n');
+	console.log({ headerLines, aircraftGroups, aircraftGroupsSorted, output });
+
+	return { headerLines, aircraftGroups, aircraftGroupsSorted, output };
+}
+
+function getAircraftTypeFromLine(text: string, allowInactive = true, allowInvalidNumber = true) {
+	/* const regex = new RegExp(
+		`^(?:AC${allowInactive ? '|//)' : ')'}#(?<acNum>` +
+			(allowInvalidNumber ? '.*?)' : '\\d+?)') +
+			',\\d+,\\"(?<title>.*)\\"'
+	);
+
+	const match = text.match(regex); */
+
+	const liveries = getAircraftLiveries(text, allowInactive, allowInvalidNumber);
+	console.log({ liveries });
+	// console.log({ text, match });
 }

@@ -2,13 +2,15 @@ import { Aircraft } from './Aircraft';
 import { AircraftType } from './AircraftType';
 
 /** A map of `AircraftLivery` entries, where the key is its respective AC# */
-export type TAircraftLiveriesByAcNum = Map<number, AircraftLivery>;
+export type TAircraftLiveriesByAcNum = Map<number | string, AircraftLivery>;
 
 export class AircraftLivery {
 	/** The livery's title as used in the aircraft.txt file. */
 	title: string;
 	/** The livery's AC#. */
-	num: number;
+	num: number | string;
+	/** Defines if the AC# is a regular number. (e.g.: 123 → true, "1XX" → false) */
+	hasValidNum: boolean;
 	/** The optional manual aircraft count as used by `countAircraftSimple()`. */
 	manualCount?: number;
 	/** The list of aircraft using this livery. Filled by `parseFlightplan()`. */
@@ -16,8 +18,9 @@ export class AircraftLivery {
 	/** The aircraftType that this livery belongs to. */
 	aircraftType?: AircraftType;
 
-	constructor(num: number, title: string) {
+	constructor(num: number | string, title: string) {
 		this.num = num;
+		this.hasValidNum = Number.isInteger(Number(num));
 		this.title = title;
 		// this.acType = this.titleToAircraftType();
 

@@ -198,3 +198,30 @@ export function listStringItems(...items: string[]) {
 
 	return ret;
 }
+
+/**
+ * It takes a string and returns the number that follows the string "AC#" or
+ * "//#" (if it exists)
+ * @param {string} text - string - The text to search for the aircraft number
+ * in.
+ * @param {boolean} [includeInactive=true] - If true, the function will return the
+ * aircraft number even if the line is commented out.
+ */
+export const getAircraftNumFromLine = (text: string, includeInactive = true) => {
+	const regex = includeInactive ? /^(?:\/\/|AC)#(.*?),/i : /^AC#(.*?),/i;
+	const match = text.match(regex);
+	if (match?.[1]) {
+		const number = Number(match[1]);
+		return Number.isInteger(number) ? number : match[1];
+	}
+};
+
+/**
+ * Returns true if the text starts with `//` and there is no AC#
+ * @param {string} text - The text of the line.
+ * @param {number} [acNum] - The aircraft number of the current line.
+ * @returns `true` if the text starts with `//` and there is no AC#
+ */
+export const isHeaderLine = (text: string, acNum?: number) => {
+	return !acNum && text.startsWith('//');
+};

@@ -19,11 +19,16 @@ export type TParsedAircraftTxtData = {
  * Collects each AC# entry in an aircraft.txt file, and matches it to an
  * aircraft type. Additionally, counts the number of aircraft using this AC# in
  * the corresponding flightplans.txt file.
- * @param data The flightplans meta data, which must include the files' contents
- * in their respective `text` variables.
- * @param doAircraftCount If `true`, performs a quick count of each
+ * @param data - The flightplans meta data, which must include the files'
+ * contents in their respective `text` variables.
+ * @param doAircraftCount - If `true`, performs a quick count of each
  * `AircraftLivery`'s AC# and saves it to its `manualCount` value. Defaults to
  * `false`
+ * @param includeInactive - If `true`, aircraft whose line is disabled
+ * ("//#1234") are also included, otherwise they're skipped. Defaults to `false`
+ * @param includeInvalidAcNums - If `true`, aircraft whose AC# is not a pure
+ * number (e.g. includes letters) are also included, otherwise they're skipped.
+ * Defaults to `false`
  * @returns
  * • `aircraftTypes` = Map of type `TAircraftTypes` by ICAO type name. Each
  * entry has a set of `AircraftLivery` entries, as well as total count of
@@ -40,7 +45,9 @@ export type TParsedAircraftTxtData = {
  */
 export async function parseAircraftTxt(
 	data: TFlightplanFilesMetaData,
-	doAircraftCount = false
+	doAircraftCount = false,
+	includeInactive = false,
+	includeInvalidAcNums = false
 ): Promise<TParsedAircraftTxtData | undefined> {
 	if (!data.aircraft.text) {
 		showError(`parseAircraftTxt(): aircraft.txt contents must included in data argument.`);
@@ -56,7 +63,7 @@ export async function parseAircraftTxt(
 	}
 
 	// 1. Get aircraft list from aircraft.txt file
-	const liveries = getAircraftLiveries(data.aircraft.text);
+	const liveries = getAircraftLiveries(data.aircraft.text, includeInactive, includeInvalidAcNums);
 	if (liveries.size === 0) {
 		showError(`No aircraft found in "${data.aircraft.fileName}"`);
 		return;
@@ -71,7 +78,7 @@ export async function parseAircraftTxt(
 	const aircraftTypeMetaData = await getAircraftTypeMetaData();
 
 	// 4. Match titles to types
-	const matchedData = matchTitleToType(aircraftTypeMetaData, liveries);
+	const matchedData = matchAircraftLiveriesToAircraftType(aircraftTypeMetaData, liveries);
 
 	return { ...matchedData, aircraftLiveries: liveries };
 }
@@ -82,15 +89,21 @@ export async function parseAircraftTxt(
  * @param text Aircraft.txt file contents
  * @returns A `TAircraftLiveriesByAcNum` map by AC#
  */
-function getAircraftLiveries(text: string) {
+export function getAircraftLiveries(text: string, allowInactive = false, allowInvalidNumber = false) {
 	const ret: TAircraftLiveriesByAcNum = new Map();
 
-	const matches = text.matchAll(/^AC#(?<acNum>\d+),\d+,\"(?<title>.*)\"/gm);
+	let regex = allowInactive ? `^(?:AC|//)#` : `^AC#`;
+	regex += allowInvalidNumber ? '(?<acNum>.+)' : '(?<acNum>\\d+)';
+	regex += `,\\d+,"(?<title>.*)"`;
+
+	const matches = text.matchAll(new RegExp(regex, 'gm'));
 	if (matches) {
 		for (const match of [...matches]) {
 			const { acNum, title } = match.groups!;
+			const number = Number(acNum);
+			const n = Number.isInteger(number) ? number : acNum;
 
-			ret.set(Number(acNum), new AircraftLivery(Number(acNum), title));
+			ret.set(n, new AircraftLivery(n, title));
 		}
 	}
 
@@ -165,7 +178,10 @@ async function getAircraftTypeMetaData() {
  * • `nonMatches` = array of aircraft titles that couldn't
  * be matched
  */
-export function matchTitleToType(data: typeof aircraftData, aircraftLiveries: TAircraftLiveriesByAcNum) {
+export function matchAircraftLiveriesToAircraftType(
+	data: typeof aircraftData,
+	aircraftLiveries: TAircraftLiveriesByAcNum
+): { aircraftTypes: TAircraftTypesByTypeCode; totalAircraftCount: number; nonMatches: string[] } {
 	const matches = new Map();
 	const aircraftTypes: TAircraftTypesByTypeCode = new Map();
 	let totalAircraftCount = 0;
