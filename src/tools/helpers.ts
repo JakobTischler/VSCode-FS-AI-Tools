@@ -1,4 +1,4 @@
-import { env, window, TextEditor, TextDocument, Uri } from 'vscode';
+import { env, Range, TextEditor, TextDocument, Uri, window } from 'vscode';
 import * as Fs from 'fs';
 import * as Path from 'path';
 import { IFileMetaData, TFlightplanFilesMetaData } from '../Types/FlightplanFilesMetaData';
@@ -225,3 +225,21 @@ export const getAircraftNumFromLine = (text: string, includeInactive = true) => 
 export const isHeaderLine = (text: string, acNum?: number) => {
 	return !acNum && text.startsWith('//');
 };
+
+/**
+ * Replaces the contents of the provided document with the contents of the
+ * string passed in.
+ * @param {TextEditor} editor - The editor object that you want to replace the
+ * contents of.
+ * @param {string} contents - The contents of the file to replace the current
+ * contents with.
+ */
+export function replaceDocumentContents(editor: TextEditor, contents: string) {
+	editor.edit((editBuilder) => {
+		const firstLine = editor.document.lineAt(0);
+		const lastLine = editor.document.lineAt(editor.document.lineCount - 1);
+		const range = new Range(firstLine.range.start, lastLine.range.end);
+
+		editBuilder.replace(range, contents);
+	});
+}

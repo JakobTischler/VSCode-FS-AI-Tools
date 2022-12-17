@@ -10,6 +10,7 @@ import { AircraftType, TAircraftTypesByTypeCode } from './AircraftType';
 
 export type TParsedAircraftTxtData = {
 	aircraftLiveries: TAircraftLiveriesByAcNum;
+	inactiveAircraftLiveries: Set<AircraftLivery>;
 	aircraftTypes: TAircraftTypesByTypeCode;
 	totalAircraftCount: number;
 	nonMatches: string[];
@@ -63,11 +64,16 @@ export async function parseAircraftTxt(
 	}
 
 	// 1. Get aircraft list from aircraft.txt file
-	const liveries = getAircraftLiveries(data.aircraft.text, includeInactive, includeInvalidAcNums);
+	const { active: liveries, inactive: inactiveLiveries } = getAircraftLiveries(
+		data.aircraft.text,
+		includeInactive,
+		includeInvalidAcNums
+	);
 	if (liveries.size === 0) {
-		showError(`No aircraft found in "${data.aircraft.fileName}"`);
+		showError(`No active aircraft found in "${data.aircraft.fileName}"`);
 		return;
 	}
+	const allLiveries = [...liveries.values(), ...inactiveLiveries];
 
 	// 2. Count aircraft in flightplans.txt file
 	if (doAircraftCount && data.flightplans.text) {
@@ -78,9 +84,9 @@ export async function parseAircraftTxt(
 	const aircraftTypeMetaData = await getAircraftTypeMetaData();
 
 	// 4. Match titles to types
-	const matchedData = matchAircraftLiveriesToAircraftType(aircraftTypeMetaData, liveries);
+	const matchedData = matchAircraftLiveriesToAircraftType(aircraftTypeMetaData, allLiveries);
 
-	return { ...matchedData, aircraftLiveries: liveries };
+	return { ...matchedData, aircraftLiveries: liveries, inactiveAircraftLiveries: inactiveLiveries };
 }
 
 /**
@@ -90,20 +96,27 @@ export async function parseAircraftTxt(
  * @returns A `TAircraftLiveriesByAcNum` map by AC#
  */
 export function getAircraftLiveries(text: string, allowInactive = false, allowInvalidNumber = false) {
-	const ret: TAircraftLiveriesByAcNum = new Map();
+	const ret = {
+		active: new Map() as TAircraftLiveriesByAcNum,
+		inactive: new Set<AircraftLivery>(),
+	};
 
-	let regex = allowInactive ? `^(?:AC|//)#` : `^AC#`;
+	let regex = allowInactive ? `^(?<active>AC|//)#` : `^AC#`;
 	regex += allowInvalidNumber ? '(?<acNum>.+)' : '(?<acNum>\\d+)';
 	regex += `,\\d+,"(?<title>.*)"`;
 
 	const matches = text.matchAll(new RegExp(regex, 'gm'));
 	if (matches) {
 		for (const match of [...matches]) {
-			const { acNum, title } = match.groups!;
+			const { active, acNum, title } = match.groups!;
 			const number = Number(acNum);
 			const n = Number.isInteger(number) ? number : acNum;
 
-			ret.set(n, new AircraftLivery(n, title));
+			if (active === 'AC') {
+				ret.active.set(n, new AircraftLivery(n, title));
+			} else {
+				ret.inactive.add(new AircraftLivery(n, title));
+			}
 		}
 	}
 
@@ -180,7 +193,7 @@ async function getAircraftTypeMetaData() {
  */
 export function matchAircraftLiveriesToAircraftType(
 	data: typeof aircraftData,
-	aircraftLiveries: TAircraftLiveriesByAcNum
+	aircraftLiveries: AircraftLivery[]
 ): { aircraftTypes: TAircraftTypesByTypeCode; totalAircraftCount: number; nonMatches: string[] } {
 	const matches = new Map();
 	const aircraftTypes: TAircraftTypesByTypeCode = new Map();
@@ -227,7 +240,7 @@ export function matchAircraftLiveriesToAircraftType(
 		totalAircraftCount += aircraftLivery.count;
 	};
 
-	titlesLoop: for (const livery of aircraftLiveries.values()) {
+	titlesLoop: for (const livery of aircraftLiveries) {
 		const title = livery.title.toLowerCase();
 
 		// First check previous successful search terms to find a quick match

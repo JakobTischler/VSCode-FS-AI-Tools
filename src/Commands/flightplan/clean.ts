@@ -1,5 +1,5 @@
 import * as vscode from 'vscode';
-import { getFilename } from '../../Tools/helpers';
+import { getFilename, replaceDocumentContents } from '../../Tools/helpers';
 import '../../Extenders/number';
 
 export function CleanFlightplan() {
@@ -64,9 +64,8 @@ export function CleanFlightplan() {
 			const fp = ret.join('\n');
 
 			// Apply changes to document
-			editor.edit((editBuilder) => {
-				editBuilder.replace(new vscode.Range(0, 0, document.lineCount, 5000), fp);
-			});
+			replaceDocumentContents(editor, fp);
+
 			vscode.window.showInformationMessage('Flightplan cleaned');
 		}
 	}

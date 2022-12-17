@@ -1,5 +1,6 @@
 import * as vscode from 'vscode';
 import '../../Extenders/number';
+import { replaceDocumentContents } from '../../Tools/helpers';
 
 export async function RenumberSceneryCfg() {
 	const editor = vscode.window.activeTextEditor;
@@ -31,9 +32,8 @@ export async function RenumberSceneryCfg() {
 			text = cleanTextArray.join('\n');
 
 			// Apply changes to document
-			editor.edit((editBuilder) => {
-				editBuilder.replace(new vscode.Range(0, 0, document.lineCount, 500), text);
-			});
+			replaceDocumentContents(editor, text);
+
 			vscode.window.showInformationMessage('add-ons.cfg renumbered');
 		}
 	}

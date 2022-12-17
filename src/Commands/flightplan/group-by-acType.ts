@@ -1,8 +1,14 @@
 import * as vscode from 'vscode';
 import * as path from 'path';
 
-import { getAircraftNumFromLine, getFilename, getFlightplanFiles, showError } from '../../Tools/helpers';
-import { getAircraftLiveries, parseAircraftTxt, TParsedAircraftTxtData } from '../../Content/Aircraft/parseAircraftTxt';
+import {
+	getAircraftNumFromLine,
+	getFilename,
+	getFlightplanFiles,
+	replaceDocumentContents,
+	showError,
+} from '../../Tools/helpers';
+import { parseAircraftTxt, TParsedAircraftTxtData } from '../../Content/Aircraft/parseAircraftTxt';
 import { AircraftType } from '../../Content/Aircraft/AircraftType';
 
 type TAcTypeGroup = [AircraftType, string[]];
@@ -47,12 +53,20 @@ export async function GroupByAircraftType() {
 	 */
 
 	const filename = getFilename(editor).toLowerCase();
+	let newFileContents = '';
 	if (filename.startsWith('aircraft')) {
-		const { headerLines, aircraftGroups, aircraftGroupsSorted, output } = groupAircraftTxt(
-			editor.document.getText(),
-			aircraftData
-		);
+		const { output } = groupAircraftTxt(editor.document.getText(), aircraftData);
+
+		newFileContents = output;
 	} else {
+		// TODO flightplan
+	}
+
+	if (newFileContents?.length) {
+		// Apply changes to document
+		replaceDocumentContents(editor, newFileContents);
+
+		vscode.window.showInformationMessage('Aircraft grouped by type');
 	}
 }
 
@@ -60,10 +74,6 @@ function groupAircraftTxt(
 	fileContents: string,
 	aircraftData: TParsedAircraftTxtData
 ): { headerLines: string[]; aircraftGroups: TAcTypeGroup[]; aircraftGroupsSorted: TAcTypeGroup[]; output: string } {
-	/* const sortedAcTypes = [...aircraftData.aircraftTypes.values()].sort((a: AircraftType, b: AircraftType) => {
-		return b.wingspan - a.wingspan;
-	}); */
-
 	const lines = fileContents.split('\n');
 
 	/*
@@ -83,7 +93,7 @@ function groupAircraftTxt(
 			if (Number.isInteger(acNum)) {
 				acType = aircraftData.aircraftLiveries.get(<number>acNum)?.aircraftType;
 			} else {
-				acType = getAircraftTypeFromLine(line);
+				acType = getAircraftTypeFromLine(line, aircraftData);
 			}
 
 			if (!acType) {
@@ -119,7 +129,10 @@ function groupAircraftTxt(
 	/*
 	 * ————————————————————————————————————————————————————————————
 	 * Sort groups by wingspan
+	 * TODO only if configured
 	 */
+	const config = vscode.workspace.getConfiguration('fs-ai-tools', undefined);
+
 	const aircraftGroupsSorted = [...aircraftGroups].sort((a: TAcTypeGroup, b: TAcTypeGroup) =>
 		Math.sign(b[0].wingspan! - a[0].wingspan!)
 	);
@@ -128,22 +141,49 @@ function groupAircraftTxt(
 	 * ————————————————————————————————————————————————————————————
 	 * Create text output
 	 */
-	const output = [...headerLines, aircraftGroupsSorted.map((group) => group[1])].flat().join('\n');
+
+	// "fs-ai-tools.rebaseAircraftNumbers.emptyLinesBetweenGroupsAircraftTxt"
+
+	/** Only aircraft lines; empty lines removed */
+	const cleanedGroups = aircraftGroupsSorted
+		.map((group) => {
+			return group[1].filter((line) => line.trim().length).join('\n');
+		})
+		.flat(3);
+
+	let output = headerLines.length ? headerLines.join('\n') + '\n' : '';
+	output += cleanedGroups.join(
+		'\n' + '\n'.repeat(config.get('rebaseAircraftNumbers.emptyLinesBetweenGroupsAircraftTxt') || 1)
+	);
 	console.log({ headerLines, aircraftGroups, aircraftGroupsSorted, output });
 
 	return { headerLines, aircraftGroups, aircraftGroupsSorted, output };
 }
 
-function getAircraftTypeFromLine(text: string, allowInactive = true, allowInvalidNumber = true) {
-	/* const regex = new RegExp(
+function getAircraftTypeFromLine(
+	text: string,
+	aircraftData: TParsedAircraftTxtData,
+	allowInactive = true,
+	allowInvalidNumber = true
+) {
+	const regex = new RegExp(
 		`^(?:AC${allowInactive ? '|//)' : ')'}#(?<acNum>` +
 			(allowInvalidNumber ? '.*?)' : '\\d+?)') +
 			',\\d+,\\"(?<title>.*)\\"'
 	);
+	const match = text.match(regex);
+	console.log({ text, match });
 
-	const match = text.match(regex); */
+	if (match?.groups?.title) {
+		const matchingLiveries = [
+			...aircraftData.inactiveAircraftLiveries,
+			...aircraftData.aircraftLiveries.values(),
+		].filter((livery) => {
+			return livery.title === match!.groups!.title;
+		});
 
-	const liveries = getAircraftLiveries(text, allowInactive, allowInvalidNumber);
-	console.log({ liveries });
-	// console.log({ text, match });
+		if (matchingLiveries.length) {
+			return matchingLiveries[0].aircraftType;
+		}
+	}
 }

@@ -1,4 +1,5 @@
 import * as vscode from 'vscode';
+import { replaceDocumentContents } from '../../Tools/helpers';
 
 type FltsimEntry = { [key: string]: string };
 
@@ -152,9 +153,8 @@ export async function CleanAircraftCfg() {
 	}
 
 	// Apply changes to document
-	editor.edit((editBuilder) => {
-		editBuilder.replace(new vscode.Range(0, 0, document.lineCount, 500), cleanTextArray.join('\n'));
-	});
+	replaceDocumentContents(editor, cleanTextArray.join('\n'));
+
 	vscode.window.showInformationMessage('Aircraft.cfg cleaned');
 }
 

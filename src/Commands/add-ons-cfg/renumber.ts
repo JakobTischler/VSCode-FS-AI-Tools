@@ -1,4 +1,5 @@
 import * as vscode from 'vscode';
+import { replaceDocumentContents } from '../../Tools/helpers';
 
 export async function RenumberAddOnsCfg() {
 	const editor = vscode.window.activeTextEditor;
@@ -27,9 +28,8 @@ export async function RenumberAddOnsCfg() {
 			text = cleanTextArray.join('\n');
 
 			// Apply changes to document
-			editor.edit((editBuilder) => {
-				editBuilder.replace(new vscode.Range(0, 0, document.lineCount, 500), text);
-			});
+			replaceDocumentContents(editor, text);
+
 			vscode.window.showInformationMessage('add-ons.cfg renumbered');
 		}
 	}

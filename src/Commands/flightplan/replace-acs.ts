@@ -1,4 +1,5 @@
 import * as vscode from 'vscode';
+import { replaceDocumentContents } from '../../Tools/helpers';
 import { getDropdownSelection } from '../../Tools/input';
 
 enum ReplaceType {
@@ -129,10 +130,7 @@ async function replace(otherFileUri: vscode.Uri, replaceType: ReplaceType) {
 	/*
 	 * Update target document's contents
 	 */
-	const range = new vscode.Range(0, 0, fileEditors.target.document.lineCount, 9999);
-	fileEditors.target.edit((editBuilder) => {
-		editBuilder.replace(range, fileContents.target);
-	});
+	replaceDocumentContents(fileEditors.target, fileContents.target);
 
 	vscode.window.showInformationMessage(
 		`${updateCount} regs updated (${targetAircraft.length - updateCount} unmatched)`
