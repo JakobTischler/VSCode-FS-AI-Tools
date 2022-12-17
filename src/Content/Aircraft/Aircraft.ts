@@ -3,25 +3,31 @@ import { Flightplan } from '../Flightplan/Flightplan';
 import { RouteSegment } from '../Route/RouteSegment';
 
 export class Aircraft {
+	/** The complete text line for this aircraft */
+	text: string;
+	/** Aircraft number */
 	acNum: number;
+	/** Aircraft registration */
 	registration: string;
 	percentage: number;
 	period: string;
-	flightRule: string;
+	flightRule: 'IFR' | 'VFR';
 	segments: RouteSegment[] = [];
 
 	flightplan: Flightplan;
 	aircraftLivery?: AircraftLivery;
 
 	constructor(
+		text: string,
 		acNum: number,
 		registration: string,
 		percentage: number,
 		period: string,
-		flightRule: string,
+		flightRule: 'IFR' | 'VFR',
 		flightplan: Flightplan,
 		aircraftLivery?: AircraftLivery
 	) {
+		this.text = text;
 		this.acNum = acNum;
 		this.registration = registration;
 		this.percentage = percentage;

@@ -10,6 +10,7 @@ import {
 } from '../../Tools/helpers';
 import { parseAircraftTxt, TParsedAircraftTxtData } from '../../Content/Aircraft/parseAircraftTxt';
 import { AircraftType } from '../../Content/Aircraft/AircraftType';
+import { Flightplan } from '../../Content/Flightplan/Flightplan';
 import { getNumberInput } from '../../Tools/input';
 
 type TAcTypeGroup = [AircraftType, string[]];
@@ -61,6 +62,7 @@ export async function GroupByAircraftType() {
 		newFileContents = output;
 	} else {
 		// TODO flightplan
+		groupFlightplansTxt(editor.document.getText(), aircraftData);
 	}
 
 	if (newFileContents?.length) {
@@ -83,7 +85,7 @@ async function groupAircraftTxt(
 	const lines = fileContents.split('\n');
 
 	/*
-	 * ————————————————————————————————————————————————————————————
+	 * —————————————————————————————————————————————————————————————————————————
 	 * Create header group and aircraft groups
 	 */
 
@@ -133,9 +135,8 @@ async function groupAircraftTxt(
 	}
 
 	/*
-	 * ————————————————————————————————————————————————————————————
+	 * —————————————————————————————————————————————————————————————————————————
 	 * Sort groups by wingspan
-	 * TODO only if configured
 	 */
 	const config = vscode.workspace.getConfiguration('fs-ai-tools', undefined);
 	const sort = config.get('groupByAircraftType.sortByWingspan');
@@ -146,7 +147,7 @@ async function groupAircraftTxt(
 	}
 
 	/*
-	 * ————————————————————————————————————————————————————————————
+	 * —————————————————————————————————————————————————————————————————————————
 	 * Create text output
 	 */
 
@@ -195,4 +196,55 @@ function getAircraftTypeFromLine(
 			return matchingLiveries[0].aircraftType;
 		}
 	}
+}
+
+async function groupFlightplansTxt(fileContents: string, aircraftData: TParsedAircraftTxtData) {
+	/*
+	 *    [ ] a. create arrays of AC#s (should already be done in (1.)?)
+	 *    [ ] b. for each group, use ac title as header
+	 *    [ ] c. if new acNum, but same acType: inset header, no empty line
+	 *    [ ] d. if new acNum and different acType: empty lines (from config) and new header
+	 *    [ ] e. [STRETCH GOAL]: parse titles of same acType to find base title and subsequent variation names
+	 *    [ ] f. [STRETCH GOAL] optionally sort by radius (create new config setting)
+	 */
+
+	/*
+	 * —————————————————————————————————————————————————————————————————————————
+	 * Parse flightplan to get all aircraft matched to aircraft types and
+	 * liveries
+	 */
+
+	// Parse flightplan
+	const flightplan = new Flightplan(fileContents);
+	flightplan.parse(aircraftData.aircraftTypes, aircraftData.aircraftLiveries);
+	// console.log({ flightplan });
+	// console.log({ aircraftData });
+
+	/*
+	 * —————————————————————————————————————————————————————————————————————————
+	 * Sort by wingspan
+	 */
+	const aircraftTypesSorted = [...aircraftData.aircraftTypes.values()].sort((a: AircraftType, b: AircraftType) =>
+		Math.sign(b.wingspan! - a.wingspan!)
+	);
+
+	const textGroups = aircraftTypesSorted
+		.filter((aircraftType) => aircraftType.aircraftCount > 0)
+		.map((aircraftType) => {
+			// Main header line
+			const header = `//${aircraftType.name}`;
+
+			const content = [...aircraftType.liveries].map((livery) => {
+				if (livery.hasValidNum) {
+					const header = `\t//${livery.title}`;
+					const content = livery.aircraft.map((aircraft) => aircraft.text);
+
+					return [header, ...content];
+				}
+			});
+
+			return [header, ...content];
+		});
+
+	console.log({ textGroups });
 }

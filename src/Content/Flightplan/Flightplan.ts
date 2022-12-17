@@ -90,11 +90,12 @@ export class Flightplan {
 					const aircraftLivery = aircraftLiveries.get(acNum);
 
 					const aircraft = new Aircraft(
+						line,
 						acNum,
 						metaMatches.groups.reg,
 						Number(metaMatches.groups.pct),
 						metaMatches.groups.period,
-						metaMatches.groups.flightRule,
+						metaMatches.groups.flightRule as 'IFR' | 'VFR',
 						this,
 						aircraftLivery
 					);
