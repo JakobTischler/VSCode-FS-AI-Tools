@@ -2,7 +2,7 @@ import * as vscode from 'vscode';
 import * as Path from 'path';
 import { getFlightplanFiles, showError, writeTextToClipboard } from '../../Tools/helpers';
 import '../../Extenders/string';
-import * as aircraftNaming from '../../Data/aircraft-naming.json';
+import aircraftData from '../../Data/aircraft-data.json';
 import { parseAircraftTxt } from '../../Content/Aircraft/parseAircraftTxt';
 import { TAircraftTypesByTypeCode } from '../../Content/Aircraft/AircraftType';
 
@@ -26,7 +26,7 @@ export async function ShowAircraftList() {
 	// Get Aicraft…, Flightplans… file paths
 	const fileData = await getFlightplanFiles(dirPath, true);
 	if (!fileData.aircraft || !fileData.flightplans) {
-		const name = !fileData.aircraft ? 'Aircraft' : 'Flightplans';
+		const name = fileData.aircraft ? 'Flightplans' : 'Aircraft';
 		showError(`${name}….txt file couldn't be found in current directory.`);
 		return;
 	}
@@ -50,7 +50,7 @@ export async function ShowAircraftList() {
 			)
 			.then((buttonText) => {
 				if (buttonText) {
-					const sheetsOutput = generateGoogleSheetsOutput(aircraftNaming, parsedData.aircraftTypes);
+					const sheetsOutput = generateGoogleSheetsOutput(aircraftData, parsedData.aircraftTypes);
 					writeTextToClipboard(sheetsOutput, 'Google Sheets aircraft count copied to clipboard');
 				}
 			});
@@ -68,12 +68,12 @@ export async function ShowAircraftList() {
  * cells are joined with a tab (`\t`).
  *
  * Note: uses the order and values of the `list` array in
- * `aircraft-naming.json`.
- * @param data The `aircraft-naming` reference object
+ * `aircraft-data.json`.
+ * @param data The `aircraft-data` reference object
  * @param aircraftTypes The list of matched aircraft types
  * @returns The genereated cell output for Google Sheets
  */
-function generateGoogleSheetsOutput(data: typeof aircraftNaming, aircraftTypes: TAircraftTypesByTypeCode) {
+function generateGoogleSheetsOutput(data: typeof aircraftData, aircraftTypes: TAircraftTypesByTypeCode) {
 	return data.list
 		.map((item) => (aircraftTypes.has(item) ? aircraftTypes.get(item)?.aircraftCount || '' : ''))
 		.join('\t');

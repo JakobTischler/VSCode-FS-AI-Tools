@@ -1,9 +1,9 @@
 import * as vscode from 'vscode';
 import { merge } from 'lodash';
 import { getFileContents, showError } from '../../Tools/helpers';
-import * as _aircraftNaming from '../../Data/aircraft-naming.json';
-import { AircraftNaming } from '../../Types/AircraftNaming';
-const aircraftNaming = _aircraftNaming as AircraftNaming;
+import { AircraftData } from '../../Types/AircraftData';
+import _aircraftData from '../../Data/aircraft-data.json';
+const aircraftData = _aircraftData as AircraftData;
 import { TFlightplanFilesMetaData } from '../../Types/FlightplanFilesMetaData';
 import { AircraftLivery, TAircraftLiveriesByAcNum } from './AircraftLivery';
 import { AircraftType, TAircraftTypesByTypeCode } from './AircraftType';
@@ -22,7 +22,8 @@ export type TParsedAircraftTxtData = {
  * @param data The flightplans meta data, which must include the files' contents
  * in their respective `text` variables.
  * @param doAircraftCount If `true`, performs a quick count of each
- * `AircraftLivery`'s AC# and saves it to its `manualCount` value.
+ * `AircraftLivery`'s AC# and saves it to its `manualCount` value. Defaults to
+ * `false`
  * @returns
  * • `aircraftTypes` = Map of type `TAircraftTypes` by ICAO type name. Each
  * entry has a set of `AircraftLivery` entries, as well as total count of
@@ -45,9 +46,13 @@ export async function parseAircraftTxt(
 		showError(`parseAircraftTxt(): aircraft.txt contents must included in data argument.`);
 		throw new Error(`parseAircraftTxt(): aircraft.txt contents must included in data argument.`);
 	}
-	if (!data.flightplans.text) {
-		showError(`parseAircraftTxt(): flightplans.txt contents must included in data argument.`);
-		throw new Error(`parseAircraftTxt(): flightplans.txt contents must included in data argument.`);
+	if (doAircraftCount && !data.flightplans.text) {
+		showError(
+			`parseAircraftTxt(): flightplans.txt contents must included in data argument if "doAircraftCount" is set to true.`
+		);
+		throw new Error(
+			`parseAircraftTxt(): flightplans.txt contents must included in data argument if "doAircraftCount" is set to true.`
+		);
 	}
 
 	// 1. Get aircraft list from aircraft.txt file
@@ -58,7 +63,7 @@ export async function parseAircraftTxt(
 	}
 
 	// 2. Count aircraft in flightplans.txt file
-	if (doAircraftCount) {
+	if (doAircraftCount && data.flightplans.text) {
 		countAircraftSimple(liveries, data.flightplans.text);
 	}
 
@@ -126,7 +131,7 @@ async function getAircraftTypeMetaData() {
 
 			// Merge
 			if (customData.list || customData.types) {
-				return merge(aircraftNaming, customData);
+				return merge(aircraftData, customData);
 			}
 
 			showError(`Custom aircraft data couldn't be merged, as it has neither "list" nor "types"`);
@@ -135,7 +140,7 @@ async function getAircraftTypeMetaData() {
 		}
 	}
 
-	return aircraftNaming;
+	return aircraftData;
 }
 
 /**
@@ -160,7 +165,7 @@ async function getAircraftTypeMetaData() {
  * • `nonMatches` = array of aircraft titles that couldn't
  * be matched
  */
-export function matchTitleToType(data: typeof aircraftNaming, aircraftLiveries: TAircraftLiveriesByAcNum) {
+export function matchTitleToType(data: typeof aircraftData, aircraftLiveries: TAircraftLiveriesByAcNum) {
 	const matches = new Map();
 	const aircraftTypes: TAircraftTypesByTypeCode = new Map();
 	let totalAircraftCount = 0;
@@ -171,7 +176,8 @@ export function matchTitleToType(data: typeof aircraftNaming, aircraftLiveries: 
 		aircraftLivery: AircraftLivery,
 		manufacturerName?: string,
 		typeName?: string,
-		seriesName?: string
+		seriesName?: string,
+		wingspan?: number
 	) => {
 		if (aircraftTypes.has(typeCode)) {
 			// Already exists → add to that
@@ -190,6 +196,9 @@ export function matchTitleToType(data: typeof aircraftNaming, aircraftLiveries: 
 			}
 			if (seriesName) {
 				aircraftType.series = seriesName;
+			}
+			if (wingspan) {
+				aircraftType.wingspan = wingspan;
 			}
 
 			// Add livery to aircraftType
@@ -244,7 +253,8 @@ export function matchTitleToType(data: typeof aircraftNaming, aircraftLiveries: 
 									livery,
 									manufacturer,
 									typeData.name || type,
-									typeData.series
+									typeData.series,
+									typeData.wingspan
 								);
 
 								// Add to successful matches

@@ -1,0 +1,910 @@
+{
+	"list": [
+		"A221",
+		"A223",
+		"A300",
+		"A310",
+		"A318",
+		"A319",
+		"A320",
+		"A321",
+		"A19N",
+		"A20N",
+		"A21N",
+		"A332",
+		"A333",
+		"A338",
+		"A339",
+		"A342",
+		"A343",
+		"A345",
+		"A346",
+		"A359",
+		"A35K",
+		"A380",
+		"AN12",
+		"AN24",
+		"AN74",
+		"A124",
+		"AT42",
+		"AT72",
+		"BA46",
+		"JS31",
+		"JS41",
+		"B190",
+		"BE20",
+		"B350",
+		"BE40",
+		"B707",
+		"B717",
+		"B727",
+		"B732",
+		"B733",
+		"B734",
+		"B735",
+		"B736",
+		"B737",
+		"B738",
+		"B739",
+		"B37M",
+		"B38M",
+		"B39M",
+		"B741-2",
+		"B743",
+		"B744",
+		"B748",
+		"B752",
+		"B753",
+		"B762",
+		"B763",
+		"B764",
+		"B772",
+		"B773",
+		"B788",
+		"B789",
+		"B78X",
+		"CL30",
+		"CL35",
+		"CL60",
+		"GLEX",
+		"CRJ2",
+		"CRJ7",
+		"CRJ9",
+		"CRJX",
+		"DH8A/B",
+		"DH8C",
+		"DH8D",
+		"BN2",
+		"C152",
+		"C172",
+		"C182",
+		"C208",
+		"C402",
+		"C421",
+		"C525",
+		"C25A",
+		"C25B",
+		"C25C",
+		"C500",
+		"C510",
+		"C550",
+		"C560",
+		"C56X",
+		"C680",
+		"C68A",
+		"C750",
+		"AJ27",
+		"AJ29",
+		"FA7X",
+		"FA8X",
+		"F900",
+		"F2TH",
+		"DHC6",
+		"D228",
+		"D328",
+		"DC8",
+		"DC91",
+		"DC93",
+		"DC94",
+		"DC95",
+		"E120",
+		"E135",
+		"E140",
+		"E145",
+		"E170",
+		"E175",
+		"E190",
+		"E195",
+		"E275",
+		"E290",
+		"E295",
+		"E50P",
+		"E55P",
+		"F50",
+		"F70",
+		"F100",
+		"GLF2",
+		"GLF3",
+		"GLF4",
+		"GLF5",
+		"GLF6",
+		"H25B",
+		"IL62",
+		"IL76",
+		"IL86",
+		"IL96",
+		"LJ24",
+		"LJ25",
+		"LJ31",
+		"LJ35",
+		"LJ40",
+		"LJ45",
+		"LJ55",
+		"LJ60",
+		"LJ75",
+		"C130",
+		"DC10",
+		"MD11",
+		"MD80",
+		"MD87",
+		"MD90",
+		"PC12",
+		"PA28",
+		"PA46",
+		"PA23",
+		"PA31",
+		"PA34",
+		"PA44",
+		"S340",
+		"SB20",
+		"SD36",
+		"SU95",
+		"METRO",
+		"T134",
+		"T154",
+		"T204",
+		"YK40",
+		"YK42",
+		"BIZ-JET",
+		"PROP"
+	],
+	"series": {
+		"Airbus": ["A220", "A300", "A32X", "A32NX", "A330", "A340", "A350", "A380"],
+		"Antonov": ["An-Prop", "An-Jet"],
+		"ATR": ["ATR"],
+		"BAe": ["146", "Jetstream"],
+		"Beechcraft": ["B1900", "King Air", "Beechjet"],
+		"Boeing": ["707", "717", "727", "737 Classic", "737NG", "737 MAX", "747", "757", "767", "777", "787"],
+		"Bombardier": ["Challenger", "Global", "CRJ", "Dash 8"],
+		"Britten-Norman": ["BN-2"],
+		"Cessna": ["Single Prop", "Twin Prop", "CitationJet", "Citation"],
+		"Comac": ["ARJ21"],
+		"Dassault": ["Falcon"],
+		"de Havilland": ["DHC"],
+		"Dornier": ["Do"],
+		"Douglas": ["DC8", "DC9"],
+		"Embraer": ["EMB-Prop", "ERJ", "EMB", "E2", "Phenom"],
+		"Fokker": ["F-Prop", "F-Jet"],
+		"Gulfstream": ["Gulfstream"],
+		"Hawker Beechcraft": ["125"],
+		"Ilyushin": ["Il-Prop", "Il-Jet"],
+		"Learjet": ["Learjet"],
+		"Lockheed": ["Hercules"],
+		"McDonnell Douglas": ["DC-10", "MD-80"],
+		"Pilatus": ["PC"],
+		"Piper": ["Single Engine", "Twin Engine"],
+		"Saab": ["S-Prop"],
+		"Shorts": ["SD"],
+		"Sukhoi": ["SU10"],
+		"Swaeringen": ["Metro"],
+		"Tupolev": ["Tu-Jet"],
+		"Yakolev": ["Yak-Jet"]
+	},
+	"types": {
+		"Airbus": {
+			"search": ["Airbus"],
+			"types": {
+				"A221": {
+					"name": "A220-100",
+					"search": ["A220-100", "A221", "BCS1"],
+					"series": "A220",
+					"wingspan": 115.0833333
+				},
+				"A223": {
+					"name": "A220-300",
+					"search": ["A220-300", "A223", "BCS3"],
+					"series": "A220",
+					"wingspan": 115.0833333
+				},
+				"A300": { "name": "A300", "search": ["A300"], "series": "A300", "wingspan": 147.08 },
+				"A310": { "name": "A310", "search": ["A310"], "series": "A300", "wingspan": 144 },
+				"A318": { "name": "A318", "search": ["A318-"], "series": "A32X", "wingspan": 111.91667 },
+				"A319": {
+					"name": "A319",
+					"search": ["/A319(-[12]\\d{2})?\\s?(SL|WL|P[2C]F|$|\\s)(?!(NX?|neo)\\s)/"],
+					"series": "A32X",
+					"wingspan": 117.8333
+				},
+				"A320": {
+					"name": "A320",
+					"search": ["/A320(-[12]\\d{2})?\\s?(SL|WL|P[2C]F|$|\\s)(?!(NX?|neo)\\s)/"],
+					"series": "A32X",
+					"wingspan": 117.8333
+				},
+				"A321": {
+					"name": "A321",
+					"search": ["/A321(-[12]\\d{2})?\\s?(SL|WL|P[2C]F|$|\\s)(?!(NX?|neo)\\s)/"],
+					"series": "A32X",
+					"wingspan": 117.8333
+				},
+				"A19N": {
+					"name": "A319neo",
+					"search": ["/A319-?([12]\\d{2})?\\s*(NX?|neo)(\\s|$)/"],
+					"series": "A32NX",
+					"wingspan": 117.8333
+				},
+				"A20N": {
+					"name": "A320neo",
+					"search": ["/A320-?([12]\\d{2})?\\s*(NX?|neo)(\\s|$)/"],
+					"series": "A32NX",
+					"wingspan": 117.8333
+				},
+				"A21N": {
+					"name": "A321neo",
+					"search": ["/A321-?([12]\\d{2})?\\s*(NX?|neo)(\\s|$)/"],
+					"series": "A32NX",
+					"wingspan": 117.8333
+				},
+				"A332": { "name": "A330-200", "search": ["A330-2"], "series": "A330", "wingspan": 197.83 },
+				"A333": { "name": "A330-300", "search": ["A330-3"], "series": "A330", "wingspan": 197.83 },
+				"A338": { "name": "A330-800", "search": ["A330-8"], "series": "A330", "wingspan": 210 },
+				"A339": { "name": "A330-900neo", "search": ["A330-9"], "series": "A330", "wingspan": 210 },
+				"A342": { "name": "A340-200", "search": ["A340-2"], "series": "A340", "wingspan": 197.83 },
+				"A343": { "name": "A340-300", "search": ["A340-3"], "series": "A340", "wingspan": 197.83 },
+				"A345": { "name": "A340-500", "search": ["A340-5"], "series": "A340", "wingspan": 208.17 },
+				"A346": { "name": "A340-600", "search": ["A340-6"], "series": "A340", "wingspan": 208.17 },
+				"A359": { "name": "A350-900", "search": ["A350-9"], "series": "A350", "wingspan": 210 },
+				"A35K": { "name": "A350-1000", "search": ["A350-1"], "series": "A350", "wingspan": 210 },
+				"A380": { "name": "A380", "search": ["A380"], "series": "A380", "wingspan": 261.1 }
+			}
+		},
+		"Antonov": {
+			"search": ["Antonov"],
+			"types": {
+				"AN12": { "name": "An-12", "search": ["/An[- ]12[bp ]/"], "series": "An-Prop", "wingspan": 124.67 },
+				"AN24": {
+					"name": "An-22/24/26/28/30/32",
+					"search": ["/(?:An[- ]?(?:22|24|26|28|30|32)[-ar ]|Xian)/"],
+					"series": "An-Prop",
+					"wingspan": 95.83
+				},
+				"AN74": {
+					"name": "An-70/72/74/140/148/158/178",
+					"search": ["/An[- ]?(?:70|72|74|140|148|158|178)[-ab ]/"],
+					"series": "An-Jet",
+					"wingspan": 104.67
+				},
+				"A124": {
+					"name": "An-124/225",
+					"search": ["/An[- ]?(?:124|225)/"],
+					"series": "An-Jet",
+					"wingspan": 240.5
+				}
+			}
+		},
+		"ATR": {
+			"search": ["ATR"],
+			"types": {
+				"AT42": { "name": "42", "search": ["ATR 42"], "wingspan": 80.67 },
+				"AT72": { "name": "72", "search": ["ATR 72"], "wingspan": 88.75 }
+			}
+		},
+		"BAe": {
+			"search": ["BAe", "British Aerospace", "Jetstream"],
+			"types": {
+				"BA46": {
+					"name": "146-100/200/300 / RJ-70/85/100",
+					"search": ["146-", "/RJ[- ]?(?:70|85|100)/"],
+					"wingspan": 86
+				},
+				"JS31": { "name": "JS-31/32", "search": ["JS3", "JS-3"], "series": "Jetstream", "wingspan": 52 },
+				"JS41": { "name": "JS-41/42", "search": ["JS4", "JS-4"], "series": "Jetstream", "wingspan": 60 }
+			}
+		},
+		"Beechcraft": {
+			"search": ["Beech", "Beechcraft", "Hawker"],
+			"types": {
+				"B190": { "name": "1900C/D", "search": ["B1900", "1900C", "1900D"], "wingspan": 54.5 },
+				"BE20": {
+					"name": "King Air 200/C90/A100 / Bonanza 36",
+					"search": ["/King Air B?2[05]0/", "Beech 200", "Beech B200", "C90 ", "C99 ", "A100 ", "Bonanza 36"],
+					"series": "King Air",
+					"wingspan": 57.92
+				},
+				"B350": {
+					"name": "King Air 350 / Baron 58",
+					"search": ["/(?:King Air|Beech) B?350/", "Baron 58"],
+					"series": "King Air",
+					"wingspan": 57.92
+				},
+				"BE40": {
+					"name": "Beechjet 400/Hawker 400/Nextant 400",
+					"search": ["Beechjet 400", "Beech 400", "BJ-400", "Hawker 400", "Nextant 400"],
+					"wingspan": 43.5
+				}
+			}
+		},
+		"Boeing": {
+			"search": ["Boeing"],
+			"types": {
+				"B707": { "name": "707", "search": ["707-"], "series": "707", "wingspan": 130.83 },
+				"B717": { "name": "717", "search": ["717-"], "series": "717", "wingspan": 93.25 },
+				"B727": { "name": "727", "search": ["727-"], "series": "727", "wingspan": 108 },
+				"B732": { "name": "737-200", "search": ["737-2"], "series": "737 Classic", "wingspan": 93 },
+				"B733": { "name": "737-300", "search": ["737-3"], "series": "737 Classic", "wingspan": 94.75 },
+				"B734": { "name": "737-400", "search": ["737-4"], "series": "737 Classic", "wingspan": 94.75 },
+				"B735": { "name": "737-500", "search": ["737-5"], "series": "737 Classic", "wingspan": 94.75 },
+				"B736": { "name": "737-600", "search": ["737-6"], "series": "737NG", "wingspan": 117.42 },
+				"B737": { "name": "737-700", "search": ["737-7"], "series": "737NG", "wingspan": 117.42 },
+				"B738": { "name": "737-800", "search": ["737-8"], "series": "737NG", "wingspan": 117.42 },
+				"B739": { "name": "737-900", "search": ["737-9"], "series": "737NG", "wingspan": 117.42 },
+				"B37M": { "name": "737 MAX 7", "search": ["737 MAX 7"], "series": "737 MAX", "wingspan": 117.833333 },
+				"B38M": { "name": "737 MAX 8", "search": ["737 MAX 8"], "series": "737 MAX", "wingspan": 117.833333 },
+				"B39M": { "name": "737 MAX 9", "search": ["737 MAX 9"], "series": "737 MAX", "wingspan": 117.833333 },
+				"B741-2": {
+					"name": "747-100/200/SP",
+					"search": ["747-1", "747-2", "747SP"],
+					"series": "747",
+					"wingspan": 195.67
+				},
+				"B743": { "name": "747-300", "search": ["747-3"], "series": "747", "wingspan": 195.67 },
+				"B744": { "name": "747-400", "search": ["747-4"], "series": "747", "wingspan": 211.5 },
+				"B748": { "name": "747-8", "search": ["747-8"], "series": "747", "wingspan": 224.7 },
+				"B752": { "name": "757-200", "search": ["757-2"], "series": "757", "wingspan": 134.58 },
+				"B753": { "name": "757-300", "search": ["757-3"], "series": "757", "wingspan": 134.58 },
+				"B762": { "name": "767-200", "search": ["767-2"], "series": "767", "wingspan": 156.08 },
+				"B763": { "name": "767-300", "search": ["767-3"], "series": "767", "wingspan": 167.0 },
+				"B764": { "name": "767-400", "search": ["767-4"], "series": "767", "wingspan": 170.33 },
+				"B772": {
+					"name": "777-200/F/LR",
+					"search": ["/777(-[2L]|-?F)/"],
+					"series": "777",
+					"wingspan": 212.5833333
+				},
+				"B773": {
+					"name": "777-300/300ER",
+					"search": ["777-3", "77W"],
+					"series": "777",
+					"wingspan": 212.5833333
+				},
+				"B788": { "name": "787-8", "search": ["787-8"], "series": "787", "wingspan": 197.25 },
+				"B789": { "name": "787-9", "search": ["787-9"], "series": "787", "wingspan": 197.25 },
+				"B78X": { "name": "787-10", "search": ["787-10"], "series": "787", "wingspan": 197.25 }
+			}
+		},
+		"Bombardier": {
+			"search": ["Bombardier", "Dash", "Mitsubishi", "Challenger"],
+			"types": {
+				"CL30": {
+					"name": "Challenger 300",
+					"search": ["Challenger 300", "CL-300"],
+					"series": "Challenger",
+					"wingspan": 63.84
+				},
+				"CL35": {
+					"name": "Challenger 350",
+					"search": ["Challenger 350", "CL-350"],
+					"series": "Challenger",
+					"wingspan": 69
+				},
+				"CL60": {
+					"name": "Challenger 600",
+					"search": ["Challenger 600", "CL-6"],
+					"series": "Challenger",
+					"wingspan": 64.3333
+				},
+				"GLEX": {
+					"name": "Global Express/5000/6000",
+					"search": ["Global Express", "Global 5000", "Global 6000"],
+					"wingspan": 99.4
+				},
+				"CRJ2": {
+					"name": "CRJ-100/200 / Legcy 800/850",
+					"search": ["/CRJ-100[A-Z\\s]/", "CRJ-2", "Legacy 800", "Legacy 850"],
+					"series": "CRJ",
+					"wingspan": 69.58
+				},
+				"CRJ7": { "name": "CRJ-550/700", "search": ["CRJ-7", "CRJ-550"], "wingspan": 75.5 },
+				"CRJ9": { "name": "CRJ-900", "search": ["CRJ-9"], "series": "CRJ", "wingspan": 81.5 },
+				"CRJX": { "name": "CRJ-1000", "search": ["CRJ-1000"], "series": "CRJ", "wingspan": 85.92 },
+				"DH8A/B": {
+					"name": "Dash 8-100/200",
+					"search": ["/Dash 8[-/]Q?[12]00/"],
+					"series": "Dash 8",
+					"wingspan": 73.0
+				},
+				"DH8C": {
+					"name": "Dash 8-300",
+					"search": ["/Dash 8[-/]Q?3\\d\\d/"],
+					"series": "Dash 8",
+					"wingspan": 84.25
+				},
+				"DH8D": {
+					"name": "Dash 8-Q400",
+					"search": ["/Dash 8[-/]Q?400/"],
+					"series": "Dash 8",
+					"wingspan": 93.25
+				}
+			}
+		},
+		"Britten-Norman": {
+			"search": ["Britten-Norman", "Britten Norman", "BrittenNorman", "BN-"],
+			"types": {
+				"BN2": {
+					"name": "BN-2 Islander/Trislander",
+					"search": ["BN-2", "Islander", "Trislander"],
+					"wingspan": 49
+				}
+			}
+		},
+		"Cessna": {
+			"search": ["Cessna"],
+			"types": {
+				"C152": {
+					"name": "150/152",
+					"search": ["/Cessna C?15[02]/"],
+					"series": "Single Prop",
+					"wingspan": 33.333
+				},
+				"C172": {
+					"name": "170/172/175",
+					"search": ["/Cessna C?17[025]/"],
+					"series": "Single Prop",
+					"wingspan": 36.0833
+				},
+				"C182": {
+					"name": "180/182",
+					"search": ["/Cessna C?18[025]/"],
+					"series": "Single Prop",
+					"wingspan": 36
+				},
+				"C208": {
+					"name": "206/207/208/210",
+					"search": ["/Cessna C?2(?:06|07|08|10)/"],
+					"series": "Single Prop",
+					"wingspan": 52.08
+				},
+				"C402": {
+					"name": "402/404",
+					"search": ["/Cessna C?40[24]/"],
+					"series": "Twin Prop",
+					"wingspan": 46.6875
+				},
+				"C421": {
+					"name": "414/421/441",
+					"search": ["/Cessna C?4(?:14|21|41)/"],
+					"series": "Twin Prop",
+					"wingspan": 44.125
+				},
+				"C525": {
+					"name": "525",
+					"search": ["/(Citation(Jet)*)* (CJ|C)*(1|525\\s)/"],
+					"series": "CitationJet",
+					"wingspan": 47.25
+				},
+				"C25A": {
+					"name": "525A",
+					"search": ["/(Citation(Jet)*)* (CJ|C)*(2|525A?)/"],
+					"series": "CitationJet",
+					"wingspan": 49.83333333
+				},
+				"C25B": {
+					"name": "525B",
+					"search": ["/(Citation(Jet)*)* (CJ|C)*(3|525B?)/"],
+					"series": "CitationJet",
+					"wingspan": 53.33333333
+				},
+				"C25C": {
+					"name": "525C",
+					"search": ["/(Citation(Jet)*)* (CJ|C)*(4|525C?)/"],
+					"series": "CitationJet",
+					"wingspan": 50.83333333
+				},
+				"C500": {
+					"name": "500 Citation I",
+					"search": ["/Cessna C?500/", "Citation I "],
+					"series": "Citation",
+					"wingspan": 47.08333333
+				},
+				"C510": {
+					"name": "510 Citation Mustang",
+					"search": ["/Cessna C?510/", "Citation Mustang"],
+					"series": "Citation",
+					"wingspan": 43.16666667
+				},
+				"C550": {
+					"name": "550 Citation II",
+					"search": ["/Cessna C?550/", "Citation II"],
+					"series": "Citation",
+					"wingspan": 52.20833333
+				},
+				"C560": {
+					"name": "560 Citation V",
+					"search": ["/Cessna C?560 /", "Citation V"],
+					"series": "Citation",
+					"wingspan": 52.16666667
+				},
+				"C56X": {
+					"name": "560XL Citation XLS",
+					"search": ["/Cessna C?560XL/", "Citation XLS"],
+					"series": "Citation",
+					"wingspan": 56.33333333
+				},
+				"C680": {
+					"name": "680 Citation Sovereign",
+					"search": ["/Cessna C?680 /", "Citation Sovereign"],
+					"series": "Citation",
+					"wingspan": 72.33333333
+				},
+				"C68A": {
+					"name": "680A Citation Latitude",
+					"search": ["/Cessna C?680A/", "Citation Latitude"],
+					"series": "Citation",
+					"wingspan": 72.33333333
+				},
+				"C750": {
+					"name": "750 Citation X",
+					"search": ["/Cessna C?750/", "Cessna Citation X "],
+					"series": "Citation",
+					"wingspan": 63.6
+				}
+			}
+		},
+		"Comac": {
+			"search": ["Comac"],
+			"types": {
+				"AJ27": { "name": "ARJ 21-700", "search": ["/ARJ[\\s-]21-7/"], "series": "ARJ21", "wingspan": 89.5 },
+				"AJ29": { "name": "ARJ 21-900", "search": ["/ARJ[\\s-]21-9/"], "series": "ARJ21", "wingspan": 89.5 }
+			}
+		},
+		"Dassault": {
+			"search": ["Dassault"],
+			"types": {
+				"F2TH": { "name": "Falcon 2000", "search": ["Falcon 2000"], "series": "Falcon", "wingspan": 63.4 },
+				"FA7X": { "name": "Falcon 7X", "search": ["Falcon 7X"], "series": "Falcon", "wingspan": 86 },
+				"FA8X": { "name": "Falcon 8X", "search": ["Falcon 8X"], "series": "Falcon", "wingspan": 86.25 },
+				"F900": { "name": "Falcon 900", "search": ["Falcon 900"], "series": "Falcon", "wingspan": 63.4 }
+			}
+		},
+		"de Havilland": {
+			"search": ["de Havilland", "DeHavilland", "Viking"],
+			"types": {
+				"DHC7": { "name": "DHC-7", "search": ["DHC7", "DHC-7"], "wingspan": 93.0 },
+				"DHC6": { "name": "DHC-6-300/400", "search": ["DHC6", "DHC-6"], "wingspan": 65.0 }
+			}
+		},
+		"Dornier": {
+			"search": ["Dornier"],
+			"types": {
+				"D228": { "name": "Do-228-100/200", "search": ["/Do(?:rnier)?[- ]?228/"], "wingspan": 55.58 },
+				"D328": { "name": "Do-328-110/JET", "search": ["/Do(?:rnier)?[- ]?328/"], "wingspan": 68.83 }
+			}
+		},
+		"Douglas": {
+			"search": ["Douglas"],
+			"types": {
+				"DC8": { "name": "DC-8", "search": ["DC8", "DC-8"], "wingspan": 142.42 },
+				"DC91": { "name": "DC-9-10", "search": ["/DC[- ]?9-1/"], "series": "DC9", "wingspan": 89.42 },
+				"DC93": { "name": "DC-9-30", "search": ["/DC[- ]?9-3/"], "series": "DC9", "wingspan": 93.42 },
+				"DC94": { "name": "DC-9-40", "search": ["/DC[- ]?9-4/"], "series": "DC9", "wingspan": 93.42 },
+				"DC95": { "name": "DC-9-50", "search": ["/DC[- ]?9-5/"], "series": "DC9", "wingspan": 93.42 }
+			}
+		},
+		"Embraer": {
+			"search": ["Embraer"],
+			"types": {
+				"E120": { "name": "EMB-120", "search": ["/(?:Embraer|EMB)[- ]?1[12]0/"], "wingspan": 64.92 },
+				"E135": {
+					"name": "ERJ-135 / Legacy 600",
+					"search": ["/(?:ERJ|EMB)[- ]?135/"],
+					"series": "ERJ",
+					"wingspan": 65.75
+				},
+				"E140": { "name": "ERJ-140", "search": ["/(?:ERJ|EMB)[- ]?140/"], "series": "ERJ", "wingspan": 65.75 },
+				"E145": {
+					"name": "ERJ-145 / Legacy 650",
+					"search": ["/(?:ERJ|EMB)[- ]?145/"],
+					"series": "ERJ",
+					"wingspan": 65.75
+				},
+				"E170": { "name": "E170", "search": ["/(?:ERJ|EMB)[- ]?170/"], "series": "EMB", "wingspan": 85.33 },
+				"E175": { "name": "E175", "search": ["/(?:ERJ|EMB)[- ]?175/"], "series": "EMB", "wingspan": 85.33 },
+				"E190": {
+					"name": "E190 / Lineage 1000",
+					"search": ["/(?:ERJ|EMB)[- ]?190/", "Lineage 1000"],
+					"series": "EMB",
+					"wingspan": 94.25
+				},
+				"E195": { "name": "E195", "search": ["/(?:ERJ|EMB)[- ]?195/"], "series": "EMB", "wingspan": 94.25 },
+				"E275": {
+					"name": "E175-E2",
+					"search": ["/E(mbraer|MB|RJ)?[-\\s]?(175(-?E2)|275|190-500)/"],
+					"series": "E2",
+					"wingspan": 101.7
+				},
+				"E290": {
+					"name": "E190-E2",
+					"search": ["/E(mbraer|MB|RJ)?[-\\s]?(190(-?(E2|300))|290)/"],
+					"series": "E2",
+					"wingspan": 110.6333333
+				},
+				"E295": {
+					"name": "E195-E2",
+					"search": ["/E(mbraer|MB|RJ)?[-\\s]?(195(-?E2)|295|190-400)/"],
+					"series": "E2",
+					"wingspan": 115.25
+				},
+				"E50P": { "name": "Phenom 100", "search": ["Phenom 100"], "series": "Phenom", "wingspan": 40.33333333 },
+				"E55P": { "name": "Phenom 300", "search": ["Phenom 300"], "series": "Phenom", "wingspan": 53.16666667 }
+			}
+		},
+		"Fokker": {
+			"search": ["Fokker", "Fairchild"],
+			"types": {
+				"F50": { "name": "50", "search": ["/(F|Fokker)[-\\s]?50/", "/F-?27\\w?/"], "wingspan": 95.17 },
+				"F70": { "name": "70", "search": ["Fokker 70", "F70"], "series": "F-Jet", "wingspan": 92.17 },
+				"F100": { "name": "100", "search": ["Fokker 100", "F100"], "series": "F-Jet", "wingspan": 92.17 }
+			}
+		},
+		"Gulfstream": {
+			"search": ["Gulfstream"],
+			"types": {
+				"GLF2": {
+					"name": "II/200/280",
+					"search": [
+						"Gulfstream G-II ",
+						"Gulfstream GII ",
+						"Gulfstream II ",
+						"Gulfstream 200",
+						"Gulfstream 280"
+					],
+					"series": "Gulfstream",
+					"wingspan": 68.83333333
+				},
+				"GLF3": {
+					"name": "III",
+					"search": [
+						"Gulfstream G-III",
+						"Gulfstream GIII",
+						"Gulfstream III",
+						"Gulfstream G3",
+						"Gulfstream 3"
+					],
+					"series": "Gulfstream",
+					"wingspan": 77.83
+				},
+				"GLF4": {
+					"name": "IV/IV-SP/400/450",
+					"search": [
+						"Gulfstream G-IV",
+						"Gulfstream GIV",
+						"Gulfstream IV",
+						"Gulfstream G4",
+						"Gulfstream G400",
+						"Gulfstream 400",
+						"Gulfstream G450",
+						"Gulfstream 450"
+					],
+					"series": "Gulfstream",
+					"wingspan": 77.83
+				},
+				"GLF5": {
+					"name": "V/500/550",
+					"search": [
+						"Gulfstream G-V ",
+						"Gulfstream GV ",
+						"Gulfstream V ",
+						"Gulfstream G500",
+						"Gulfstream 500",
+						"Gulfstream G550",
+						"Gulfstream 550"
+					],
+					"series": "Gulfstream",
+					"wingspan": 93.5
+				},
+				"GLF6": {
+					"name": "600/650",
+					"search": [
+						"Gulfstream G-VI",
+						"Gulfstream GVI",
+						"Gulfstream VI",
+						"Gulfstream G600",
+						"Gulfstream 600",
+						"Gulfstream G650",
+						"Gulfstream 650"
+					],
+					"series": "Gulfstream",
+					"wingspan": 99.58333333
+				}
+			}
+		},
+		"Hawker Beechcraft": {
+			"search": ["Hawker", "Hawker Beechcraft", "BAe"],
+			"types": {
+				"H25B": {
+					"name": "750/800/850/900/950 / HS125-700/800",
+					"search": [
+						"Hawker 750",
+						"Hawker 800",
+						"Hawker 850",
+						"Hawker 900",
+						"Hawker 950",
+						"HS125-7",
+						"HS125-8",
+						"HS-125-7",
+						"HS-125-8"
+					],
+					"wingspan": 51.375
+				}
+			}
+		},
+		"Ilyushin": {
+			"search": ["Ilyushin"],
+			"types": {
+				"IL62": { "name": "IL-62", "search": ["IL62", "IL-62"], "series": "Il-Prop", "wingspan": 141.75 },
+				"IL76": { "name": "IL-76", "search": ["IL76", "IL-76"], "series": "Il-Jet", "wingspan": 165.67 },
+				"IL86": { "name": "IL-86", "search": ["IL86", "IL-86"], "series": "Il-Jet", "wingspan": 157.67 },
+				"IL96": { "name": "IL-96", "search": ["IL96", "IL-96"], "series": "Il-Jet", "wingspan": 197.25 }
+			}
+		},
+		"Learjet": {
+			"search": ["Learjet"],
+			"types": {
+				"LJ24": { "name": "24", "search": ["Learjet 24", "LJ24", "LJ-24"], "wingspan": 35.58 },
+				"LJ25": { "name": "25", "search": ["Learjet 25", "LJ25", "LJ-25"], "wingspan": 35.58 },
+				"LJ31": { "name": "31", "search": ["Learjet 31", "LJ31", "LJ-31"], "wingspan": 43.83 },
+				"LJ35": { "name": "35", "search": ["Learjet 35", "LJ35", "LJ-35"], "wingspan": 39.5 },
+				"LJ40": { "name": "40", "search": ["Learjet 40", "LJ40", "LJ-40"], "wingspan": 47.77 },
+				"LJ45": { "name": "45", "search": ["Learjet 45", "LJ45", "LJ-45"], "wingspan": 47.77 },
+				"LJ55": { "name": "55", "search": ["Learjet 55", "LJ55", "LJ-55"], "wingspan": 43.83 },
+				"LJ60": { "name": "60", "search": ["Learjet 60", "LJ60", "LJ-60"], "wingspan": 43.75 },
+				"LJ75": { "name": "75", "search": ["Learjet 75", "LJ75", "LJ-75"], "wingspan": 50.92 }
+			}
+		},
+		"Lockheed": {
+			"search": ["Lockheed"],
+			"types": {
+				"C130": { "name": "", "search": ["C130", "C-130", "L100", "Hercules"], "wingspan": 132.58 }
+			}
+		},
+		"McDonnell Douglas": {
+			"search": ["McDonnell Douglas", "McDonnell-Douglas"],
+			"types": {
+				"DC10": {
+					"name": "DC-10",
+					"search": ["DC10", "DC-10", "MD10", "MD-10"],
+					"series": "DC-10",
+					"wingspan": 165.42
+				},
+				"MD11": { "name": "MD-11", "search": ["MD11", "MD-11"], "series": "DC-10", "wingspan": 169.83 },
+				"MD80": {
+					"name": "MD-80/81/82/83/88",
+					"search": ["/MD[- ]?(?:80|81|82|83|88)/"],
+					"series": "MD-80",
+					"wingspan": 107.83
+				},
+				"MD87": { "name": "MD-87", "search": ["MD87", "MD-87"], "series": "MD-80", "wingspan": 107.83 },
+				"MD90": { "name": "MD-90", "search": ["MD90", "MD-90"], "series": "MD-80", "wingspan": 107.83 }
+			}
+		},
+		"Pilatus": {
+			"search": ["Pilatus"],
+			"types": {
+				"PC12": { "name": "PC-12", "search": ["PC12", "PC-12"], "wingspan": 53.41666667 }
+			}
+		},
+		"Piper": {
+			"search": ["Piper"],
+			"types": {
+				"PA28": {
+					"name": "PA-28",
+					"search": ["PA28", "PA-28", "Piper 28"],
+					"series": "Single Engine",
+					"wingspan": 30
+				},
+				"PA46": {
+					"name": "PA-46",
+					"search": ["PA46", "PA-46", "Piper 46"],
+					"series": "Single Engine",
+					"wingspan": 43
+				},
+				"PA23": {
+					"name": "PA-23",
+					"search": ["PA23", "PA-23", "Piper 23"],
+					"series": "Twin Engine",
+					"wingspan": 37.20833333
+				},
+				"PA31": {
+					"name": "PA-31",
+					"search": ["PA31", "PA-31", "Piper 31"],
+					"series": "Twin Engine",
+					"wingspan": 40.666667
+				},
+				"PA34": {
+					"name": "PA-34",
+					"search": ["PA34", "PA-34", "Piper 34"],
+					"series": "Twin Engine",
+					"wingspan": 38.90583333
+				},
+				"PA44": {
+					"name": "PA-44",
+					"search": ["PA44", "PA-44", "Piper 44"],
+					"series": "Twin Engine",
+					"wingspan": 38.60416667
+				}
+			}
+		},
+		"Saab": {
+			"search": ["Saab"],
+			"types": {
+				"S340": {
+					"name": "340/100",
+					"search": ["Saab 340", "Saab S340", "Saab 100", "Saab S100"],
+					"wingspan": 70.33
+				},
+				"SB20": { "name": "2000", "search": ["Saab 2000", "Saab S2000"], "wingspan": 81.25 }
+			}
+		},
+		"Shorts": {
+			"search": ["Shorts"],
+			"types": {
+				"SD36": { "name": "SD-360", "search": ["/SD-?3-?[36]0/"], "wingspan": 74.83 }
+			}
+		},
+		"Sukhoi": {
+			"search": ["Sukhoi"],
+			"types": {
+				"SU95": { "name": "Su-195", "search": ["/SSJ-?100/", "Su195", "Su-195"], "wingspan": 91.2 }
+			}
+		},
+		"Swaeringen": {
+			"search": ["Swaeringen", "Fairchild"],
+			"types": {
+				"METRO": { "name": "Metro II/III/IV / Merlin", "search": ["Metro", "Merlin"], "wingspan": 45.92 }
+			}
+		},
+		"Tupolev": {
+			"search": ["Tupolev"],
+			"types": {
+				"T134": { "name": "Tu-134", "search": ["Tu134", "Tu-134"], "wingspan": 95.17 },
+				"T154": { "name": "Tu-154", "search": ["Tu154", "Tu-154"], "wingspan": 123.25 },
+				"T204": { "name": "Tu-204", "search": ["Tu204", "Tu-204"], "wingspan": 137.17 }
+			}
+		},
+		"Yakolev": {
+			"search": ["Yakolev"],
+			"types": {
+				"YK40": { "name": "Yak-40", "search": ["Yak40", "Yak-40"], "wingspan": 82.0 },
+				"YK42": { "name": "Yak-42", "search": ["Yak42", "Yak-42"], "wingspan": 114.42 }
+			}
+		},
+		"Cirrus": {
+			"search": ["Cirrus"],
+			"types": {
+				"PROP": { "name": "General Prop", "search": ["/SR[- ]?2[02]/"] }
+			}
+		},
+		"Diamond": {
+			"search": ["Diamond"],
+			"types": {
+				"PROP": { "name": "General Prop", "search": ["DA40", "DA-40"] }
+			}
+		},
+		"Robin": {
+			"search": ["Robin"],
+			"types": {
+				"PROP": { "name": "General Prop", "search": ["DR400", "DR-400"] }
+			}
+		}
+	}
+}
