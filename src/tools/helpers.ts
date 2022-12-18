@@ -187,16 +187,10 @@ export function clone(obj: object) {
 /**
  * Concatenates the items of a string array with a comma, except for the last two items which use "and".
  * @param {string[]} items - The strings to be listed
- * @returns "a, b, c, d, e and f"
+ * @returns "a, b, c, d, e, and f"
  */
 export function listStringItems(...items: string[]) {
-	if (items.length === 1) return items[0];
-
-	const allButLast = items.filter((item, index) => index < items.length - 1);
-
-	const ret = `${allButLast.join(', ')} and ${items[items.length - 1]}`;
-
-	return ret;
+	return new Intl.ListFormat('en', { style: 'long', type: 'conjunction' }).format(items);
 }
 
 /**

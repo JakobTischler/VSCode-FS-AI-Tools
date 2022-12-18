@@ -226,11 +226,29 @@ async function groupFlightplansTxt(fileContents: string, aircraftData: TParsedAi
 		);
 	}
 
+	const appendWingspan = config.get('groupByAircraftType.addWingspanToGroupHeadline');
+	const FEET_TO_METERS = 0.3048;
+
 	const textGroups = aircraftTypeGroups
 		.filter((aircraftType) => aircraftType.aircraftCount > 0)
 		.map((aircraftType) => {
 			// Main header line
-			const header = `//${aircraftType.name}`;
+			let header = `//${aircraftType.name}`;
+			if (appendWingspan === 'Imperial') {
+				header += ` (${aircraftType.wingspan.toLocaleString('en-US', {
+					style: 'unit',
+					unit: 'foot',
+					minimumFractionDigits: 1,
+					maximumFractionDigits: 2,
+				})})`;
+			} else if (appendWingspan === 'Metric') {
+				header += ` (${(aircraftType.wingspan * FEET_TO_METERS).toLocaleString('en-US', {
+					style: 'unit',
+					unit: 'meter',
+					minimumFractionDigits: 1,
+					maximumFractionDigits: 2,
+				})})`;
+			}
 
 			const content = [...aircraftType.liveries].map((livery) => {
 				if (livery.hasValidNum) {
@@ -253,7 +271,7 @@ async function groupFlightplansTxt(fileContents: string, aircraftData: TParsedAi
 
 	// TODO find main header lines (before first AC)
 	// let output = headerLines.length ? headerLines.join('\n') + '\n' : '';
-	const output = textGroups.join('\n' + '\n'.repeat(numEmptyLines));
+	const output = textGroups.join('\n' + '\n'.repeat(numEmptyLines)) + '\n';
 
 	console.log({ textGroups, output });
 	return output;

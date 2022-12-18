@@ -6,7 +6,7 @@
 	},
 	"displayName": "FS AI Tools",
 	"description": "A bag of tools for AI flightplans and .cfg files",
-	"version": "1.6.2",
+	"version": "1.7.0",
 	"icon": "icon.png",
 	"license": "",
 	"engines": {
@@ -933,7 +933,7 @@
 				"properties": {
 					"fs-ai-tools.groupByAircraftType._ShowInContextMenu": {
 						"type": "boolean",
-						"default": true,
+						"default": false,
 						"title": "Add to Context Menu",
 						"markdownDescription": "Adds the \"Group by Aircraft Type\" command to the context menu when a `Aircraft….txt` or `Flightplan….txt` file is open.",
 						"scope": "window"
@@ -956,6 +956,21 @@
 						"type": "boolean",
 						"default": true,
 						"markdownDescription": "If active, the aircraft groups are sorted by their respective wingspans in descending order. The wingspan values can be defined in the custom aircraft data JSON file (*`#fs-ai-tools.showAircraftList.customDataFilePath#`*).",
+						"scope": "window"
+					},
+					"fs-ai-tools.groupByAircraftType.addWingspanToGroupHeadline": {
+						"type": "string",
+						"default": "Off",
+						"enum": [
+							"Off",
+							"Imperial",
+							"Metric"
+						],
+						"enumDescriptions": [
+							"Doesn't append the wingspan",
+							"Appends the wingspan, converted to feet",
+							"Appends the wingspan, converted to meters"
+						],
 						"scope": "window"
 					}
 				}

@@ -254,11 +254,26 @@ Extracts the airports from a `Flightplans.txt` file, and uses an airports master
 ---
 <br>
 
+### Group by Aircraft Type
+
+Matches all aircraft to aircraft types, then groups them by those aircraft types, optionally sorts by wingspan, and outputs the list which each group separated by a defined number of empty lines.
+
+Additionally, when using this command in a `Flightplans….txt` file, adds aircraft name and livery variation comments before each block.
+
+The wingspan is defined in the base aircraft data and can be adjusted or appended in the custom aircraft data .json file, as defined in `fs-ai-tools.showAircraftList.customDataFilePath`.
+
+Further settings in: `fs-ai-tools.groupByAircraftType`
+<br>
+<br>
+
+---
+<br>
+
 ### Rebase AC#s
 Sets up a new AC# sequence for the selected aircraft, based on a large and a small step size. Sequential AC#s with the same number will get identical numbers, sequential AC#s with different numbers will get numbers with an increased small step, separations by a configurable number of empty lines will start a new "group" based on the large step size.
 
 * Works both with Aircraft.txt and Flightplans.txt files.
-* Number of empty lines for new groups: `fs-ai-tools.rebaseAircraftNumbers.groupSeparationAircraftTxt` and `fs-ai-tools.rebaseAircraftNumbers.groupSeparationFlightplansTxt`
+* Number of empty lines for new groups: `fs-ai-tools.rebaseAircraftNumbers.emptyLinesBetweenGroupsAircraftTxt` and `fs-ai-tools.rebaseAircraftNumbers.emptyLinesBetweenGroupsFlightplansTxt`
 
 #### Example
 * **Old**:
