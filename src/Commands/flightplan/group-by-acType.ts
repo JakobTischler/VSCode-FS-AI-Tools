@@ -61,8 +61,7 @@ export async function GroupByAircraftType() {
 
 		newFileContents = output;
 	} else {
-		// TODO flightplan
-		groupFlightplansTxt(editor.document.getText(), aircraftData);
+		newFileContents = await groupFlightplansTxt(editor.document.getText(), aircraftData);
 	}
 
 	if (newFileContents?.length) {
@@ -158,9 +157,11 @@ async function groupAircraftTxt(
 		})
 		.flat(3);
 
-	const numEmptyLines = await getNumberInput(
-		config.get('groupByAircraftType.emptyLinesBetweenGroupsAircraftTxt') || '1',
-		'Empty lines between groups'
+	const numEmptyLines = Number(
+		await getNumberInput(
+			config.get('groupByAircraftType.emptyLinesBetweenGroupsAircraftTxt') || '1',
+			'Empty lines between groups'
+		)
 	);
 
 	let output = headerLines.length ? headerLines.join('\n') + '\n' : '';
@@ -200,15 +201,6 @@ function getAircraftTypeFromLine(
 
 async function groupFlightplansTxt(fileContents: string, aircraftData: TParsedAircraftTxtData) {
 	/*
-	 *    [ ] a. create arrays of AC#s (should already be done in (1.)?)
-	 *    [ ] b. for each group, use ac title as header
-	 *    [ ] c. if new acNum, but same acType: inset header, no empty line
-	 *    [ ] d. if new acNum and different acType: empty lines (from config) and new header
-	 *    [ ] e. [STRETCH GOAL]: parse titles of same acType to find base title and subsequent variation names
-	 *    [ ] f. [STRETCH GOAL] optionally sort by radius (create new config setting)
-	 */
-
-	/*
 	 * —————————————————————————————————————————————————————————————————————————
 	 * Parse flightplan to get all aircraft matched to aircraft types and
 	 * liveries
@@ -216,7 +208,7 @@ async function groupFlightplansTxt(fileContents: string, aircraftData: TParsedAi
 
 	// Parse flightplan
 	const flightplan = new Flightplan(fileContents);
-	flightplan.parse(aircraftData.aircraftTypes, aircraftData.aircraftLiveries);
+	flightplan.parse(aircraftData.aircraftTypes, aircraftData.aircraftLiveries, false);
 	// console.log({ flightplan });
 	// console.log({ aircraftData });
 
@@ -224,11 +216,17 @@ async function groupFlightplansTxt(fileContents: string, aircraftData: TParsedAi
 	 * —————————————————————————————————————————————————————————————————————————
 	 * Sort by wingspan
 	 */
-	const aircraftTypesSorted = [...aircraftData.aircraftTypes.values()].sort((a: AircraftType, b: AircraftType) =>
-		Math.sign(b.wingspan! - a.wingspan!)
-	);
+	const config = vscode.workspace.getConfiguration('fs-ai-tools', undefined);
+	const sort = config.get('groupByAircraftType.sortByWingspan');
 
-	const textGroups = aircraftTypesSorted
+	let aircraftTypeGroups = [...aircraftData.aircraftTypes.values()];
+	if (sort) {
+		aircraftTypeGroups = aircraftTypeGroups.sort((a: AircraftType, b: AircraftType) =>
+			Math.sign(b.wingspan! - a.wingspan!)
+		);
+	}
+
+	const textGroups = aircraftTypeGroups
 		.filter((aircraftType) => aircraftType.aircraftCount > 0)
 		.map((aircraftType) => {
 			// Main header line
@@ -239,12 +237,24 @@ async function groupFlightplansTxt(fileContents: string, aircraftData: TParsedAi
 					const header = `\t//${livery.title}`;
 					const content = livery.aircraft.map((aircraft) => aircraft.text);
 
-					return [header, ...content];
+					return [header, ...content].join('\n').trimEnd();
 				}
 			});
 
-			return [header, ...content];
+			return [header, ...content].join('\n').trimEnd();
 		});
 
-	console.log({ textGroups });
+	const numEmptyLines = Number(
+		await getNumberInput(
+			config.get('groupByAircraftType.emptyLinesBetweenGroupsFlightplansTxt') || '1',
+			'Empty lines between groups'
+		)
+	);
+
+	// TODO find main header lines (before first AC)
+	// let output = headerLines.length ? headerLines.join('\n') + '\n' : '';
+	const output = textGroups.join('\n' + '\n'.repeat(numEmptyLines));
+
+	console.log({ textGroups, output });
+	return output;
 }

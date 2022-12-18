@@ -70,7 +70,7 @@ export class Flightplan {
 		}
 	}
 
-	parse(aircraftTypes: TAircraftTypesByTypeCode, aircraftLiveries: TAircraftLiveriesByAcNum) {
+	parse(aircraftTypes: TAircraftTypesByTypeCode, aircraftLiveries: TAircraftLiveriesByAcNum, parseSegments = true) {
 		// https://regex101.com/r/bquXX3/2
 
 		// GO THROUGH FLIGHTPLAN, CREATE AIRCRAFT AND THEIR ROUTES
@@ -101,48 +101,56 @@ export class Flightplan {
 					);
 
 					// Segments
-					const segmentMatches = line.matchAll(segmentsRegex);
-					if (segmentMatches) {
-						const segmentsArray = [...segmentMatches];
-						for (const [index, match] of segmentsArray.entries()) {
-							// Length can be 1+7, or 1+9 if the flightplan is multi-week
+					if (parseSegments) {
+						const segmentMatches = line.matchAll(segmentsRegex);
+						if (segmentMatches) {
+							const segmentsArray = [...segmentMatches];
+							for (const [index, match] of segmentsArray.entries()) {
+								// Length can be 1+7, or 1+9 if the flightplan is multi-week
 
-							// const prevMatch = segmentsArray.at(index - 1);
-							const prevMatch = segmentsArray[index === 0 ? segmentsArray.length - 1 : index - 1];
+								// const prevMatch = segmentsArray.at(index - 1);
+								const prevMatch = segmentsArray[index === 0 ? segmentsArray.length - 1 : index - 1];
 
-							if (match.length >= 8 && prevMatch) {
-								const g = match.groups;
-								if (!g) continue;
+								if (match.length >= 8 && prevMatch) {
+									const g = match.groups;
+									if (!g) continue;
 
-								const depApt = this.airports.get(prevMatch.groups!.arrApt);
-								const arrApt = this.airports.get(g.arrApt);
+									const depApt = this.airports.get(prevMatch.groups!.arrApt);
+									const arrApt = this.airports.get(g.arrApt);
 
-								if (!depApt) {
-									showError(`Departure airport "${prevMatch.groups!.arrApt}" couldn't be found.`);
-									continue;
+									if (!depApt) {
+										showError(`Departure airport "${prevMatch.groups!.arrApt}" couldn't be found.`);
+										continue;
+									}
+									if (!arrApt) {
+										showError(`Arrival airport "${g.arrApt}" couldn't be found.`);
+										continue;
+									}
+
+									// Optional data
+									const optionalData: Partial<TRouteSegmentData> = {
+										flightLevel: Number(g.flightLevel),
+										flightNum: Number(g.flightNum),
+									};
+									if (g.depWeek !== undefined) optionalData.depWeek = Number(g.depWeek);
+									if (g.depDay !== undefined) optionalData.depDay = Number(g.depDay);
+									if (g.arrWeek !== undefined) optionalData.arrWeek = Number(g.arrWeek);
+									if (g.arrDay !== undefined) optionalData.arrDay = Number(g.arrDay);
+
+									const segment = new RouteSegment(
+										depApt,
+										g.depTime,
+										arrApt,
+										g.arrTime,
+										optionalData
+									);
+
+									// Add to aircraft
+									aircraft.segments.push(segment);
+
+									// Add to flightplan / update
+									this.addRouteSegment(segment, aircraft);
 								}
-								if (!arrApt) {
-									showError(`Arrival airport "${g.arrApt}" couldn't be found.`);
-									continue;
-								}
-
-								// Optional data
-								const optionalData: Partial<TRouteSegmentData> = {
-									flightLevel: Number(g.flightLevel),
-									flightNum: Number(g.flightNum),
-								};
-								if (g.depWeek !== undefined) optionalData.depWeek = Number(g.depWeek);
-								if (g.depDay !== undefined) optionalData.depDay = Number(g.depDay);
-								if (g.arrWeek !== undefined) optionalData.arrWeek = Number(g.arrWeek);
-								if (g.arrDay !== undefined) optionalData.arrDay = Number(g.arrDay);
-
-								const segment = new RouteSegment(depApt, g.depTime, arrApt, g.arrTime, optionalData);
-
-								// Add to aircraft
-								aircraft.segments.push(segment);
-
-								// Add to flightplan / update
-								this.addRouteSegment(segment, aircraft);
 							}
 						}
 					}
@@ -150,7 +158,9 @@ export class Flightplan {
 			}
 		}
 
-		this.createAirportPairsList();
+		if (parseSegments) {
+			this.createAirportPairsList();
+		}
 	}
 
 	addRouteSegment(segment: RouteSegment, aircraft: Aircraft) {
