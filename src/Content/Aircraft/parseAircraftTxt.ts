@@ -101,11 +101,12 @@ export function getAircraftLiveries(text: string, allowInactive = false, allowIn
 		inactive: new Set<AircraftLivery>(),
 	};
 
-	let regex = allowInactive ? `^(?<active>AC|//)#` : `^AC#`;
-	regex += allowInvalidNumber ? '(?<acNum>.+)' : '(?<acNum>\\d+)';
-	regex += `,\\d+,"(?<title>.*)"`;
+	let regexStr = allowInactive ? `^(?<active>AC|//)#` : `^(?<active>AC)#`;
+	regexStr += allowInvalidNumber ? '(?<acNum>.+)' : '(?<acNum>\\d+)';
+	regexStr += `,\\d+,"(?<title>.*)"`;
+	const regex = new RegExp(regexStr, 'gm');
 
-	const matches = text.matchAll(new RegExp(regex, 'gm'));
+	const matches = text.matchAll(regex);
 	if (matches) {
 		for (const match of [...matches]) {
 			const { active, acNum, title } = match.groups!;
