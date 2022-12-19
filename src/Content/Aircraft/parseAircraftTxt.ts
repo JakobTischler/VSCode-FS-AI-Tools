@@ -146,8 +146,9 @@ export function countAircraftSimple(data: TAircraftLiveriesByAcNum, flightplanTe
  * @returns a JSON object with the aircraft names and types.
  */
 async function getAircraftTypeMetaData() {
-	const config = vscode.workspace.getConfiguration('fs-ai-tools.showAircraftList', undefined);
-	const customDataPath = config.get('customDataFilePath') as string;
+	const customDataPath = vscode.workspace
+		.getConfiguration('fs-ai-tools', undefined)
+		.get('aircraftDataFilePath') as string;
 
 	if (customDataPath?.length) {
 		// Get custom file contents

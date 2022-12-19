@@ -315,12 +315,12 @@
 				{
 					"command": "fsAiTools.cleanAircraftCfg",
 					"group": "FS AI Tools",
-					"when": "config.fs-ai-tools.cleanAircraftCfg._ShowCleanAircraftCfgInContextMenu && resourceFilename =~ /aircraft.cfg/i"
+					"when": "config.fs-ai-tools.cleanAircraftCfg._ShowInContextMenu && resourceFilename =~ /aircraft.cfg/i"
 				},
 				{
 					"command": "fsAiTools.cleanFlightplan",
 					"group": "FS AI Tools",
-					"when": "config.fs-ai-tools.cleanFlightplan._ShowCleanFlightplanInContextMenu && resourceFilename =~ /^flightplans.*txt$/i"
+					"when": "config.fs-ai-tools.cleanFlightplan._ShowInContextMenu && resourceFilename =~ /^flightplans.*txt$/i"
 				},
 				{
 					"command": "fsAiTools.changeAircraftNumber",
@@ -429,6 +429,26 @@
 		"configuration": [
 			{
 				"type": "object",
+				"title": "General",
+				"properties": {
+					"fs-ai-tools.aircraftDataFilePath": {
+						"type": "string",
+						"default": "",
+						"title": "Custom Aicraft Data File Path",
+						"markdownDescription": "Full path to a custom aircraft data JSON file. Will overwrite / add to default aircraft data. See _*[TODO]()*_ for format.",
+						"scope": "window"
+					},
+					"fs-ai-tools.masterAirportsFilePath": {
+						"type": "string",
+						"default": "",
+						"title": "Master Airports File Path",
+						"markdownDescription": "Full path to a master airports file. Used by `Generate Airports` and `Show Airline View`.",
+						"scope": "window"
+					}
+				}
+			},
+			{
+				"type": "object",
 				"title": "Airline View",
 				"properties": {
 					"fs-ai-tools.airlineView._ShowInContextMenu": {
@@ -466,7 +486,7 @@
 				"type": "object",
 				"title": "Clean aircraft.cfg",
 				"properties": {
-					"fs-ai-tools.cleanAircraftCfg._ShowCleanAircraftCfgInContextMenu": {
+					"fs-ai-tools.cleanAircraftCfg._ShowInContextMenu": {
 						"type": "boolean",
 						"default": true,
 						"title": "Add to Context Menu",
@@ -577,7 +597,7 @@
 				"type": "object",
 				"title": "Clean Flightplan",
 				"properties": {
-					"fs-ai-tools.cleanFlightplan._ShowCleanFlightplanInContextMenu": {
+					"fs-ai-tools.cleanFlightplan._ShowInContextMenu": {
 						"type": "boolean",
 						"default": true,
 						"title": "Add to Context Menu",
@@ -696,7 +716,7 @@
 				"type": "object",
 				"title": "Create aircraft",
 				"properties": {
-					"fs-ai-tools.createAircraft._ShowCreateAircraftInContextMenu": {
+					"fs-ai-tools.createAircraft._ShowInContextMenu": {
 						"type": "boolean",
 						"default": true,
 						"title": "Add to Context Menu",
@@ -785,7 +805,7 @@
 				"type": "object",
 				"title": "Generate Airports",
 				"properties": {
-					"fs-ai-tools.generateAirports._showInContextMenu": {
+					"fs-ai-tools.generateAirports.showInContextMenu": {
 						"type": "boolean",
 						"default": false,
 						"title": "Add to Context Menu",
@@ -795,8 +815,10 @@
 					"fs-ai-tools.generateAirports.masterAirportsFilePath": {
 						"type": "string",
 						"default": "",
-						"title": "Master Airports File Path",
+						"title": "[Deprecated] Master Airports File Path",
 						"markdownDescription": "Full path to a master airports file. Will be used to select airport data.",
+						"deprecationMessage": "Deprecated: Please use fs-ai-tools.masterAirportsFilePath instead.",
+						"markdownDeprecationMessage": "**Deprecated**: Please use `#fs-ai-tools.masterAirportsFilePath#` instead.",
 						"scope": "window"
 					}
 				}
@@ -805,7 +827,7 @@
 				"type": "object",
 				"title": "Match AC#s",
 				"properties": {
-					"fs-ai-tools.matchAcNumbers._showInContextMenu": {
+					"fs-ai-tools.matchAcNumbers.showInContextMenu": {
 						"type": "boolean",
 						"default": false,
 						"title": "Add to Context Menu",
@@ -818,7 +840,7 @@
 				"type": "object",
 				"title": "Rename files",
 				"properties": {
-					"fs-ai-tools.renameFiles._ShowRenameFilesInContextMenu": {
+					"fs-ai-tools.renameFiles._ShowInContextMenu": {
 						"type": "boolean",
 						"default": true,
 						"title": "Add to Context Menu",
@@ -855,8 +877,10 @@
 					"fs-ai-tools.showAircraftList.customDataFilePath": {
 						"type": "string",
 						"default": "",
-						"title": "Custom Aicraft Data File Path",
+						"title": "[Deprecated] Custom Aicraft Data File Path",
 						"markdownDescription": "Full path to a custom aircraft data JSON file. Will overwrite / add to default aircraft data. See _*[TODO]()*_ for format.",
+						"deprecationMessage": "Deprecated: Please use fs-ai-tools.aircraftDataFilePath instead.",
+						"markdownDeprecationMessage": "**Deprecated**: Please use `#fs-ai-tools.aircraftDataFilePath#` instead.",
 						"scope": "window"
 					}
 				}
@@ -955,7 +979,7 @@
 					"fs-ai-tools.groupByAircraftType.sortByWingspan": {
 						"type": "boolean",
 						"default": true,
-						"markdownDescription": "If active, the aircraft groups are sorted by their respective wingspans in descending order. The wingspan values can be defined in the custom aircraft data JSON file (*`#fs-ai-tools.showAircraftList.customDataFilePath#`*).",
+						"markdownDescription": "If active, the aircraft groups are sorted by their respective wingspans in descending order. The wingspan values can be defined in the custom aircraft data JSON file (*`#fs-ai-tools.aircraftDataFilePath#`*).",
 						"scope": "window"
 					},
 					"fs-ai-tools.groupByAircraftType.addWingspanToGroupHeadline": {
@@ -979,7 +1003,7 @@
 				"type": "object",
 				"title": "Rebase Aircraft Numbers",
 				"properties": {
-					"fs-ai-tools.rebaseAircraftNumbers.showInContextMenu": {
+					"fs-ai-tools.rebaseAircraftNumbers._ShowInContextMenu": {
 						"type": "boolean",
 						"default": true,
 						"title": "Add to Context Menu",

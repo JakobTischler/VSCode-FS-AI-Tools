@@ -16,7 +16,10 @@ type TDistanceUnit = keyof typeof EDistanceUnitFactors;
 
 export class Distance {
 	/** Earth's radius in meters */
-	private static EarthRadius = 6_371_000;
+	private static EARTH_RADIUS = 6_371_000;
+
+	/** Factor to convert a value from degrees to radians. Equals `π / 180`. */
+	private static DEG_TO_RAD = 0.017453292519943295;
 
 	/** Distance in meters */
 	value: number;
@@ -38,26 +41,27 @@ export class Distance {
 		}
 
 		// Convert the latitudes from degrees to radians.
-		const φ1 = Math.degToRad(from.lat.factoredValue); // φ, λ in radians
-		const φ2 = Math.degToRad(to.lat.factoredValue);
+		const φ1 = from.lat.factoredValue * Distance.DEG_TO_RAD;
+		const φ2 = to.lat.factoredValue * Distance.DEG_TO_RAD;
 
 		// Converting the difference in latitude to radians.
-		const Δφ = Math.degToRad(to.lat.factoredValue - from.lat.factoredValue);
-		const Δλ = Math.degToRad(to.lon.factoredValue - from.lon.factoredValue);
+		const Δφ = (to.lat.factoredValue - from.lat.factoredValue) * Distance.DEG_TO_RAD;
+		const Δλ = (to.lon.factoredValue - from.lon.factoredValue) * Distance.DEG_TO_RAD;
 
 		// Haversine formula for calculating the distance between two points on a sphere.
 		const a = sin(Δφ / 2) * sin(Δφ / 2) + cos(φ1) * cos(φ2) * sin(Δλ / 2) * sin(Δλ / 2);
 		const c = 2 * atan2(sqrt(a), sqrt(1 - a));
 
 		/** Distance in meters */
-		return Distance.EarthRadius * c;
+		return Distance.EARTH_RADIUS * c;
 	}
 
 	/** Distance formatted to either kilometers, miles or nautical miles
 	 * (depending on extension setting), with grouping and unit */
 	get formatted() {
-		const config = vscode.workspace.getConfiguration('fs-ai-tools.airlineView', undefined);
-		const distanceUnit = config.get('distanceUnit') as TDistanceUnit;
+		const distanceUnit = vscode.workspace
+			.getConfiguration('fs-ai-tools.airlineView', undefined)
+			.get('distanceUnit') as TDistanceUnit;
 		const distanceFactor = EDistanceUnitFactors[distanceUnit];
 
 		return `${(this.value * distanceFactor).toLocaleString(undefined, {

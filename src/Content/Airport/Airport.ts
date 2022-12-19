@@ -90,7 +90,7 @@ export type TAirportCodeToLine = Map<string, string>;
  */
 export async function getMasterAirports(storageManager: LocalStorageService) {
 	const filePath = vscode.workspace
-		.getConfiguration('fs-ai-tools.generateAirports', undefined)
+		.getConfiguration('fs-ai-tools', undefined)
 		.get('masterAirportsFilePath') as string;
 	if (!filePath?.length) {
 		showError('Master airports file path has not been set in settings.');

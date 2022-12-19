@@ -1,6 +1,7 @@
 out
 node_modules
 *.vsix
+bin
 vsc-extension-quickstart*
 src/test
 

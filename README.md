@@ -18,7 +18,7 @@ A Visual Studio Code extension for managing, cleaning and improving FS/Prepar3D 
 * Requires an `aifp.cfg` file in the flightplan directory, containing the airline metadata.
 * Logo will be searched in flightplan directory ("logo.png/jpg" or "[callsign].png/jpg") or a custom logo directory ("directory/[callsign].png/jpg")
 * Custom logo directory path can be set with the `fs-ai-tools.airlineView.logoDirectoryPath` setting.
-* Can use master airports file (`fs-ai-tools.generateAirports.masterAirportsFilePath`) if an airport is not found in flightplan's Airports.txt file.
+* Can use master airports file (`fs-ai-tools.masterAirportsFilePath`) if an airport is not found in flightplan's Airports.txt file.
 * Routemap view, using [Great Circle Mapper](http://www.gcmap.com/). Each aircraft type can be toggled.
 
 <br>
@@ -247,7 +247,7 @@ For any aircraft title found in `aircraft.txt` file (or selection), find corresp
 
 ### Generate Airports
 
-Extracts the airports from a `Flightplans.txt` file, and uses an airports master file (containing every possible airport entry) to create this flightplan's `Airports.txt` file. The file path to the master file must be provided in the `fs-ai-tools.generateAirports.masterAirportsFilePath` setting.
+Extracts the airports from a `Flightplans.txt` file, and uses an airports master file (containing every possible airport entry) to create this flightplan's `Airports.txt` file. The file path to the master file must be provided in the `fs-ai-tools.masterAirportsFilePath` setting.
 <br>
 <br>
 
@@ -260,7 +260,7 @@ Matches all aircraft to aircraft types, then groups them by those aircraft types
 
 Additionally, when using this command in a `Flightplans….txt` file, adds aircraft name and livery variation comments before each block.
 
-The wingspan is defined in the base aircraft data and can be adjusted or appended in the custom aircraft data .json file, as defined in `fs-ai-tools.showAircraftList.customDataFilePath`.
+The wingspan is defined in the base aircraft data and can be adjusted or appended in the custom aircraft data .json file, as defined in `fs-ai-tools.aircraftDataFilePath`.
 
 Further settings in: `fs-ai-tools.groupByAircraftType`
 <br>

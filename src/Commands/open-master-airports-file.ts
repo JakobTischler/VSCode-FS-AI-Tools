@@ -3,18 +3,17 @@ import { workspace, Uri, Position, window, Selection, Range } from 'vscode';
 import { showErrorModal } from '../Tools/helpers';
 
 /**
- * Opens the master airports file set at `fs-ai-tools.generateAirports` and sets
- * the cursor to the end of the file. Shows an error if file path isn't set.
+ * Opens the master airports file set at `fs-ai-tools.masterAirportsFilePath`
+ * and sets the cursor to the end of the file. Shows an error if file path isn't
+ * set.
  */
 export function OpenMasterAirportsFile() {
-	const filePath = workspace
-		.getConfiguration('fs-ai-tools.generateAirports', undefined)
-		.get('masterAirportsFilePath') as string;
+	const filePath = workspace.getConfiguration('fs-ai-tools', undefined).get('masterAirportsFilePath') as string;
 
 	if (!filePath.length) {
 		showErrorModal(
 			'File path not set',
-			"The file path to the master airports file isn't set. Check the `fs-ai-tools.generateAirports.masterAirportsFilePath` setting."
+			"The file path to the master airports file isn't set. Check the `fs-ai-tools.masterAirportsFilePath` setting."
 		);
 		return;
 	}
