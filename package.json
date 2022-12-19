@@ -330,7 +330,7 @@
 				{
 					"command": "fsAiTools.countAircraft",
 					"group": "FS AI Tools",
-					"when": "config.fs-ai-tools.countAircraft.showInContextMenu && resourceFilename =~ /^flightplans.*txt$/i"
+					"when": "config.fs-ai-tools.countAircraft._ShowInContextMenu && resourceFilename =~ /^flightplans.*txt$/i"
 				},
 				{
 					"command": "fsAiTools.createAifpCfg",
@@ -365,7 +365,7 @@
 				{
 					"command": "fsAiTools.generateAirports",
 					"group": "FS AI Tools",
-					"when": "config.fs-ai-tools.generateAirports._showInContextMenu && resourceFilename =~ /^flightplans.*txt$/i"
+					"when": "config.fs-ai-tools.generateAirports.showInContextMenu && resourceFilename =~ /^flightplans.*txt$/i"
 				},
 				{
 					"command": "fsAiTools.groupByAircraftType",
@@ -375,12 +375,12 @@
 				{
 					"command": "fsAiTools.matchAcNumbers",
 					"group": "FS AI Tools",
-					"when": "config.fs-ai-tools.matchAcNumbers._showInContextMenu && resourceFilename =~ /^flightplans.*txt$/i"
+					"when": "config.fs-ai-tools.matchAcNumbers.showInContextMenu && resourceFilename =~ /^flightplans.*txt$/i"
 				},
 				{
 					"command": "fsAiTools.rebaseAircraftNumbers",
 					"group": "FS AI Tools",
-					"when": "config.fs-ai-tools.rebaseAircraftNumbers.showInContextMenu && resourceFilename =~ /^((flightplans)|(aircraft)).*txt$/i"
+					"when": "config.fs-ai-tools.rebaseAircraftNumbers._ShowInContextMenu && resourceFilename =~ /^((flightplans)|(aircraft)).*txt$/i"
 				},
 				{
 					"command": "fsAiTools.renameFiles",
@@ -478,6 +478,19 @@
 						"default": "",
 						"title": "Logo Directory Path",
 						"markdownDescription": "Absolute path to a directory containing airline logo files.",
+						"scope": "window"
+					}
+				}
+			},
+			{
+				"type": "object",
+				"title": "Change Aircraft Number",
+				"properties": {
+					"fs-ai-tools.changeAircraftNumber.showInContextMenu": {
+						"type": "boolean",
+						"default": true,
+						"title": "Add to Context Menu",
+						"markdownDescription": "Adds the \"Change Aircraft Number\" command to the context menu when a `Flightplan….txt` file is open and text has been selected.",
 						"scope": "window"
 					}
 				}
@@ -714,7 +727,40 @@
 			},
 			{
 				"type": "object",
-				"title": "Create aircraft",
+				"title": "Count Aircraft",
+				"properties": {
+					"fs-ai-tools.countAircraft._ShowInContextMenu": {
+						"type": "boolean",
+						"default": true,
+						"title": "Add to Context Menu",
+						"markdownDescription": "Adds the \"Count Aircraft\" command to the context menu when a `Flightplan….txt` file is open and text has been selected.",
+						"scope": "window"
+					},
+					"fs-ai-tools.countAircraft.emptyLinesBetweenGroups": {
+						"type": "integer",
+						"default": 1,
+						"minimum": 1,
+						"description": "A new group is recognized in the `Flightplans….txt` file after this number of empty lines. The count will then be written to the previous group and reset to 0 to count the new group's aircraft.",
+						"scope": "window"
+					}
+				}
+			},
+			{
+				"type": "object",
+				"title": "Create aifp.cfg",
+				"properties": {
+					"fs-ai-tools.createAifpCfg.showInContextMenu": {
+						"type": "boolean",
+						"default": true,
+						"title": "Add to Context Menu",
+						"markdownDescription": "Adds the \"Create aifp.cfg\" command to the context menu when a `Flightplan….txt` file is open.",
+						"scope": "window"
+					}
+				}
+			},
+			{
+				"type": "object",
+				"title": "Create Aircraft",
 				"properties": {
 					"fs-ai-tools.createAircraft._ShowInContextMenu": {
 						"type": "boolean",
@@ -761,6 +807,34 @@
 						"default": [
 							"K:\\Prepar3D\\_AI Aircraft\\HTAI\\HTAI Cessna 172 Skyhawk\\fltsim-template.cfg"
 						]
+					}
+				}
+			},
+			{
+				"type": "object",
+				"title": "Create Flightplan Header",
+				"properties": {
+					"fs-ai-tools.createFlightplanHeader.showInContextMenu": {
+						"type": "boolean",
+						"default": true,
+						"title": "Add to Context Menu",
+						"markdownDescription": "Adds the \"Create Flightplan Header\" command to the context menu when a `Flightplan….txt` file is open.",
+						"scope": "window"
+					},
+					"fs-ai-tools.createFlightplanHeaderFromAifp.showInContextMenu": {
+						"type": "boolean",
+						"default": true,
+						"title": "Add to Context Menu",
+						"markdownDescription": "Adds the \"Create Flightplan Header from aifp.cfg\" command to the context menu when a `Flightplan….txt` file is open.",
+						"scope": "window"
+					},
+					"fs-ai-tools.createFlightplanHeader.template": {
+						"type": "string",
+						"default": "//{fsx}\n//{airline? | }{icao? | }\"{callsign}\"\n//{author?, }{season}\n\n",
+						"editPresentation": "multilineText",
+						"title": "Header template",
+						"markdownDescription": "The template for the header text, wherein placeholders will be replaced with data from athe `aifp.cfg` file. Available placeholders: `{airline}`, `{icao}`, `{callsign}`, `{author}`, `{season}`, `{fsx}`.\n* `{fsx}` will be converted to \"FSXDAYS=TRUE/FALSE\"\n* To add optional text after a value (will only be added if the value exists), use `{icao?textAfterValue}`.\n* Enter a line break using `[Shift]`+`[Enter]`.",
+						"scope": "window"
 					}
 				}
 			},
@@ -825,142 +899,6 @@
 			},
 			{
 				"type": "object",
-				"title": "Match AC#s",
-				"properties": {
-					"fs-ai-tools.matchAcNumbers.showInContextMenu": {
-						"type": "boolean",
-						"default": false,
-						"title": "Add to Context Menu",
-						"markdownDescription": "Adds the \"Match AC#s\" command to the context menu when a `Flightplans….txt` file is open.",
-						"scope": "window"
-					}
-				}
-			},
-			{
-				"type": "object",
-				"title": "Rename files",
-				"properties": {
-					"fs-ai-tools.renameFiles._ShowInContextMenu": {
-						"type": "boolean",
-						"default": true,
-						"title": "Add to Context Menu",
-						"markdownDescription": "Adds the \"Rename Files\" command to the context menu when an `Aircraft….txt`, `Airports….txt` or `Flightplan….txt` file is open.",
-						"scope": "window"
-					},
-					"fs-ai-tools.renameFiles.filenameTemplate": {
-						"type": "string",
-						"default": "{Base}_{icao?_}{name}",
-						"title": "Filename template",
-						"markdownDescription": "The format with which the files will be renamed. Available placeholders: `{Base}`, `{base}`, `{name}`, `{icao}`, `{callsign}`, `{author}`, `{season}`",
-						"scope": "window"
-					},
-					"fs-ai-tools.renameFiles.replaceSpacesWithUnderscores": {
-						"type": "boolean",
-						"default": false,
-						"title": "Replace spaces with underscores",
-						"markdownDescription": "If activated, the spaces **within** a placeholder will be replaced with underscores (\"_\"). Spaces defined in the template itself will remain.",
-						"scope": "window"
-					}
-				}
-			},
-			{
-				"type": "object",
-				"title": "Show Aircraft List",
-				"properties": {
-					"fs-ai-tools.showAircraftList._ShowInContextMenu": {
-						"type": "boolean",
-						"default": false,
-						"title": "Add to Context Menu",
-						"markdownDescription": "Adds the \"Show Aircraft List\" command to the context menu when an `Aircraft….txt` or `Flightplan….txt` file is open. Remember to set `#window.dialogStyle#` to `custom` for best legibility.",
-						"scope": "window"
-					},
-					"fs-ai-tools.showAircraftList.customDataFilePath": {
-						"type": "string",
-						"default": "",
-						"title": "[Deprecated] Custom Aicraft Data File Path",
-						"markdownDescription": "Full path to a custom aircraft data JSON file. Will overwrite / add to default aircraft data. See _*[TODO]()*_ for format.",
-						"deprecationMessage": "Deprecated: Please use fs-ai-tools.aircraftDataFilePath instead.",
-						"markdownDeprecationMessage": "**Deprecated**: Please use `#fs-ai-tools.aircraftDataFilePath#` instead.",
-						"scope": "window"
-					}
-				}
-			},
-			{
-				"type": "object",
-				"title": "Change Aircraft Number",
-				"properties": {
-					"fs-ai-tools.changeAircraftNumber.showInContextMenu": {
-						"type": "boolean",
-						"default": true,
-						"title": "Add to Context Menu",
-						"markdownDescription": "Adds the \"Change Aircraft Number\" command to the context menu when a `Flightplan….txt` file is open and text has been selected.",
-						"scope": "window"
-					}
-				}
-			},
-			{
-				"type": "object",
-				"title": "Count Aircraft",
-				"properties": {
-					"fs-ai-tools.countAircraft._ShowInContextMenu": {
-						"type": "boolean",
-						"default": true,
-						"title": "Add to Context Menu",
-						"markdownDescription": "Adds the \"Count Aircraft\" command to the context menu when a `Flightplan….txt` file is open and text has been selected.",
-						"scope": "window"
-					},
-					"fs-ai-tools.countAircraft.emptyLinesBetweenGroups": {
-						"type": "integer",
-						"default": 1,
-						"minimum": 1,
-						"description": "A new group is recognized in the `Flightplans….txt` file after this number of empty lines. The count will then be written to the previous group and reset to 0 to count the new group's aircraft.",
-						"scope": "window"
-					}
-				}
-			},
-			{
-				"type": "object",
-				"title": "Create aifp.cfg",
-				"properties": {
-					"fs-ai-tools.createAifpCfg.showInContextMenu": {
-						"type": "boolean",
-						"default": true,
-						"title": "Add to Context Menu",
-						"markdownDescription": "Adds the \"Create aifp.cfg\" command to the context menu when a `Flightplan….txt` file is open.",
-						"scope": "window"
-					}
-				}
-			},
-			{
-				"type": "object",
-				"title": "Create Flightplan Header",
-				"properties": {
-					"fs-ai-tools.createFlightplanHeader.showInContextMenu": {
-						"type": "boolean",
-						"default": true,
-						"title": "Add to Context Menu",
-						"markdownDescription": "Adds the \"Create Flightplan Header\" command to the context menu when a `Flightplan….txt` file is open.",
-						"scope": "window"
-					},
-					"fs-ai-tools.createFlightplanHeaderFromAifp.showInContextMenu": {
-						"type": "boolean",
-						"default": true,
-						"title": "Add to Context Menu",
-						"markdownDescription": "Adds the \"Create Flightplan Header from aifp.cfg\" command to the context menu when a `Flightplan….txt` file is open.",
-						"scope": "window"
-					},
-					"fs-ai-tools.createFlightplanHeader.template": {
-						"type": "string",
-						"default": "//{fsx}\n//{airline? | }{icao? | }\"{callsign}\"\n//{author?, }{season}\n\n",
-						"editPresentation": "multilineText",
-						"title": "Header template",
-						"markdownDescription": "The template for the header text, wherein placeholders will be replaced with data from athe `aifp.cfg` file. Available placeholders: `{airline}`, `{icao}`, `{callsign}`, `{author}`, `{season}`, `{fsx}`.\n* `{fsx}` will be converted to \"FSXDAYS=TRUE/FALSE\"\n* To add optional text after a value (will only be added if the value exists), use `{icao?textAfterValue}`.\n* Enter a line break using `[Shift]`+`[Enter]`.",
-						"scope": "window"
-					}
-				}
-			},
-			{
-				"type": "object",
 				"title": "Group by Aircraft Type",
 				"properties": {
 					"fs-ai-tools.groupByAircraftType._ShowInContextMenu": {
@@ -1009,6 +947,19 @@
 			},
 			{
 				"type": "object",
+				"title": "Match AC#s",
+				"properties": {
+					"fs-ai-tools.matchAcNumbers.showInContextMenu": {
+						"type": "boolean",
+						"default": false,
+						"title": "Add to Context Menu",
+						"markdownDescription": "Adds the \"Match AC#s\" command to the context menu when a `Flightplans….txt` file is open.",
+						"scope": "window"
+					}
+				}
+			},
+			{
+				"type": "object",
 				"title": "Rebase Aircraft Numbers",
 				"properties": {
 					"fs-ai-tools.rebaseAircraftNumbers._ShowInContextMenu": {
@@ -1036,6 +987,33 @@
 			},
 			{
 				"type": "object",
+				"title": "Rename files",
+				"properties": {
+					"fs-ai-tools.renameFiles._ShowInContextMenu": {
+						"type": "boolean",
+						"default": true,
+						"title": "Add to Context Menu",
+						"markdownDescription": "Adds the \"Rename Files\" command to the context menu when an `Aircraft….txt`, `Airports….txt` or `Flightplan….txt` file is open.",
+						"scope": "window"
+					},
+					"fs-ai-tools.renameFiles.filenameTemplate": {
+						"type": "string",
+						"default": "{Base}_{icao?_}{name}",
+						"title": "Filename template",
+						"markdownDescription": "The format with which the files will be renamed. Available placeholders: `{Base}`, `{base}`, `{name}`, `{icao}`, `{callsign}`, `{author}`, `{season}`",
+						"scope": "window"
+					},
+					"fs-ai-tools.renameFiles.replaceSpacesWithUnderscores": {
+						"type": "boolean",
+						"default": false,
+						"title": "Replace spaces with underscores",
+						"markdownDescription": "If activated, the spaces **within** a placeholder will be replaced with underscores (\"_\"). Spaces defined in the template itself will remain.",
+						"scope": "window"
+					}
+				}
+			},
+			{
+				"type": "object",
 				"title": "Renumber add-ons.cfg, scenery.cfg",
 				"properties": {
 					"fs-ai-tools.renumberAddOnsCfg.showInContextMenu": {
@@ -1050,6 +1028,28 @@
 						"default": true,
 						"title": "Add to Context Menu",
 						"markdownDescription": "Adds the \"Renumber\" command to the context menu when a `scenery.cfg` file is open.",
+						"scope": "window"
+					}
+				}
+			},
+			{
+				"type": "object",
+				"title": "Show Aircraft List",
+				"properties": {
+					"fs-ai-tools.showAircraftList._ShowInContextMenu": {
+						"type": "boolean",
+						"default": false,
+						"title": "Add to Context Menu",
+						"markdownDescription": "Adds the \"Show Aircraft List\" command to the context menu when an `Aircraft….txt` or `Flightplan….txt` file is open. Remember to set `#window.dialogStyle#` to `custom` for best legibility.",
+						"scope": "window"
+					},
+					"fs-ai-tools.showAircraftList.customDataFilePath": {
+						"type": "string",
+						"default": "",
+						"title": "[Deprecated] Custom Aicraft Data File Path",
+						"markdownDescription": "Full path to a custom aircraft data JSON file. Will overwrite / add to default aircraft data. See _*[TODO]()*_ for format.",
+						"deprecationMessage": "Deprecated: Please use fs-ai-tools.aircraftDataFilePath instead.",
+						"markdownDeprecationMessage": "**Deprecated**: Please use `#fs-ai-tools.aircraftDataFilePath#` instead.",
 						"scope": "window"
 					}
 				}
