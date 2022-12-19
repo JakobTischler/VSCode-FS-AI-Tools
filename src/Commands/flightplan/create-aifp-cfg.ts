@@ -1,101 +1,114 @@
-import * as vscode from 'vscode';
-import * as path from 'path';
+import path from 'path';
+import { Position, Range, TextDocument, Uri, window, workspace, WorkspaceEdit } from 'vscode';
 import { showError } from '../../Tools/helpers';
+import { AifpData } from '../../Tools/read-aifp';
 
 export async function CreateAifpCfg() {
 	console.log('CreateAifpCfg()');
 
-	const editor = vscode.window.activeTextEditor;
-	if (editor) {
-		const document = editor.document;
-		const filename = path.basename(document.uri.path).toLocaleLowerCase();
-		if ('file' === document.uri.scheme && filename.startsWith('flightplans')) {
-			let lines = document.getText().trim().split('\n');
-			lines.length = 3;
+	const editor = window.activeTextEditor;
+	if (!editor) return;
 
-			// Validation
-			for (const [index, line] of lines.entries()) {
-				if (!line.length || !line.startsWith('//')) {
-					showError(`Line ${index + 1} doesn't start with "//".`);
-					return false;
+	const template = workspace
+		.getConfiguration('fs-ai-tools.createFlightplanHeader', undefined)
+		.get('template') as string;
+
+	/*
+	 * —————————————————————————————————————————————————————————————————————————
+	 * CREATE REGEXP FROM TEMPLATE
+	 */
+	const completeRegex: string[] = [];
+
+	for (const line of template.split('\n')) {
+		const matches = [...line.matchAll(/\{(?:(.*?)(?:\?(.*?))?)\}/gm)];
+		let lineRegex = line;
+
+		if (matches?.length) {
+			for (const match of [...matches]) {
+				const tagName = match[1];
+
+				let tagRegex = `(?<${tagName}>.*)`;
+				if (match[2]) {
+					tagRegex += `(?:${match[2]})`;
 				}
-				if (index === 0 && !line.startsWith('//FSXDAYS')) {
-					showError(`First line doesn't start with "//FSXDAYS"`);
-					return false;
-				}
+
+				lineRegex = lineRegex.replace(match[0], tagRegex);
 			}
+		}
 
-			// -----------------------------------------------------
-			// PARSE DATA
+		completeRegex.push(lineRegex);
+	}
 
-			// Remove double slashes
-			lines = lines.map((line: string) => line.replace(/^\/*/, '').trim());
+	let regex = completeRegex.join('[\\r\\n]*');
+	regex = regex.replace(/[\|\/]/g, '\\$&'); // $& means the whole matched string
+	const regexp = new RegExp(regex, 'gm');
 
-			const data = {
-				fsVersion: 'FS9',
-				name: '',
-				icao: '',
-				author: '',
-				season: '---',
-				callsign: '',
-			};
+	console.log({ completeRegex, regex, regexp });
 
-			// Line 1
-			data.fsVersion = lines[0].split('=')[1] === 'TRUE' ? 'FSX' : 'FS9';
+	// Use created regexp to gather data
+	const matches = [...editor.document.getText().matchAll(regexp)];
+	const match = matches?.[0];
+	console.log({ matches });
+	if (!match?.length) {
+		showError(`No text matching the header template could be found.`, true);
+		return;
+	}
 
-			// Line 2
-			const airlineData = trimArrayItems(lines[1].split('|'));
-			data.name = airlineData[0] || '';
-			data.icao = airlineData[1] || '';
-			if (airlineData[2]) {
-				data.callsign = airlineData[2].match(/"(.+?)"/i)?.[1] || '';
-			}
+	/*
+	 * —————————————————————————————————————————————————————————————————————————
+	 * PARSED DATA
+	 */
+	const data: AifpData = {
+		found: true,
+		airline: match.groups!.airline || undefined,
+		icao: match.groups!.icao || undefined,
+		callsign: match.groups!.callsign || undefined,
+		author: match.groups!.author || undefined,
+		fsx: false,
+	};
 
-			// Line 3
-			if (lines[2]) {
-				const metaData = trimArrayItems(lines[2].split(','));
-				data.author = metaData[0] || '';
+	// FS version
+	if (match.groups!.fsx) {
+		data.fsx = match.groups!.fsx.toLowerCase() === 'fsxdays=true';
+	}
 
-				if (metaData[1]?.length) {
-					const season = metaData[1].match(/(\w\w)(\d\d)(\d\d)?/);
-					if (season) {
-						data.season = `${season[1] === 'Wi' ? 'Winter' : 'Summer'} 20${season[2]}`;
-						if (season[3]) {
-							data.season += `-20${season[3]}`;
-						}
-					}
-				}
-			}
-
-			const output = `[main]
-AIRLINE=${data.name}
-AIRLINE_ICAO=${data.icao}
-CALLSIGN=${data.callsign}
-SEASON=${data.season}
-SEEK=atc_airline=${data.callsign}
-PROVIDER=${data.author}
-FS_Version=${data.fsVersion}
-`;
-			console.log({ data, output });
-
-			// -----------------------------------------------------
-			// CREATE aifp.cfg FILE
-
-			const aifpPath = path.join(path.dirname(document.uri.path), 'aifp.cfg');
-			const filePath = vscode.Uri.file(aifpPath);
-
-			const edit = new vscode.WorkspaceEdit();
-			edit.createFile(filePath, { ignoreIfExists: true });
-			edit.delete(filePath, new vscode.Range(new vscode.Position(0, 0), new vscode.Position(9999, 9999)));
-			edit.insert(filePath, new vscode.Position(0, 0), output);
-			await vscode.workspace.applyEdit(edit);
-
-			vscode.workspace.openTextDocument(filePath).then((doc: vscode.TextDocument) => {
-				doc.save();
-				vscode.window.showInformationMessage('aifp.cfg file created');
-			});
+	// Season: short to long
+	const seasonMatch = match.groups!.season?.match(/(\w\w)(\d\d)(\d\d)?/);
+	if (seasonMatch) {
+		data.season = `${seasonMatch[1] === 'Wi' ? 'Winter' : 'Summer'} 20${seasonMatch[2]}`;
+		if (seasonMatch[3]) {
+			data.season += `-20${seasonMatch[3]}`;
 		}
 	}
+
+	const output = `[main]
+AIRLINE=${data.airline || ''}
+AIRLINE_ICAO=${data.icao || ''}
+CALLSIGN=${data.callsign || ''}
+SEASON=${data.season || ''}
+SEEK=atc_airline=${data.callsign || ''}
+PROVIDER=${data.author || ''}
+FS_Version=${data.fsx ? 'FSX' : 'FS9'}
+`;
+	console.log({ data, output });
+
+	/*
+	 * —————————————————————————————————————————————————————————————————————————
+	 * CREATE aifp.cfg FILE
+	 */
+
+	const aifpPath = path.join(path.dirname(editor.document.uri.path), 'aifp.cfg');
+	const filePath = Uri.file(aifpPath);
+
+	const edit = new WorkspaceEdit();
+	edit.createFile(filePath, { ignoreIfExists: true });
+	edit.replace(filePath, new Range(new Position(0, 0), new Position(9999, 9999)), output);
+	await workspace.applyEdit(edit);
+
+	workspace.openTextDocument(filePath).then((doc: TextDocument) => {
+		doc.save();
+		window.showInformationMessage('aifp.cfg file created');
+	});
 }
 
 /**

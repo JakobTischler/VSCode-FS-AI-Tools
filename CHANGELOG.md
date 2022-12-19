@@ -1,5 +1,8 @@
 # Change Log
 
+### 1.7.1
+- `Create Flightplan Header`, `Create Flightplan Header from aifp.cfg`, `Create aifp.cfg`: New setting `fs-ai-tools.createFlightplanHeader.template` that defines the layout and content of the header - used both when creating the header and when reading it to create the `aifp.cfg` file.
+
 ### 1.7.0
 - `Group by Aircraft Type`: Parses the current file's `aircraft.txt` file to match aircraft titles to aircraft types. Then outouts the data in aircraft type groups. Those groups are separated by a configurable number of empty lines. Additionally, the aircraft types and titles are added as commented header lines in the `flightplans.txt`. Optionally the groups can be sorted by wingspan in a descending order.
 

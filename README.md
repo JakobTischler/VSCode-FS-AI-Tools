@@ -135,6 +135,8 @@ Converts flightplans with repeating periods of 24hr and below (12hr, 8hr, ...) t
 
 ### Create aifp.cfg
 Uses the flightplans.txt [Flightplan Header](#create-flightplan-header) data and creates an aifp.cfg file with that data. If the file already exists, all content will be overwritten.
+
+The header *has to be* in the format of the template defined in `fs-ai-tools.createFlightplanHeader.template`. See "Create Flightplan Header" for more information.
 <br>
 <br>
 
