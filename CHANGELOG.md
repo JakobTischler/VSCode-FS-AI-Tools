@@ -1,5 +1,8 @@
 # Change Log
 
+### 1.7.0
+- `Group by Aircraft Type`: Parses the current file's `aircraft.txt` file to match aircraft titles to aircraft types. Then outouts the data in aircraft type groups. Those groups are separated by a configurable number of empty lines. Additionally, the aircraft types and titles are added as commented header lines in the `flightplans.txt`. Optionally the groups can be sorted by wingspan in a descending order.
+
 ### 1.6.2
 - `Delete Aircraft`: from user-selected aircraft titles in the `aircraft.txt` file, finds aircraft entries in aircraft.cfg files and removes them as well as their corresponding texture folders.
 
