@@ -16,21 +16,6 @@ import { getNumberInput } from '../../Tools/input';
 type TAcTypeGroup = [AircraftType, string[]];
 
 export async function GroupByAircraftType() {
-	/*
-	 * 1. [x] Parse aircraft.txt to get aircraftTypes map
-	 * 2. if file === aircraft.txt:
-	 *    [x] a. go through each line, check acType with previous line's acType
-	 *    [x] b. if same: no empty line, else empty line [TODO num empty lines from config]
-	 *    [x] c. [STRETCH GOAL] optionally sort by radius (create new config setting)
-	 * 3. if file === flightplans.txt:
-	 *    [ ] a. create arrays of AC#s (should already be done in (1.)?)
-	 *    [ ] b. for each group, use ac title as header
-	 *    [ ] c. if new acNum, but same acType: inset header, no empty line
-	 *    [ ] d. if new acNum and different acType: empty lines (from config) and new header
-	 *    [ ] e. [STRETCH GOAL]: parse titles of same acType to find base title and subsequent variation names
-	 *    [ ] f. [STRETCH GOAL] optionally sort by radius (create new config setting)
-	 */
-
 	console.log(`Running GroupByAircaftType()`);
 
 	const editor = vscode.window.activeTextEditor;
@@ -41,13 +26,12 @@ export async function GroupByAircraftType() {
 
 	// Get Aicraft…, Flightplans… file paths
 	const fileData = await getFlightplanFiles(dirPath, true);
-	if (!fileData.aircraft || !fileData.flightplans) {
-		const name = fileData.aircraft ? 'Flightplans' : 'Aircraft';
-		showError(`${name}….txt file couldn't be found in current directory.`, true);
+	if (!fileData?.aircraft) {
+		showError(`Aircraft….txt file couldn't be found in current directory.`, true);
 		return;
 	}
 
-	const aircraftData: TParsedAircraftTxtData | undefined = await parseAircraftTxt(fileData, true, true, true);
+	const aircraftData: TParsedAircraftTxtData | undefined = await parseAircraftTxt(fileData, false, true, true);
 	if (!aircraftData) return;
 
 	/*
