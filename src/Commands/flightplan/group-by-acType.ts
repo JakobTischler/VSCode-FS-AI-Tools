@@ -23,6 +23,8 @@ export async function GroupByAircraftType() {
 
 	const filePath = editor.document.uri.path;
 	const dirPath = path.dirname(filePath).replace(/^\/+/, '');
+	const filename = getFilename(editor).toLowerCase();
+	const isFlightplansTxt = filename.startsWith('flightplans');
 
 	// Get Aicraft…, Flightplans… file paths
 	const fileData = await getFlightplanFiles(dirPath, true);
@@ -31,21 +33,25 @@ export async function GroupByAircraftType() {
 		return;
 	}
 
-	const aircraftData: TParsedAircraftTxtData | undefined = await parseAircraftTxt(fileData, false, true, true);
+	const aircraftData: TParsedAircraftTxtData | undefined = await parseAircraftTxt(
+		fileData,
+		isFlightplansTxt,
+		true,
+		true
+	);
 	if (!aircraftData) return;
 
 	/*
 	 * —————————————————————————————————————————————————————————————————————————
 	 */
 
-	const filename = getFilename(editor).toLowerCase();
 	let newFileContents = '';
-	if (filename.startsWith('aircraft')) {
+	if (isFlightplansTxt) {
+		newFileContents = await groupFlightplansTxt(editor.document.getText(), aircraftData);
+	} else {
 		const { output } = await groupAircraftTxt(editor.document.getText(), aircraftData);
 
 		newFileContents = output;
-	} else {
-		newFileContents = await groupFlightplansTxt(editor.document.getText(), aircraftData);
 	}
 
 	if (newFileContents?.length) {
