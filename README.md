@@ -201,10 +201,31 @@ From a list of registrations, use a fltsim entry template file to create entries
 <br>
 
 ### Create Flightplan Header
-Uses a series of text input boxes to created a three-line header with flightplan data (name, icao, callsign, author, season). Tries to read the airline name and ICAO code from the filename.
+Uses a series of text input boxes to created a header with flightplan data (name, icao, callsign, author, season and/or FS version). Tries to read the airline name and ICAO code from the filename.
 
-Preview:
-```js
+Uses the template defined in  `fs-ai-tools.createFlightplanHeader.template`. The template can use the following placeholders:
+* `{airline}`: Airline name
+* `{icao}`: ICAO
+* `{callsign}`: Callsign (will be transformed to uppercase characters)
+* `{author}`
+* `{season}`
+* `{fsx}`
+
+#### Notes
+* `{fsx}` will be converted to "FSXDAYS=TRUE/FALSE"
+* Each placeholder can have an optional suffix text that only gets ade if the placeholder is used and has a value. The suffix is anything after a question mark (`?`), e.g. `{icao?, }` means there will be a comma and a space after the ICAO, while `{icao?---}` will have three dashes (`-`) after the ICAO.
+* Enter a line break using `[Shift]`+`[Enter]`.
+
+#### Example
+##### Template
+```
+//{fsx}
+//{airline? | }{icao? | }"{callsign}"
+//{author?, }{season}
+```
+
+##### Result
+```
 //FSXDAYS=FALSE
 //DC Aviation | DCS | "TWIN STAR"
 //Morten Blindheim, Su19

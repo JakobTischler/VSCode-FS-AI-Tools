@@ -1,7 +1,7 @@
 import * as Path from 'path';
-import { window, Position } from 'vscode';
-import { showError } from '../../Tools/helpers';
-import { readAifpCfg } from '../../Tools/read-aifp';
+import { window, Position, workspace } from 'vscode';
+import { showError, showErrorModal } from '../../Tools/helpers';
+import { AifpData, readAifpCfg } from '../../Tools/read-aifp';
 
 export async function CreateFlightplanHeaderFromAifp() {
 	console.log('CreateFlightplanHeaderFromAifp()');
@@ -26,19 +26,69 @@ export async function CreateFlightplanHeaderFromAifp() {
 		return;
 	}
 
-	if (data.airline && data.author && data.season && data.fsx !== undefined) {
-		let text = `//FSXDAYS=${data.fsx?.toString().toUpperCase()}\n`;
-		text += `//${data.airline}`;
-		if (data.icao || data.callsign) {
-			text += ` | ${data.icao ? data.icao.toUpperCase() : '___'}`;
-			text += ` | "${data.callsign ? `${data.callsign.toUpperCase()}` : ''}"`;
+	// Parse template
+	const template = workspace
+		.getConfiguration('fs-ai-tools.createFlightplanHeader', undefined)
+		.get('template') as string;
+	if (!template?.length) {
+		showErrorModal(
+			'Template not defined',
+			`The header template has not been defined in "fs-ai-tools.createFlightplanHeader.template".
+
+You can use:
+• {airline}
+• {icao}
+• {callsign}
+• {author}
+• {season}
+• {fsx}`
+		);
+		return;
+	}
+
+	const matches = template.matchAll(/\{(?:(.*?)(?:\?(.*?))?)\}/gm);
+
+	if (matches) {
+		let text = template;
+
+		for (const match of [...matches]) {
+			const tagName = match[1] as keyof AifpData;
+			let value = data[tagName];
+			if (value !== undefined) {
+				if (typeof value === 'boolean') {
+					value = value.toString().toUpperCase();
+				}
+				if (tagName === 'fsx') {
+					value = `FSXDAYS=${value}`;
+				} else if (tagName === 'callsign') {
+					value = value.toUpperCase();
+				}
+			}
+
+			// Is conditional
+			if (match[2]) {
+				text = text.replace(match[0], value !== undefined ? value + match[2] : '');
+			} else {
+				text = text.replace(match[0], value || '');
+			}
 		}
-		text += '\n';
-		text += `//${data.author}, ${data.season}\n\n`;
 
 		editor.edit((editBuilder) => {
 			editBuilder.insert(new Position(0, 0), text);
 		});
 		window.showInformationMessage(`Header for ${data.airline} created`);
+	} else {
+		showErrorModal(
+			'Placeholders missing',
+			`No placeholders have been added in the header template.
+
+You can use:
+• {airline}
+• {icao}
+• {callsign}
+• {author}
+• {season}
+• {fsx}`
+		);
 	}
 }

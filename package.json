@@ -6,7 +6,7 @@
 	},
 	"displayName": "FS AI Tools",
 	"description": "A bag of tools for AI flightplans and .cfg files",
-	"version": "1.7.0",
+	"version": "1.7.1",
 	"icon": "icon.png",
 	"license": "",
 	"engines": {
@@ -128,6 +128,11 @@
 				"category": "FS AI Tools"
 			},
 			{
+				"command": "fsAiTools.createFlightplanHeaderFromAifp",
+				"title": "Create Flightplan Header from aifp.cfg",
+				"category": "FS AI Tools"
+			},
+			{
 				"command": "fsAiTools.deleteAircraft",
 				"title": "Delete Aircraft",
 				"category": "FS AI Tools"
@@ -135,11 +140,6 @@
 			{
 				"command": "fsAiTools.deleteAircraftFromAircraftCfg",
 				"title": "Delete Aircraft from aircraft.cfg",
-				"category": "FS AI Tools"
-			},
-			{
-				"command": "fsAiTools.createFlightplanHeaderFromAifp",
-				"title": "Create Flightplan Header from aifp.cfg",
 				"category": "FS AI Tools"
 			},
 			{
@@ -948,6 +948,14 @@
 						"title": "Add to Context Menu",
 						"markdownDescription": "Adds the \"Create Flightplan Header from aifp.cfg\" command to the context menu when a `Flightplan….txt` file is open.",
 						"scope": "window"
+					},
+					"fs-ai-tools.createFlightplanHeader.template": {
+						"type": "string",
+						"default": "//{fsx}\n//{airline? | }{icao? | }\"{callsign}\"\n//{author?, }{season}\n\n",
+						"editPresentation": "multilineText",
+						"title": "Header template",
+						"markdownDescription": "The template for the header text, wherein placeholders will be replaced with data from athe `aifp.cfg` file. Available placeholders: `{airline}`, `{icao}`, `{callsign}`, `{author}`, `{season}`, `{fsx}`.\n* `{fsx}` will be converted to \"FSXDAYS=TRUE/FALSE\"\n* To add optional text after a value (will only be added if the value exists), use `{icao?textAfterValue}`.\n* Enter a line break using `[Shift]`+`[Enter]`.",
+						"scope": "window"
 					}
 				}
 			},
@@ -1072,14 +1080,14 @@
 		"test": "eslint src --ext ts && tsc --noEmit"
 	},
 	"devDependencies": {
-		"@types/lodash": "^4.14.190",
-		"@types/mocha": "^10.0.0",
-		"@types/node": "^18.11.9",
+		"@types/lodash": "^4.14.191",
+		"@types/mocha": "^10.0.1",
+		"@types/node": "^18.11.17",
 		"@types/vscode": "^1.73.1",
 		"@typescript-eslint/eslint-plugin": "^5.46.1",
-		"@vscode/test-electron": "^2.2.0",
-		"esbuild": "^0.16.7",
-		"eslint": "^8.29.0",
+		"@vscode/test-electron": "^2.2.1",
+		"esbuild": "^0.16.9",
+		"eslint": "^8.30.0",
 		"eslint-plugin-header": "^3.1.1",
 		"mocha": "^10.2.0",
 		"rimraf": "^3.0.2",

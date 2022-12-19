@@ -1,66 +1,93 @@
-import { window, Position } from 'vscode';
-import { getFilename } from '../../Tools/helpers';
+import { window, Position, workspace } from 'vscode';
+import { getFilename, showErrorModal } from '../../Tools/helpers';
+import { AifpData } from '../../Tools/read-aifp';
 
 export async function CreateFlightplanHeader() {
 	console.log('CreateFlightplanHeader()');
 
 	const editor = window.activeTextEditor;
-	if (editor) {
-		const document = editor.document;
-		const filename = getFilename(document.uri.path);
-		if ('file' === document.uri.scheme && filename.toLocaleLowerCase().startsWith('flightplans')) {
-			const filenameTest = filename.split('_');
-			let proposedIcao = 'ICAO';
-			let proposedName = 'Airline Name';
-			console.log('filenameTest', filenameTest);
+	if (!editor?.document) return;
 
-			if (filenameTest.length > 1) {
-				if (filenameTest.length === 3 && filenameTest[1].length <= 4) {
-					proposedIcao = filenameTest[1];
-					proposedName = filenameTest[2];
-					proposedName = proposedName.substring(0, proposedName.length - 4);
-				} else if (filenameTest.length === 2) {
-					proposedName = filenameTest[1];
-					proposedName = proposedName.substring(0, proposedName.length - 4);
-				}
-				console.log('proposedName', proposedName);
-				console.log('proposedIcao', proposedIcao);
-			}
+	let airlineName;
 
-			const fsVersion = await getFsVersion();
-			const name = await getName(proposedName);
-			const icao = await getIcao(proposedIcao);
-			const callsign = await getCallsign();
-			const author = await getAuthor();
-			const season = await getSeason();
+	/*
+	 * —————————————————————————————————————————————————————————————————————————
+	 * Get proposed values from filename
+	 */
+	const filename = getFilename(editor);
+	const filenameTest = filename.split('_');
+	let proposedIcao = 'ICAO';
+	let proposedName = 'Airline Name';
 
-			console.log({
-				fsVersion,
-				name,
-				icao,
-				callsign,
-				author,
-				season,
-			});
-			if (fsVersion && name && author && season) {
-				let text = `//FSXDAYS=${fsVersion === 'FS9' ? 'FALSE' : 'TRUE'}\n`;
-				text += `//${name.capitalize()}`;
-				if (icao || callsign) {
-					text += ` | ${icao ? icao.toUpperCase() : ''}`;
-					text += ` | "${callsign ? `${callsign.toUpperCase()}` : ''}"`;
-				}
-				text += '\n';
-				text += `//${author.capitalize(true)}, ${season}\n\n`;
-
-				console.log(text);
-
-				editor.edit((editBuilder) => {
-					editBuilder.insert(new Position(0, 0), text);
-				});
-				window.showInformationMessage(`Header for ${name} created`);
-			}
+	if (filenameTest.length > 1) {
+		if (filenameTest.length === 3 && filenameTest[1].length <= 4) {
+			proposedIcao = filenameTest[1];
+			proposedName = filenameTest[2];
+			proposedName = proposedName.substring(0, proposedName.length - 4);
+		} else if (filenameTest.length === 2) {
+			proposedName = filenameTest[1];
+			proposedName = proposedName.substring(0, proposedName.length - 4);
 		}
+		console.log({ proposedName, proposedIcao });
 	}
+
+	/*
+	 * —————————————————————————————————————————————————————————————————————————
+	 * Parse template, get input values
+	 */
+	const template = workspace
+		.getConfiguration('fs-ai-tools.createFlightplanHeader', undefined)
+		.get('template') as string;
+	if (!template?.length) {
+		showErrorModal(
+			'Template not defined',
+			`The header template has not been defined in "fs-ai-tools.createFlightplanHeader.template".
+
+You can use:
+• {airline}
+• {icao}
+• {callsign}
+• {author}
+• {season}
+• {fsx}`
+		);
+		return;
+	}
+
+	const matches = [...template.matchAll(/\{(?:(.*?)(?:\?(.*?))?)\}/gm)];
+
+	let text = template;
+
+	for (const match of matches) {
+		const tagName = match[1] as keyof AifpData;
+		let value = '';
+		if (tagName === 'airline') {
+			value = (await getName(proposedName)) || '';
+			airlineName = value;
+		} else if (tagName === 'icao') {
+			value = (await getIcao(proposedIcao)) || '';
+		} else if (tagName === 'callsign') {
+			value = (await getCallsign()) || '';
+		} else if (tagName === 'author') {
+			value = (await getAuthor()) || '';
+		} else if (tagName === 'season') {
+			value = (await getSeason()) || '';
+		} else if (tagName === 'fsx') {
+			const input = await getFsVersion();
+			value = `FSXDAYS=${input === 'FS9' ? 'FALSE' : 'TRUE'}`;
+		}
+
+		if (value.length && match[2]) value += match[2];
+
+		text = text.replace(match[0], value?.length ? value : '');
+	}
+
+	console.log({ template, text });
+
+	editor.edit((editBuilder) => {
+		editBuilder.insert(new Position(0, 0), text);
+	});
+	window.showInformationMessage(`Header for ${airlineName || 'airline'} created`);
 }
 
 /**
@@ -124,7 +151,7 @@ async function getAuthor() {
 
 async function getSeason() {
 	const re = /(Su|Wi)\d{2,4}/g;
-	const result = await window.showInputBox({
+	return await window.showInputBox({
 		value: 'Season',
 		valueSelection: undefined,
 		placeHolder: "The flightplan's season (Su19 or Wi1718)",
@@ -135,5 +162,4 @@ async function getSeason() {
 			return null;
 		},
 	});
-	return result;
 }
