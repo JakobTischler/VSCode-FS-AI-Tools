@@ -223,37 +223,37 @@
 					"name": "A319",
 					"search": ["/A319(-[12]\\d{2})?\\s?(SL|WL|P[2C]F|$|\\s)(?!(NX?|neo)\\s)/"],
 					"series": "A32X",
-					"wingspan": 117.8333
+					"wingspan": 117.4166667
 				},
 				"A320": {
 					"name": "A320",
 					"search": ["/A320(-[12]\\d{2})?\\s?(SL|WL|P[2C]F|$|\\s)(?!(NX?|neo)\\s)/"],
 					"series": "A32X",
-					"wingspan": 117.8333
+					"wingspan": 117.4166667
 				},
 				"A321": {
 					"name": "A321",
 					"search": ["/A321(-[12]\\d{2})?\\s?(SL|WL|P[2C]F|$|\\s)(?!(NX?|neo)\\s)/"],
 					"series": "A32X",
-					"wingspan": 117.8333
+					"wingspan": 117.4166667
 				},
 				"A19N": {
 					"name": "A319neo",
 					"search": ["/A319-?([12]\\d{2})?\\s*(NX?|neo)(\\s|$)/"],
 					"series": "A32NX",
-					"wingspan": 117.8333
+					"wingspan": 117.4166667
 				},
 				"A20N": {
 					"name": "A320neo",
 					"search": ["/A320-?([12]\\d{2})?\\s*(NX?|neo)(\\s|$)/"],
 					"series": "A32NX",
-					"wingspan": 117.8333
+					"wingspan": 117.4166667
 				},
 				"A21N": {
 					"name": "A321neo",
 					"search": ["/A321-?([12]\\d{2})?\\s*(NX?|neo)(\\s|$)/"],
 					"series": "A32NX",
-					"wingspan": 117.8333
+					"wingspan": 117.4166667
 				},
 				"A332": { "name": "A330-200", "search": ["A330-2"], "series": "A330", "wingspan": 197.83 },
 				"A333": { "name": "A330-300", "search": ["A330-3"], "series": "A330", "wingspan": 197.83 },
@@ -344,10 +344,10 @@
 				"B733": { "name": "737-300", "search": ["737-3"], "series": "737 Classic", "wingspan": 94.75 },
 				"B734": { "name": "737-400", "search": ["737-4"], "series": "737 Classic", "wingspan": 94.75 },
 				"B735": { "name": "737-500", "search": ["737-5"], "series": "737 Classic", "wingspan": 94.75 },
-				"B736": { "name": "737-600", "search": ["737-6"], "series": "737NG", "wingspan": 117.42 },
-				"B737": { "name": "737-700", "search": ["737-7"], "series": "737NG", "wingspan": 117.42 },
-				"B738": { "name": "737-800", "search": ["737-8"], "series": "737NG", "wingspan": 117.42 },
-				"B739": { "name": "737-900", "search": ["737-9"], "series": "737NG", "wingspan": 117.42 },
+				"B736": { "name": "737-600", "search": ["737-6"], "series": "737NG", "wingspan": 117.4166667 },
+				"B737": { "name": "737-700", "search": ["737-7"], "series": "737NG", "wingspan": 117.4166667 },
+				"B738": { "name": "737-800", "search": ["737-8"], "series": "737NG", "wingspan": 117.4166667 },
+				"B739": { "name": "737-900", "search": ["737-9"], "series": "737NG", "wingspan": 117.4166667 },
 				"B37M": { "name": "737 MAX 7", "search": ["737 MAX 7"], "series": "737 MAX", "wingspan": 117.833333 },
 				"B38M": { "name": "737 MAX 8", "search": ["737 MAX 8"], "series": "737 MAX", "wingspan": 117.833333 },
 				"B39M": { "name": "737 MAX 9", "search": ["737 MAX 9"], "series": "737 MAX", "wingspan": 117.833333 },
