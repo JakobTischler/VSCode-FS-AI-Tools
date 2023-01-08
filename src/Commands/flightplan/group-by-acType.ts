@@ -218,6 +218,7 @@ async function groupFlightplansTxt(fileContents: string, aircraftData: TParsedAi
 
 	const appendWingspan = config.get('groupByAircraftType.addWingspanToGroupHeadline');
 	const FEET_TO_METERS = 0.3048;
+	const appendCount = config.get('groupByAircraftType.addCountToGroupHeadline') as boolean;
 
 	const textGroups = aircraftTypeGroups
 		.filter((aircraftType) => aircraftType.aircraftCount > 0)
@@ -240,12 +241,21 @@ async function groupFlightplansTxt(fileContents: string, aircraftData: TParsedAi
 				})})`;
 			}
 
+			if (appendCount) {
+				header += ` [${aircraftType.aircraftCount}]`;
+			}
+
 			const content = [...aircraftType.liveries].map((livery) => {
 				if (livery.hasValidNum) {
-					const header = `\t//${livery.title}`;
 					const content = livery.aircraft.map((aircraft) => aircraft.text);
 
-					return [header, ...content].join('\n').trimEnd();
+					// If this livery has a variation part, add a header line at the beginning
+					const header = livery.variationHeader;
+					if (header) {
+						content.unshift(header);
+					}
+
+					return content.join('\n').trimEnd();
 				}
 			});
 

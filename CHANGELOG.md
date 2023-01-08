@@ -1,5 +1,9 @@
 # Change Log
 
+### 1.7.2
+- `Group by Aircraft Type`: the aircraft count for each aircraft type can optionally be added to the header line (see `fs-ai-tools.groupByAircraftType.addCountToGroupHeadline`).
+- `Group by Aircraft Type`: Livery variations are now extracted from the title to use as livery header lines. Currently supported: " - variation" and " (variation)".
+
 ### 1.7.1
 - `Create Flightplan Header`, `Create Flightplan Header from aifp.cfg`, `Create aifp.cfg`: New setting `fs-ai-tools.createFlightplanHeader.template` that defines the layout and content of the header - used both when creating the header and when reading it to create the `aifp.cfg` file.
 - Config settings sorted alphabetically

@@ -36,8 +36,8 @@ body.vscode-light {
 	--color-main: hsl(189deg, 12%, 33%);
 	--color-secondary: hsl(190deg, 11%, 50%);
 	--color-tertiary: hsla(190deg, 11%, 50%, 0.25);
-	--color-logo-shadow: rgba(74, 91, 94, 0.2);
-	--color-card-shadow: rgba(25, 30, 31, 0.1);
+	--color-logo-shadow: rgba(74 91 94 / 50%);
+	--color-card-shadow: rgba(25 30 31 / 10%);
 	--color-pill-background: rgba(213, 215, 216, 0.3);
 	--color-pill-foreground: rgba(74, 91, 94, 0.5);
 }
@@ -45,8 +45,8 @@ body.vscode-dark {
 	--color-main: #f0f0f0;
 	--color-secondary: rgb(210, 236, 255);
 	--color-tertiary: rgba(210, 236, 255, 0.25);
-	--color-logo-shadow: rgba(255, 255, 255, 0.065);
-	--color-card-shadow: rgba(25, 30, 31, 0.4);
+	--color-logo-shadow: rgba(255 255 255 / 17.5%);
+	--color-card-shadow: rgba(25 30 31 / 40%);
 	--color-pill-background: rgba(210, 236, 255, 0.25);
 	--color-pill-foreground: rgba(240, 240, 240, 0.5);
 }
@@ -78,14 +78,17 @@ header h1 {
 	display: flex;
 	justify-content: center;
 	text-align: center;
-}
-header h1.has-logo {
-	background-image: radial-gradient(closest-side, var(--color-logo-shadow), transparent);
+	/* &.has-logo {
+		background-image: radial-gradient(closest-side, var(--color-logo-shadow), transparent);
+	} */
 }
 
 .logo {
 	max-width: 500px;
 	max-height: 250px;
+	--size: 20px;
+	--col: var(--color-logo-shadow);
+	filter: drop-shadow(0 0 var(--size) var(--col));
 }
 
 .subHeader {

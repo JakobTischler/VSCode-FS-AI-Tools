@@ -42,8 +42,8 @@ body {
 		--color-main: #{colors.$dark};
 		--color-secondary: #{colors.$dark-secondary};
 		--color-tertiary: #{colors.$dark-tertiary};
-		--color-logo-shadow: rgba(74, 91, 94, 0.2);
-		--color-card-shadow: rgba(25, 30, 31, 0.1);
+		--color-logo-shadow: rgba(74 91 94 / 50%);
+		--color-card-shadow: rgba(25 30 31 / 10%);
 
 		--color-pill-background: #{colors.$light-inactive};
 		--color-pill-foreground: #{transparentize(colors.$dark, 0.5)};
@@ -53,8 +53,8 @@ body {
 		--color-main: #{colors.$light};
 		--color-secondary: #{colors.$light-secondary};
 		--color-tertiary: #{colors.$light-tertiary};
-		--color-logo-shadow: rgba(255, 255, 255, 0.065);
-		--color-card-shadow: rgba(25, 30, 31, 0.4);
+		--color-logo-shadow: rgba(255 255 255 / 17.5%);
+		--color-card-shadow: rgba(25 30 31 / 40%);
 
 		--color-pill-background: #{colors.$dark-inactive};
 		--color-pill-foreground: #{transparentize(colors.$light, 0.5)};

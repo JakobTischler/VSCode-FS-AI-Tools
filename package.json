@@ -6,7 +6,7 @@
 	},
 	"displayName": "FS AI Tools",
 	"description": "A bag of tools for AI flightplans and .cfg files",
-	"version": "1.7.1",
+	"version": "1.7.2",
 	"icon": "icon.png",
 	"license": "",
 	"engines": {
@@ -941,6 +941,13 @@
 							"Appends the wingspan, converted to feet",
 							"Appends the wingspan, converted to meters"
 						],
+						"scope": "window"
+					},
+					"fs-ai-tools.groupByAircraftType.addCountToGroupHeadline": {
+						"type": "boolean",
+						"default": true,
+						"title": "Add Aircraft Count to Group Headline",
+						"markdownDescription": "Appends the number of aircraft that each aircraft type has to the type headline (e.g. \"… [13]\").",
 						"scope": "window"
 					}
 				}

@@ -202,8 +202,7 @@ function readAircraftCfgs(filePaths: string[], toDeleteTitles: Set<string>): Map
 
 				fltsimEntriesByAircraftCfg.set(filePath, entrySet);
 			} else {
-				console.error(`"${filePath}" couldn't be read.`);
-				showError(`"${filePath}" couldn't be read.`);
+				showError(`"${filePath}" couldn't be read.`, true);
 			}
 		} catch (error) {
 			console.error(filePath, error);

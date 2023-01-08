@@ -12,9 +12,9 @@ header {
 		justify-content: center;
 		text-align: center;
 
-		&.has-logo {
+		/* &.has-logo {
 			background-image: radial-gradient(closest-side, var(--color-logo-shadow), transparent);
-		}
+		} */
 	}
 }
 
@@ -22,9 +22,9 @@ header {
 	max-width: 500px;
 	max-height: 250px;
 
-	// img {
-	// 	filter: drop-shadow(0px 0px 5px var(--color-logo-shadow));
-	// }
+	--size: 20px;
+	--col: var(--color-logo-shadow);
+	filter: drop-shadow(0 0 var(--size) var(--col));
 }
 
 .subHeader {
