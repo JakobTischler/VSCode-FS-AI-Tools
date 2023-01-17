@@ -7,7 +7,7 @@ export class CoordinateComponent {
 	/** Coordinate minutes. Includes seconds as fraction. */
 	minutes: number;
 	/** Either -1 or 1, based on the factor name ("N", "E": 1 / "S", "W": -1). */
-	factor: number;
+	factor: 1 | -1;
 	/**
 	 * Latitude: "N" or "S" / Longitude: "E" or "W" — the former indicates a
 	 * positive value, the latter a negative value.

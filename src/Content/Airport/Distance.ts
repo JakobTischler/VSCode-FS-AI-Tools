@@ -16,10 +16,10 @@ type TDistanceUnit = keyof typeof EDistanceUnitFactors;
 
 export class Distance {
 	/** Earth's radius in meters */
-	private static EARTH_RADIUS = 6_371_000;
+	static readonly EARTH_RADIUS: number = 6_371_000;
 
 	/** Factor to convert a value from degrees to radians. Equals `π / 180`. */
-	private static DEG_TO_RAD = 0.017453292519943295;
+	static DEG_TO_RAD = 0.017453292519943295;
 
 	/** Distance in meters */
 	value: number;
@@ -33,7 +33,7 @@ export class Distance {
 	 * @param {Coordinates} from - Start coordinates instance
 	 * @param {Coordinates} to - Target coordinates instances
 	 * @returns The distance between the two coordinates in meters.
-	 * @source https://www.movable-type.co.uk/scripts/latlong.html
+	 * @see https://www.movable-type.co.uk/scripts/latlong.html
 	 */
 	calculate(from: Coordinates, to: Coordinates) {
 		if (from === to) {
@@ -56,8 +56,11 @@ export class Distance {
 		return Distance.EARTH_RADIUS * c;
 	}
 
-	/** Distance formatted to either kilometers, miles or nautical miles
-	 * (depending on extension setting), with grouping and unit */
+	/**
+	 * Distance formatted to either kilometers, miles or nautical miles
+	 * (depending on extension setting), with grouping and unit
+	 * @example "1'234 nm"
+	 */
 	get formatted() {
 		const distanceUnit = vscode.workspace
 			.getConfiguration('fs-ai-tools.airlineView', undefined)
