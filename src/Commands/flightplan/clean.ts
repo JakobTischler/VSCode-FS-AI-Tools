@@ -1,5 +1,6 @@
 import * as vscode from 'vscode';
 import { getFilename, replaceDocumentContents } from '../../Tools/helpers';
+import '../../Extenders/Math';
 import '../../Extenders/number';
 
 export function CleanFlightplan() {
@@ -105,7 +106,8 @@ function formatTimes(text: string, removeSeconds: boolean, addAtToDepTimes: bool
 }
 
 /**
- * Randomizes the flightplan percentage between the provided min and max values (default `min=10` and `max=99`). Returns the complete string.
+ * Randomizes the flightplan percentage between the provided min and max values
+ * (default `min=10` and `max=99`). Returns the complete string.
  */
 function randomizePercentage(text: string, min = 10, max = 99): string {
 	const regex = /(\d+%)/g;
