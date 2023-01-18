@@ -46,19 +46,27 @@ export async function GroupByAircraftType() {
 	 */
 
 	let newFileContents = '';
+	let msg = 'Aircraft grouped by type';
 	if (isFlightplansTxt) {
 		newFileContents = await groupFlightplansTxt(editor.document.getText(), aircraftData);
 	} else {
-		const { output } = await groupAircraftTxt(editor.document.getText(), aircraftData);
-
+		const { aircraftGroups, unmatchedLines, output } = await groupAircraftTxt(
+			editor.document.getText(),
+			aircraftData
+		);
 		newFileContents = output;
+
+		msg = `Aircraft grouped into ${'type'.pluralSimple(aircraftGroups.length)}`;
+		if (unmatchedLines.length) {
+			msg += ` (${'type'.plural(unmatchedLines.length)} couldn't be matched)`;
+		}
 	}
 
 	if (newFileContents?.length) {
 		// Apply changes to document
 		replaceDocumentContents(editor, newFileContents);
 
-		vscode.window.showInformationMessage('Aircraft grouped by type');
+		vscode.window.showInformationMessage(msg);
 	}
 }
 
@@ -69,6 +77,7 @@ async function groupAircraftTxt(
 	headerLines: string[];
 	aircraftGroups: TAcTypeGroup[];
 	aircraftGroupsSorted: TAcTypeGroup[];
+	unmatchedLines: string[];
 	output: string;
 }> {
 	const lines = fileContents.split('\n');
@@ -79,6 +88,7 @@ async function groupAircraftTxt(
 	 */
 
 	const headerLines: string[] = [];
+	const unmatchedLines: string[] = [];
 	const aircraftGroups: TAcTypeGroup[] = [];
 	let currentGroupLines: string[] = [];
 	let currentAircraftType: AircraftType | undefined;
@@ -94,7 +104,8 @@ async function groupAircraftTxt(
 			}
 
 			if (!acType) {
-				console.error(`No aircraftType could be matched to "${line}"`);
+				unmatchedLines.push(line);
+				showError(`No aircraftType could be matched to "${line}"`, true);
 				continue;
 			}
 
@@ -156,9 +167,10 @@ async function groupAircraftTxt(
 
 	let output = headerLines.length ? headerLines.join('\n') + '\n' : '';
 	output += cleanedGroups.join('\n' + '\n'.repeat(numEmptyLines));
-	console.log({ headerLines, aircraftGroups, aircraftGroupsSorted: groups, output });
+	output += unmatchedLines.length ? `\n\n\n\n//Unmatched aircraft\n${unmatchedLines.join('\n')}` : '';
+	console.log({ headerLines, aircraftGroups, aircraftGroupsSorted: groups, unmatchedLines, output });
 
-	return { headerLines, aircraftGroups, aircraftGroupsSorted: groups, output };
+	return { headerLines, aircraftGroups, aircraftGroupsSorted: groups, unmatchedLines, output };
 }
 
 function getAircraftTypeFromLine(

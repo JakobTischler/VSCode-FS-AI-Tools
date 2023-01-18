@@ -410,7 +410,7 @@
 				},
 				"CRJ2": {
 					"name": "CRJ-100/200 / Legcy 800/850",
-					"search": ["/CRJ-100[A-Z\\s]/", "CRJ-2", "Legacy 800", "Legacy 850"],
+					"search": ["/CRJ-100[A-Z\\s]/", "CRJ-2", "/(Challenger|Legacy) 8[05]0/"],
 					"series": "CRJ",
 					"wingspan": 69.58
 				},
@@ -577,10 +577,10 @@
 			}
 		},
 		"de Havilland": {
-			"search": ["de Havilland", "DeHavilland", "Viking"],
+			"search": ["De Havilland", "de Havilland", "DeHavilland", "Viking"],
 			"types": {
-				"DHC7": { "name": "DHC-7", "search": ["DHC7", "DHC-7"], "wingspan": 93.0 },
-				"DHC6": { "name": "DHC-6-300/400", "search": ["DHC6", "DHC-6"], "wingspan": 65.0 }
+				"DHC7": { "name": "DHC-7", "search": ["/(?:DHC|Dash)[- ]7/"], "wingspan": 93.0 },
+				"DHC6": { "name": "DHC-6-300/400", "search": ["/(?:DHC|Dash)[- ]6/"], "wingspan": 65.0 }
 			}
 		},
 		"Dornier": {
@@ -617,15 +617,30 @@
 					"series": "ERJ",
 					"wingspan": 65.75
 				},
-				"E170": { "name": "E170", "search": ["/(?:ERJ|EMB)[- ]?170/"], "series": "EMB", "wingspan": 85.33 },
-				"E175": { "name": "E175", "search": ["/(?:ERJ|EMB)[- ]?175/"], "series": "EMB", "wingspan": 85.33 },
+				"E170": {
+					"name": "E170",
+					"search": ["/E(mbraer|MB|RJ)?[-\\s]?170(?!(-?E2))/"],
+					"series": "EMB",
+					"wingspan": 85.33
+				},
+				"E175": {
+					"name": "E175",
+					"search": ["/E(mbraer|MB|RJ)?[-\\s]?175(?!(-?E2))/"],
+					"series": "EMB",
+					"wingspan": 85.33
+				},
 				"E190": {
 					"name": "E190 / Lineage 1000",
-					"search": ["/(?:ERJ|EMB)[- ]?190/", "Lineage 1000"],
+					"search": ["/E(mbraer|MB|RJ)?[-\\s]?190(?!(-?(E2|[2345]00)))/", "Lineage 1000"],
 					"series": "EMB",
 					"wingspan": 94.25
 				},
-				"E195": { "name": "E195", "search": ["/(?:ERJ|EMB)[- ]?195/"], "series": "EMB", "wingspan": 94.25 },
+				"E195": {
+					"name": "E195",
+					"search": ["/E(mbraer|MB|RJ)?[-\\s]?(195(?!(-?E2))|190-200)/"],
+					"series": "EMB",
+					"wingspan": 94.25
+				},
 				"E275": {
 					"name": "E175-E2",
 					"search": ["/E(mbraer|MB|RJ)?[-\\s]?(175(-?E2)|275|190-500)/"],
