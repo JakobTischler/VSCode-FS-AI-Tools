@@ -1,5 +1,9 @@
 # Change Log
 
+### 1.7.3
+- FIXED: `Clean Flightplan`: randomizing percentages
+- FIXED: `Group by Aircraft Type` doesn't remove unmatched lines anymore
+
 ### 1.7.2
 - `Group by Aircraft Type`: the aircraft count for each aircraft type can optionally be added to the header line (see `fs-ai-tools.groupByAircraftType.addCountToGroupHeadline`).
 - `Group by Aircraft Type`: Livery variations are now extracted from the title to use as livery header lines. Currently supported: " - variation" and " (variation)".

@@ -6,7 +6,7 @@
 	},
 	"displayName": "FS AI Tools",
 	"description": "A bag of tools for AI flightplans and .cfg files",
-	"version": "1.7.2",
+	"version": "1.7.3",
 	"icon": "icon.png",
 	"license": "",
 	"engines": {
@@ -435,7 +435,7 @@
 						"type": "string",
 						"default": "",
 						"title": "Custom Aicraft Data File Path",
-						"markdownDescription": "Full path to a custom aircraft data JSON file. Will overwrite / add to default aircraft data. See _*[TODO]()*_ for format.",
+						"markdownDescription": "Full path to a custom aircraft data JSON file. Will overwrite / add to default aircraft data. See _*[Wiki](https://github.com/JakobTischler/VSCode-FS-AI-Tools/wiki/Data:-Aircraft-Data-Base-File)*_ for formatting.",
 						"scope": "window"
 					},
 					"fs-ai-tools.masterAirportsFilePath": {
@@ -853,7 +853,7 @@
 						"type": "string",
 						"default": "",
 						"title": "Aircraft directory",
-						"markdownDescription": "Full path to the folder containing all AI aircraft folders. àircraft.cfg´ files within that directory as well as its subdirectories will be checked.",
+						"markdownDescription": "Full path to the folder containing all AI aircraft folders. `aircraft.cfg` files within that directory as well as its subdirectories will be checked.",
 						"scope": "window"
 					},
 					"fs-ai-tools.deleteAircraft.confirmDeletion": {
@@ -884,15 +884,6 @@
 						"default": false,
 						"title": "Add to Context Menu",
 						"markdownDescription": "Adds the \"Generate Airports\" command to the context menu when a `Flightplans….txt` file is open.",
-						"scope": "window"
-					},
-					"fs-ai-tools.generateAirports.masterAirportsFilePath": {
-						"type": "string",
-						"default": "",
-						"title": "[Deprecated] Master Airports File Path",
-						"markdownDescription": "Full path to a master airports file. Will be used to select airport data.",
-						"deprecationMessage": "Deprecated: Please use fs-ai-tools.masterAirportsFilePath instead.",
-						"markdownDeprecationMessage": "**Deprecated**: Please use `#fs-ai-tools.masterAirportsFilePath#` instead.",
 						"scope": "window"
 					}
 				}
@@ -985,7 +976,7 @@
 					},
 					"fs-ai-tools.rebaseAircraftNumbers.emptyLinesBetweenGroupsFlightplansTxt": {
 						"type": "integer",
-						"default": 1,
+						"default": 2,
 						"minimum": 1,
 						"description": "A new group is recognized in the `Flightplans….txt` file after this number of empty lines.",
 						"scope": "window"
