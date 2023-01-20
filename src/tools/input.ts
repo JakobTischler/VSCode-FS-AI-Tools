@@ -35,9 +35,9 @@ export async function showInputBox() {
  */
 export async function getDropdownSelection(title: string, items: string[], canPickMany = false, ignoreFocusOut = true) {
 	return await window.showQuickPick(items, {
-		title: title,
-		canPickMany: canPickMany,
-		ignoreFocusOut: ignoreFocusOut,
+		title,
+		canPickMany,
+		ignoreFocusOut,
 	});
 }
 

@@ -25,8 +25,10 @@ export async function CreateAircraft() {
 
 	const config = vscode.workspace.getConfiguration('fs-ai-tools.createAircraft', undefined);
 
-	// -----------------------------------------------------
-	// GET LIST OF REGISTRATIONS
+	/*
+	 * —————————————————————————————————————————————————————————————————————————
+	 * GET LIST OF REGISTRATIONS
+	 */
 	const regs: string[] = [];
 	const selections = editor.selections;
 	if (!selections) {
@@ -60,8 +62,10 @@ export async function CreateAircraft() {
 		return false;
 	}
 
-	// -----------------------------------------------------
-	// GET TEMPLATE PATH AND CONTENT
+	/*
+	 * —————————————————————————————————————————————————————————————————————————
+	 * GET TEMPLATE PATH AND CONTENT
+	 */
 	const templatePaths = config.get('templates') as string[];
 	if (templatePaths?.length === 0) {
 		showError('No templates defined');
@@ -84,34 +88,38 @@ export async function CreateAircraft() {
 		.map((line) => line.trim())
 		.join('\n');
 
-	// -----------------------------------------------------
-	// READ AIRCRAFT.CFG TO GET LAST FLTSIM.X
+	/*
+	 * —————————————————————————————————————————————————————————————————————————
+	 * READ AIRCRAFT.CFG TO GET LAST FLTSIM.X
+	 */
 	const aircraftCfgPath = Path.join(__WORKDIR__, 'aircraft.cfg');
 	if (!fs.existsSync(aircraftCfgPath)) {
 		showError(`aircraft.cfg file couldn't be found in "${__WORKDIR__}"`);
 	}
 	const aircraftCfgContents = (await getFileContents(aircraftCfgPath)) as string;
-	const fltsimXMatches = aircraftCfgContents.match(/\[fltsim\.(\d+)\]/gi);
+
+	// Get last fltsim index plus 1
 	let startIndex = 0;
-	if (fltsimXMatches) {
-		// console.log(fltsimXMatches, fltsimXMatches[fltsimXMatches.length - 1]);
-		const last = fltsimXMatches[fltsimXMatches.length - 1];
-		const match = last.match(/\[fltsim\.(\d+)\]/i);
-		if (match?.[1]) {
-			startIndex = Number(match[1]) + 1;
-		}
-		console.log({ last, match, startIndex });
+	const lastEntryMatch = aircraftCfgContents.match(/[\s\S]*(?<lastEntry>\[fltsim\.(?<lastNum>\d+)\][\s\S]*)$/im);
+	if (lastEntryMatch?.groups?.lastNum) {
+		startIndex = Number(lastEntryMatch.groups.lastNum) + 1;
+
+		console.log({ lastEntryMatch, startIndex });
 	}
 
-	// -----------------------------------------------------
-	// READ AIFP.CFG DATA TO PRE-FILL INPUTS
+	/*
+	 * —————————————————————————————————————————————————————————————————————————
+	 * READ AIFP.CFG DATA TO PRE-FILL INPUTS
+	 */
 	const aifpCfgPath = Path.join(Path.dirname(editor.document.uri.path), 'aifp.cfg');
 	const aifpCfgData = await readAifpCfg(aifpCfgPath);
 
-	// -----------------------------------------------------
-	// CREATE FLTSIM ENTRIES
+	/*
+	 * —————————————————————————————————————————————————————————————————————————
+	 * CREATE FLTSIM ENTRIES
+	 */
 	let createFolders = config.get('createFolders') === 'Create';
-	if (config.get('createFolders') === 'Ask every time') {
+	if (config.get('createFolders') === 'Ask everytime') {
 		const userPick = await getDropdownSelection('Create Texture Folders?', [
 			'Create folders',
 			"Don't create folders",
@@ -125,8 +133,10 @@ export async function CreateAircraft() {
 		return false;
 	}
 
-	// -----------------------------------------------------
-	// APPEND ENTRIES TO AIRCRAFT.CFG
+	/*
+	 * —————————————————————————————————————————————————————————————————————————
+	 * APPEND ENTRIES TO AIRCRAFT.CFG
+	 */
 	const fltsimEntriesText = '\n\n' + [...fltsimEntries.map((entry) => entry.fltsim)].join('\n\n') + '\n';
 	fs.appendFile(aircraftCfgPath, fltsimEntriesText, 'utf8', (err) => {
 		if (err) {
@@ -134,8 +144,10 @@ export async function CreateAircraft() {
 		}
 	});
 
-	// -----------------------------------------------------
-	// COPY TITLES TO CLIPBOARD
+	/*
+	 * —————————————————————————————————————————————————————————————————————————
+	 * COPY TITLES TO CLIPBOARD
+	 */
 	if (config.get('copyTitlesToClipboard')) {
 		const titles = fltsimEntries
 			.map((entry) => entry.title)
@@ -144,8 +156,10 @@ export async function CreateAircraft() {
 		writeTextToClipboard(titles);
 	}
 
-	// -----------------------------------------------------
-	// CREATE FOLDERS
+	/*
+	 * —————————————————————————————————————————————————————————————————————————
+	 * CREATE FOLDERS
+	 */
 	if (createFolders) {
 		const textureCfgPath = Path.join(__WORKDIR__, 'texture.cfg');
 		const textureCfgExists = fs.existsSync(textureCfgPath);
@@ -176,8 +190,10 @@ export async function CreateAircraft() {
 		}
 	}
 
-	// -----------------------------------------------------
-	// SUCCESS MESSAGE
+	/*
+	 * —————————————————————————————————————————————————————————————————————————
+	 * SUCCESS MESSAGE
+	 */
 	let msg = `${'entry'.plural(regs.length, { pluralWord: 'entries' })} created`;
 	if (config.get('copyTitlesToClipboard')) {
 		msg += ` and ${'title'.plural(regs.length)} copied`;

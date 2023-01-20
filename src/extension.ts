@@ -6,7 +6,7 @@ import { CleanFlightplan } from './Commands/flightplan/clean';
 import { ChangeAircraftNumber } from './Commands/flightplan/change-ac-number';
 import { CountAircraft } from './Commands/flightplan/count-aircraft';
 import { CreateAifpCfg } from './Commands/flightplan/create-aifp-cfg';
-import { CreateAircraft } from './Commands/flightplan/create-aircraft';
+import { CreateAircraft } from './Commands/aircraft/create-aircraft';
 import { CreateFlightplanHeader } from './Commands/flightplan/create-header';
 import { CreateFlightplanHeaderFromAifp } from './Commands/flightplan/create-header-from-aifp';
 import { DeleteAircraft } from './Commands/aircraft/delete-aircraft';
