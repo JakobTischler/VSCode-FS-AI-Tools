@@ -169,6 +169,13 @@ function readAircraftCfgs(filePaths: string[], toDeleteTitles: Set<string>): Map
 	// TODO title might not directly follow initial [fltsim.x] line
 	const regexp = /\[fltsim\.(\w+)\]\s*title\s*=\s*(.+?)(?:[\n\r]+\w+\s*=\s*.+)+/gim;
 
+	// TODO get last fltsim entry https://regex101.com/r/L95Vr5/1
+	// 		/[\s\S]*(?<lastEntry>\[fltsim\.(?<lastNum>\d+)\][\s\S]+?)(?=(\[|\s$))/m
+	// TODO get full fltsim entry by number https://regex101.com/r/Wv4W8e/1
+	// 		/[\s\S]*(?entry>\[fltsim\.14\][\s\S]+?)(?=(\[|\n$))/m
+	// TODO get full fltsim entry by title https://regex101.com/r/mtajA1/2
+	//		/[\s\S]*(?<entry>\[fltsim\.(?<num>\d+)\][\s\S]+?title\s*=\s*AIA Boeing 717-200 VOE-Volotea \(Volotissima\)(?:[\s\S]+?\n*)(?=(?:\[|\s$)))/m
+
 	for (const filePath of filePaths) {
 		let stop = false;
 
@@ -286,6 +293,10 @@ async function deleteAndSave(titles: Set<string>, fltsimEntriesByTitle: Map<stri
 		let fileDirty = false;
 		continueDeletion = true;
 
+		// Get second to last part of path (containing directory name)
+		const configPathDir = path.basename(path.dirname(cfgPath));
+		const configPathShort = `${configPathDir}/aircraft.cfg`;
+
 		/*
 		 * CONFIRM DELETION OF ALL FROM FILE
 		 */
@@ -293,7 +304,9 @@ async function deleteAndSave(titles: Set<string>, fltsimEntriesByTitle: Map<stri
 			const entryText = 'fltsim entry and its texture folder'.plural(fltsimEntries.length, {
 				pluralWord: 'fltsim entries and their texture folders',
 			});
-			const msg = `Are you sure you want to delete ${entryText} from "${cfgPath}"?`;
+			const msg = `Are you sure you want to delete ${entryText} from
+
+"${configPathShort}"?`;
 			const button = fltsimEntries.length > 1 ? `Delete ${fltsimEntries.length} aircraft` : `Delete aircraft`;
 
 			await window
@@ -329,7 +342,10 @@ async function deleteAndSave(titles: Set<string>, fltsimEntriesByTitle: Map<stri
 				 * CONFIRM DELETION OF EACH ENTRY
 				 */
 				if (confirmation === EConfirmation.AIRCRAFT) {
-					const msg = `Are you sure you want to delete "${dataEntry.title}" from "${cfgPath}"?`;
+					const msg = `Are you sure you want to delete the following fltsim entry?
+
+• Title: "${dataEntry.title}"
+• Config: "${configPathShort}"`;
 					const button = `Delete aircraft`;
 
 					await window

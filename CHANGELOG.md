@@ -1,5 +1,8 @@
 # Change Log
 
+### 1.7.4
+- CHANGED: `Delete Aircraft` confirmation message displays title and config path more readable.
+
 ### 1.7.3
 - FIXED: `Clean Flightplan`: randomizing percentages
 - FIXED: `Group by Aircraft Type` doesn't remove unmatched lines anymore
