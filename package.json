@@ -10,39 +10,13 @@
 	"icon": "icon.png",
 	"license": "",
 	"engines": {
-		"vscode": "^1.73.1"
+		"vscode": "^1.74.0"
 	},
 	"categories": [
 		"Other"
 	],
 	"activationEvents": [
-		"onCommand:fsAiTools.airlineView",
-		"onCommand:fsAiTools.cleanAircraftCfg",
-		"onCommand:fsAiTools.cleanFlightplan",
-		"onCommand:fsAiTools.changeAircraftNumber",
-		"onCommand:fsAiTools.countAircraft",
-		"onCommand:fsAiTools.createAifpCfg",
-		"onCommand:fsAiTools.createAircraft",
-		"onCommand:fsAiTools.createFlightplanHeader",
-		"onCommand:fsAiTools.createFlightplanHeaderFromAifp",
-		"onCommand:fsAiTools.deleteAircraft",
-		"onCommand:fsAiTools.deleteAircraftFromAircraftCfg",
-		"onCommand:fsAiTools.flightplanMetadata",
-		"onCommand:fsAiTools.generateAirports",
-		"onCommand:fsAiTools.groupByAircraftType",
-		"onCommand:fsAiTools.hoursToWeek",
-		"onCommand:fsAiTools.matchAcNumbers",
-		"onCommand:fsAiTools.openMasterAirportsFile",
-		"onCommand:fsAiTools.rebaseAircraftNumbers",
-		"onCommand:fsAiTools.renameFiles",
-		"onCommand:fsAiTools.renumberAddOnsCfg",
-		"onCommand:fsAiTools.renumberSceneryCfg",
-		"onCommand:fsAiTools.replaceAircraft",
-		"onCommand:fsAiTools.showAircraftList",
-		"onCommand:fsAiTools.switchFS9FSX",
-		"onView:fsAiTools.aircraftCfgCommandsView",
-		"onView:fsAiTools.flightplansCommandsView",
-		"onView:fsAiTools.flightplansAircraftView"
+		"onView:fsAiTools.aircraftCfgCommandsView"
 	],
 	"main": "./out/extension.js",
 	"contributes": {
