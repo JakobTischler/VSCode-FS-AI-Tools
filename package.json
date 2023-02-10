@@ -6,7 +6,7 @@
 	},
 	"displayName": "FS AI Tools",
 	"description": "A bag of tools for AI flightplans and .cfg files",
-	"version": "1.7.4",
+	"version": "1.7.5",
 	"icon": "icon.png",
 	"license": "",
 	"engines": {
@@ -917,6 +917,12 @@
 						"type": "boolean",
 						"default": true,
 						"markdownDescription": "If active, the aircraft groups are sorted by their respective wingspans in descending order. The wingspan values can be defined in the custom aircraft data JSON file (*`#fs-ai-tools.aircraftDataFilePath#`*).",
+						"scope": "window"
+					},
+					"fs-ai-tools.groupByAircraftType.sortByRegistration": {
+						"type": "boolean",
+						"default": true,
+						"markdownDescription": "If active, the aircraft within a group are sorted by their respective registration in ascending order.",
 						"scope": "window"
 					},
 					"fs-ai-tools.groupByAircraftType.addWingspanToGroupHeadline": {

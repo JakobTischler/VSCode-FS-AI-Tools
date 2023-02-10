@@ -10,10 +10,17 @@ import {
 } from '../../Tools/helpers';
 import { parseAircraftTxt, TParsedAircraftTxtData } from '../../Content/Aircraft/parseAircraftTxt';
 import { AircraftType } from '../../Content/Aircraft/AircraftType';
+import { Aircraft } from '../../Content/Aircraft/Aircraft';
 import { Flightplan } from '../../Content/Flightplan/Flightplan';
 import { getNumberInput } from '../../Tools/input';
 
 type TAcTypeGroup = [AircraftType, string[]];
+
+enum E_AppendWingspan {
+	OFF = 'Off',
+	IMPERIAL = 'Imperial',
+	METRIC = 'Metric',
+}
 
 export async function GroupByAircraftType() {
 	console.log(`Running GroupByAircaftType()`);
@@ -219,32 +226,33 @@ async function groupFlightplansTxt(fileContents: string, aircraftData: TParsedAi
 	 * Sort by wingspan
 	 */
 	const config = vscode.workspace.getConfiguration('fs-ai-tools', undefined);
-	const sort = config.get('groupByAircraftType.sortByWingspan');
+	const sortTypesByWingspan = config.get('groupByAircraftType.sortByWingspan') as boolean;
 
 	let aircraftTypeGroups = [...aircraftData.aircraftTypes.values()];
-	if (sort) {
+	if (sortTypesByWingspan) {
 		aircraftTypeGroups = aircraftTypeGroups.sort((a: AircraftType, b: AircraftType) =>
 			Math.sign(b.wingspan! - a.wingspan!)
 		);
 	}
 
-	const appendWingspan = config.get('groupByAircraftType.addWingspanToGroupHeadline');
+	const appendWingspan = config.get('groupByAircraftType.addWingspanToGroupHeadline') as E_AppendWingspan;
 	const FEET_TO_METERS = 0.3048;
 	const appendCount = config.get('groupByAircraftType.addCountToGroupHeadline') as boolean;
+	const sortAircraftByReg = config.get('groupByAircraftType.sortByRegistration') as boolean;
 
 	const textGroups = aircraftTypeGroups
 		.filter((aircraftType) => aircraftType.aircraftCount > 0)
 		.map((aircraftType) => {
 			// Main header line
 			let header = `//${aircraftType.name}`;
-			if (appendWingspan === 'Imperial') {
+			if (appendWingspan === E_AppendWingspan.IMPERIAL) {
 				header += ` (${aircraftType.wingspan.toLocaleString('en-US', {
 					style: 'unit',
 					unit: 'foot',
 					minimumFractionDigits: 1,
 					maximumFractionDigits: 2,
 				})})`;
-			} else if (appendWingspan === 'Metric') {
+			} else if (appendWingspan === E_AppendWingspan.METRIC) {
 				header += ` (${(aircraftType.wingspan * FEET_TO_METERS).toLocaleString('en-US', {
 					style: 'unit',
 					unit: 'meter',
@@ -259,6 +267,12 @@ async function groupFlightplansTxt(fileContents: string, aircraftData: TParsedAi
 
 			const content = [...aircraftType.liveries].map((livery) => {
 				if (livery.hasValidNum) {
+					if (sortAircraftByReg) {
+						livery.aircraft = livery.aircraft.sort((a: Aircraft, b: Aircraft) =>
+							a.registration < b.registration ? -1 : a.registration > b.registration ? 1 : 0
+						);
+					}
+
 					const content = livery.aircraft.map((aircraft) => aircraft.text);
 
 					// If this livery has a variation part, add a header line at the beginning

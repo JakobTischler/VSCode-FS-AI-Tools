@@ -1,5 +1,8 @@
 # Change Log
 
+### 1.7.5
+- ADDED: `Group by Aircraft Type`: New setting to sort aircraft within an aircraft livery group by their registrations in ascending order (see `fs-ai-tools.groupByAircraftType.sortByRegistration`).
+
 ### 1.7.4
 - CHANGED: `Delete Aircraft` confirmation message displays title and config path more readable.
 
