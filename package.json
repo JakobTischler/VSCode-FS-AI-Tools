@@ -6,7 +6,7 @@
 	},
 	"displayName": "FS AI Tools",
 	"description": "A bag of tools for AI flightplans and .cfg files",
-	"version": "1.7.5",
+	"version": "1.7.6",
 	"icon": "icon.png",
 	"license": "",
 	"engines": {
@@ -114,6 +114,11 @@
 			{
 				"command": "fsAiTools.deleteAircraftFromAircraftCfg",
 				"title": "Delete Aircraft from aircraft.cfg",
+				"category": "FS AI Tools"
+			},
+			{
+				"command": "fsAiTools.flightplanGitCommitMsg",
+				"title": "Get Flightplan Git Commit Message",
 				"category": "FS AI Tools"
 			},
 			{
@@ -227,6 +232,10 @@
 				{
 					"command": "fsAiTools.deleteAircraftFromAircraftCfg",
 					"when": "resourceFilename =~ /^aircraft.cfg$/i && editorHasSelection"
+				},
+				{
+					"command": "fsAiTools.flightplanGitCommitMsg",
+					"when": "config.fs-ai-tools.isDev && resourceFilename =~ /^((flightplans)|(aircraft)|(airports)).*txt$/i"
 				},
 				{
 					"command": "fsAiTools.flightplanMetadata",

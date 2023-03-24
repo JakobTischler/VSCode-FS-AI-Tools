@@ -67,7 +67,7 @@ You can use:
 		} else if (tagName === 'icao') {
 			value = (await getIcao(proposedIcao)) || '';
 		} else if (tagName === 'callsign') {
-			value = (await getCallsign()) || '';
+			value = (await getCallsign())?.toUpperCase() || '';
 		} else if (tagName === 'author') {
 			value = (await getAuthor()) || '';
 		} else if (tagName === 'season') {
