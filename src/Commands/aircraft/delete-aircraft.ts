@@ -88,10 +88,13 @@ function getAircraftTitles(document: TextDocument, selections: readonly Selectio
 		}
 	}
 
-	console.log(`Found titles:`, ret);
-	window.showInformationMessage(`${'title'.plural(ret.length)} found`);
+	// Remove duplicates
+	const retSet = new Set(ret);
 
-	return new Set(ret);
+	console.log(`Found titles:`, retSet);
+	window.showInformationMessage(`${'title'.plural(retSet.size)} found`);
+
+	return retSet;
 }
 
 /**
