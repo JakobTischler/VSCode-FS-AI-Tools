@@ -305,7 +305,7 @@
 				"BA46": {
 					"name": "146-100/200/300 / RJ-70/85/100",
 					"search": ["146-", "/RJ[- ]?(?:70|85|100)/"],
-					"wingspan": 86
+					"wingspan": 86.4
 				},
 				"JS31": { "name": "JS-31/32", "search": ["JS3", "JS-3"], "series": "Jetstream", "wingspan": 52 },
 				"JS41": { "name": "JS-41/42", "search": ["JS4", "JS-4"], "series": "Jetstream", "wingspan": 60 }
@@ -317,13 +317,13 @@
 				"B190": { "name": "1900C/D", "search": ["B1900", "1900C", "1900D"], "wingspan": 54.5 },
 				"BE20": {
 					"name": "King Air 200/C90/A100 / Bonanza 36",
-					"search": ["/King Air B?2[05]0/", "Beech 200", "Beech B200", "C90 ", "C99 ", "A100 ", "Bonanza 36"],
+					"search": ["/King ?Air B?2[05]0/", "/Beech B?200/", "/C9[09]/ ", "A100 ", "Bonanza 36"],
 					"series": "King Air",
 					"wingspan": 57.92
 				},
 				"B350": {
-					"name": "King Air 350 / Baron 58",
-					"search": ["/(?:King Air|Beech) B?350/", "Baron 58"],
+					"name": "King Air 300/350 / Baron 58",
+					"search": ["/(?:King Air|Beech) B?3[05]0/", "Baron 58"],
 					"series": "King Air",
 					"wingspan": 57.92
 				},
