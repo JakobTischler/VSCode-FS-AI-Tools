@@ -1,11 +1,11 @@
 import * as fs from 'fs';
 import * as path from 'path';
-import trash from 'trash';
+// import trash from 'trash';
 
 import { Selection, window } from 'vscode';
 import { listStringItems, showError } from '../../Tools/helpers';
 
-export async function DeleteAircraftFromAircraftCfg() {
+export async function DeleteAircraftFromAircraftCfg(): Promise<false | undefined> {
 	console.log('DeleteAircraftFromAircraftCfg()');
 
 	const editor = window.activeTextEditor;

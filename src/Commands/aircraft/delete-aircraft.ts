@@ -15,6 +15,7 @@ import * as path from 'path';
 import { Selection, TextDocument, window, workspace } from 'vscode';
 import { showError } from '../../Tools/helpers';
 import saveFile from '../../Utils/save-file';
+// import trash from 'trash';
 
 export async function DeleteAircraft() {
 	console.log('DeleteAircraft()');
@@ -103,7 +104,7 @@ function getAircraftTitles(document: TextDocument, selections: readonly Selectio
  * @returns {string[]} An array containing the file paths of all found
  * aircraft.cfg files.
  */
-async function getAircraftCfgFilePaths() {
+async function getAircraftCfgFilePaths(): Promise<string[] | undefined> {
 	// Get aircraft folder from config
 	const config = workspace.getConfiguration('fs-ai-tools.deleteAircraft', undefined);
 	const dir: string | undefined = config.get('aircraftDirectory');
@@ -407,6 +408,7 @@ async function deleteAndSave(titles: Set<string>, fltsimEntriesByTitle: Map<stri
 
 					if (fs.existsSync(textureDir)) {
 						await fs.promises.rm(textureDir, { recursive: true, force: true });
+						// await trash(textureDir);
 						console.log(`🗑 Directory "${textureDir}" removed`);
 					}
 				}
