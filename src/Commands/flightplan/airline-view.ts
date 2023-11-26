@@ -7,6 +7,7 @@ import { parseAircraftTxt } from '../../Content/Aircraft/parseAircraftTxt';
 import { getWebviewContent } from '../../Webviews/airline-view/get-content';
 import { LocalStorageService } from '../../Tools/LocalStorageService';
 import { Routemap } from '../../Content/Route/RouteMap';
+import { flightplanFileNames } from '../../Types/FlightplanFilesMetaData';
 
 export async function ShowAirlineView(
 	context: vscode.ExtensionContext,
@@ -41,25 +42,17 @@ export async function ShowAirlineView(
 
 	// Flightplans.txt content
 	const fileData = await getFlightplanFiles(dirPath, true);
-	if (!fileData.aircraft || !fileData.airports || !fileData.flightplans) {
-		let name = 'Aircraft';
-		if (!fileData.airports) name = 'Airports';
-		if (!fileData.flightplans) name = 'Flightplans';
-		showError(`${name}….txt file couldn't be found in directory.`);
-		return;
-	}
 
-	if (!fileData.aircraft.text) {
-		showError(`${fileData.aircraft.fileName} couldn't be read.`);
-		return;
-	}
-	if (!fileData.airports.text) {
-		showError(`${fileData.airports.fileName} couldn't be read.`);
-		return;
-	}
-	if (!fileData.flightplans.text) {
-		showError(`${fileData.flightplans.fileName} couldn't be read.`);
-		return;
+	for (const fileName of flightplanFileNames) {
+		if (!fileData[fileName]) {
+			showError(`${fileName.capitalize()}….txt file couldn't be found in directory.`);
+			return;
+		}
+
+		if (!fileData[fileName].text) {
+			showError(`${fileData[fileName].fileName} couldn't be read.`);
+			return;
+		}
 	}
 
 	// Get Aircraft
@@ -73,8 +66,8 @@ export async function ShowAirlineView(
 		showErrorModal(title, msg);
 	}
 
-	const flightplan = new Flightplan(fileData.flightplans.text);
-	await flightplan.parseAirportCodes(storageManager, fileData.airports.text);
+	const flightplan = new Flightplan(fileData.flightplans.text!);
+	await flightplan.parseAirportCodes(storageManager, fileData.airports.text!);
 	flightplan.parse(aircraftData.aircraftTypes, aircraftData.aircraftLiveries);
 
 	// Create Webview
@@ -86,14 +79,13 @@ export async function ShowAirlineView(
 	// Handle messages from the webview
 	panel.webview.onDidReceiveMessage(
 		(message) => {
-			switch (message.command) {
-				case 'aircraftTypesChange':
-					if (message.immediate) {
-						routemap.updateImage(message.text);
-					} else {
-						routemap.debouncedUpdateImage(message.text);
-					}
-					return;
+			if (message.command === 'aircraftTypesChange') {
+				if (message.immediate) {
+					routemap.updateImage(message.text);
+				} else {
+					routemap.debouncedUpdateImage(message.text);
+				}
+				return;
 			}
 		},
 		undefined,
@@ -106,18 +98,19 @@ export async function ShowAirlineView(
 
 function createPanel(context: vscode.ExtensionContext, aifp: AifpData, flightplanDir: string) {
 	const config = vscode.workspace.getConfiguration('fs-ai-tools.airlineView', undefined);
-	const logoDirectoryPath = config.get('logoDirectoryPath') as string;
 
 	// Define localResourceRoots
 	const localResourceRoots = [
 		vscode.Uri.file(path.join(context.extensionPath, 'res/Webviews/airline-view')),
 		vscode.Uri.file(flightplanDir),
 	];
+
+	const logoDirectoryPath = config.get('logoDirectoryPath') as string;
 	if (logoDirectoryPath?.length) {
 		localResourceRoots.push(vscode.Uri.file(logoDirectoryPath));
 	}
 
-	const panel = vscode.window.createWebviewPanel(
+	return vscode.window.createWebviewPanel(
 		'airlineView',
 		`Airline Data${aifp.airline ? `: ${aifp.airline}` : ''}`,
 		vscode.ViewColumn.Active,
@@ -126,6 +119,4 @@ function createPanel(context: vscode.ExtensionContext, aifp: AifpData, flightpla
 			localResourceRoots: localResourceRoots,
 		}
 	);
-
-	return panel;
 }

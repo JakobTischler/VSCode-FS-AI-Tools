@@ -86,7 +86,11 @@ export async function parseAircraftTxt(
 	// 4. Match titles to types
 	const matchedData = matchAircraftLiveriesToAircraftType(aircraftTypeMetaData, allLiveries);
 
-	return { ...matchedData, aircraftLiveries: liveries, inactiveAircraftLiveries: inactiveLiveries };
+	return {
+		...matchedData,
+		aircraftLiveries: liveries,
+		inactiveAircraftLiveries: inactiveLiveries,
+	};
 }
 
 /**
@@ -145,7 +149,7 @@ export function countAircraftSimple(data: TAircraftLiveriesByAcNum, flightplanTe
  * Merges the user aicraft naming .json file with the base data
  * @returns a JSON object with the aircraft names and types.
  */
-async function getAircraftTypeMetaData() {
+export async function getAircraftTypeMetaData() {
 	const customDataPath = vscode.workspace
 		.getConfiguration('fs-ai-tools', undefined)
 		.get('aircraftDataFilePath') as string;
@@ -159,7 +163,7 @@ async function getAircraftTypeMetaData() {
 
 			// Merge
 			if (customData.list || customData.types) {
-				return merge(aircraftData, customData);
+				return merge(aircraftData, customData) as AircraftData;
 			}
 
 			showError(`Custom aircraft data couldn't be merged, as it has neither "list" nor "types"`);

@@ -4,6 +4,7 @@ import { ShowAirlineView } from './Commands/flightplan/airline-view';
 import { CleanAircraftCfg } from './Commands/aircraft-cfg/clean-v2';
 import { CleanFlightplan } from './Commands/flightplan/clean';
 import { ChangeAircraftNumber } from './Commands/flightplan/change-ac-number';
+import { CompareFleet } from './Commands/flightplan/compare-fleet';
 import { CountAircraft } from './Commands/flightplan/count-aircraft';
 import { CreateAifpCfg } from './Commands/flightplan/create-aifp-cfg';
 import { CreateAircraft } from './Commands/aircraft/create-aircraft';
@@ -49,6 +50,10 @@ export function activate(context: vscode.ExtensionContext) {
 
 		vscode.commands.registerCommand('fsAiTools.changeAircraftNumber', () => {
 			ChangeAircraftNumber();
+		}),
+
+		vscode.commands.registerCommand('fsAiTools.compareFleet', () => {
+			CompareFleet();
 		}),
 
 		vscode.commands.registerCommand('fsAiTools.countAircraft', () => {

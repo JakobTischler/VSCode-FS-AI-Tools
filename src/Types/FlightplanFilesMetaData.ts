@@ -4,6 +4,7 @@ export interface IFileMetaData {
 	text?: string;
 }
 
-type fileNames = 'aircraft' | 'airports' | 'flightplans';
+export const flightplanFileNames = ['aircraft', 'airports', 'flightplans'] as const;
+type TFlightplanFileName = (typeof flightplanFileNames)[number];
 
-export type TFlightplanFilesMetaData = Record<fileNames, IFileMetaData>;
+export type TFlightplanFilesMetaData = Record<TFlightplanFileName, IFileMetaData>;

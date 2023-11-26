@@ -82,6 +82,11 @@
 				"category": "FS AI Tools"
 			},
 			{
+				"command": "fsAiTools.compareFleet",
+				"title": "Compare Fleets",
+				"category": "FS AI Tools"
+			},
+			{
 				"command": "fsAiTools.countAircraft",
 				"title": "Count Aircraft",
 				"category": "FS AI Tools"
@@ -204,6 +209,10 @@
 				{
 					"command": "fsAiTools.changeAircraftNumber",
 					"when": "editorHasSelection && resourceFilename =~ /^((flightplans)|(aircraft)).*txt$/i"
+				},
+				{
+					"command": "fsAiTools.compareFleet",
+					"when": "resourceFilename =~ /^(aircraft|flightplans).*txt$/i"
 				},
 				{
 					"command": "fsAiTools.countAircraft",

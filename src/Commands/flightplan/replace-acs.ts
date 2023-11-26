@@ -2,7 +2,7 @@ import * as vscode from 'vscode';
 import { replaceDocumentContents } from '../../Tools/helpers';
 import { getDropdownSelection } from '../../Tools/input';
 
-enum ReplaceType {
+enum EReplaceType {
 	Source,
 	Target,
 }
@@ -11,7 +11,11 @@ export async function ReplaceAircraftInTargetFp() {
 	/*
 	 * Get user selected replaceType (current file is source or target?)
 	 */
-	const replaceType = await getDropdownSelection(`Treat this flightplan as source or target?`, ['Source', 'Target']);
+	const replaceType = (await getDropdownSelection(`Treat this flightplan as source or target?`, [
+		'Source',
+		'Target',
+	])) as keyof typeof EReplaceType | undefined;
+
 	if (!replaceType) {
 		vscode.window.showErrorMessage(`Replace direction canceled.`);
 		return false;
@@ -49,10 +53,10 @@ export async function ReplaceAircraftInTargetFp() {
 		return false;
 	}
 
-	await replace(otherFile[0], ReplaceType[replaceType as keyof typeof ReplaceType]);
+	await replace(otherFile[0], EReplaceType[replaceType]);
 }
 
-async function replace(otherFileUri: vscode.Uri, replaceType: ReplaceType) {
+async function replace(otherFileUri: vscode.Uri, replaceType: EReplaceType) {
 	const thisFileContents = vscode.window.activeTextEditor!.document.getText();
 	const thisFileColumn = vscode.window.activeTextEditor!.viewColumn;
 
@@ -73,7 +77,7 @@ async function replace(otherFileUri: vscode.Uri, replaceType: ReplaceType) {
 		// source: vscode.window.activeTextEditor!,
 		target: otherFileEditor,
 	};
-	if (replaceType === ReplaceType.Target) {
+	if (replaceType === EReplaceType.Target) {
 		fileContents.source = otherFileContents;
 		fileContents.target = thisFileContents;
 		// fileEditors.source = otherFileEditor;
