@@ -53,7 +53,7 @@ export function activate(context: vscode.ExtensionContext) {
 		}),
 
 		vscode.commands.registerCommand('fsAiTools.compareFleet', () => {
-			CompareFleet();
+			CompareFleet(context);
 		}),
 
 		vscode.commands.registerCommand('fsAiTools.countAircraft', () => {

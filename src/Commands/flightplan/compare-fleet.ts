@@ -6,14 +6,20 @@ import {
 } from '../../Content/Aircraft/parseAircraftTxt';
 import { getFlightplanFiles, showError } from '../../Tools/helpers';
 import path from 'path';
+import { getWebviewContent } from '../../Webviews/compare-fleet/get-content';
 
 interface IFleetCompareData {
 	typeCode: string;
 	thisCount: number;
 	otherCount: number;
 }
+export interface IFleetCompareResultData {
+	compareData: IFleetCompareData[];
+	total: { thisFleet: number; otherFleet: number };
+	files: { thisFile: vscode.Uri; otherFile: vscode.Uri };
+}
 
-export async function CompareFleet() {
+export async function CompareFleet(context: vscode.ExtensionContext) {
 	const thisFile = vscode?.window?.activeTextEditor?.document.uri;
 	if (!thisFile) {
 		vscode.window.showErrorMessage(`Current flightplan document not found.`);
@@ -33,16 +39,27 @@ export async function CompareFleet() {
 	if (!fleets) return;
 
 	/*
-	 * Create output table content
+	 * Create output table content (formatted text table)
 	 */
 	const compareData = await getCompareData(fleets);
-	const formattedText = getFormattedText(
+	const resultData: IFleetCompareResultData = {
 		compareData,
-		[fleets[0].totalAircraftCount, fleets[1].totalAircraftCount],
-		[thisFile, otherFile]
-	);
+		total: {
+			thisFleet: fleets[0].totalAircraftCount,
+			otherFleet: fleets[1].totalAircraftCount,
+		},
+		files: {
+			thisFile,
+			otherFile,
+		},
+	};
+	const formattedText = getFormattedText(resultData);
 	console.log({ formattedText });
 
+	/*
+	 * Create output table content (webview)
+	 */
+	createPanel(context, resultData);
 	// -------------------------------------------------------------------------
 }
 
@@ -113,8 +130,17 @@ async function getFleets(thisFile: vscode.Uri, otherFile: vscode.Uri) {
 	return fleets;
 }
 
+/**
+ * Takes in an array of parsed aircraft data and returns a comparison of the
+ * aircraft counts for each type of aircraft in the two fleets.
+ * @param {TParsedAircraftTxtData[]} fleets - Array of `TParsedAircraftTxtData`
+ * objects. "This" file's fleet is to be at index 0, the other file's fleet at
+ * index 1.
+ * @returns An array of objects of type `IFleetCompareData`, respectively
+ * containing each aircraft type in any of the two fleets and its respective
+ * count in each fleet.
+ */
 async function getCompareData(fleets: TParsedAircraftTxtData[]) {
-	// throw new Error('Function not implemented.');
 	const metaData = await getAircraftTypeMetaData();
 	const includedTypes = [...fleets[0].aircraftTypes.keys(), ...fleets[1].aircraftTypes.keys()];
 	const includedTypesSorted = metaData.list.filter((typeCode) => includedTypes.includes(typeCode));
@@ -134,11 +160,14 @@ async function getCompareData(fleets: TParsedAircraftTxtData[]) {
 | ---- | ------------- | ------------- |
 | A320 |      0        |      17       |
 */
-function getFormattedText(data: IFleetCompareData[], total: number[], files: vscode.Uri[]) {
-	const fileNames: string[] = files.map((file) => path.parse(file.path).base);
+function getFormattedText(data: IFleetCompareResultData) {
+	const thisFilename = path.parse(data.files.thisFile.path).base;
+	const otherFilename = path.parse(data.files.otherFile.path).base;
 
-	const colWidths = [5, fileNames[0].length, fileNames[1].length];
-	for (const entry of data) {
+	// const fileNames: string[] = files.map((file) => path.parse(file.path).base);
+
+	const colWidths = [5, thisFilename.length, otherFilename.length];
+	for (const entry of data.compareData) {
 		colWidths[0] = Math.max(colWidths[0], entry.typeCode.length);
 		colWidths[1] = Math.max(colWidths[1], String(entry.thisCount).length);
 		colWidths[2] = Math.max(colWidths[2], String(entry.otherCount).length);
@@ -146,9 +175,9 @@ function getFormattedText(data: IFleetCompareData[], total: number[], files: vsc
 
 	const separator = `| ${'-'.repeat(colWidths[0])} | ${'-'.repeat(colWidths[1])} | ${'-'.repeat(colWidths[2])} |`;
 
-	const output = [`| TYPE  | ${fileNames[0]} | ${fileNames[1]} |`, separator];
+	const output = [`| TYPE  | ${thisFilename} | ${otherFilename} |`, separator];
 
-	for (const row of data) {
+	for (const row of data.compareData) {
 		const t = row.typeCode.padEnd(colWidths[0], ' ');
 		const tc: string = row.thisCount ? row.thisCount.pad(colWidths[1], ' ') : ' '.repeat(colWidths[1]);
 		const oc: string = row.otherCount ? row.otherCount.pad(colWidths[2], ' ') : ' '.repeat(colWidths[2]);
@@ -156,8 +185,35 @@ function getFormattedText(data: IFleetCompareData[], total: number[], files: vsc
 		output.push(`| ${t} | ${tc} | ${oc} |`);
 	}
 
-	output.push(separator, `| TOTAL | ${total[0].pad(colWidths[1], ' ')} | ${total[1].pad(colWidths[2], ' ')} |`);
+	output.push(
+		separator,
+		`| TOTAL | ${data.total.thisFleet.pad(colWidths[1], ' ')} | ${data.total.otherFleet.pad(colWidths[2], ' ')} |`
+	);
 
 	// console.log(data, output);
 	return output;
+}
+
+async function createPanel(context: vscode.ExtensionContext, data: IFleetCompareResultData) {
+	// const config = vscode.workspace.getConfiguration('fs-ai-tools.airlineView', undefined);
+
+	// Define localResourceRoots
+	const localResourceRoots = [
+		vscode.Uri.file(path.join(context.extensionPath, 'res/Webviews/compare-fleet')),
+		// vscode.Uri.file(flightplanDir),
+	];
+
+	/* const logoDirectoryPath = config.get('logoDirectoryPath') as string;
+	if (logoDirectoryPath?.length) {
+		localResourceRoots.push(vscode.Uri.file(logoDirectoryPath));
+	} */
+
+	const panel = vscode.window.createWebviewPanel('compareFleet', `Compare Fleet`, vscode.ViewColumn.Active, {
+		enableScripts: true,
+		localResourceRoots,
+	});
+
+	panel.webview.html = await getWebviewContent(data);
+
+	return panel;
 }
