@@ -16,7 +16,11 @@ export async function getWebviewContent(data: IFleetCompareResultData) {
 
 	// content += await getHeaderContent(panel, aifp, flightplanDirPath);
 
-	content += '<main>';
+	content += `<main>
+	<header>
+		<h1>Fleet Comparal</h1>
+		<h2><div class="fileName">${thisFilename}</div> vs. <div class="fileName">${otherFilename}</div>
+	</header>`;
 
 	content += `
 		<table>
@@ -29,22 +33,23 @@ export async function getWebviewContent(data: IFleetCompareResultData) {
 			<tbody>`;
 
 	for (const row of data.compareData) {
-		const delta = row.thisCount - row.otherCount;
-		let deltaText = '=';
-		if (delta > 0) {
-			deltaText = `+${delta}`;
-		} else if (delta < 0) {
-			deltaText = `-${delta}`;
-		}
-
 		content += `
 			<tr>
 				<td>${row.typeCode}</td>
 				<td>${row.thisCount}</td>
 				<td>${row.otherCount}</td>
-				<td>${deltaText}</td>
+				<td>${formatDeltaText(row.thisCount - row.otherCount)}</td>
 			</tr>`;
 	}
+
+	content += `
+		<tfoot>
+			<tr>
+				<td>Total</td>
+				<td>${data.total.thisFleet}</td>
+				<td>${data.total.otherFleet}</td>
+				<td>${formatDeltaText(data.total.thisFleet - data.total.otherFleet)}</td>
+		</tfoot>`;
 
 	content += `</tbody>`;
 
@@ -57,3 +62,27 @@ export async function getWebviewContent(data: IFleetCompareResultData) {
 
 	return content;
 }
+
+/**
+ * The function `formatDeltaText` takes a number as input and returns the number
+ * prefixed with its sign, or an equal sign if it's 0.
+ * @param {number} num - The parameter `num` is a number that represents the
+ * difference or delta value.
+ * @returns The number prefixed with its sign, or an equal sign if it's 0.
+ *
+ * Example:
+ * * 5 → "+5"
+ * * -31 → "-31"
+ * * 0 → "="
+ */
+const formatDeltaText = (num: number): string => {
+	if (num > 0) {
+		return `+${num}`;
+	}
+
+	if (num < 0) {
+		return `-${Math.abs(num)}`;
+	}
+
+	return '=';
+};
