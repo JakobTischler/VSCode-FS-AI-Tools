@@ -1,12 +1,12 @@
-@use '_colors';
-@use '_fonts';
+@use '../../_Shared/_colors';
+@use '../../_Shared/_fonts';
 
-@use '_base';
+@use '../../_Shared/_base';
 @use '_header';
 @use '_icons';
 @use '_section';
 @use '_grid';
-@use '_table';
+@use '../../_Shared/_table';
 @use '_definition-list';
 @use '_button';
 @use '_card';

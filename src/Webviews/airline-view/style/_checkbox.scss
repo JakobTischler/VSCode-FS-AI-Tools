@@ -1,6 +1,6 @@
 @use '_anim';
-@use '_colors';
-@use '_fonts';
+@use '../../_Shared/_colors';
+@use '../../_Shared/_fonts';
 
 nav.checkboxes {
 	$gap: 0.75em;

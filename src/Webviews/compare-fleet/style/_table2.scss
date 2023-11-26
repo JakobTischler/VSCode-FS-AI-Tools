@@ -1,0 +1,18 @@
+table#compare {
+	td {
+		color: var(--color-secondary);
+
+		&.pos {
+			color: #89d185;
+			color: var(--vscode-notebookStatusSuccessIcon-foreground); /* */
+		}
+		&.neg {
+			color: #ff5555;
+			color: var(--vscode-notebookStatusErrorIcon-foreground);
+		}
+		&.equal,
+		&.none {
+			opacity: 0.5;
+		}
+	}
+}

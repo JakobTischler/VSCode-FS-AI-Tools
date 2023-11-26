@@ -213,7 +213,7 @@ async function createPanel(context: vscode.ExtensionContext, data: IFleetCompare
 		localResourceRoots,
 	});
 
-	panel.webview.html = await getWebviewContent(data);
+	panel.webview.html = await getWebviewContent(panel, context, data);
 
 	return panel;
 }
