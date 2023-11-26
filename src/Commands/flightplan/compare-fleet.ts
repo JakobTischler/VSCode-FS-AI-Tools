@@ -7,6 +7,12 @@ import {
 import { getFlightplanFiles, showError } from '../../Tools/helpers';
 import path from 'path';
 
+interface IFleetCompareData {
+	typeCode: string;
+	thisCount: number;
+	otherCount: number;
+}
+
 export async function CompareFleet() {
 	const thisFile = vscode?.window?.activeTextEditor?.document.uri;
 	if (!thisFile) {
@@ -29,8 +35,13 @@ export async function CompareFleet() {
 	/*
 	 * Create output table content
 	 */
-	const formattedOutput = formatOutput(fleets, [thisFile, otherFile]);
-	console.log({ formattedOutput });
+	const compareData = await getCompareData(fleets);
+	const formattedText = getFormattedText(
+		compareData,
+		[fleets[0].totalAircraftCount, fleets[1].totalAircraftCount],
+		[thisFile, otherFile]
+	);
+	console.log({ formattedText });
 
 	// -------------------------------------------------------------------------
 }
@@ -102,46 +113,51 @@ async function getFleets(thisFile: vscode.Uri, otherFile: vscode.Uri) {
 	return fleets;
 }
 
-async function formatOutput(fleets: TParsedAircraftTxtData[], files: vscode.Uri[]) {
+async function getCompareData(fleets: TParsedAircraftTxtData[]) {
 	// throw new Error('Function not implemented.');
 	const metaData = await getAircraftTypeMetaData();
 	const includedTypes = [...fleets[0].aircraftTypes.keys(), ...fleets[1].aircraftTypes.keys()];
 	const includedTypesSorted = metaData.list.filter((typeCode) => includedTypes.includes(typeCode));
 
-	const fileNames: string[] = files.map((file) => path.parse(file.path).base);
-
-	const colWidths = [4, fileNames[0].length, fileNames[1].length];
-
-	const rows: { typeCode: string; thisCount: number; otherCount: number }[] = includedTypesSorted.map((typeCode) => {
+	const rows: IFleetCompareData[] = includedTypesSorted.map((typeCode) => {
 		const thisCount = fleets[0].aircraftTypes.get(typeCode)?.aircraftCount || 0;
 		const otherCount = fleets[1].aircraftTypes.get(typeCode)?.aircraftCount || 0;
-
-		// colWidths[0] = Math.max(colWidths[0], typeCode.length);
-		colWidths[1] = Math.max(colWidths[1], String(thisCount).length);
-		colWidths[2] = Math.max(colWidths[2], String(otherCount).length);
 
 		return { typeCode, thisCount, otherCount };
 	});
 
-	/*
-	| TYPE | Filename1.txt | Filename2.txt |
-	| ---- | ------------- | ------------- |
-	| A320 |      0        |      17       |
-	*/
+	return rows;
+}
 
-	const output = [
-		`| TYPE | ${fileNames[0]} | ${fileNames[1]} |`,
-		`| ---- | ${'-'.repeat(colWidths[1])} | ${'-'.repeat(colWidths[2])} |`,
-	];
+/*
+| TYPE | Filename1.txt | Filename2.txt |
+| ---- | ------------- | ------------- |
+| A320 |      0        |      17       |
+*/
+function getFormattedText(data: IFleetCompareData[], total: number[], files: vscode.Uri[]) {
+	const fileNames: string[] = files.map((file) => path.parse(file.path).base);
 
-	for (const row of rows) {
+	const colWidths = [5, fileNames[0].length, fileNames[1].length];
+	for (const entry of data) {
+		colWidths[0] = Math.max(colWidths[0], entry.typeCode.length);
+		colWidths[1] = Math.max(colWidths[1], String(entry.thisCount).length);
+		colWidths[2] = Math.max(colWidths[2], String(entry.otherCount).length);
+	}
+
+	const separator = `| ${'-'.repeat(colWidths[0])} | ${'-'.repeat(colWidths[1])} | ${'-'.repeat(colWidths[2])} |`;
+
+	const output = [`| TYPE  | ${fileNames[0]} | ${fileNames[1]} |`, separator];
+
+	for (const row of data) {
+		const t = row.typeCode.padEnd(colWidths[0], ' ');
 		const tc: string = row.thisCount ? row.thisCount.pad(colWidths[1], ' ') : ' '.repeat(colWidths[1]);
 		const oc: string = row.otherCount ? row.otherCount.pad(colWidths[2], ' ') : ' '.repeat(colWidths[2]);
 
-		output.push(`| ${row.typeCode} | ${tc} | ${oc} |`);
+		output.push(`| ${t} | ${tc} | ${oc} |`);
 	}
 
-	console.log(rows, output);
+	output.push(separator, `| TOTAL | ${total[0].pad(colWidths[1], ' ')} | ${total[1].pad(colWidths[2], ' ')} |`);
 
-	return { output, rows };
+	// console.log(data, output);
+	return output;
 }
