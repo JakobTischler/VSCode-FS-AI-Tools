@@ -1,5 +1,8 @@
 # Change Log
 
+### 1.7.8
+- ADDED: `Compare fleet`: Compares current flightplan against a selected different one and displays each respective fleet setup (aircraft type count).
+
 ### 1.7.5
 - ADDED: `Group by Aircraft Type`: New setting to sort aircraft within an aircraft livery group by their registrations in ascending order (see `fs-ai-tools.groupByAircraftType.sortByRegistration`).
 
