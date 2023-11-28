@@ -28,7 +28,7 @@ export async function getWebviewContent(
 	content += `<header>
 		<h1>Fleet Comparal</h1>
 		<div class="subHeader">
-			<div class="fileName">${thisFilename}</div> vs. <div class="fileName">${otherFilename}</div>
+			<span class="fileName">${thisFilename}</span> <span class="vs">vs.</span> <span class="fileName">${otherFilename}</span>
 		</div>
 	</header>`;
 
@@ -38,10 +38,10 @@ export async function getWebviewContent(
 	content += `
 		<table id="compare">
 			<thead>
-				<th>Type</th>
-				<th>${thisFilename}</th>
+				<th class="align-right">${thisFilename}</th>
+				<th class="align-right">Diff</th>
+				<th class="align-center">Type</th>
 				<th>${otherFilename}</th>
-				<th>Diff</th>
 			</thead>
 			<tbody>`;
 
@@ -50,10 +50,10 @@ export async function getWebviewContent(
 		const delta = row.thisCount - row.otherCount;
 		content += `
 			<tr>
-				<td>${row.typeCode}</td>
-				<td class="${row.thisCount == 0 ? 'none' : ''}">${row.thisCount}</td>
-				<td class="${row.otherCount == 0 ? 'none' : ''}">${row.otherCount}</td>
-				<td class="${getDeltaCellClass(delta)}">${formatDeltaText(delta)}</td>
+				<td class="count ${row.thisCount == 0 ? 'none' : ''} align-right">${row.thisCount}</td>
+				<td class="delta ${getDeltaCellClass(delta)} align-right">${formatDeltaText(delta)}</td>
+				<td class="type align-center">${row.typeCode}</td>
+				<td class="count ${row.otherCount == 0 ? 'none' : ''}">${row.otherCount}</td>
 			</tr>`;
 	}
 
@@ -62,10 +62,10 @@ export async function getWebviewContent(
 	content += `
 		<tfoot>
 			<tr>
-				<td>Total</td>
-				<td>${data.total.thisFleet}</td>
-				<td>${data.total.otherFleet}</td>
-				<td class="${getDeltaCellClass(totalDelta)}">${formatDeltaText(totalDelta)}</td>
+				<td class="count align-right">${data.total.thisFleet}</td>
+				<td class="delta ${getDeltaCellClass(totalDelta)} align-right">${formatDeltaText(totalDelta)}</td>
+				<td class="type align-center">Total</td>
+				<td class="count">${data.total.otherFleet}</td>
 			</tr>
 		</tfoot>`;
 
@@ -115,8 +115,8 @@ const getDeltaCellClass = (num: number) => {
 	return 'equal';
 };
 
-function getHeadContent(customCssUri: vscode.Uri) {
-	return `<head>
+const getHeadContent = (cssUri: vscode.Uri) => `
+<head>
 	<meta charset="UTF-8">
 	<meta name="viewport" content="width=device-width, initial-scale=1.0">
 	<title>Compare Fleets</title>
@@ -125,6 +125,5 @@ function getHeadContent(customCssUri: vscode.Uri) {
 	<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 	<link href="https://fonts.googleapis.com/css2?family=Fredoka:wght@300;500&family=Montserrat:wght@300;500&family=Noto+Serif+Display:ital,wght@0,300;0,600;1,300&display=swap" rel="stylesheet">
 
-	<link rel="stylesheet" type="text/css" href="${customCssUri}" />
+	<link rel="stylesheet" type="text/css" href="${cssUri}" />
 </head>`;
-}

@@ -1,0 +1,38 @@
+table#compare {
+	td {
+		color: var(--color-secondary);
+
+		&.count,
+		&.delta {
+			font-family: monospace;
+			font-weight: 600;
+		}
+
+		&.pos {
+			color: #89d185;
+			color: var(--vscode-notebookStatusSuccessIcon-foreground);
+		}
+		&.neg {
+			color: #ff5555;
+			color: var(--vscode-notebookStatusErrorIcon-foreground);
+		}
+		&.equal,
+		&.none {
+			opacity: 0.5;
+		}
+	}
+
+	tfoot {
+		text-transform: uppercase;
+		font-size: 1.2em;
+
+		tr {
+			td {
+				border-radius: 0;
+				border-top: 2px solid var(--vscode-textSeparator-foreground);
+				padding-top: 0.75rem;
+				padding-bottom: 0.75rem;
+			}
+		}
+	}
+}

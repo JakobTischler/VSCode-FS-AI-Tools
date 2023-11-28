@@ -271,6 +271,14 @@ table {
   border: 1px solid var(--color-tertiary);
   width: 100%;
 }
+table th.align-right,
+table td.align-right {
+  text-align: right;
+}
+table th.align-center,
+table td.align-center {
+  text-align: center;
+}
 table th {
   padding: 0.5rem 1rem;
   font-family: "Montserrat", var(--vscode-font-family), sans-serif;
@@ -311,6 +319,8 @@ table tr td {
 }
 table tr td:first-child {
   border-radius: var(--border-radius) 0 0 var(--border-radius);
+}
+table tr td:first-child:not(.align-right) {
   padding-right: 3em;
 }
 table tr td:last-child {

@@ -112,12 +112,38 @@ header h1 {
   padding-left: calc(var(--hGap) * 0.5);
 }
 
+/* HEADER */
+.subHeader .fileName {
+  font-family: monospace;
+  font-weight: 600;
+}
+.subHeader .fileName:first-of-type {
+  text-align: right;
+}
+.subHeader .vs {
+  border: 2px solid #ef5350;
+  border-radius: 0.1rem;
+  font-size: 0.75em;
+  letter-spacing: 0;
+  padding: 0.5rem 1rem;
+  text-align: center;
+  text-transform: uppercase;
+}
+
 /* TABLE */
 table {
   background: transparent;
   padding: 1rem;
   border: 1px solid var(--color-tertiary);
   width: 100%;
+}
+table th.align-right,
+table td.align-right {
+  text-align: right;
+}
+table th.align-center,
+table td.align-center {
+  text-align: center;
 }
 table th {
   padding: 0.5rem 1rem;
@@ -159,6 +185,8 @@ table tr td {
 }
 table tr td:first-child {
   border-radius: var(--border-radius) 0 0 var(--border-radius);
+}
+table tr td:first-child:not(.align-right) {
   padding-right: 3em;
 }
 table tr td:last-child {
@@ -208,9 +236,13 @@ table.show-aircraft-types ul.aircraft-types {
 table#compare td {
   color: var(--color-secondary);
 }
+table#compare td.count, table#compare td.delta {
+  font-family: monospace;
+  font-weight: 600;
+}
 table#compare td.pos {
   color: #89d185;
-  color: var(--vscode-notebookStatusSuccessIcon-foreground); /* */
+  color: var(--vscode-notebookStatusSuccessIcon-foreground);
 }
 table#compare td.neg {
   color: #ff5555;
@@ -218,4 +250,14 @@ table#compare td.neg {
 }
 table#compare td.equal, table#compare td.none {
   opacity: 0.5;
+}
+table#compare tfoot {
+  text-transform: uppercase;
+  font-size: 1.2em;
+}
+table#compare tfoot tr td {
+  border-radius: 0;
+  border-top: 2px solid var(--vscode-textSeparator-foreground);
+  padding-top: 0.75rem;
+  padding-bottom: 0.75rem;
 }/*# sourceMappingURL=style.css.map */
