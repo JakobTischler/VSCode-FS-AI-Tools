@@ -94,25 +94,11 @@ export async function getWebviewContent(
  * * 0 → "="
  */
 const formatDeltaText = (num: number): string => {
-	if (num > 0) {
-		return `+${num}`;
-	}
-
-	if (num < 0) {
-		return `-${Math.abs(num)}`;
-	}
-
-	return '=';
+	return [String(num), '=', `+${num}`][Math.sign(num) + 1];
 };
 
 const getDeltaCellClass = (num: number) => {
-	if (num > 0) {
-		return 'pos';
-	}
-	if (num < 0) {
-		return 'neg';
-	}
-	return 'equal';
+	return ['neg', 'equal', 'pos'][Math.sign(num) + 1];
 };
 
 const getHeadContent = (cssUri: vscode.Uri) => `

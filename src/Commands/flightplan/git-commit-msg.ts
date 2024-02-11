@@ -5,33 +5,30 @@ import { showErrorModal, writeTextToClipboard } from '../../Tools/helpers';
 
 export async function GitCommitMessage() {
 	const editor = vscode.window.activeTextEditor;
-	if (editor) {
-		const document = editor.document;
-		const dirPath = path.dirname(document.fileName).replace(/^\/+/, '');
+	if (!editor) {
+		return;
+	}
 
-		const aifpData = await readAifpCfg(path.join(dirPath, 'aifp.cfg'));
+	const document = editor.document;
+	const dirPath = path.dirname(document.fileName).replace(/^\/+/, '');
 
-		if (!aifpData.found) {
-			showErrorModal(
-				`aifp.cfg not found`,
-				`The flightplan's aifp.cfg file is required to gather the data for the commit message.`
-			);
-			return false;
-		}
+	const aifpData = await readAifpCfg(path.join(dirPath, 'aifp.cfg'));
+	if (!aifpData.found) {
+		showErrorModal(
+			`aifp.cfg not found`,
+			`The flightplan's aifp.cfg file is required to gather the data for the commit message.`
+		);
+		return false;
+	}
 
-		const output = `${aifpData.airline}
+	const output = `${aifpData.airline}
 ${aifpData.author}, ${aifpData.season}`;
 
-		vscode.window
-			.showInformationMessage(
-				`Git commit message for ${aifpData.airline}`,
-				{ modal: true, detail: output },
-				'Copy'
-			)
-			.then((buttonText) => {
-				if (buttonText) {
-					writeTextToClipboard(output, 'Copied to clipboard');
-				}
-			});
-	}
+	vscode.window
+		.showInformationMessage(`Git commit message for ${aifpData.airline}`, { modal: true, detail: output }, 'Copy')
+		.then((buttonText) => {
+			if (buttonText) {
+				writeTextToClipboard(output, 'Copied to clipboard');
+			}
+		});
 }

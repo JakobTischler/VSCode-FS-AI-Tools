@@ -143,13 +143,11 @@ export class Routemap {
 		 * Examples: 0 → "AAA", 1 → "AAB", 26 → "ABA", 123 → "AET"
 		 */
 		const generateId = (num: number) => {
-			const id = String.fromCharCode(
+			return String.fromCharCode(
 				65 + (Math.floor(num / 26 / 26) % 26),
 				65 + (Math.floor(num / 26) % 26),
 				65 + (num % 26)
 			);
-
-			return id;
 		};
 
 		const replaceAirport = (uri: string, airportCode: string, replacement: string, gcmData: string) => {
