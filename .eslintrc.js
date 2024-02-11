@@ -13,6 +13,8 @@ module.exports = {
 		'@typescript-eslint/explicit-function-return-type': 'off',
 		'@typescript-eslint/no-non-null-assertion': 'off',
 		'@typescript-eslint/explicit-module-boundary-types': 'off',
+		// 'no-unused-vars': 'warn',
+		'@typescript-eslint/no-unused-vars': 'warn',
 		/* 'header/header': [
 			'error',
 			'block',
