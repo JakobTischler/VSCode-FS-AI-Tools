@@ -404,8 +404,8 @@
 					"wingspan": 64.3333
 				},
 				"GLEX": {
-					"name": "Global Express/5000/6000",
-					"search": ["Global Express", "Global 5000", "Global 6000"],
+					"name": "Global Express/5000/5500/6000",
+					"search": ["/Global (Express|(50|55|60)00)/"],
 					"wingspan": 99.4
 				},
 				"CRJ2": {
@@ -488,25 +488,25 @@
 				},
 				"C525": {
 					"name": "525",
-					"search": ["/(Citation(Jet)*)* (CJ|C)*(1|525\\s)/"],
+					"search": ["/(Citation(Jet)*)* (CJ1|C?525\\s)/"],
 					"series": "CitationJet",
 					"wingspan": 47.25
 				},
 				"C25A": {
 					"name": "525A",
-					"search": ["/(Citation(Jet)*)* (CJ|C)*(2|525A?)/"],
+					"search": ["/(Citation(Jet)?)? (CJ2|C?525A)/"],
 					"series": "CitationJet",
 					"wingspan": 49.83333333
 				},
 				"C25B": {
 					"name": "525B",
-					"search": ["/(Citation(Jet)*)* (CJ|C)*(3|525B?)/"],
+					"search": ["/(Citation(Jet)?)? (CJ3|C?525B)/"],
 					"series": "CitationJet",
 					"wingspan": 53.33333333
 				},
 				"C25C": {
 					"name": "525C",
-					"search": ["/(Citation(Jet)*)* (CJ|C)*(4|525C?)/"],
+					"search": ["/(Citation(Jet)?)? (CJ4|C?525C)/"],
 					"series": "CitationJet",
 					"wingspan": 50.83333333
 				},
@@ -606,7 +606,7 @@
 				"E120": { "name": "EMB-120", "search": ["/(?:Embraer|EMB)[- ]?1[12]0/"], "wingspan": 64.92 },
 				"E135": {
 					"name": "ERJ-135 / Legacy 600",
-					"search": ["/(?:ERJ|EMB)[- ]?135/"],
+					"search": ["/(?:ERJ|EMB)[- ]?135/", "Legacy 600"],
 					"series": "ERJ",
 					"wingspan": 65.75
 				},
