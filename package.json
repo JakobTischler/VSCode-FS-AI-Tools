@@ -517,7 +517,9 @@
 						"scope": "window",
 						"type": "array",
 						"items": {
-							"type": "string"
+							"type": "string",
+							"pattern": "^[\\w_]+(=[\\*_\\w+])?$",
+							"patternErrorMessage": "Format can only be either \"key\", \"key=value\", \"key=*\" or \"key=_\"."
 						},
 						"default": [
 							"atc_id=_",
@@ -676,7 +678,8 @@
 						"type": "array",
 						"items": {
 							"type": "string",
-							"pattern": "^(\\w{3,4}):(\\w{3,4})$"
+							"pattern": "^(\\w{3,4}):(\\w{3,4})$",
+							"patternErrorMessage": "Format must be `OldICAO:NewICAO`, with each being either a 3- or 4-character code."
 						},
 						"uniqueItems": true,
 						"default": [
