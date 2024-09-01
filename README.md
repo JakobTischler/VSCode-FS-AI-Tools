@@ -9,7 +9,7 @@ A [Visual Studio Code](https://code.visualstudio.com/) extension for managing, c
 ## Features
 
 * [Airline View](https://github.com/JakobTischler/VSCode-FS-AI-Tools/wiki/Feature:-Airline-View): Beautiful overview of fleet and routes
-* [Change AC# Number](https://github.com/JakobTischler/VSCode-FS-AI-Tools/wiki/Feature:-Change-AC#-Number): increases or decreases AC#s
+* [Change AC# Number](https://github.com/JakobTischler/VSCode-FS-AI-Tools/wiki/Feature:-Change-AC%23-Number): increases or decreases AC#s
 * [Clean Aircraft.cfg](https://github.com/JakobTischler/VSCode-FS-AI-Tools/wiki/Feature:-Clean-Aircraft.cfg): cleans all fltsim entries
 * [Clean Flightplan](https://github.com/JakobTischler/VSCode-FS-AI-Tools/wiki/Feature:-Clean-Flightplan): cleans the flightplan's numbers and airports
 * [Convert to weekly flightplan](https://github.com/JakobTischler/VSCode-FS-AI-Tools/wiki/Feature:-Convert-to-weekly-flightplan): from "24HR" to "WEEK"
