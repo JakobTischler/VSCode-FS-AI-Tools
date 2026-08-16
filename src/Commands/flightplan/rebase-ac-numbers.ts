@@ -1,7 +1,7 @@
 import { Range, window, workspace } from 'vscode';
 import { getFilename, showError } from '../../Tools/helpers';
 import { getNumberInput } from '../../Tools/input';
-import { rebaseAircraftNumbers } from '../../Utils/flightplan-transformations';
+import { rebaseAircraftNumbers } from '../../Services/flightplan-transformations';
 
 export async function RebaseAircraftNumbers() {
 	const editor = window.activeTextEditor;

@@ -1,7 +1,8 @@
 import * as Path from 'path';
 import { window, Position, workspace } from 'vscode';
 import { showError, showErrorModal } from '../../Tools/helpers';
-import { AifpData, readAifpCfg } from '../../Tools/read-aifp';
+import { readAifpCfg } from '../../Tools/read-aifp';
+import { renderFlightplanHeader } from '../../Services/flightplan-domain-service';
 
 export async function CreateFlightplanHeaderFromAifp() {
 	console.log('CreateFlightplanHeaderFromAifp()');
@@ -46,33 +47,9 @@ You can use:
 		return;
 	}
 
-	const matches = template.matchAll(/\{(?:(.*?)(?:\?(.*?))?)\}/gm);
-
-	if (matches) {
-		let text = template;
-
-		for (const match of [...matches]) {
-			const tagName = match[1] as keyof AifpData;
-			let value = data[tagName];
-			if (value !== undefined) {
-				if (typeof value === 'boolean') {
-					value = value.toString().toUpperCase();
-				}
-				if (tagName === 'fsx') {
-					value = `FSXDAYS=${value}`;
-				} else if (tagName === 'callsign') {
-					value = value.toUpperCase();
-				}
-			}
-
-			// Is conditional
-			if (match[2]) {
-				text = text.replace(match[0], value !== undefined ? value + match[2] : '');
-			} else {
-				text = text.replace(match[0], value || '');
-			}
-		}
-
+	const matches = [...template.matchAll(/\{\w+(?:\?[^}]*)?\}/g)];
+	if (matches.length) {
+		const text = renderFlightplanHeader(template, data);
 		await editor.edit((editBuilder) => {
 			editBuilder.insert(new Position(0, 0), text);
 		});

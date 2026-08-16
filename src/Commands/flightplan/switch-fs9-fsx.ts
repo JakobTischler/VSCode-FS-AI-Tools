@@ -1,7 +1,7 @@
 import { window } from 'vscode';
 import { getFilename } from '../../Tools/helpers';
 import { getDropdownSelection } from '../../Tools/input';
-import { switchSimulatorDays } from '../../Utils/flightplan-transformations';
+import { switchSimulatorDays } from '../../Services/flightplan-transformations';
 
 export async function SwitchFS9FSX() {
 	const editor = window.activeTextEditor;

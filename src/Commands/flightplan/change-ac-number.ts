@@ -1,6 +1,6 @@
 import { window } from 'vscode';
 import { getFilename } from '../../Tools/helpers';
-import { changeAircraftNumbers } from '../../Utils/flightplan-transformations';
+import { changeAircraftNumbers } from '../../Services/flightplan-transformations';
 
 export async function ChangeAircraftNumber() {
 	const editor = window.activeTextEditor;

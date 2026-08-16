@@ -1,5 +1,5 @@
 import { Range, window, workspace } from 'vscode';
-import { countAircraftGroups } from '../../Utils/flightplan-transformations';
+import { countAircraftGroups } from '../../Services/flightplan-transformations';
 
 export async function CountAircraft() {
 	const editor = window.activeTextEditor;

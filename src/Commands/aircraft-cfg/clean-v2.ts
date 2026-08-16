@@ -1,6 +1,6 @@
 import * as vscode from 'vscode';
 import { replaceDocumentContents } from '../../Tools/helpers';
-import { cleanAircraftCfg, CleanAircraftCfgOptions } from '../../Utils/cfg-transformations';
+import { cleanAircraftCfg, CleanAircraftCfgOptions } from '../../Services/cfg-transformations';
 
 export async function CleanAircraftCfg() {
 	console.log('CleanAircraftCfg() v2');

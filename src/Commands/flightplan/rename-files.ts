@@ -14,6 +14,7 @@ import * as Path from 'path';
 import { showError } from '../../Tools/helpers';
 import { getTextInput } from '../../Tools/input';
 import { readAifpCfg } from '../../Tools/read-aifp';
+import { planFlightplanFileRenames, shortenSeason } from '../../Services/rename-domain-service';
 
 // Property definitions
 const properties = new Map();
@@ -116,19 +117,7 @@ export async function RenameFiles(filePath?: string) {
 		// Shorten season
 		// https://regex101.com/r/7iMw7H/1/
 		if (replaceValue?.length && item[0] === 'season') {
-			let seasonShort = undefined;
-			const matches = replaceValue.match(/^(\w{2})((?:\w+ )?(?:\d\d)?)?(\d{2})(?:(?:[-\/])?(?:\d\d)?(\d{2}))?/);
-			if (matches?.length === 5) {
-				if (matches[4]) {
-					seasonShort = matches[1] + matches[3] + matches[4];
-				} else if (matches[2].length === 2) {
-					seasonShort = matches[1] + matches[2] + matches[3];
-				} else {
-					seasonShort = matches[1] + matches[3];
-				}
-			}
-
-			replaceValue = seasonShort;
+			replaceValue = shortenSeason(replaceValue);
 		}
 
 		if (config.get('replaceSpacesWithUnderscores')) {
@@ -147,21 +136,12 @@ export async function RenameFiles(filePath?: string) {
 
 	// Find files in current folder and rename
 	const files = await Fs.promises.readdir(dirPath);
-	const fileRegex = /^(aircraft|airports|flightplans).*\.txt$/i;
 	const edit = new vscode.WorkspaceEdit();
 	const plannedRenames: { oldFile: vscode.Uri; newFile: vscode.Uri }[] = [];
 
-	for (const file of files) {
-		const matches = file.match(fileRegex);
-
-		if (!matches?.[1]) {
-			continue;
-		}
-
-		const oldFile = vscode.Uri.file(Path.join(dirPath, file));
-		const newFile = vscode.Uri.file(
-			Path.join(dirPath, (upperCaseBase ? matches[1].capitalize() : matches[1]) + result)
-		);
+	for (const plan of planFlightplanFileRenames(files, result, upperCaseBase)) {
+		const oldFile = vscode.Uri.file(Path.join(dirPath, plan.source));
+		const newFile = vscode.Uri.file(Path.join(dirPath, plan.target));
 		if (oldFile.fsPath === newFile.fsPath) continue;
 		if (fsExists(newFile.fsPath)) {
 			showError(`Rename cancelled because "${newFile.fsPath}" already exists.`);

@@ -1,6 +1,6 @@
 import * as vscode from 'vscode';
 import { replaceDocumentContents } from '../../Tools/helpers';
-import { renumberSceneryCfg } from '../../Utils/cfg-transformations';
+import { renumberSceneryCfg } from '../../Services/cfg-transformations';
 
 export async function RenumberSceneryCfg() {
 	const editor = vscode.window.activeTextEditor;

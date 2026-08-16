@@ -3,6 +3,7 @@ import { window, workspace } from 'vscode';
 import { showError } from '../../Tools/helpers';
 import { AifpData } from '../../Tools/read-aifp';
 import saveFile from '../../Utils/save-file';
+import { serializeAifpCfg } from '../../Services/flightplan-domain-service';
 
 export async function CreateAifpCfg() {
 	console.log('CreateAifpCfg()');
@@ -82,15 +83,7 @@ export async function CreateAifpCfg() {
 		}
 	}
 
-	const output = `[main]
-AIRLINE=${data.airline || ''}
-AIRLINE_ICAO=${data.icao || ''}
-CALLSIGN=${data.callsign || ''}
-SEASON=${data.season || ''}
-SEEK=atc_airline=${data.callsign || ''}
-PROVIDER=${data.author || ''}
-FS_Version=${data.fsx ? 'FSX' : 'FS9'}
-`;
+	const output = serializeAifpCfg(data);
 	console.log({ data, output });
 
 	/*

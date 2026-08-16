@@ -7,7 +7,7 @@ import {
 	padFlightNumbers,
 	randomizePercentage,
 	transformToUppercase,
-} from '../../Utils/flightplan-transformations';
+} from '../../Services/flightplan-transformations';
 
 export async function CleanFlightplan() {
 	const config = vscode.workspace.getConfiguration('fs-ai-tools.cleanFlightplan', undefined);

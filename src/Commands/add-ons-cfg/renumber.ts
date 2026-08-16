@@ -1,6 +1,6 @@
 import * as vscode from 'vscode';
 import { replaceDocumentContents } from '../../Tools/helpers';
-import { renumberAddOnsCfg } from '../../Utils/cfg-transformations';
+import { renumberAddOnsCfg } from '../../Services/cfg-transformations';
 
 export async function RenumberAddOnsCfg() {
 	const editor = vscode.window.activeTextEditor;

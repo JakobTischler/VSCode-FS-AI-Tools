@@ -1,6 +1,7 @@
 import { window, Position, workspace } from 'vscode';
 import { getFilename, showErrorModal } from '../../Tools/helpers';
 import { AifpData } from '../../Tools/read-aifp';
+import { getHeaderDefaults, renderFlightplanHeader } from '../../Services/flightplan-domain-service';
 
 export async function CreateFlightplanHeader() {
 	console.log('CreateFlightplanHeader()');
@@ -14,22 +15,7 @@ export async function CreateFlightplanHeader() {
 	 * —————————————————————————————————————————————————————————————————————————
 	 * Get proposed values from filename
 	 */
-	const filename = getFilename(editor);
-	const filenameTest = filename.split('_');
-	let proposedIcao = 'ICAO';
-	let proposedName = 'Airline Name';
-
-	if (filenameTest.length > 1) {
-		if (filenameTest.length === 3 && filenameTest[1].length <= 4) {
-			proposedIcao = filenameTest[1];
-			proposedName = filenameTest[2];
-			proposedName = proposedName.substring(0, proposedName.length - 4);
-		} else if (filenameTest.length === 2) {
-			proposedName = filenameTest[1];
-			proposedName = proposedName.substring(0, proposedName.length - 4);
-		}
-		console.log({ proposedName, proposedIcao });
-	}
+	const defaults = getHeaderDefaults(getFilename(editor));
 
 	/*
 	 * —————————————————————————————————————————————————————————————————————————
@@ -56,31 +42,33 @@ You can use:
 
 	const matches = [...template.matchAll(/\{(?:(.*?)(?:\?(.*?))?)\}/gm)];
 
-	let text = template;
+	const data: Partial<AifpData> = {};
 
 	for (const match of matches) {
 		const tagName = match[1] as keyof AifpData;
 		let value = '';
 		if (tagName === 'airline') {
-			value = (await getName(proposedName)) || '';
+			value = (await getName(defaults.airline)) || '';
 			airlineName = value;
+			data.airline = value;
 		} else if (tagName === 'icao') {
-			value = (await getIcao(proposedIcao)) || '';
+			value = (await getIcao(defaults.icao)) || '';
+			data.icao = value;
 		} else if (tagName === 'callsign') {
 			value = (await getCallsign())?.toUpperCase() || '';
+			data.callsign = value;
 		} else if (tagName === 'author') {
 			value = (await getAuthor()) || '';
+			data.author = value;
 		} else if (tagName === 'season') {
 			value = (await getSeason()) || '';
+			data.season = value;
 		} else if (tagName === 'fsx') {
 			const input = await getFsVersion();
-			value = `FSXDAYS=${input === 'FS9' ? 'FALSE' : 'TRUE'}`;
+			data.fsx = input !== 'FS9';
 		}
-
-		if (value.length && match[2]) value += match[2];
-
-		text = text.replace(match[0], value?.length ? value : '');
 	}
+	const text = renderFlightplanHeader(template, data);
 
 	console.log({ template, text });
 
