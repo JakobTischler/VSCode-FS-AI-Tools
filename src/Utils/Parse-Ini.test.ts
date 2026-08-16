@@ -1,3 +1,6 @@
+import assert from 'node:assert/strict';
+import { ParseIni } from './Parse-Ini';
+
 // TEST DATA
 const testIni = `//// FAIB A321S P3DV4 Aircraft.cfg version 1.0  FDE: Erez Werber////
 //// FLTSIM Sections go here ////
@@ -35,3 +38,20 @@ External2=0,0,0,2.0,0.5
 Center2=-41.4,0.0,-1.5,1.0,0.0
 Center3=-41.4,0.0,-1.5,1.0,0.0
 External1=-41.4,0.0,-1.5,1.0,0.0 //commentAfterLine`;
+
+describe('ParseIni', () => {
+	it('parses sections, empty values, and values containing equals signs', () => {
+		const parsed = ParseIni(`${testIni}\ncustom=a=b`);
+
+		assert.equal(parsed.General.atc_type, 'AIRBUS');
+		assert.equal(parsed.General.performance, '');
+		assert.equal(parsed.fuel.custom, 'a=b');
+	});
+
+	it('ignores full-line comments', () => {
+		const parsed = ParseIni(testIni);
+
+		assert.equal(parsed.fuel.Center2, '-41.4,0.0,-1.5,1.0,0.0');
+		assert.equal(parsed.fuel['//Center2'], undefined);
+	});
+});

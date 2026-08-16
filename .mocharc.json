@@ -1,0 +1,7 @@
+{
+	"extension": ["ts"],
+	"spec": ["src/**/*.test.ts"],
+	"ignore": ["src/test/extension.test.ts"],
+	"node-option": ["import=tsx"],
+	"ui": "bdd"
+}

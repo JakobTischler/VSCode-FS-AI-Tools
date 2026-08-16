@@ -13,7 +13,6 @@ export function getFilename(input: TextEditor): string;
 export function getFilename(input: TextDocument): string;
 export function getFilename(input: Uri): string;
 export function getFilename(input: string): string;
-// eslint-disable-next-line @typescript-eslint/no-explicit-any
 export function getFilename(input: any): string {
 	// return path.replace(/^.*[\\\/]/, '');
 

@@ -1,8 +1,9 @@
 out
+out-test
+.vscode-test/
 node_modules
 *.vsix
 bin
 vsc-extension-quickstart*
-src/test
 
 src/Data/airports.json

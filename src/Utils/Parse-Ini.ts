@@ -34,7 +34,7 @@ export function ParseIni(text: string) {
 		if (INI_REGEX.PARAM.test(line)) {
 			if (section) {
 				const match = line.match(INI_REGEX.PARAM);
-				if (match?.[2]) {
+				if (match?.[2] !== undefined) {
 					result[section][match[1]] = match[2];
 				}
 
@@ -43,4 +43,6 @@ export function ParseIni(text: string) {
 			console.error(`Param outside of section (line ${i}): "${line}"`);
 		}
 	});
+
+	return result;
 }
