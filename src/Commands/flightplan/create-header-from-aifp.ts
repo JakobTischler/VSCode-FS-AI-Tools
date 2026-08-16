@@ -73,7 +73,7 @@ You can use:
 			}
 		}
 
-		editor.edit((editBuilder) => {
+		await editor.edit((editBuilder) => {
 			editBuilder.insert(new Position(0, 0), text);
 		});
 		window.showInformationMessage(`Header for ${data.airline} created`);

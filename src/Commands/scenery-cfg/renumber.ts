@@ -8,7 +8,7 @@ export async function RenumberSceneryCfg() {
 		const document = editor.document;
 		if ('file' === document.uri.scheme && document.uri.path.toLocaleLowerCase().endsWith('scenery.cfg')) {
 			// Apply changes to document
-			replaceDocumentContents(editor, renumberSceneryCfg(document.getText()));
+			await replaceDocumentContents(editor, renumberSceneryCfg(document.getText()));
 
 			vscode.window.showInformationMessage('add-ons.cfg renumbered');
 		}

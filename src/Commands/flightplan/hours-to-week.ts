@@ -60,7 +60,7 @@ export async function HoursToWeek() {
 
 	const newText = lines.join('\n');
 
-	editor.edit((editBuilder) => {
+	await editor.edit((editBuilder) => {
 		const range = !selection.isEmpty
 			? selection
 			: new Range(document.lineAt(0).range.start, document.lineAt(document.lineCount - 1).range.end);

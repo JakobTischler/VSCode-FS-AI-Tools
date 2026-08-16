@@ -227,12 +227,13 @@ export const isHeaderLine = (text: string, acNum?: number) => {
  * @param {string} contents - The contents of the file to replace the current
  * contents with.
  */
-export function replaceDocumentContents(editor: TextEditor, contents: string) {
-	editor.edit((editBuilder) => {
+export async function replaceDocumentContents(editor: TextEditor, contents: string): Promise<void> {
+	const applied = await editor.edit((editBuilder) => {
 		const firstLine = editor.document.lineAt(0);
 		const lastLine = editor.document.lineAt(editor.document.lineCount - 1);
 		const range = new Range(firstLine.range.start, lastLine.range.end);
 
 		editBuilder.replace(range, contents);
 	});
+	if (!applied) throw new Error(`VS Code could not update "${editor.document.fileName}".`);
 }

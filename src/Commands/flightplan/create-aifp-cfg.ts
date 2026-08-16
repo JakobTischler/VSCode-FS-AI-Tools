@@ -1,7 +1,8 @@
 import path from 'path';
-import { Position, Range, TextDocument, Uri, window, workspace, WorkspaceEdit } from 'vscode';
+import { window, workspace } from 'vscode';
 import { showError } from '../../Tools/helpers';
 import { AifpData } from '../../Tools/read-aifp';
+import saveFile from '../../Utils/save-file';
 
 export async function CreateAifpCfg() {
 	console.log('CreateAifpCfg()');
@@ -98,15 +99,15 @@ FS_Version=${data.fsx ? 'FSX' : 'FS9'}
 	 */
 
 	const aifpPath = path.join(path.dirname(editor.document.uri.path), 'aifp.cfg');
-	const filePath = Uri.file(aifpPath);
+	const choice = await window.showWarningMessage(
+		'aifp.cfg preview',
+		{ modal: true, detail: `Write: ${aifpPath}\nBackup existing file: ${aifpPath}.bak` },
+		'Continue'
+	);
+	if (choice !== 'Continue') return;
 
-	const edit = new WorkspaceEdit();
-	edit.createFile(filePath, { ignoreIfExists: true });
-	edit.replace(filePath, new Range(new Position(0, 0), new Position(9999, 9999)), output);
-	await workspace.applyEdit(edit);
-
-	workspace.openTextDocument(filePath).then((doc: TextDocument) => {
-		doc.save();
-		window.showInformationMessage('aifp.cfg file created');
-	});
+	await saveFile(aifpPath, output, undefined, { backup: true });
+	const doc = await workspace.openTextDocument(aifpPath);
+	await window.showTextDocument(doc, { preview: false });
+	window.showInformationMessage('aifp.cfg file created');
 }

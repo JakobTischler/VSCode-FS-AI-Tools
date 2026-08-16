@@ -5,6 +5,7 @@ import { LocalStorageService } from '../../Tools/LocalStorageService';
 import { Airport, getMasterAirports, TAirportCodeToLine } from '../../Content/Airport/Airport';
 import { FlightplanRaw } from '../../Content/Flightplan/Flightplan';
 import { OpenMasterAirportsFile } from '../open-master-airports-file';
+import saveFile from '../../Utils/save-file';
 
 export async function GenerateAirports(storageManager: LocalStorageService) {
 	console.log('GenerateAirports()');
@@ -106,20 +107,21 @@ async function writeToAirportsTxtFile(airports: { found: Airport[]; missing: str
 
 	const dirPath = path.dirname(flightplansTxtPath).replace(/^\/+/, '');
 	const fileName = path.basename(flightplansTxtPath).replace(/^flightplans/i, 'Airports');
-	const filePath = vscode.Uri.file(path.join(dirPath, fileName));
+	const filePath = path.join(dirPath, fileName);
 
 	const text = airports.found.map((airport) => airport.line).join('\n');
+	const choice = await vscode.window.showWarningMessage(
+		'Generate airports preview',
+		{
+			modal: true,
+			detail: `Write: ${filePath}\nBackup existing file: ${filePath}.bak\n${airports.found.length} airport entries`,
+		},
+		'Continue'
+	);
+	if (choice !== 'Continue') return;
 
-	const edit = new vscode.WorkspaceEdit();
-	edit.createFile(filePath, { ignoreIfExists: true });
-	edit.delete(filePath, new vscode.Range(new vscode.Position(0, 0), new vscode.Position(9999, 9999)));
-	edit.insert(filePath, new vscode.Position(0, 0), text);
-	await vscode.workspace.applyEdit(edit);
-
-	vscode.workspace.openTextDocument(filePath).then((doc: vscode.TextDocument) => {
-		doc.save();
-		vscode.window.showInformationMessage(
-			`${'airport'.plural(airports.found.length)} generated, "${fileName}" file written`
-		);
-	});
+	await saveFile(filePath, text, undefined, { backup: true });
+	const doc = await vscode.workspace.openTextDocument(filePath);
+	await vscode.window.showTextDocument(doc, { preview: false });
+	vscode.window.showInformationMessage(`${'airport'.plural(airports.found.length)} generated, "${fileName}" file written`);
 }

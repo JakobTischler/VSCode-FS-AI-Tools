@@ -134,7 +134,7 @@ async function replace(otherFileUri: vscode.Uri, replaceType: EReplaceType) {
 	/*
 	 * Update target document's contents
 	 */
-	replaceDocumentContents(fileEditors.target, fileContents.target);
+	await replaceDocumentContents(fileEditors.target, fileContents.target);
 
 	vscode.window.showInformationMessage(
 		`${updateCount} regs updated (${targetAircraft.length - updateCount} unmatched)`

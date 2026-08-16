@@ -84,7 +84,7 @@ You can use:
 
 	console.log({ template, text });
 
-	editor.edit((editBuilder) => {
+	await editor.edit((editBuilder) => {
 		editBuilder.insert(new Position(0, 0), text);
 	});
 	window.showInformationMessage(`Header for ${airlineName || 'airline'} created`);

@@ -65,7 +65,7 @@ export async function GroupByAircraftType() {
 
 	if (newFileContents?.length) {
 		// Apply changes to document
-		replaceDocumentContents(editor, newFileContents);
+		await replaceDocumentContents(editor, newFileContents);
 
 		vscode.window.showInformationMessage(msg);
 	}

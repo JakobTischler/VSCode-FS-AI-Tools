@@ -9,7 +9,7 @@ import {
 	transformToUppercase,
 } from '../../Utils/flightplan-transformations';
 
-export function CleanFlightplan() {
+export async function CleanFlightplan() {
 	const config = vscode.workspace.getConfiguration('fs-ai-tools.cleanFlightplan', undefined);
 
 	const editor = vscode.window.activeTextEditor;
@@ -71,7 +71,7 @@ export function CleanFlightplan() {
 			const fp = ret.join('\n');
 
 			// Apply changes to document
-			replaceDocumentContents(editor, fp);
+			await replaceDocumentContents(editor, fp);
 
 			vscode.window.showInformationMessage('Flightplan cleaned');
 		}

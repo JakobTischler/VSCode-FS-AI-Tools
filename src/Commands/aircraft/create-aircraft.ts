@@ -4,6 +4,7 @@ import * as fs from 'fs';
 import { getFileContents, showError, writeTextToClipboard } from '../../Tools/helpers';
 import { getDropdownSelection, getTextInput } from '../../Tools/input';
 import { AifpData, readAifpCfg } from '../../Tools/read-aifp';
+import saveFile from '../../Utils/save-file';
 
 interface FltsimEntry {
 	fltsim: string;
@@ -95,8 +96,10 @@ export async function CreateAircraft() {
 	const aircraftCfgPath = Path.join(__WORKDIR__, 'aircraft.cfg');
 	if (!fs.existsSync(aircraftCfgPath)) {
 		showError(`aircraft.cfg file couldn't be found in "${__WORKDIR__}"`);
+		return false;
 	}
-	const aircraftCfgContents = (await getFileContents(aircraftCfgPath)) as string;
+	const aircraftCfgContents = await getFileContents(aircraftCfgPath);
+	if (aircraftCfgContents === null) return false;
 
 	// Get last fltsim index plus 1
 	let startIndex = 0;
@@ -138,11 +141,28 @@ export async function CreateAircraft() {
 	 * APPEND ENTRIES TO AIRCRAFT.CFG
 	 */
 	const fltsimEntriesText = '\n\n' + [...fltsimEntries.map((entry) => entry.fltsim)].join('\n\n') + '\n';
-	fs.appendFile(aircraftCfgPath, fltsimEntriesText, 'utf8', (err) => {
-		if (err) {
-			throw err;
-		}
-	});
+	const textureCfgPath = Path.join(__WORKDIR__, 'texture.cfg');
+	const textureCfgExists = fs.existsSync(textureCfgPath);
+	const directoriesToCreate = createFolders
+		? fltsimEntries
+				.filter((entry) => entry.texture)
+				.map((entry) => Path.join(__WORKDIR__, `texture.${entry.texture}`))
+				.filter((directory) => !fs.existsSync(directory))
+		: [];
+	const preview = [
+		`Modify: ${aircraftCfgPath}`,
+		`Backup: ${aircraftCfgPath}.bak`,
+		`${fltsimEntries.length} ${fltsimEntries.length === 1 ? 'entry' : 'entries'} will be appended`,
+		...directoriesToCreate.map((directory) => `Create: ${directory}`),
+	].join('\n');
+	const previewChoice = await vscode.window.showWarningMessage(
+		'Create aircraft preview',
+		{ modal: true, detail: preview },
+		'Continue'
+	);
+	if (previewChoice !== 'Continue') return false;
+
+	await saveFile(aircraftCfgPath, aircraftCfgContents + fltsimEntriesText, undefined, { backup: true });
 
 	/*
 	 * —————————————————————————————————————————————————————————————————————————
@@ -161,27 +181,16 @@ export async function CreateAircraft() {
 	 * CREATE FOLDERS
 	 */
 	if (createFolders) {
-		const textureCfgPath = Path.join(__WORKDIR__, 'texture.cfg');
-		const textureCfgExists = fs.existsSync(textureCfgPath);
-
 		for (const entryData of fltsimEntries) {
 			if (entryData.texture) {
 				const dirName = `texture.${entryData.texture}`;
 				const dir = Path.join(__WORKDIR__, dirName);
 
 				if (!fs.existsSync(dir)) {
-					await fs.mkdir(dir, { recursive: true }, (err) => {
-						if (err) {
-							throw err;
-						}
-					});
+					await fs.promises.mkdir(dir, { recursive: true });
 
 					if (config.get('copyTextureCfgToTextureFolder') && textureCfgExists) {
-						await fs.copyFile(textureCfgPath, Path.join(__WORKDIR__, dirName, 'texture.cfg'), (err) => {
-							if (err) {
-								throw err;
-							}
-						});
+						await fs.promises.copyFile(textureCfgPath, Path.join(__WORKDIR__, dirName, 'texture.cfg'));
 					}
 				}
 			} else {

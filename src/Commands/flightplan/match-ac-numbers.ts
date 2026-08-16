@@ -132,7 +132,7 @@ async function match(otherFileUri: vscode.Uri, matchType: MatchType) {
 	/*
 	 * Update target document's contents
 	 */
-	replaceDocumentContents(fileEditors.target, fileContents.target);
+	await replaceDocumentContents(fileEditors.target, fileContents.target);
 
 	vscode.window.showInformationMessage(
 		`${updateCount} regs updated (${targetAircraftAr.length - updateCount} unmatched)`

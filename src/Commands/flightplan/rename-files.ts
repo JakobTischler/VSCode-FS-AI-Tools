@@ -149,6 +149,7 @@ export async function RenameFiles(filePath?: string) {
 	const files = await Fs.promises.readdir(dirPath);
 	const fileRegex = /^(aircraft|airports|flightplans).*\.txt$/i;
 	const edit = new vscode.WorkspaceEdit();
+	const plannedRenames: { oldFile: vscode.Uri; newFile: vscode.Uri }[] = [];
 
 	for (const file of files) {
 		const matches = file.match(fileRegex);
@@ -161,9 +162,21 @@ export async function RenameFiles(filePath?: string) {
 		const newFile = vscode.Uri.file(
 			Path.join(dirPath, (upperCaseBase ? matches[1].capitalize() : matches[1]) + result)
 		);
-		// await Fs.promises.rename(oldFile, newFile);
-		edit.renameFile(oldFile, newFile);
+		if (oldFile.fsPath === newFile.fsPath) continue;
+		if (fsExists(newFile.fsPath)) {
+			showError(`Rename cancelled because "${newFile.fsPath}" already exists.`);
+			return false;
+		}
+		plannedRenames.push({ oldFile, newFile });
 	}
+	if (!plannedRenames.length) {
+		vscode.window.showInformationMessage('No matching files need to be renamed.');
+		return;
+	}
+	const preview = plannedRenames.map(({ oldFile, newFile }) => `${Path.basename(oldFile.fsPath)} → ${Path.basename(newFile.fsPath)}`).join('\n');
+	const choice = await vscode.window.showWarningMessage('Rename files preview', { modal: true, detail: preview }, 'Continue');
+	if (choice !== 'Continue') return false;
+	for (const { oldFile, newFile } of plannedRenames) edit.renameFile(oldFile, newFile);
 
 	const success = await vscode.workspace.applyEdit(edit); // This is when it happens
 	if (success) {
@@ -171,4 +184,8 @@ export async function RenameFiles(filePath?: string) {
 	} else {
 		showError(`Files couldn't be renamed to "…${result}"`);
 	}
+}
+
+function fsExists(filePath: string): boolean {
+	return Fs.existsSync(filePath);
 }

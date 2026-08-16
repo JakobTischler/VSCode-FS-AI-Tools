@@ -31,7 +31,7 @@ export async function SwitchFS9FSX() {
 
 	const result = switchSimulatorDays(text, toFS9);
 
-	editor.edit((editBuilder) => {
+	await editor.edit((editBuilder) => {
 		editBuilder.replace(selection, result.text);
 	});
 

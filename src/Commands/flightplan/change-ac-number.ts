@@ -13,7 +13,7 @@ export async function ChangeAircraftNumber() {
 				const selection = editor.selection;
 				let text = document.getText(selection);
 				text = changeAircraftNumbers(text, Number(change));
-				editor.edit((editBuilder) => {
+				await editor.edit((editBuilder) => {
 					editBuilder.replace(selection, text);
 				});
 				window.showInformationMessage(`Selected AC#s changed by ${change}`);

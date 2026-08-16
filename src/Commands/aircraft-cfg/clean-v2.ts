@@ -21,6 +21,6 @@ export async function CleanAircraftCfg() {
 		sortPropertiesOrder: config.get<string[]>('sortPropertiesOrder') ?? [],
 	};
 
-	replaceDocumentContents(editor, cleanAircraftCfg(document.getText(), options));
+	await replaceDocumentContents(editor, cleanAircraftCfg(document.getText(), options));
 	vscode.window.showInformationMessage('Aircraft.cfg cleaned');
 }

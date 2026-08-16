@@ -8,7 +8,7 @@ export async function RenumberAddOnsCfg() {
 		const document = editor.document;
 		if ('file' === document.uri.scheme && document.uri.path.toLocaleLowerCase().endsWith('add-ons.cfg')) {
 			// Apply changes to document
-			replaceDocumentContents(editor, renumberAddOnsCfg(document.getText()));
+			await replaceDocumentContents(editor, renumberAddOnsCfg(document.getText()));
 
 			vscode.window.showInformationMessage('add-ons.cfg renumbered');
 		}
