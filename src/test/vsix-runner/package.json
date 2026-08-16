@@ -1,0 +1,9 @@
+{
+	"name": "fs-ai-tools-vsix-test-runner",
+	"displayName": "FS AI Tools VSIX Test Runner",
+	"version": "0.0.0",
+	"publisher": "fs-ai-tools-tests",
+	"engines": {
+		"vscode": "^1.84.0"
+	}
+}

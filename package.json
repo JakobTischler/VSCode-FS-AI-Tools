@@ -1081,6 +1081,7 @@
 		"test:compile": "rimraf out-test && tsc -p tsconfig.test.json",
 		"test:unit": "mocha",
 		"test:integration": "npm run test:compile && node out-test/test/runTest.js",
+		"test:vsix": "npm run test:compile && npm run package -- --out fs-ai-tools-test.vsix && node out-test/test/runVsixTest.js",
 		"test": "npm run lint && npm run typecheck && npm run test:unit",
 		"ci": "npm run test && npm run esbuild"
 	},
