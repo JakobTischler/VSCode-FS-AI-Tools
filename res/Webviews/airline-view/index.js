@@ -27,10 +27,35 @@ const vscode = acquireVsCodeApi();
 			state = !state;
 
 			if (contentType === 'TEXT') {
-				button.innerHTML = state ? buttonTextOn : buttonTextOff;
+				button.textContent = state ? buttonTextOn : buttonTextOff;
 			} else {
 				button.classList.toggle('on', state);
 			}
+		});
+	}
+}
+
+/** Sort local tables without loading executable code from a remote host. */
+for (const table of document.querySelectorAll('table.sortable')) {
+	for (const [columnIndex, header] of [...table.querySelectorAll('thead th')].entries()) {
+		if (header.classList.contains('no-sort')) continue;
+		header.addEventListener('click', () => {
+			const body = table.tBodies[0];
+			if (!body) return;
+			const ascending = !header.classList.contains('dir-u');
+			for (const otherHeader of table.querySelectorAll('thead th')) otherHeader.classList.remove('dir-u', 'dir-d');
+			header.classList.add(ascending ? 'dir-u' : 'dir-d');
+			const rows = [...body.rows].sort((a, b) => {
+				const aValue = a.cells[columnIndex]?.dataset.sort ?? a.cells[columnIndex]?.textContent ?? '';
+				const bValue = b.cells[columnIndex]?.dataset.sort ?? b.cells[columnIndex]?.textContent ?? '';
+				const aNumber = Number(aValue);
+				const bNumber = Number(bValue);
+				const result = Number.isNaN(aNumber) || Number.isNaN(bNumber)
+					? aValue.localeCompare(bValue)
+					: aNumber - bNumber;
+				return ascending ? result : -result;
+			});
+			body.replaceChildren(...rows);
 		});
 	}
 }

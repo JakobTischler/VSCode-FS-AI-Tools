@@ -1,6 +1,7 @@
 import * as vscode from 'vscode';
 import path from 'path';
 import { IFleetCompareResultData } from '../../Commands/flightplan/compare-fleet';
+import { escapeHtml } from '../../Utils/webview';
 
 export async function getWebviewContent(
 	panel: vscode.WebviewPanel,
@@ -19,7 +20,7 @@ export async function getWebviewContent(
 
 	let content = `<!DOCTYPE html>
 <html lang="en">`;
-	content += getHeadContent(css);
+	content += getHeadContent(panel.webview, css);
 
 	content += `<body>`;
 
@@ -28,7 +29,7 @@ export async function getWebviewContent(
 	content += `<header>
 		<h1>Fleet Comparal</h1>
 		<div class="subHeader">
-			<span class="fileName">${thisFilename}</span> <span class="vs">vs.</span> <span class="fileName">${otherFilename}</span>
+			<span class="fileName">${escapeHtml(thisFilename)}</span> <span class="vs">vs.</span> <span class="fileName">${escapeHtml(otherFilename)}</span>
 		</div>
 	</header>`;
 
@@ -38,10 +39,10 @@ export async function getWebviewContent(
 	content += `
 		<table id="compare">
 			<thead>
-				<th class="align-right">${thisFilename}</th>
+				<th class="align-right">${escapeHtml(thisFilename)}</th>
 				<th class="align-right">Diff</th>
 				<th class="align-center">Type</th>
-				<th>${otherFilename}</th>
+				<th>${escapeHtml(otherFilename)}</th>
 			</thead>
 			<tbody>`;
 
@@ -52,7 +53,7 @@ export async function getWebviewContent(
 			<tr>
 				<td class="count ${row.thisCount == 0 ? 'none' : ''} align-right">${row.thisCount}</td>
 				<td class="delta ${getDeltaCellClass(delta)} align-right">${formatDeltaText(delta)}</td>
-				<td class="type align-center">${row.typeCode}</td>
+				<td class="type align-center">${escapeHtml(row.typeCode)}</td>
 				<td class="count ${row.otherCount == 0 ? 'none' : ''}">${row.otherCount}</td>
 			</tr>`;
 	}
@@ -101,15 +102,12 @@ const getDeltaCellClass = (num: number) => {
 	return ['neg', 'equal', 'pos'][Math.sign(num) + 1];
 };
 
-const getHeadContent = (cssUri: vscode.Uri) => `
+const getHeadContent = (webview: vscode.Webview, cssUri: vscode.Uri) => `
 <head>
 	<meta charset="UTF-8">
 	<meta name="viewport" content="width=device-width, initial-scale=1.0">
+	<meta http-equiv="Content-Security-Policy" content="default-src 'none'; style-src ${webview.cspSource};">
 	<title>Compare Fleets</title>
-
-	<link rel="preconnect" href="https://fonts.googleapis.com">
-	<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-	<link href="https://fonts.googleapis.com/css2?family=Fredoka:wght@300;500&family=Montserrat:wght@300;500&family=Noto+Serif+Display:ital,wght@0,300;0,600;1,300&display=swap" rel="stylesheet">
 
 	<link rel="stylesheet" type="text/css" href="${cssUri}" />
 </head>`;

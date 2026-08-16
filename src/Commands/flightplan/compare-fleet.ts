@@ -209,7 +209,7 @@ async function createPanel(context: vscode.ExtensionContext, data: IFleetCompare
 	} */
 
 	const panel = vscode.window.createWebviewPanel('compareFleet', `Compare Fleet`, vscode.ViewColumn.Active, {
-		enableScripts: true,
+		enableScripts: false,
 		localResourceRoots,
 	});
 

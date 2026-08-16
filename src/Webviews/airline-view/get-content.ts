@@ -7,6 +7,7 @@ import { Routemap } from '../../Content/Route/RouteMap';
 import { TAircraftTypesByTypeCode } from '../../Content/Aircraft/AircraftType';
 import { TAircraftLiveriesByAcNum } from '../../Content/Aircraft/AircraftLivery';
 import { createNonce } from '../../Tools/helpers';
+import { escapeHtml } from '../../Utils/webview';
 
 export async function getWebviewContent(
 	panel: vscode.WebviewPanel,
@@ -30,10 +31,11 @@ export async function getWebviewContent(
 			vscode.Uri.file(path.join(context.extensionPath, 'res', 'Webviews', 'airline-view', 'index.js'))
 		),
 	};
+	const nonce = createNonce(32, false);
 
 	let content = `<!DOCTYPE html>
 <html lang="en">`;
-	content += getHeadContent(uris.css);
+	content += getHeadContent(panel.webview, uris.css, nonce);
 
 	content += `<body>`;
 
@@ -73,7 +75,7 @@ export async function getWebviewContent(
 
 	content += '</main>';
 
-	content += getScriptsContent(uris.js);
+	content += getScriptsContent(uris.js, nonce);
 
 	content += `</body>
 			</html>`;
@@ -81,15 +83,8 @@ export async function getWebviewContent(
 	return content;
 }
 
-function getScriptsContent(customScriptUri: vscode.Uri) {
-	return [
-		`<script src="https://tofsjonas.github.io/sortable/sortable.js"></script>`,
-		// `<!-- Async script executes immediately and must be after any DOM elements used in callback. -->`,
-		// `<script src="https://maps.googleapis.com/maps/api/js?key=AIzaSyB41DRUbKWJHPxaFjMAwdrzWzbVKartNGg&callback=initMap&libraries=&v=weekly&channel=2" async></script>`,
-		"<script src='https://api.mapbox.com/mapbox-gl-js/v2.3.1/mapbox-gl.js'></script>",
-		"<link href='https://api.mapbox.com/mapbox-gl-js/v2.3.1/mapbox-gl.css' rel='stylesheet' />",
-		`<script src="${customScriptUri}" nonce="${createNonce()}"></script>`,
-	].join('\n');
+function getScriptsContent(customScriptUri: vscode.Uri, nonce: string) {
+	return `<script src="${customScriptUri}" nonce="${nonce}"></script>`;
 }
 
 async function getLogoPath(aifp: AifpData, flightplanDirPath: string) {
@@ -158,15 +153,12 @@ async function getLogoPath(aifp: AifpData, flightplanDirPath: string) {
 	return null;
 }
 
-function getHeadContent(customCssUri: vscode.Uri) {
+function getHeadContent(webview: vscode.Webview, customCssUri: vscode.Uri, nonce: string) {
 	return `<head>
 	<meta charset="UTF-8">
 	<meta name="viewport" content="width=device-width, initial-scale=1.0">
+	<meta http-equiv="Content-Security-Policy" content="default-src 'none'; img-src ${webview.cspSource} https: data:; style-src ${webview.cspSource} 'unsafe-inline'; script-src 'nonce-${nonce}';">
 	<title>Airline Data</title>
-
-	<link rel="preconnect" href="https://fonts.googleapis.com">
-	<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-	<link href="https://fonts.googleapis.com/css2?family=Fredoka:wght@300;500&family=Montserrat:wght@300;500&family=Noto+Serif+Display:ital,wght@0,300;0,600;1,300&display=swap" rel="stylesheet">
 
 	<link rel="stylesheet" type="text/css" href="${customCssUri}" />
 </head>`;
@@ -186,30 +178,30 @@ async function getHeaderContent(panel: vscode.WebviewPanel, aifp: AifpData, flig
 						</div>
 					</h1>`;
 	} else {
-		content += `<h1><div>${aifp.airline}</div></h1>`;
+		content += `<h1><div>${escapeHtml(aifp.airline)}</div></h1>`;
 	}
 
 	content += `<div class="subHeader">
 					<div class="icao">
 						<i class="icon brackets-curly"></i>
-						<span class="value">${aifp.icao || '———'}</span>
+						<span class="value">${escapeHtml(aifp.icao || '———')}</span>
 					</div>
 
 					<div class="callsign">
 						<i class="icon microphone"></i>
-						<span class="value">${aifp.callsign || '———'}</span>
+						<span class="value">${escapeHtml(aifp.callsign || '———')}</span>
 					</div>
 				</div>
 
 				<div class="subHeader">
 					<div class="author">
 						<i class="icon user-edit"></i>
-						<span class="value">${aifp.author || '———'}</span>
+						<span class="value">${escapeHtml(aifp.author || '———')}</span>
 					</div>
 
 					<div class="season">
 						<i class="icon calendar-alt"></i>
-						<span class="value">${aifp.season || '———'}</span>
+						<span class="value">${escapeHtml(aifp.season || '———')}</span>
 					</div>
 				</div>
 			</header>`;
@@ -236,10 +228,10 @@ function getAircraftContent(aircraftTypes: TAircraftTypesByTypeCode, totalAircra
 		const liveries = [...aircraftType.liveries.values()].filter((livery) => livery.count > 0);
 
 		content += `<tr>
-						<td data-sort="${aircraftType.name}">${aircraftType.name}
+						<td data-sort="${escapeHtml(aircraftType.name)}">${escapeHtml(aircraftType.name)}
 							<ul class="secondary livery-titles inset">`;
 		for (const livery of liveries) {
-			content += `<li>${livery.title}</li>`;
+			content += `<li>${escapeHtml(livery.title)}</li>`;
 		}
 		content += `</ul>
 				</td>
@@ -286,7 +278,7 @@ function getAirportsContent(flightplan: Flightplan) {
 
 	for (const airport of byCount) {
 		content += `<tr>
-						<td>${airport.icao}</td>
+						<td>${escapeHtml(airport.icao)}</td>
 						<td data-sort="${airport.count}"><div>${airport.count.toLocaleString()}×</div></td>
 					</tr>`;
 	}
@@ -327,20 +319,20 @@ function getRoutesContent(flightplan: Flightplan) {
 
 	for (const [airportPair, data] of sorted) {
 		content += `<tr>
-			<td data-sort="${airportPair}">
-				<div>${airportPair}</div>
+			<td data-sort="${escapeHtml(airportPair)}">
+				<div>${escapeHtml(airportPair)}</div>
 				<ul class="secondary aircraft-types inset">`;
 		for (const acType of data.aircraftTypes.values()) {
 			if (!acType) {
 				console.error(`${airportPair}: aircraftType is ${String(acType)}`);
 				continue;
 			}
-			content += `<li>${acType.typeCode}</li>`;
+			content += `<li>${escapeHtml(acType.typeCode)}</li>`;
 		}
 		content += `</ul>
 			</td>
 			<td data-sort="${data.segment.count}"><div>${data.segment.count}×</div></td>
-			<td data-sort="${data.segment.distance}"><div class="secondary">${data.segment.distanceFormatted}</div></td>`;
+			<td data-sort="${data.segment.distance}"><div class="secondary">${escapeHtml(data.segment.distanceFormatted)}</div></td>`;
 	}
 
 	content += `</tbody></table></div>`;

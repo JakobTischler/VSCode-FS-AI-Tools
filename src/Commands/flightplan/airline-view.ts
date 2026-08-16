@@ -75,11 +75,18 @@ export async function ShowAirlineView(
 
 	// Routemap
 	const routemap = new Routemap(flightplan, panel, storageManager);
+	const allowedAircraftTypes = new Set([...routemap.routesByAircraftType.keys()].map((type) => type.typeCode));
 
 	// Handle messages from the webview
 	panel.webview.onDidReceiveMessage(
 		(message) => {
-			if (message.command === 'aircraftTypesChange') {
+			const selectedTypes = typeof message?.text === 'string' ? message.text.split(',').filter(Boolean) : [];
+			if (
+				message?.command === 'aircraftTypesChange' &&
+				typeof message.text === 'string' &&
+				typeof message.immediate === 'boolean' &&
+				selectedTypes.every((code: string) => allowedAircraftTypes.has(code))
+			) {
 				if (message.immediate) {
 					routemap.updateImage(message.text);
 				} else {

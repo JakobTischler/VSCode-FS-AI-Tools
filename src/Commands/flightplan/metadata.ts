@@ -49,7 +49,7 @@ export async function FlightplanMetadata() {
 		if ('file' === document.uri.scheme) {
 			const text = document.getText();
 
-			const acNums = [...text.matchAll(/AC#(\d+)+/gim)] || [];
+			const acNums = [...text.matchAll(/AC#(\d+)+/gim)];
 			if (acNums?.length) {
 				const numbers = acNums.map((match) => Number(match[1]));
 
@@ -98,7 +98,7 @@ export async function FlightplanMetadata() {
 function getInitials(text: string) {
 	const regex = /(\p{L}{1})\p{L}+/gu;
 
-	const initials = [...text.matchAll(regex)] || [];
+	const initials = [...text.matchAll(regex)];
 
 	const i = initials.map((data) => data[1]).join('');
 

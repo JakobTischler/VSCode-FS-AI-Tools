@@ -10,7 +10,7 @@ export class FlightplansCommandsViewProvider implements vscode.WebviewViewProvid
 
 	public resolveWebviewView(
 		webviewView: vscode.WebviewView,
-		context: vscode.WebviewViewResolveContext,
+		_context: vscode.WebviewViewResolveContext,
 		_token: vscode.CancellationToken
 	) {
 		this._view = webviewView;
@@ -19,7 +19,7 @@ export class FlightplansCommandsViewProvider implements vscode.WebviewViewProvid
 			// Allow scripts in the webview
 			enableScripts: true,
 
-			localResourceRoots: [this._extensionUri],
+			localResourceRoots: [vscode.Uri.joinPath(this._extensionUri, 'res', 'Webviews', 'flightplan-commands')],
 		};
 
 		webviewView.webview.html = this._getHtmlForWebview(webviewView.webview);
@@ -27,7 +27,9 @@ export class FlightplansCommandsViewProvider implements vscode.WebviewViewProvid
 		webviewView.webview.onDidReceiveMessage((data) => {
 			switch (data.type) {
 				case 'colorSelected': {
-					vscode.window.activeTextEditor?.insertSnippet(new vscode.SnippetString(`#${data.value}`));
+					if (typeof data.value === 'string' && /^[0-9a-f]{6}$/i.test(data.value)) {
+						vscode.window.activeTextEditor?.insertSnippet(new vscode.SnippetString(`#${data.value}`));
+					}
 					break;
 				}
 			}

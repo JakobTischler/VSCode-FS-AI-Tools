@@ -77,7 +77,7 @@ export class FlightplansAircraftProvider implements vscode.TreeDataProvider<Airc
 			}
 
 			const aircraftTxtMatches = [...aircraftContents.matchAll(/AC#(\d+),\d+,\"(.*?)\"/gi)];
-			const flightplansTxtMatches = [...aircraftContents.matchAll(/AC#(\d+)/gi)];
+			const flightplansTxtMatches = [...flightplanContents.matchAll(/AC#(\d+)/gi)];
 
 			if (flightplansTxtMatches?.length) {
 				// Parse aircraftTxtMatches
@@ -108,7 +108,7 @@ export class FlightplansAircraftProvider implements vscode.TreeDataProvider<Airc
 	private pathExists(p: string): boolean {
 		try {
 			fs.accessSync(p);
-		} catch (err) {
+		} catch {
 			return false;
 		}
 		return true;
@@ -128,10 +128,7 @@ class AircraftNum extends vscode.TreeItem {
 		this.description = this.title;
 	}
 
-	iconPath = {
-		light: path.join(__filename, '..', '..', 'resources', 'light', 'AircraftNum.svg'),
-		dark: path.join(__filename, '..', '..', 'resources', 'dark', 'AircraftNum.svg'),
-	};
+	iconPath = new vscode.ThemeIcon('airplane');
 
 	contextValue = 'aircraftNum';
 }

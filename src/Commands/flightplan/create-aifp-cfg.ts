@@ -110,9 +110,3 @@ FS_Version=${data.fsx ? 'FSX' : 'FS9'}
 		window.showInformationMessage('aifp.cfg file created');
 	});
 }
-
-/**
- * Trims all whitespace from a string array's items.
- * @param {string[]} array - The array to trim
- */
-const trimArrayItems = (array: string[]) => array.map((item: string) => item.trim());

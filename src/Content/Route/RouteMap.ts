@@ -6,6 +6,7 @@ import { AircraftType } from '../Aircraft/AircraftType';
 import { Flightplan } from '../Flightplan/Flightplan';
 import { RouteSegment } from './RouteSegment';
 import { LocalStorageService } from '../../Tools/LocalStorageService';
+import { escapeHtml } from '../../Utils/webview';
 
 type GcmReplacementData = { id: string; data: string };
 type GcmReplacementMap = Map<string, GcmReplacementData>;
@@ -86,10 +87,11 @@ export class Routemap {
 
 		for (const [index, aircraftType] of this.aircraftTypesSorted.entries()) {
 			const color = Routemap.colors[index % Routemap.colors.length];
+			const typeCode = escapeHtml(aircraftType.typeCode);
 
 			content += `<div class="checkbox-pill aircraft-type" style="--color-pill-active-background: ${color.hex}; --color-pill-active-foreground: var(--color-${color.textColor});">
-							<input type="checkbox" id="${aircraftType.typeCode}" name="${aircraftType.typeCode}" value="${aircraftType.typeCode}" checked />
-							<label for="${aircraftType.typeCode}">${aircraftType.typeCode}</label>
+							<input type="checkbox" id="${typeCode}" name="${typeCode}" value="${typeCode}" checked />
+							<label for="${typeCode}">${typeCode}</label>
 						</div>`;
 		}
 
@@ -204,7 +206,7 @@ export class Routemap {
 	}
 
 	getGcmImageUri(aircraftTypes: AircraftType[]) {
-		const txt = ['http://www.gcmap.com/map?P='];
+		const txt = ['https://www.gcmap.com/map?P='];
 
 		txt.push(
 			aircraftTypes
