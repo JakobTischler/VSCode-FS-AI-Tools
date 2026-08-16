@@ -52,7 +52,7 @@ export function changeAircraftNumbers(text: string, amount: number): string {
 	return text.replace(/#(\d+)/gi, (_fullMatch, number: string) => `#${Number(number) + amount}`);
 }
 
-const periodMaxDays: Record<string, number> = { WEEK: 6, '2WEEKS': 13, '5WEEKS': 34, '8WEEKS': 55 };
+const periodMaxDays: Record<string, number> = { WEEK: 6, '2WEEKS': 13, '4WEEKS': 27, '5WEEKS': 34, '8WEEKS': 55 };
 
 export function switchSimulatorDays(text: string, toFs9: boolean): { text: string; changed: number } {
 	let changed = 0;
@@ -123,7 +123,10 @@ export function rebaseAircraftNumbers(text: string, options: RebaseAircraftNumbe
 	return result.join('\n');
 }
 
-export function countAircraftGroups(text: string, emptyLinesBetweenGroups = 1): { text: string; total: number; groups: number } {
+export function countAircraftGroups(
+	text: string,
+	emptyLinesBetweenGroups = 1,
+): { text: string; total: number; groups: number } {
 	const lines = text.split('\n');
 	let total = 0;
 	let groups = 0;
