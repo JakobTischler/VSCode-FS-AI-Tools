@@ -15,7 +15,7 @@ import * as path from 'path';
 import { Selection, TextDocument, window, workspace } from 'vscode';
 import { showError } from '../../Tools/helpers';
 import saveFile from '../../Utils/save-file';
-// import trash from 'trash';
+import { moveDirectoryToTrash, resolveTextureDirectory, TextureDirectory } from '../../Utils/texture-directory';
 
 export async function DeleteAircraft() {
 	console.log('DeleteAircraft()');
@@ -293,6 +293,38 @@ async function deleteAndSave(titles: Set<string>, fltsimEntriesByTitle: Map<stri
 		cfgToFltsimEntries.set(entryData.cfgPath, [...(cfgToFltsimEntries.get(entryData.cfgPath) || []), entryData]);
 	}
 
+	// Validate the complete deletion plan before changing any file or directory.
+	const textureDirectories = new Map<FltsimEntry, TextureDirectory>();
+	try {
+		for (const [cfgPath, entries] of cfgToFltsimEntries) {
+			const aircraftRoot = path.dirname(cfgPath);
+			for (const entry of entries) {
+				const textureMatch = entry.content.match(/^texture\s*=\s*(.*)$/im);
+				if (textureMatch?.[1].trim()) {
+					textureDirectories.set(entry, resolveTextureDirectory(aircraftRoot, textureMatch[1]));
+				}
+			}
+		}
+	} catch (error) {
+		showError(`Deletion cancelled: ${String(error)}`, true);
+		return result;
+	}
+
+	const existingTexturePaths = [...new Set([...textureDirectories.values()].map((item) => item.path))].filter((item) =>
+		fs.existsSync(item)
+	);
+	const preview = [
+		`${titles.size} fltsim ${titles.size === 1 ? 'entry' : 'entries'}`,
+		...[...cfgToFltsimEntries.keys()].map((item) => `Modify: ${item}`),
+		...existingTexturePaths.map((item) => `Move to Recycle Bin: ${item}`),
+	].join('\n');
+	const previewChoice = await window.showWarningMessage(
+		'Deletion preview',
+		{ modal: true, detail: preview },
+		'Continue'
+	);
+	if (previewChoice !== 'Continue') return result;
+
 	cfgFileLoop: for (const [cfgPath, fltsimEntries] of cfgToFltsimEntries.entries()) {
 		let fileDirty = false;
 		continueDeletion = true;
@@ -395,22 +427,13 @@ async function deleteAndSave(titles: Set<string>, fltsimEntriesByTitle: Map<stri
 			/*
 			 * 5. Extract texture path and delete
 			 */
-			removeTextureFoldersLoop: for (const dataEntry of fltsimEntries) {
+			for (const dataEntry of fltsimEntries) {
 				if (skipEntries.has(dataEntry.title)) continue;
 
-				const match = dataEntry.content.match(/texture\s*=\s*(.*)$/im);
-				if (match) {
-					let textureDir = path.resolve(cfgPath, '..', `texture`);
-					const dirName = [...match][1];
-					if (dirName.length) {
-						textureDir = path.resolve(cfgPath, '..', `texture.${[...match][1]}`);
-					}
-
-					if (fs.existsSync(textureDir)) {
-						await fs.promises.rm(textureDir, { recursive: true, force: true });
-						// await trash(textureDir);
-						console.log(`🗑 Directory "${textureDir}" removed`);
-					}
+				const textureDirectory = textureDirectories.get(dataEntry);
+				if (textureDirectory && fs.existsSync(textureDirectory.path)) {
+					await moveDirectoryToTrash(textureDirectory.path);
+					console.log(`🗑 Directory "${textureDirectory.path}" moved to the Recycle Bin`);
 				}
 			}
 		} catch (error) {
