@@ -54,4 +54,22 @@ describe('ParseIni', () => {
 		assert.equal(parsed.fuel.Center2, '-41.4,0.0,-1.5,1.0,0.0');
 		assert.equal(parsed.fuel['//Center2'], undefined);
 	});
+
+	it('supports Windows, Unix, and classic Mac line endings', () => {
+		const parsed = ParseIni('[one]\r\na=1\n[two]\rb=2');
+
+		assert.deepEqual(parsed, { one: { a: '1' }, two: { b: '2' } });
+	});
+
+	it('trims section names, keys, and values', () => {
+		const parsed = ParseIni(' [ General ] \n  title =  Example Aircraft  ');
+
+		assert.deepEqual(parsed, { General: { title: 'Example Aircraft' } });
+	});
+
+	it('uses the last value when a key occurs more than once', () => {
+		const parsed = ParseIni('[General]\ntitle=First\ntitle=Second');
+
+		assert.equal(parsed.General.title, 'Second');
+	});
 });

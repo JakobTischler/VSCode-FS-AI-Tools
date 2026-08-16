@@ -1,6 +1,7 @@
 import { window } from 'vscode';
-import { getFilename, showError } from '../../Tools/helpers';
+import { getFilename } from '../../Tools/helpers';
 import { getDropdownSelection } from '../../Tools/input';
+import { switchSimulatorDays } from '../../Utils/flightplan-transformations';
 
 export async function SwitchFS9FSX() {
 	const editor = window.activeTextEditor;
@@ -18,8 +19,6 @@ export async function SwitchFS9FSX() {
 		return;
 	}
 
-	let flightplansChanged = 0;
-
 	const selection = editor.selection;
 	const text = document.getText(selection);
 
@@ -30,53 +29,13 @@ export async function SwitchFS9FSX() {
 	}
 	const toFS9 = dirStr === 'FSX → FS9';
 
-	// Go through each line, check the max number of days based on repeating
-	// period, then match days and loop number
-	const periods = new Map();
-	periods.set('WEEK', 1 * 7 - 1);
-	periods.set('2WEEKS', 2 * 7 - 1);
-	periods.set('5WEEKS', 5 * 7 - 1);
-	periods.set('8WEEKS', 8 * 7 - 1);
-
-	const lines = text.split('\n');
-	for (const [index, line] of lines.entries()) {
-		if (!line.startsWith('AC#')) {
-			continue;
-		}
-
-		const split = line.split(',');
-		const period = split[3]?.toUpperCase();
-		if (!period) {
-			showError(`Aircraft "${split[1]}": Couldn't find any repeating period`);
-			continue;
-		}
-		if (!periods.has(period)) {
-			showError(`Aircraft "${split[1]}": invalid repeating period "${period}"`);
-			continue;
-		}
-		const maxDays = periods.get(period);
-
-		lines[index] = line.replace(/(\,@?(?:TNG)?)(\d+)\//gi, (fullMatch, pre: string, number: string) => {
-			// In FS9 the week starts on Sunday which has the number 0. In FSX the week starts on Monday with the number 0.
-			//      M T W T F S S
-			// FS9: 1 2 3 4 5 6 0
-			// FSX: 0 1 2 3 4 5 6
-			// FS9 → FSX = -1
-			// FSX → FS9 = +1
-			let num = Number(number);
-			num = num.loop(0, maxDays, toFS9 ? 1 : -1);
-
-			return `${pre}${num}/`;
-		});
-
-		flightplansChanged++;
-	}
+	const result = switchSimulatorDays(text, toFS9);
 
 	editor.edit((editBuilder) => {
-		editBuilder.replace(selection, lines.join('\n'));
+		editBuilder.replace(selection, result.text);
 	});
 
 	const from = toFS9 ? 'FSX' : 'FS9';
 	const to = toFS9 ? 'FS9' : 'FSX';
-	window.showInformationMessage(`${'flightplan'.plural(flightplansChanged)} changed from ${from} to ${to}`);
+	window.showInformationMessage(`${'flightplan'.plural(result.changed)} changed from ${from} to ${to}`);
 }

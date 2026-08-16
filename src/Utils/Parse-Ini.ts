@@ -24,8 +24,8 @@ export function ParseIni(text: string) {
 		if (INI_REGEX.SECTION.test(line)) {
 			const match = line.match(INI_REGEX.SECTION);
 			if (match?.[1]) {
-				result[match[1]] = {};
-				section = match[1];
+				section = match[1].trim();
+				result[section] = {};
 			}
 
 			return;
